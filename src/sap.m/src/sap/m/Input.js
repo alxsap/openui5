@@ -1394,20 +1394,22 @@ function(
 	 * @param {jQuery.Event} oEvent Keyboard event.
 	 */
 	Input.prototype.onsapenter = function(oEvent) {
-		var bPopupOpened = this._isSuggestionsPopoverOpen(),
-			bFocusInPopup = !this.hasStyleClass("sapMFocus") && bPopupOpened,
-			aItems = this._hasTabularSuggestions() ? this.getSuggestionRows() : this.getSuggestionItems(),
-			bFireSubmit = this.getEnabled() && this.getEditable(),
-			iValueLength, oSuggestionsPopover, oSelectedItem, oFocusedItem;
+		const bPopupOpened = this._isSuggestionsPopoverOpen();
+		const bFocusInPopup = !this.hasStyleClass("sapMFocus") && bPopupOpened;
+		const aItems = this._hasTabularSuggestions() ? this.getSuggestionRows() : this.getSuggestionItems();
+		const oSuggestionsPopover = this._getSuggestionsPopover();
+		const oSelectedItem = oSuggestionsPopover?.getItemsContainer()?.getSelectedItem();
+		const sText = oSelectedItem?.getTitle?.() || oSelectedItem?.getCells?.()[0]?.getText?.() || "";
+		const bPendingSuggest = !!this._iSuggestDelay && !sText.toLowerCase().includes(this._getTypedInValue().toLowerCase());
+		let bFireSubmit = this.getEnabled() && this.getEditable();
+		let iValueLength, oFocusedItem;
 
 		// when enter is pressed before the timeout of suggestion delay, suggest event is cancelled
 		this.cancelPendingSuggest();
 
 		bFocusInPopup && this.setSelectionUpdatedFromList(true);
 
-		if (this.getShowSuggestion() && this._bDoTypeAhead && bPopupOpened && !this.isComposingCharacter()) {
-			oSuggestionsPopover = this._getSuggestionsPopover();
-			oSelectedItem = oSuggestionsPopover.getItemsContainer().getSelectedItem();
+		if (this.getShowSuggestion() && this._bDoTypeAhead && bPopupOpened && !this.isComposingCharacter() && !bPendingSuggest) {
 			oFocusedItem = oSuggestionsPopover.getFocusedListItem();
 
 			if (this._hasTabularSuggestions()) {
@@ -3038,9 +3040,16 @@ function(
 		} else {
 			oPopover
 				.attachAfterClose(function() {
-					var oList = oSuggPopover.getItemsContainer();
-					var oSelectedItem = oList && oList.getSelectedItem();
-					var oDomRef = this.getDomRef();
+					const oList = oSuggPopover.getItemsContainer();
+					const oDomRef = this.getDomRef();
+					const oSuggestionsPopover = this._getSuggestionsPopover();
+					const oSelectedItem = oSuggestionsPopover?.getItemsContainer()?.getSelectedItem();
+					const sText = oSelectedItem?.getTitle?.() || oSelectedItem?.getCells?.()[0]?.getText?.() || "";
+					const bPendingSuggest = !!this._iSuggestDelay && !sText.toLowerCase().includes(this.getValue().toLowerCase());
+
+					if (bPendingSuggest) {
+						return;
+					}
 
 					if (this.getSelectionUpdatedFromList()) {
 						this.updateSelectionFromList(oSelectedItem);
@@ -3054,7 +3063,7 @@ function(
 
 					// only destroy items in simple suggestion mode
 					if (oList instanceof Table) {
-						oSelectedItem && oSelectedItem.removeStyleClass("sapMLIBFocused");
+						oSelectedItem?.removeStyleClass("sapMLIBFocused");
 						oList.removeSelections(true);
 					} else {
 						oList.destroyItems();

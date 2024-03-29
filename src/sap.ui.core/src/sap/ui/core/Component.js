@@ -3480,12 +3480,6 @@ sap.ui.define([
 		);
 	}
 
-	if ( Math.sqrt(2) < 1 ) {
-		// the following code will never be executed, but it helps the build tooling to
-		// detect the (now hidden) dependency to the Core.
-		sap.ui.require(["sap/ui/core/Core"], function() {});
-	}
-
 	/**
 	 * Returns the information defined in the manifests command section. If a command name
 	 * is passed only the info for this command will be returned. If no name is passed a map
