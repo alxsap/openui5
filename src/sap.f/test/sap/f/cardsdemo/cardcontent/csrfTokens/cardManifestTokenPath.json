@@ -40,7 +40,7 @@
 				"token1": {
 					"data": {
 						"request": {
-							"url": "{{destinations.ActivitiesMockServer}}/TokensPath",
+							"url": "/csrfTokens/tokenInBody",
 							"method": "POST"
 						},
 						"path": "/data/0/Token"
@@ -49,7 +49,8 @@
 			}
 		},
 		"header": {
-			"title": "Token with path"
+			"title": "Token with Path",
+			"subTitle": "(token /csrfTokens/tokenInBody)"
 		},
 		"content": {
 			"data": {
