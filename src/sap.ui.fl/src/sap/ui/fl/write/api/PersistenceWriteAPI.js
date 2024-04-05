@@ -74,7 +74,6 @@ sap.ui.define([
 	 */
 	function hasChanges(mPropertyBag) {
 		mPropertyBag.includeCtrlVariants = true;
-		mPropertyBag.invalidateCache = false;
 		return PersistenceWriteAPI._getUIChanges(mPropertyBag)
 		.then(function(aChanges) {
 			return aChanges.length > 0;
@@ -382,14 +381,11 @@ sap.ui.define([
 	 *
 	 * @param {object} mPropertyBag - Object with parameters as properties
 	 * @param {sap.ui.fl.Selector} mPropertyBag.selector - Retrieves the associated flex persistence
-	 * @param {string} [mPropertyBag.layer] - Layer for which changes are to be deleted
-	 * @param {string} [mPropertyBag.generator] - Generator of changes
-	 * @param {string[]} [mPropertyBag.selectorIds] - Selector IDs in local format
-	 * @param {string[]} [mPropertyBag.changeTypes] - Types of changes
+	 * @param {string} [mPropertyBag.layer] - Layer for which changes should be checked
 	 * @returns {Promise} Resolves with object that decides if warning should be shown
 	 *
 	 */
-	 PersistenceWriteAPI.getChangesWarning = function(mPropertyBag) {
+	PersistenceWriteAPI.getChangesWarning = function(mPropertyBag) {
 		return this._getUIChanges(mPropertyBag).then(function(aChanges) {
 			var bHasChangesFromOtherSystem = aChanges.some(function(oChange) {
 				return oChange.isChangeFromOtherSystem();
@@ -450,7 +446,6 @@ sap.ui.define([
 	 * @param {boolean} [mPropertyBag.includeCtrlVariants] - Flag if control variant changes should be included
 	 * @param {boolean} [mPropertyBag.includeDirtyChanges] - Flag if dirty UI changes should be included
 	 * @param {string} [mPropertyBag.cacheKey] - Key to validate the cache entry stored on client side
-	 * @param {boolean} [mPropertyBag.invalidateCache] - Indicates whether the cache is to be invalidated
 	 * @param {boolean} [mPropertyBag.onlyCurrentVariants] - Whether only changes for the currently active variants should be considered
 	 *
 	 * @returns {Promise} Promise resolves with an array of all change instances {@see sap.ui.fl.apply._internal.flexObjects.FlexObject}
@@ -462,6 +457,7 @@ sap.ui.define([
 			mPropertyBag.currentLayer = mPropertyBag.layer;
 		}
 
+		mPropertyBag.invalidateCache = false;
 		// TODO: Check the mPropertyBag.selector parameter name - the methods called on FlexObjectState expect a control
 		return FlexObjectState.getFlexObjects(mPropertyBag);
 	};

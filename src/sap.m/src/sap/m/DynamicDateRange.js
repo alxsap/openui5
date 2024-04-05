@@ -1243,13 +1243,11 @@ sap.ui.define([
 				this._oPopup.attachAfterOpen(function() {
 					var oToPage = this._oNavContainer.getPages()[0];
 					this._applyNavContainerPageFocus(oToPage);
-					this.invalidate();
 				}, this);
 
 				this._oPopup.attachAfterClose(function() {
 					this._oPreviousSelectedOption = this._oSelectedOption;
 					this._setFooterVisibility(false);
-					this.invalidate();
 				}, this);
 
 				this._oPopup.setBeginButton(new Button({
@@ -1525,8 +1523,6 @@ sap.ui.define([
 			} else {
 				oPopover.getFooter().setVisible(bVisible);
 			}
-
-			oPopover.invalidate();
 
 			return this;
 		};

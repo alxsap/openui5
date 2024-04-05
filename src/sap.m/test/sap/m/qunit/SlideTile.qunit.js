@@ -3,7 +3,6 @@ sap.ui.define([
 	"sap/base/i18n/Localization",
 	"sap/ui/core/Lib",
 	"sap/ui/core/Theming",
-	"sap/ui/qunit/utils/nextUIUpdate",
 	"sap/ui/thirdparty/jquery",
 	"sap/m/SlideTile",
 	"sap/m/GenericTile",
@@ -16,13 +15,11 @@ sap.ui.define([
 	"sap/ui/events/KeyCodes",
 	"sap/ui/qunit/QUnitUtils",
 	"sap/f/GridContainerItemLayoutData",
-	"sap/f/GridContainerSettings",
 	"sap/f/GridContainer",
-	// provides jQuery custom selector ":sapTabbable"
-	"sap/ui/dom/jquery/Selectors",
-	// only used indirectly?
-	"sap/ui/events/jquery/EventExtension"
-], function(Localization, Library, Theming, nextUIUpdate, jQuery, SlideTile, GenericTile, JSONModel, TileContent, NewsContent, Device, NumericContent, library, KeyCodes, qutils, GridContainerItemLayoutData, GridContainerSettings, GridContainer) {
+	"sap/ui/qunit/utils/nextUIUpdate",
+	/* jQuery custom selectors ":sapTabbable"*/
+	"sap/ui/dom/jquery/Selectors"
+], function(Localization, Library, Theming, jQuery, SlideTile, GenericTile, JSONModel, TileContent, NewsContent, Device, NumericContent, library, KeyCodes, qutils, GridContainerItemLayoutData, GridContainer, nextUIUpdate) {
 	"use strict";
 
 
@@ -165,6 +162,7 @@ sap.ui.define([
 		this.oSlideTile.removeTile(this.oSlideTile.getTiles()[2].getId());
 		this.oSlideTile.removeTile(this.oSlideTile.getTiles()[1].getId());
 		await nextUIUpdate();
+
 
 		//Assert
 		assert.equal(this.oSlideTile.getAggregation("_invisibleText").getText(), sExpectedText, "SlideTile contains expected ARIA-label attribute");
@@ -928,16 +926,28 @@ var FrameType = library.FrameType;
 			this.sStartTheme = Theming.getTheme();
 			this.sRequiredTheme = null;
 
+			var fnAttachApplied = (oEvent) => {
+				Theming.detachApplied(fnAttachApplied);
+				if (Theming.getTheme() === this.sRequiredTheme) {
+					if (typeof this.fnCallback === "function") {
+						this.fnCallback.bind(this)();
+						this.fnCallback = undefined;
+					}
+				}
+			};
 			this.applyTheme = function(sTheme, fnCallback) {
+				this.fnCallback = fnCallback;
 				this.sRequiredTheme = sTheme;
-				if (Theming.getTheme() === this.sRequiredTheme && false) {
+				if (Theming.getTheme() === this.sRequiredTheme) {
 					if (typeof fnCallback === "function") {
 						fnCallback.bind(this)();
 						fnCallback = undefined;
 					}
 				} else {
+					Theming.attachApplied(fnAttachApplied.bind(this));
 					Theming.setTheme(sTheme);
 				}
+
 			};
 		},
 		afterEach: function(assert) {
@@ -960,7 +970,7 @@ var FrameType = library.FrameType;
 			var done = assert.async();
 			this.applyTheme(this.sStartTheme, done);
 		},
-		fnCreateGridContainer: function(sGap){
+		fnCreateGridContainer: async function(sGap){
 			this.oGrid = new GridContainer({
 				layout: ({columns: 6, rowSize: "80px", columnSize: "80px", gap: sGap}),
 				items: [
@@ -982,7 +992,7 @@ var FrameType = library.FrameType;
 			});
 
 			this.oGrid.placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*context not obviously suitable for an async function*/;
+			await nextUIUpdate();
 		},
 		createTile: function() {
 			return new GenericTile({
@@ -1103,10 +1113,10 @@ var FrameType = library.FrameType;
 			$Tabbables.get(!bForward ? $Tabbables.length - 1 : 0).focus();
 		}
 		assert.equal(document.activeElement.id, this.oSlideTile.getId(), "Focus on Slide Tile");
-		assert.ok(this.oSlideTile._bAnimationPause,"Tile has been paused on focus");
+		assert.ok(this.oSlideTile._bAnimationPause, "Tile has been paused on focus");
 	});
 
-	QUnit.test("Checking if the correct width has been applied when the gap is 1rem", async function(assert) {
+	QUnit.test("Checking if the correct width has been applied when the gap is 1rem", async function (assert) {
 		// Arrange
 		this.fnCreateGridContainer("1rem");
 		var aItems = this.oGrid.getItems();
@@ -1129,7 +1139,7 @@ var FrameType = library.FrameType;
 	});
 
 	});
-	QUnit.test("Checking if the correct width has not been applied when the gap is not 1rem", async function(assert) {
+	QUnit.test("Checking if the correct width has not been applied when the gap is not 1rem", async function (assert) {
 		// Arrange
 		this.fnCreateGridContainer("0.5rem");
 		var aItems = this.oGrid.getItems();
@@ -1162,21 +1172,21 @@ var FrameType = library.FrameType;
 
 		qutils.triggerKeydown(this.oSlideTile.getDomRef(), KeyCodes.TAB);
 
-		var $Tabbables = findTabbables(document.activeElement, [document.getElementById("qunit-fixture")], bForward);
+		$Tabbables = findTabbables(document.activeElement, [document.getElementById("qunit-fixture")], bForward);
 		if ($Tabbables.length) {
 			$Tabbables.get(!bForward ? $Tabbables.length - 1 : 0).focus();
 		}
 		assert.equal(document.activeElement.id, this.oSlideTile.getTiles()[this.oSlideTile._iCurrentTile]._oNavigateAction.getId(), "Focus on Slide Tile Button");
 		qutils.triggerKeydown(this.oSlideTile.getTiles()[this.oSlideTile._iCurrentTile]._oNavigateAction.getDomRef(), KeyCodes.TAB);
 
-		var $Tabbables = findTabbables(document.activeElement, [document.getElementById("qunit-fixture")], bForward);
+		$Tabbables = findTabbables(document.activeElement, [document.getElementById("qunit-fixture")], bForward);
 		if ($Tabbables.length) {
 			$Tabbables.get(!bForward ? $Tabbables.length - 1 : 0).focus();
 		}
 		assert.equal(document.activeElement.id, this.oTile2.getId(), "Focus on Tile2");
 	});
 
-	QUnit.test("CSS Rendering Normal Device", async function(assert) {
+	QUnit.test("CSS Rendering Normal Device", async function(assert){
 		this.oSlideTile = this.createSlideTile().placeAt("qunit-fixture");
 		await nextUIUpdate();
 		assert.equal(true,true,"ok");
@@ -1210,7 +1220,7 @@ var FrameType = library.FrameType;
 		assert.equal();
 	});
 
-	QUnit.test("CSS Rendering Mobile Device", async function(assert) {
+	QUnit.test("CSS Rendering Mobile Device", async function(assert){
 		this.initializeMobileView();
 		this.oSlideTile = this.createSlideTile(true).placeAt("qunit-fixture");
 		await nextUIUpdate();
@@ -1249,7 +1259,7 @@ var FrameType = library.FrameType;
 		assert.equal();
 	});
 
-	QUnit.test("Border-Radius for the GenericTile wrapper", async function(assert) {
+	QUnit.test("Border-Radius for the GenericTile wrapper", async function(assert){
 		this.oSlideTile = this.createSlideTile().placeAt("qunit-fixture");
 		await nextUIUpdate();
 		assert.ok(getComputedStyle(document.querySelector(".sapMSTOverflowHidden")).borderRadius,"3.68px 3.68px 4px 4px", "Border-Radius property set correctly");
@@ -1259,9 +1269,9 @@ var FrameType = library.FrameType;
 
 	QUnit.test("Border-Radius for the focus div when pressed", function(assert){
 		var done = assert.async();
-		this.applyTheme("sap_horizon", function() {
+		this.applyTheme("sap_horizon", async function() {
 			this.oSlideTile = this.createSlideTile().placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*context not obviously suitable for an async function*/;
+			await nextUIUpdate();
 			var slideTileDomRef = this.oSlideTile.getDomRef();
 			if (this.oSlideTile && slideTileDomRef && slideTileDomRef.classList && slideTileDomRef.classList.contains("sapMST")){
 				assert.equal(getComputedStyle(document.querySelector(".sapMST")).overflow,"hidden","Overflow property should be set as hidden");
@@ -1273,7 +1283,7 @@ var FrameType = library.FrameType;
 		});
 	});
 
-	QUnit.test("Focus should not be present on the GenericTile level when rendered as a link", async function(assert) {
+	QUnit.test("Focus should not be present on the GenericTile level when rendered as a link", async function(assert){
 		this.oSlideTile = this.createSlideTile(false,true).placeAt("qunit-fixture");
 		await nextUIUpdate();
 		this.oSlideTile.getTiles().forEach(function(oTile) {
@@ -1309,7 +1319,7 @@ var FrameType = library.FrameType;
 		assert.ok(spy.notCalled, "Function _setAriaDescriptor not called");
 	});
 
-	QUnit.test("Focus on the slide tile when it has one tile inside it", async function(assert) {
+	QUnit.test("Focus on the slide tile when it has one tile inside it", async function(assert){
 		//Arrange
 		this.oSlideTile = this.createSlideTile(false,true).placeAt("qunit-fixture");
 		await nextUIUpdate();
@@ -1338,9 +1348,11 @@ var FrameType = library.FrameType;
 
 		if (bNext) {
 			$All = jQuery.merge($Ref.find("*"), jQuery.merge($Ref.nextAll(), $Ref.parents().nextAll()));
+			// jQuery custom selectors ":sapTabbable"
 			$Tabbables = $All.find(':sapTabbable').addBack(':sapTabbable');
 		} else {
 			$All = jQuery.merge($Ref.prevAll(), $Ref.parents().prevAll());
+			// jQuery custom selectors ":sapTabbable"
 			$Tabbables = jQuery.merge($Ref.parents(':sapTabbable'), $All.find(':sapTabbable').addBack(':sapTabbable'));
 		}
 

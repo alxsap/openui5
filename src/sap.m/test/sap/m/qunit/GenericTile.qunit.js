@@ -156,7 +156,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("Rendering tests", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.fnSpyBeforeRendering = this.spy(GenericTile.prototype, "onBeforeRendering");
 			this.fnSpysetUpResizeHandler = this.spy(GenericTile.prototype, "_setupResizeClassHandler");
 			this.oGenericTile = new GenericTile("generic-tile", {
@@ -182,20 +182,32 @@ sap.ui.define([
 				}),
 				press: function() {} //attach empty press to enable :focus state
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 
 			this.sStartTheme = Theming.getTheme();
 			this.sRequiredTheme = null;
 
+			var fnAttachApplied = (oEvent) => {
+				Theming.detachApplied(fnAttachApplied);
+				if (Theming.getTheme() === this.sRequiredTheme) {
+					if (typeof this.fnCallback === "function") {
+						this.fnCallback.bind(this)();
+						this.fnCallback = undefined;
+					}
+				}
+			};
+
 			this.applyTheme = function(sTheme, fnCallback) {
+				this.fnCallback = fnCallback;
 				this.sRequiredTheme = sTheme;
-				if (Theming.getTheme() === this.sRequiredTheme && false) {
+				if (Theming.getTheme() === this.sRequiredTheme) {
 					if (typeof fnCallback === "function") {
 						fnCallback.bind(this)();
 						fnCallback = undefined;
 					}
 				} else {
 					Theming.setTheme(sTheme);
+					Theming.attachApplied(fnAttachApplied.bind(this));
 				}
 			};
 
@@ -240,9 +252,9 @@ sap.ui.define([
 		assert.notStrictEqual(oLinkElements.length, 1, "There is no tag wrapped around the tile.");
 	});
 
-	QUnit.test("GenericTile rendered with custom width", function(assert) {
+	QUnit.test("GenericTile rendered with custom width", async function(assert) {
 		this.oGenericTile.setWidth("500px");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		this.fnWithRenderAsserts(assert);
 	});
@@ -251,14 +263,14 @@ sap.ui.define([
 		assert.ok(this.oGenericTile.mAggregations.tileContent[0].mAggregations.content.getDomRef().classList.value, "sapMNCValue WithoutMargin Good Loaded", "NumericContent assigned properly in the tile");
 	});
 
-	QUnit.test("GenericTile not rendered with link when in action mode", function(assert) {
+	QUnit.test("GenericTile not rendered with link when in action mode", async function(assert) {
 		//Arrange
 		var sLink = "http://localhost/myLink";
 		this.oGenericTile.setUrl(sLink);
 		this.oGenericTile.setScope(GenericTileScope.Actions);
 
 		//Act
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		//Assert
 		var oTileElements = document.getElementById("generic-tile").childNodes;
@@ -267,12 +279,12 @@ sap.ui.define([
 		assert.notStrictEqual(oTileElements[0].tagName, "A", "The node is not a link.");
 	});
 
-	QUnit.test("GenericTile not rendered with link when in disabled state", function(assert) {
+	QUnit.test("GenericTile not rendered with link when in disabled state", async function(assert) {
 		//Arrange
 		var sLink = "http://localhost/myLink";
 		this.oGenericTile.setUrl(sLink);
 		this.oGenericTile.setState("Disabled");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		var oTileElements = document.getElementById("generic-tile").childNodes;
 
@@ -280,14 +292,14 @@ sap.ui.define([
 		assert.notStrictEqual(oTileElements[0].tagName, "A", "The node is not a link.");
 	});
 
-	QUnit.test("GenericTile rendered with link when not in action mode", function(assert) {
+	QUnit.test("GenericTile rendered with link when not in action mode", async function(assert) {
 		//Arrange
 		var sLink = "http://localhost/myLink";
 		this.oGenericTile.setUrl(sLink);
 		this.oGenericTile.setScope(GenericTileScope.Display);
 
 		//Act
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		//Assert
 		var oTileElement = document.getElementById("generic-tile");
@@ -426,41 +438,41 @@ sap.ui.define([
 		});
 	});
 
-	QUnit.test("Wrapping type is propagated to title", function(assert) {
+	QUnit.test("Wrapping type is propagated to title", async function(assert) {
 		this.oGenericTile.setWrappingType(library.WrappingType.Hyphenated);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.strictEqual(library.WrappingType.Hyphenated, this.oGenericTile._oTitle.getWrappingType(), "Title wrapping type should be Hyphenated");
 	});
 
-	QUnit.test("Wrapping type is propagated to subTitle", function(assert) {
+	QUnit.test("Wrapping type is propagated to subTitle", async function(assert) {
 		this.oGenericTile.setWrappingType(library.WrappingType.Hyphenated);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.strictEqual(library.WrappingType.Hyphenated, this.oGenericTile._oSubTitle.getWrappingType(), "Subtitle wrapping type should be Hyphenated");
 	});
 
-	QUnit.test("Wrapping type is propagated to appShortcut", function(assert) {
+	QUnit.test("Wrapping type is propagated to appShortcut", async function(assert) {
 		this.oGenericTile.setWrappingType(library.WrappingType.Hyphenated);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.strictEqual(library.WrappingType.Hyphenated, this.oGenericTile._oAppShortcut.getWrappingType(), "AppShortcut wrapping type should be Hyphenated");
 	});
 
-	QUnit.test("Wrapping type is propagated to systemInfo", function(assert) {
+	QUnit.test("Wrapping type is propagated to systemInfo", async function(assert) {
 		this.oGenericTile.setWrappingType(library.WrappingType.Hyphenated);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.strictEqual(library.WrappingType.Hyphenated, this.oGenericTile._oSystemInfo.getWrappingType(), "SystemInfo wrapping type should be Hyphenated");
 	});
 
-	QUnit.test("GenericTile border rendered for valueColor", function(assert) {
+	QUnit.test("GenericTile border rendered for valueColor", async function(assert) {
 		assert.notOk(document.querySelector("#generic-tile .sapMGTCriticalBorder"), "Generic tile has no criticality border");
 		this.oGenericTile.setValueColor("Error");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(document.querySelector("#generic-tile .sapMGTCriticalBorder"), "Generic tile border was rendered sucessfully");
 		assert.equal(document.querySelector("#generic-tile .sapMGTCriticalBorder").classList[1], "Error", "Generic tile border has error state");
 	});
 
-	QUnit.test("GenericTile border not rendered when no valueColor", function(assert) {
+	QUnit.test("GenericTile border not rendered when no valueColor", async function(assert) {
 		this.oGenericTile.setValueColor("None");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.notOk(document.querySelector("#generic-tile .sapMGTCriticalBorder"), "Generic tile border was not rendered");
 	});
 
@@ -482,13 +494,13 @@ sap.ui.define([
 	});
 
 	QUnit.module("FrameType rendering tests", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.oGenericTile = new GenericTile({
 				frameType: FrameType.Auto,
 				header: "This is a header",
 				subheader: "This is a subheader"
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			this.oGenericTile.destroy();
@@ -505,38 +517,38 @@ sap.ui.define([
 		assert.ok(this.oGenericTile.getDomRef().getAttribute("aria-label").includes(sSizeDescription),"Size description rendered successfully");
 	});
 
-	QUnit.test("FrameType is in TwoByOne", function(assert) {
+	QUnit.test("FrameType is in TwoByOne", async function(assert) {
 		//Arrange
 		this.oGenericTile.setFrameType(FrameType.TwoByOne);
 
 		//Act
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		//Assert
 		assert.equal(this.oGenericTile.getFrameType(), FrameType.TwoByOne, "FrameType Auto set to TwoByOne");
 		assert.ok(this.oGenericTile.getDomRef().getAttribute("aria-label").includes("Wide Tile"),"Size description rendered successfully");
 	});
 
-	QUnit.test("FrameType is in OneByHalf", function(assert) {
+	QUnit.test("FrameType is in OneByHalf", async function(assert) {
 		//Arrange
 		this.oGenericTile.setFrameType(FrameType.OneByHalf);
 		var sSizeDescription = this.oGenericTile._oRb.getText("GENERIC_TILE_FLAT_SIZE");
 
 		//Act
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		//Assert
 		assert.equal(this.oGenericTile.getFrameType(), FrameType.OneByHalf, "FrameType Auto set to TwoByOne");
 		assert.ok(this.oGenericTile.getDomRef().getAttribute("aria-label").includes(sSizeDescription),"Size description rendered successfully");
 	});
 
-	QUnit.test("FrameType is in TwoByHalf", function(assert) {
+	QUnit.test("FrameType is in TwoByHalf", async function(assert) {
 		//Arrange
 		this.oGenericTile.setFrameType(FrameType.TwoByHalf);
 		var sSizeDescription = this.oGenericTile._oRb.getText("GENERIC_TILE_FLAT_WIDE_SIZE");
 
 		//Act
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		//Assert
 		assert.equal(this.oGenericTile.getFrameType(), FrameType.TwoByHalf, "FrameType Auto set to TwoByOne");
@@ -544,7 +556,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("Scope rendering tests", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.oGenericTile = new GenericTile({
 				scope: GenericTileScope.Display,
 				header: "This is a header",
@@ -554,7 +566,7 @@ sap.ui.define([
 					footer: "Current Quarter"
 				})
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			this.oGenericTile.destroy();
@@ -562,48 +574,48 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("Display scope with actions view", function(assert) {
+	QUnit.test("Display scope with actions view", async function(assert) {
 		//Arrange
 		this.oGenericTile.showActionsView(true);
 		//Act
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//Assert
 		assert.equal(this.oGenericTile.getScope(), GenericTileScope.Display, "The GenericTile was in Display scope");
 		assert.ok(this.oGenericTile.$().hasClass("sapMGTScopeActions"), "The actions scope class was added");
 		assert.notOk(document.getElementById("tile-cont-footer-text"), "The footer text has not been rendered in actions view");
 	});
 
-	QUnit.test("Display scope with actions view in failed state", function(assert) {
+	QUnit.test("Display scope with actions view in failed state", async function(assert) {
 		//Arrange
 		this.oGenericTile.setState("Failed");
 		this.oGenericTile.showActionsView(true);
 		//Act
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//Assert
 		assert.ok(this.oGenericTile.$("failed-text").length === 0, "Failed text has not been rendered");
 	});
 
-	QUnit.test("Action scope in normal mode", function(assert) {
+	QUnit.test("Action scope in normal mode", async function(assert) {
 		//Arrange
 		this.oGenericTile.setScope(GenericTileScope.Actions);
 
 		//Act
 		this.oGenericTile.invalidate();
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		//Assert
 		assert.ok(this.oGenericTile.$("action-more").length > 0, "More icon has been rendered");
 		assert.ok(this.oGenericTile.$("action-remove").length > 0, "Remove icon has been rendered");
 	});
 
-	QUnit.test("Action scope in LineMode/compact", function(assert) {
+	QUnit.test("Action scope in LineMode/compact", async function(assert) {
 		//Arrange
 		this.oGenericTile.addStyleClass("sapUiSizeCompact");
 		this.oGenericTile.setMode(GenericTileMode.LineMode);
 		this.oGenericTile.setScope(GenericTileScope.Actions);
 		//Act
 		this.oGenericTile.invalidate();
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		//Assert
 		assert.ok(this.oGenericTile.$("actions").length > 0, "Action container has been rendered");
@@ -611,39 +623,39 @@ sap.ui.define([
 		assert.ok(this.oGenericTile.$("action-remove").length > 0, "Remove icon has been rendered");
 	});
 
-	QUnit.test("Action scope remove button does not steal focus", function(assert) {
+	QUnit.test("Action scope remove button does not steal focus", async function(assert) {
 		//Arrange
 		this.oGenericTile.setMode(GenericTileMode.LineMode);
 		this.oGenericTile.setScope(GenericTileScope.Actions);
 
 		//Act
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		//Assert
 		assert.equal(this.oGenericTile.$("action-remove").attr("tabindex"), "-1", "Correct tabindex is set on remove icon.");
 		assert.equal(this.oGenericTile._oRemoveButton._bExcludeFromTabChain, true, "Remove button is excluded from tab chain on rendering.");
 	});
 
-	QUnit.test("Action scope in disabled LineMode GenericTile", function(assert) {
+	QUnit.test("Action scope in disabled LineMode GenericTile", async function(assert) {
 		//Arrange
 		this.oGenericTile.setMode(GenericTileMode.LineMode);
 		this.oGenericTile.setScope(GenericTileScope.Actions);
 		this.oGenericTile.setState("Disabled");
 		//Act
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//Assert
 		assert.ok(this.oGenericTile.$("actions").length === 0, "Action container has not been rendered");
 		assert.ok(this.oGenericTile.$("action-more").length === 0, "More icon has not been rendered");
 		assert.ok(this.oGenericTile.$("action-remove").length === 0, "Remove icon has not been rendered");
 	});
 
-	QUnit.test("Action scope in failed LineMode GenericTile", function(assert) {
+	QUnit.test("Action scope in failed LineMode GenericTile", async function(assert) {
 		//Arrange
 		this.oGenericTile.setMode(GenericTileMode.LineMode);
 		this.oGenericTile.setScope(GenericTileScope.Actions);
 		this.oGenericTile.setState("Failed");
 		//Act
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//Assert
 		assert.ok(this.oGenericTile.$("actions").length > 0, "Action container has been rendered");
 		assert.ok(this.oGenericTile.$("action-more").length > 0, "More icon has been rendered");
@@ -651,23 +663,23 @@ sap.ui.define([
 		assert.ok(this.oGenericTile.$("warn-icon").length > 0, "Failed icon has been rendered");
 	});
 
-	QUnit.test("Action scope in disabled regular GenericTile", function(assert) {
+	QUnit.test("Action scope in disabled regular GenericTile", async function(assert) {
 		//Arrange
 		this.oGenericTile.setScope(GenericTileScope.Actions);
 		this.oGenericTile.setState("Disabled");
 		//Act
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//Assert
 		assert.ok(this.oGenericTile.$("action-more").length === 0, "More icon has not been rendered");
 		assert.ok(this.oGenericTile.$("action-remove").length === 0, "Remove button has not been rendered");
 	});
 
-	QUnit.test("Action scope in failed regular GenericTile", function(assert) {
+	QUnit.test("Action scope in failed regular GenericTile", async function(assert) {
 		//Arrange
 		this.oGenericTile.setScope(GenericTileScope.Actions);
 		this.oGenericTile.setState("Failed");
 		//Act
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//Assert
 		assert.ok(this.oGenericTile.$("action-more").length > 0, "More icon has been rendered");
 		assert.ok(this.oGenericTile.$("action-remove").length > 0, "Remove button has been rendered");
@@ -675,18 +687,18 @@ sap.ui.define([
 		assert.ok(this.oGenericTile.$("failed-text").length === 0, "Failed text has not been rendered");
 	});
 
-	QUnit.test("ActionMore scope in failed regular GenericTile", function(assert) {
+	QUnit.test("ActionMore scope in failed regular GenericTile", async function(assert) {
 		//Arrange
 		this.oGenericTile.setScope(GenericTileScope.ActionMore);
 		this.oGenericTile.setState(library.LoadState.Loaded);
 		//Act
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//Assert
 		assert.strictEqual(this.oGenericTile.$("action-more").length, 1, "More icon has been rendered");
 		assert.strictEqual(this.oGenericTile.$("action-remove").length, 0, "Remove button has not been rendered");
 	});
 
-	QUnit.test("Tab navigation check in action more", function(assert) {
+	QUnit.test("Tab navigation check in action more", async function(assert) {
         var bForward = true;
         //Arrange
         var done = assert.async();
@@ -696,7 +708,7 @@ sap.ui.define([
         this.oGenericTile.setTileIcon("sap-icon://key");
         this.oGenericTile.setBackgroundColor("teal");
         this.oGenericTile.setScope(GenericTileScope.ActionMore);
-        nextUIUpdate.runSync()/*fake timer is used in module*/;
+        await nextUIUpdate();
         setTimeout(function() {
                 qutils.triggerKeydown(this.oGenericTile.getDomRef(), KeyCodes.TAB);
                 var $Tabbables = findTabbables(document.activeElement, [document.getElementById("qunit-fixture")], bForward);
@@ -710,32 +722,32 @@ sap.ui.define([
         }.bind(this), 100);
     });
 
-	QUnit.test("ActionRemove scope in loaded regular GenericTile", function(assert) {
+	QUnit.test("ActionRemove scope in loaded regular GenericTile", async function(assert) {
 		//Arrange
 		this.oGenericTile.setScope(GenericTileScope.ActionRemove);
 		this.oGenericTile.setState(library.LoadState.Loaded);
 		//Act
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//Assert
 		assert.strictEqual(this.oGenericTile.$("action-remove").length, 1, "Remove button has been rendered");
 		assert.strictEqual(this.oGenericTile.$("action-more").length, 0, "More icon has not been rendered");
 	});
 
 
-	QUnit.test("Scope content is created on beforeRendering", function(assert) {
+	QUnit.test("Scope content is created on beforeRendering", async function(assert) {
 		//Arrange
 		this.oGenericTile.setScope(GenericTileScope.Actions);
 		this.spy(this.oGenericTile, "_initScopeContent");
 
 		//Act
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		//Assert
 		assert.equal(this.oGenericTile._initScopeContent.callCount, 1, "_initScopeContent has been called once.");
 	});
 
 	QUnit.module("sap.m.GenericTileMode.LineMode ListView cozy (small screen only)", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.stub(Device.media, "attachHandler");
 			this.oGenericTile = new GenericTile({
 				state: LoadState.Loaded,
@@ -745,7 +757,7 @@ sap.ui.define([
 			}).placeAt("qunit-fixture");
 			jQuery("html").removeClass("sapUiMedia-GenericTileDeviceSet-large").addClass("sapUiMedia-GenericTileDeviceSet-small");
 			this.stub(this.oGenericTile, "_isScreenLarge").returns(false);
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			jQuery("html").removeClass("sapUiMedia-GenericTileDeviceSet-large").removeClass("sapUiMedia-GenericTileDeviceSet-small");
@@ -768,7 +780,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("LineMode FloatingView (large screen only) w/o parent", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.stub(Device.media, "attachHandler");
 			this.oGenericTile = new GenericTile({
 				state: LoadState.Loaded,
@@ -776,7 +788,7 @@ sap.ui.define([
 			}).placeAt("qunit-fixture");
 			jQuery("html").addClass("sapUiMedia-GenericTileDeviceSet-large").removeClass("sapUiMedia-GenericTileDeviceSet-small");
 			this.stub(this.oGenericTile, "_isScreenLarge").returns(true);
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			jQuery("html").removeClass("sapUiMedia-GenericTileDeviceSet-large").removeClass("sapUiMedia-GenericTileDeviceSet-small");
@@ -785,23 +797,23 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("Correct parameters provided to Resize Handler", function(assert) {
+	QUnit.test("Correct parameters provided to Resize Handler", async function(assert) {
 		//Arrange
 		var oSpy = this.spy(ResizeHandler, "register");
 		this.oGenericTile._bCompact = true;
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		this.oGenericTile._sParentResizeListenerId = null;
 
 		//Act
 		this.oGenericTile.invalidate();
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		//Assert
 		assert.ok(oSpy.calledWith(this.oGenericTile.$().parent()), "Correct parameter provided if parent is UIArea");
 	});
 
 	QUnit.module("sap.m.GenericTileMode.LineMode FloatingView cozy (large screen only)", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.stub(Device.media, "attachHandler");
 			this.oGenericTile = new GenericTile({
 				state: LoadState.Loaded,
@@ -811,7 +823,7 @@ sap.ui.define([
 			}).placeAt("qunit-fixture");
 			jQuery("html").addClass("sapUiMedia-GenericTileDeviceSet-large").removeClass("sapUiMedia-GenericTileDeviceSet-small");
 			this.stub(this.oGenericTile, "_isScreenLarge").returns(true);
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			jQuery("html").removeClass("sapUiMedia-GenericTileDeviceSet-large").removeClass("sapUiMedia-GenericTileDeviceSet-small");
@@ -836,7 +848,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("sap.m.GenericTileMode.LineMode ListView compact (small screen only)", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.stub(Device.media, "attachHandler");
 			this.oGenericTile = new GenericTile({
 				state: LoadState.Loaded,
@@ -854,7 +866,7 @@ sap.ui.define([
 				items: [this.oGenericTile]
 			}).placeAt("qunit-fixture");
 			this.oParent.addStyleClass("sapUiSizeCompact");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 			this.oGenericTile._updateHoverStyle.resetHistory();
 		},
 		afterEach: function() {
@@ -880,7 +892,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("sap.m.GenericTileMode.LineMode FloatingView compact (large screen only)", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.stub(Device.media, "attachHandler");
 			this.oGenericTile = new GenericTile({
 				state: LoadState.Loaded,
@@ -898,7 +910,7 @@ sap.ui.define([
 				items: [this.oGenericTile]
 			}).placeAt("qunit-fixture");
 			this.oParent.addStyleClass("sapUiSizeCompact");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 			this.oGenericTile._updateHoverStyle.resetHistory();
 		},
 		afterEach: function() {
@@ -910,14 +922,14 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("Correct parameter provided to Resize Handler", function(assert) {
+	QUnit.test("Correct parameter provided to Resize Handler", async function(assert) {
 		//Arrange
 		var oSpy = this.spy(ResizeHandler, "register");
 		this.oGenericTile._sParentResizeListenerId = null;
 
 		//Act
 		this.oGenericTile.invalidate();
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		//Assert
 		assert.ok(oSpy.calledWith(this.oGenericTile.getParent()), "Correct parameter provided if parent is a control");
@@ -937,7 +949,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("sap.m.GenericTileMode.LineMode FloatingView Functions tests (large screen only)", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.stub(Device.media, "attachHandler");
 			this.oGenericTile = new GenericTile({
 				state: LoadState.Loaded,
@@ -954,7 +966,7 @@ sap.ui.define([
 				width: "100px",
 				items: [this.oGenericTile]
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 			this.oGenericTile._updateHoverStyle.resetHistory();
 		},
 		afterEach: function() {
@@ -966,7 +978,7 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("Tile attached mediaContainerWidthChange handler after rendering", function(assert) {
+	QUnit.test("Tile attached mediaContainerWidthChange handler after rendering", async function(assert) {
 		//Arrange
 		// remove stub to attach spy
 		Device.media.attachHandler.restore();
@@ -974,44 +986,44 @@ sap.ui.define([
 
 		//Act
 		this.oGenericTile.invalidate();
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		//Assert
 		assert.ok(deviceAttachHandlerSpy.calledOnce, "The mediaContainerWidthChange handler was attached after invalidation");
 	});
 
-	QUnit.test("Tile is invalidated on device size change", function(assert) {
+	QUnit.test("Tile is invalidated on device size change", async function(assert) {
 		//Arrange
 		// restore previous stub and replace it with different stub.
 		var oMediaChangeSpy = this.spy(this.oGenericTile, "onAfterRendering");
 
 		//Act
 		this.oGenericTile._handleMediaChange();
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		//Assert
 		assert.equal(oMediaChangeSpy.calledOnce, true, "Invalidate triggered a rerendering");
 	});
 
-	QUnit.test("All elements found in failed state", function(assert) {
+	QUnit.test("All elements found in failed state", async function(assert) {
 		//Arrange
 		this.oGenericTile.setState("Failed");
 
 		//Act
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		//Assert
 		assert.ok(this.oGenericTile.$("warn-icon").length > 0, "Warning icon was found.");
 	});
 
-	QUnit.test("Attributes written in RTL", function(assert) {
+	QUnit.test("Attributes written in RTL", async function(assert) {
 		//Arrange
 		Localization.setRTL(true);
 
 		this.oGenericTile.invalidate();
 
 		//Act
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		//Assert
 		assert.equal(this.oGenericTile.$().attr("dir"), "rtl");
@@ -1022,7 +1034,7 @@ sap.ui.define([
 		Localization.setRTL(false);
 	});
 
-	QUnit.test("Hover style update on rendering", function(assert) {
+	QUnit.test("Hover style update on rendering", async function(assert) {
 		//Arrange
 		this.oGenericTile._updateHoverStyle.restore();
 
@@ -1034,7 +1046,7 @@ sap.ui.define([
 
 		//Act
 		this.oGenericTile.invalidate();
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate(oClock);
 
 		oClock.tick(11);
 
@@ -1047,7 +1059,7 @@ sap.ui.define([
 		oClock.restore();
 	});
 
-	QUnit.test("Hover style is not updated on rendering", function(assert) {
+	QUnit.test("Hover style is not updated on rendering", async function(assert) {
 		//Arrange
 		this.oGenericTile._updateHoverStyle.restore();
 		this.spy(this.oGenericTile, "_updateHoverStyle");
@@ -1056,14 +1068,14 @@ sap.ui.define([
 
 		//Act
 		this.oGenericTile.invalidate();
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		//Assert
 		assert.ok(this.oGenericTile._updateHoverStyle.calledOnce, "The hover style is updated when the control is rendered.");
 		assert.ok(GenericTileLineModeRenderer._updateHoverStyle.notCalled, "The renderer's update function is not called if the style data has not changed.");
 	});
 
-	QUnit.test("Function _calculateStyleData returns object with necessary fields", function(assert) {
+	QUnit.test("Function _calculateStyleData returns object with necessary fields", async function(assert) {
 		//Arrange
 		var oStubGetPixelValue = this.stub(GenericTileLineModeRenderer, "_getCSSPixelValue");
 		oStubGetPixelValue.withArgs(this.oGenericTile, "line-height").returns(30);
@@ -1072,7 +1084,7 @@ sap.ui.define([
 
 		//Act
 		this.oGenericTile.invalidate();
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		var oData = this.oGenericTile._calculateStyleData();
 
@@ -1128,7 +1140,7 @@ sap.ui.define([
 		assert.equal(this.oGenericTile._oStyleData, null, "Style data has not been updated.");
 	});
 
-	QUnit.test("Hover style update on resize", function(assert) {
+	QUnit.test("Hover style update on resize", async function(assert) {
 		//Arrange
 		this.stub(GenericTileLineModeRenderer, "_updateHoverStyle");
 		var done = assert.async();
@@ -1136,7 +1148,7 @@ sap.ui.define([
 
 		//Act
 		this.oParent.setWidth("500px");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate(oClock);
 
 		//Assert
 		IntervalTrigger.addListener(checkAssertions);
@@ -1153,7 +1165,7 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("Hover style update of siblings on state change", function(assert) {
+	QUnit.test("Hover style update of siblings on state change", async function(assert) {
 		//Arrange
 		this.spy(this.oGenericTile, "_updateLineTileSiblings");
 		var oSiblingTile = new GenericTile("sibling-tile", {
@@ -1164,7 +1176,7 @@ sap.ui.define([
 		});
 		this.stub(oSiblingTile, "_isScreenLarge").returns(true);
 		this.oParent.addItem(oSiblingTile);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		this.oGenericTile._updateHoverStyle.restore(); //restore stub in order to use spy
 		this.spy(this.oGenericTile, "_updateHoverStyle");
@@ -1172,7 +1184,7 @@ sap.ui.define([
 
 		//Act
 		this.oGenericTile.setState("Failed");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		//Assert
 		assert.equal(this.oGenericTile._updateLineTileSiblings.callCount, 1, "Function _updateLineTileSiblings has been called on changed Tile.");
@@ -1183,7 +1195,7 @@ sap.ui.define([
 		oSiblingTile.destroy();
 	});
 
-	QUnit.test("No hover style update of non-GenericTile siblings", function(assert) {
+	QUnit.test("No hover style update of non-GenericTile siblings", async function(assert) {
 		//Arrange
 		var oSibling = new Text();
 		this.oParent.addItem(oSibling);
@@ -1194,7 +1206,7 @@ sap.ui.define([
 
 		//Act
 		this.oGenericTile.setState("Failed");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		//Assert
 		assert.equal(this.oGenericTile._updateLineTileSiblings.callCount, 1, "Function _updateLineTileSiblings has been called on changed Tile.");
@@ -1204,7 +1216,7 @@ sap.ui.define([
 		oSibling.destroy();
 	});
 
-	QUnit.test("Resize Handler attached to parent, no deregister", function(assert) {
+	QUnit.test("Resize Handler attached to parent, no deregister", async function(assert) {
 		//Arrange
 		this.spy(ResizeHandler, "deregister");
 		this.spy(ResizeHandler, "register");
@@ -1213,14 +1225,14 @@ sap.ui.define([
 
 		//Act
 		this.oGenericTile.invalidate();
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		//Assert
 		assert.ok(ResizeHandler.deregister.notCalled);
 		assert.equal(ResizeHandler.register.callCount,2,"Total of two resize handler has been attached");
 	});
 
-	QUnit.test("Resize Handler attached to parent, with deregister", function(assert) {
+	QUnit.test("Resize Handler attached to parent, with deregister", async function(assert) {
 		//Arrange
 		this.spy(ResizeHandler, "deregister");
 		this.spy(ResizeHandler, "register");
@@ -1229,7 +1241,7 @@ sap.ui.define([
 
 		//Act
 		this.oGenericTile.invalidate();
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		//Assert
 		assert.equal(ResizeHandler.deregister.callCount,2,"Total of two resize handler has been detached");
@@ -1372,7 +1384,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("Protected method getBoundingRects", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.stub(Device.media, "attachHandler");
 			this.oGenericTile = new GenericTile({
 				state: LoadState.Loaded,
@@ -1387,7 +1399,7 @@ sap.ui.define([
 			this.stub(this.oGenericTile, "_updateHoverStyle");
 
 			this.oGenericTile.placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			jQuery("html").removeClass("sapUiMedia-GenericTileDeviceSet-large").removeClass("sapUiMedia-GenericTileDeviceSet-small");
@@ -1397,12 +1409,12 @@ sap.ui.define([
 	});
 
 
-	QUnit.test("getBoundingRects in cozy tile returns object with necessary fields in list view (small screen)", function(assert) {
+	QUnit.test("getBoundingRects in cozy tile returns object with necessary fields in list view (small screen)", async function(assert) {
 		//Arrange
 		jQuery("html").removeClass("sapUiMedia-GenericTileDeviceSet-large").addClass("sapUiMedia-GenericTileDeviceSet-small");
 		this.oGenericTile._isScreenLarge.restore();
 		this.stub(this.oGenericTile, "_isScreenLarge").returns(false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		//Act
 		var aBoundingRects = this.oGenericTile.getBoundingRects();
@@ -1415,7 +1427,7 @@ sap.ui.define([
 		assert.ok(aBoundingRects[0].height >= 0, "The field 'height' is available.");
 	});
 
-	QUnit.test("getBoundingRects returns object with necessary fields in floating view (large screen)", function(assert) {
+	QUnit.test("getBoundingRects returns object with necessary fields in floating view (large screen)", async function(assert) {
 		//Arrange
 		var oStubGetPixelValue = this.stub(GenericTileLineModeRenderer, "_getCSSPixelValue");
 		oStubGetPixelValue.withArgs(this.oGenericTile, "line-height").returns(50);
@@ -1423,7 +1435,7 @@ sap.ui.define([
 		oStubGetPixelValue.withArgs(this.oGenericTile, "margin-top").returns(4);
 		//Act
 		this.oGenericTile.invalidate();
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		this.oGenericTile._getStyleData();
 		GenericTileLineModeRenderer._updateHoverStyle.call(this.oGenericTile);
@@ -1439,7 +1451,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("Rendering tests for failing state", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.oGenericTile = new GenericTile("generic-tile-failed", {
 				state: LoadState.Failed,
 				subheader: "Expenses By Region",
@@ -1462,7 +1474,7 @@ sap.ui.define([
 					})
 				})
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			this.oGenericTile.destroy();
@@ -1470,7 +1482,7 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("GenericTile in Failed state rendered", function(assert) {
+	QUnit.test("GenericTile in Failed state rendered", async function(assert) {
 		assert.ok(document.getElementById("generic-tile-failed"), "Generic tile was rendered successfully");
 		assert.ok(document.getElementById("generic-tile-failed-content"), "Generic tile content was rendered successfully");
 		assert.ok(document.getElementById("generic-tile-failed-failed-icon"), "Generic tile icone was rendered successfully");
@@ -1490,32 +1502,32 @@ sap.ui.define([
 		assert.ok(document.querySelector(".sapMGTOverlay"),"Overlay has been added successfully");
 
 		this.oGenericTile.setState("Loaded");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 	});
 
-	QUnit.test("GenericTile is setting protected property only in Failed state", function(assert) {
+	QUnit.test("GenericTile is setting protected property only in Failed state", async function(assert) {
 		this.oGenericTile.setState("Loaded");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(this.oGenericTile.getTileContent()[0]._bRenderFooter, "bRenderFooter set to true");
 		this.oGenericTile.setState("Loading");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(this.oGenericTile.getTileContent()[0]._bRenderFooter, "bRenderFooter set to true");
 		this.oGenericTile.setState("Disabled");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(this.oGenericTile.getTileContent()[0]._bRenderFooter, "bRenderFooter set to true");
 		this.oGenericTile.setState("Failed");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(!this.oGenericTile.getTileContent()[0]._bRenderFooter, "bRenderFooter set to false");
 	});
 
-	QUnit.test("GenericTile error icon check in Failed state", function(assert) {
+	QUnit.test("GenericTile error icon check in Failed state", async function(assert) {
 		this.oGenericTile.setState("Failed");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.equal(this.oGenericTile._oErrorIcon.getSrc(),"sap-icon://error","Icon in failed state should match with error icon");
 	});
 
 	QUnit.module("Rendering tests for Disabled state", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.oGenericTile = new GenericTile("generic-tile-failed", {
 				state: LoadState.Disabled,
 				subheader: "Expenses By Region",
@@ -1538,7 +1550,7 @@ sap.ui.define([
 					})
 				})
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			this.oGenericTile.destroy();
@@ -1551,7 +1563,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("GenericTileMode tests", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.oGenericTile = new GenericTile("generic-tile", {
 				subheader: "Expenses By Region",
 				frameType: FrameType.OneByOne,
@@ -1572,7 +1584,7 @@ sap.ui.define([
 					})
 				})
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			this.oGenericTile.destroy();
@@ -1580,50 +1592,50 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("GenericTile in ContentMode (Display mode)", function(assert) {
+	QUnit.test("GenericTile in ContentMode (Display mode)", async function(assert) {
 		// In ContentMode, when the subheader available, the number of header lines should be 2
 		assert.equal(Element.getElementById("generic-tile-title").getMaxLines(), 2, "The header has 2 lines and subheader has 1 line");
 
 		// In ContentMode, when the subheader not available, the number of header lines should be 3
 		this.oGenericTile.setSubheader("");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.equal(Element.getElementById("generic-tile-title").getMaxLines(), 3, "The header has 3 lines when subheader unavailable");
 
 		// Check if the content in TileContent is still kept.
 		assert.ok(this.oGenericTile.getTileContent()[0].getContent() !== null, "The content aggregation in TileContent is kept.");
 	});
 
-	QUnit.test("ContentMode - Check if the TileContent's content visibility is changed", function(assert) {
+	QUnit.test("ContentMode - Check if the TileContent's content visibility is changed", async function(assert) {
 		//Arrange
 		this.oGenericTile.setMode(GenericTileMode.HeaderMode);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		var oVisibilitySpy = this.spy(this.oGenericTile, "_changeTileContentContentVisibility");
 		this.oGenericTile.setMode(GenericTileMode.ContentMode);
 		//Act
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//Assert
 		assert.ok(oVisibilitySpy.calledWith(true), "The visibility is changed to visible");
 	});
 
-	QUnit.test("GenericTile in HeaderMode", function(assert) {
+	QUnit.test("GenericTile in HeaderMode", async function(assert) {
 		this.oGenericTile.setMode(GenericTileMode.HeaderMode);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		// In HeaderMode, when the subheader available, the number of header lines should be 4
 		assert.equal(Element.getElementById("generic-tile-title").getMaxLines(), 4, "The header has 4 lines and subheader has 1 line");
 
 		// In HeaderMode, when the subheader unavailable, the number of header lines should be 5
 		this.oGenericTile.setSubheader("");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.equal(Element.getElementById("generic-tile-title").getMaxLines(), 5, "The header has 5 lines when subheader unavailable");
 	});
 
-	QUnit.test("HeaderMode - Check if the TileContent's content visibility is changed", function(assert) {
+	QUnit.test("HeaderMode - Check if the TileContent's content visibility is changed", async function(assert) {
 		//Arrange
 		var oVisibilitySpy = this.spy(this.oGenericTile, "_changeTileContentContentVisibility");
 		this.oGenericTile.setMode(GenericTileMode.HeaderMode);
 		//Act
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//Assert
 		assert.ok(oVisibilitySpy.calledWith(false), "The visibility is changed to not visible");
 	});
@@ -1635,24 +1647,24 @@ sap.ui.define([
 		assert.ok(this.oGenericTile.getTileContent()[0].getContent().getVisible(), "The content in TileContent is visible");
 	});
 
-	QUnit.test("GenericTileLineModeRenderer called for LineMode", function(assert) {
+	QUnit.test("GenericTileLineModeRenderer called for LineMode", async function(assert) {
 		// Arrange
 		var oSpy = this.spy(GenericTileLineModeRenderer, "render");
 		this.oGenericTile.getParent().addStyleClass = function() {
 		};
 		// Act
 		this.oGenericTile.setMode(GenericTileMode.LineMode);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		// Assert
 		assert.ok(oSpy.calledOnce, "GenericTileLineModeRenderer called");
 	});
 
-	QUnit.test("GenericTileRenderer called for HeaderMode", function(assert) {
+	QUnit.test("GenericTileRenderer called for HeaderMode", async function(assert) {
 		// Arrange
 		var oSpy = this.spy(GenericTileRenderer, "render");
 		// Act
 		this.oGenericTile.setMode(GenericTileMode.HeaderMode);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		// Assert
 		assert.ok(oSpy.calledOnce, "GenericTileRenderer called");
 	});
@@ -1682,14 +1694,14 @@ sap.ui.define([
 		$body.removeClass("sapUiSizeCompact");
 	});
 
-	QUnit.test("Test content density class - compact from control parent", function(assert) {
+	QUnit.test("Test content density class - compact from control parent", async function(assert) {
 		//Arrange
 		new FlexBox({
 			items: [this.oGenericTile]
 		}).addStyleClass("sapUiSizeCompact").placeAt("qunit-fixture");
 
 		//Act
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		//Assert
 		assert.ok(this.oGenericTile._isCompact());
@@ -1699,12 +1711,12 @@ sap.ui.define([
 	/* Test internal methods                   */
 	/* --------------------------------------- */
 	QUnit.module("Internal method _getEventParams", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.oGenericTile = new GenericTile("generic-tile", {
 				header: "header",
 				subheader: "subheader"
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			this.oGenericTile.destroy();
@@ -1730,10 +1742,10 @@ sap.ui.define([
 		assert.equal(oParams.domRef, this.oGenericTile.getDomRef(), "Event parameter 'domRef' points to GenericTile");
 	});
 
-	QUnit.test("Internal method _getEventParams in scope 'Actions', tap icon 'Remove'", function(assert) {
+	QUnit.test("Internal method _getEventParams in scope 'Actions', tap icon 'Remove'", async function(assert) {
 		//Arrange
 		this.oGenericTile.setScope(GenericTileScope.Actions);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		var oParams;
 		var oEvent = {
 			target: {
@@ -1750,10 +1762,10 @@ sap.ui.define([
 		assert.equal(oParams.domRef, this.oGenericTile._oRemoveButton.getPopupAnchorDomRef(), "Event parameter 'domRef' points to Remove Button");
 	});
 
-	QUnit.test("Internal method _getEventParams in scope 'Actions', tap icon 'More'", function(assert) {
+	QUnit.test("Internal method _getEventParams in scope 'Actions', tap icon 'More'", async function(assert) {
 		//Arrange
 		this.oGenericTile.setScope(GenericTileScope.Actions);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		var oParams;
 		var oEvent = {
 			target: {
@@ -1771,7 +1783,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("Internal methods for ARIA-label and tooltip handling", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.oGenericTile = new GenericTile("generic-tile", {
 				header: "header text of GenericTile",
 				subheader: "subheader text of GenericTile",
@@ -1785,7 +1797,7 @@ sap.ui.define([
 			this.oGenericTile.getTileContent()[1]._getAriaAndTooltipText = function() {
 				return "ARIA and tooltip text of TileContent 2";
 			};
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			this.oGenericTile.destroy();
@@ -1833,7 +1845,7 @@ sap.ui.define([
 		assert.equal(sContentAriaAndTooltipText, sExpectedContentAriaAndTooltipText, "Expected text for ARIA-label and tooltip  of content generated if an explicite tooltip is set");
 	});
 
-	QUnit.test("Internal method _getAriaAndTooltipText", function(assert) {
+	QUnit.test("Internal method _getAriaAndTooltipText", async function(assert) {
 		//Arrange
 		var sAriaAndTooltipText,fnDone = assert.async(),
 			sExpectedAriaAndTooltipText = "header text of GenericTile\nsubheader text of GenericTile\nARIA and tooltip text of TileContent 1\nARIA and tooltip text of TileContent 2";
@@ -1848,7 +1860,7 @@ sap.ui.define([
 		assert.equal(sAriaAndTooltipText, sExpectedAriaAndTooltipText, "Expected text for ARIA-label and tooltip generated if tooltip is supressed");
 		//Act
 		this.oGenericTile.setTooltip("someTooltipText");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//Assert
 		setTimeout(function(){
 			assert.equal(this.oGenericTile.getAggregation("_invisibleText").getText(),"someTooltipText","Tooltip has been successfully attached to the invisible text");
@@ -1874,7 +1886,7 @@ sap.ui.define([
 		assert.equal(sAriaAndTooltipText, "", "Expected empty string for ARIA-label and tooltip generated");
 	});
 
-	QUnit.test("Internal method _getAriaText", function(assert) {
+	QUnit.test("Internal method _getAriaText", async function(assert) {
 		//Arrange
 		var sAriaText;
 		// stub GenericTile's function _getAriaAndTooltipText
@@ -1892,7 +1904,7 @@ sap.ui.define([
 		assert.equal(sAriaText, "ARIA and tooltip text\n" + this.oGenericTile._oRb.getText("GENERIC_TILE_ROLE_DESCRIPTION"), "Expected text for ARIA-label generated in case tooltip is supressed");
 		//Act
 		this.oGenericTile.setTooltip("someTooltipText");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//Assert
 		assert.equal(this.oGenericTile.getAggregation("_invisibleText").getText(),"someTooltipText","Tooltip has been successfully attached to the invisible text");
 		//Act
@@ -1902,13 +1914,13 @@ sap.ui.define([
 		assert.equal(this.oGenericTile._getAriaText(), "additional aria text " + sAriaText, "Value of ariaLabel property has been appended to resulting aria-label.");
 	});
 
-	QUnit.test("Internal method _getAriaText for actions scope", function(assert) {
+	QUnit.test("Internal method _getAriaText for actions scope", async function(assert) {
 		//Arrange
 		this.oGenericTile.setScope("Actions");
 		this.oGenericTile._getAriaAndTooltipText = function() {
 			return "ARIA and tooltip test";
 		};
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//Act
 		var sAriaText = this.oGenericTile._getAriaText();
 		var sActionsText = this.oGenericTile._oRb.getText("GENERICTILE_ACTIONS_ARIA_TEXT");
@@ -1916,13 +1928,13 @@ sap.ui.define([
 		assert.equal(sAriaText, sActionsText + " ARIA and tooltip test\n" + this.oGenericTile._oRb.getText("GENERIC_TILE_ROLE_DESCRIPTION"), "Expected text for ARIA-label generated for actions scope");
 	});
 
-	QUnit.test("Internal method _getAriaText for ActionMore scope", function(assert) {
+	QUnit.test("Internal method _getAriaText for ActionMore scope", async function(assert) {
 		//Arrange
 		this.oGenericTile.setScope("ActionMore");
 		this.oGenericTile._getAriaAndTooltipText = function() {
 			return "ARIA and tooltip test";
 		};
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//Act
 		var sAriaText = this.oGenericTile._getAriaText();
 		//Assert
@@ -1949,7 +1961,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("Tests for ARIA-label", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.oGenericTile = new GenericTile("generic-tile", {
 				subheader: "Expenses By Region",
 				frameType: FrameType.OneByOne,
@@ -1970,7 +1982,7 @@ sap.ui.define([
 					})
 				})
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			this.oGenericTile.destroy();
@@ -2030,11 +2042,11 @@ sap.ui.define([
 		assert.equal(sAriaLabel, sFailedText, "Text for ARIA-label has been generated for Failed state");
 	});
 
-	QUnit.test("Explicit text for Failed state set by user", function(assert) {
+	QUnit.test("Explicit text for Failed state set by user", async function(assert) {
 		//Arrange
 		this.oGenericTile.setFailedText("explicitFailedText");
 		this.oGenericTile.setState(LoadState.Failed);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		var sFailedText = "Comparative Annual Totals\nExpenses By Region\n20M\nAscending\nGood\nEUR\nCurrent Quarter\n" + "explicitFailedText";
 		//Act
 		var sAriaLabel = this.oGenericTile._getAriaAndTooltipText();
@@ -2087,7 +2099,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("Tooltip handling", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.oGenericTile = new GenericTile("generic-tile", {
 				header: "Header text",
 				subheader: "subheader text",
@@ -2101,7 +2113,7 @@ sap.ui.define([
 			this.oGenericTile.getTileContent()[1]._getAriaAndTooltipText = function() {
 				return "ARIA and tooltip text of TileContent 2";
 			};
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function(assert) {
 			this.oGenericTile.destroy();
@@ -2142,10 +2154,10 @@ sap.ui.define([
 		assert.equal(sGenericTileAriaLabel, sAriaLabel, "Tooltip of GenericTile is identical with ARIA-label");
 	});
 
-	QUnit.test("Explicit tooltip set by user with short header text, short subheader text", function(assert) {
+	QUnit.test("Explicit tooltip set by user with short header text, short subheader text", async function(assert) {
 		//Arrange
 		this.oGenericTile.setTooltip("tooltip");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		// Trigger the mouseenter event on the element
 		this.oGenericTile.getDomRef().dispatchEvent(createMouseEnterEvent());
 		//Act
@@ -2159,26 +2171,26 @@ sap.ui.define([
 		assert.equal(sGenericTileAriaLabel.indexOf("GenericTile") === -1, true, "ARIA-label should not contain control specific information such as GenericTile applications can use ariaLabel property for additional info");
 	});
 
-	QUnit.test("Check if in loading state placeholder div is visible", function(assert) {
+	QUnit.test("Check if in loading state placeholder div is visible", async function(assert) {
 		//Arrange
 		this.oGenericTile.setState("Loading");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//Act
 		var oDomRef = this.oGenericTile.getDomRef().children[0];
 		//Assert
 		assert.ok(oDomRef.classList.contains("sapMGTContentShimmerPlaceholderItem"), "Placeholder div is present when state is loading");
 		//Arrange
 		this.oGenericTile.setState("Loaded");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.notOk(oDomRef.classList.contains("sapMGTContentShimmerPlaceholderItem"), "Placeholder div is not present when state is loaded");
 	});
 
-	QUnit.test("Explicit tooltip set by user with long header text, long subheader text", function(assert) {
+	QUnit.test("Explicit tooltip set by user with long header text, long subheader text", async function(assert) {
 		//Arrange
 		this.oGenericTile.setHeader("A long long long long long long long long long long header text");
 		this.oGenericTile.setSubheader("A long long subheader text");
 		this.oGenericTile.setTooltip("tooltip");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		// Trigger the mouseenter event on the element
 		this.oGenericTile.getDomRef().dispatchEvent(createMouseEnterEvent());
 		//Act
@@ -2187,10 +2199,10 @@ sap.ui.define([
 		assert.equal(sGenericTileTooltip, "tooltip", "User tooltip overwrites the header and subheader text");
 	});
 
-	QUnit.test("Suppress tooltip with space tooltip set by user with short header text, short subheader text", function(assert) {
+	QUnit.test("Suppress tooltip with space tooltip set by user with short header text, short subheader text", async function(assert) {
 		//Arrange
 		this.oGenericTile.setTooltip(" ");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		// Trigger the mouseenter event on the element
 		this.oGenericTile.getDomRef().dispatchEvent(createMouseEnterEvent());
 		var sExpectedAriaLabel = "Header text\nsubheader text\nARIA and tooltip text of TileContent 1\nARIA and tooltip text of TileContent 2\n" + this.oGenericTile._oRb.getText("GENERIC_TILE_ROLE_DESCRIPTION");
@@ -2202,12 +2214,12 @@ sap.ui.define([
 		assert.equal(sGenericTileAriaLabel, sExpectedAriaLabel, "GenericTile has correct ARIA-label");
 	});
 
-	QUnit.test("Suppress tooltip with space tooltip set by user with long header text, long subheader text", function(assert) {
+	QUnit.test("Suppress tooltip with space tooltip set by user with long header text, long subheader text", async function(assert) {
 		//Arrange
 		this.oGenericTile.setHeader("A long long long long long long long long long long header text");
 		this.oGenericTile.setSubheader("A long long subheader text");
 		this.oGenericTile.setTooltip(" ");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		// Trigger the mouseenter event on the element
 		this.oGenericTile.getDomRef().dispatchEvent(createMouseEnterEvent());
 		//Act
@@ -2216,11 +2228,11 @@ sap.ui.define([
 		assert.equal(sGenericTileTooltip, null, "GenericTile rendered without tooltip");
 	});
 
-	QUnit.test("Tooltip for GenericTile with long Header-subheader text and Tilecontent", function(assert) {
+	QUnit.test("Tooltip for GenericTile with long Header-subheader text and Tilecontent", async function(assert) {
 		//Arrange
 		this.oGenericTile.setHeader("A long long long long long long long long long long header text");
 		this.oGenericTile.setSubheader("A long long subheader text");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		// Trigger the mouseenter event on the element
 		this.oGenericTile.getDomRef().dispatchEvent(createMouseEnterEvent());
 		//Act
@@ -2229,10 +2241,10 @@ sap.ui.define([
 		assert.equal(sGenericTileTooltip, "A long long long long long long long long long long header text\nA long long subheader text\nARIA and tooltip text of TileContent 1\nARIA and tooltip text of TileContent 2", "Generic Tile tooltip with Header SubHeader and TileContent");
 	});
 
-	QUnit.test("Tooltip is removed when mouse leaves the GenericTile", function(assert) {
+	QUnit.test("Tooltip is removed when mouse leaves the GenericTile", async function(assert) {
 		//Arrange
 		this.oGenericTile.setHeader("A long long long long long long long long long long header text");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		// Trigger the mouseenter event on the element
 		this.oGenericTile.getDomRef().dispatchEvent(createMouseEnterEvent());
 		// Trigger the mouseenter event on the element
@@ -2252,7 +2264,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("Tooltip handling in LineMode (large screens)", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.stub(Device.media, "attachHandler");
 			this.oGenericTile = new GenericTile("generic-tile", {
 				header: "header",
@@ -2277,7 +2289,7 @@ sap.ui.define([
 				width: "100px",
 				content: [this.oGenericTile]
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			jQuery("html").removeClass("sapUiMedia-GenericTileDeviceSet-large").removeClass("sapUiMedia-GenericTileDeviceSet-small");
@@ -2312,10 +2324,10 @@ sap.ui.define([
 		assert.equal(this.oGenericTile.$().attr("aria-label"), sAriaLabel, "GenericTile has correct ARIA-label");
 	});
 
-	QUnit.test("Explicit tooltip set by user with short header text, short subheader text", function(assert) {
+	QUnit.test("Explicit tooltip set by user with short header text, short subheader text", async function(assert) {
 		//Arrange
 		this.oGenericTile.setTooltip("tooltip");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		// Trigger the mouseenter event on the element
 		this.oGenericTile.getDomRef().dispatchEvent(createMouseEnterEvent());
@@ -2325,12 +2337,12 @@ sap.ui.define([
 		assert.ok(this.oGenericTile.getAggregation("_invisibleText").getText(), "Tooltip has been successfully attached to the invisible text");
 	});
 
-	QUnit.test("Explicit tooltip set by user with long header text, long subheader text", function(assert) {
+	QUnit.test("Explicit tooltip set by user with long header text, long subheader text", async function(assert) {
 		//Arrange
 		this.oGenericTile.setHeader("A long long long long long long long long long long header text");
 		this.oGenericTile.setSubheader("A long long subheader text");
 		this.oGenericTile.setTooltip("tooltip");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		// Trigger the mouseenter event on the element
 		this.oGenericTile.getDomRef().dispatchEvent(createMouseEnterEvent());
@@ -2340,11 +2352,11 @@ sap.ui.define([
 		assert.ok(this.oGenericTile.getAggregation("_invisibleText").getText(), "Tooltip has been successfully attached to the invisible text");
 	});
 
-	QUnit.test("Suppress tooltip with space tooltip set by user with short header text, short subheader text", function(assert) {
+	QUnit.test("Suppress tooltip with space tooltip set by user with short header text, short subheader text", async function(assert) {
 		//Arrange
 		var sAriaLabel = "header\nsubheader\n" + this.oGenericTile._oRb.getText("GENERIC_TILE_LINE_SIZE");
 		this.oGenericTile.setTooltip(" ");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		// Trigger the mouseenter event on the element
 		this.oGenericTile.getDomRef().dispatchEvent(createMouseEnterEvent());
@@ -2354,13 +2366,13 @@ sap.ui.define([
 		assert.equal(this.oGenericTile.$().attr("aria-label"), sAriaLabel, "GenericTile has correct ARIA-label");
 	});
 
-	QUnit.test("Suppress tooltip with space tooltip set by user with long header text, long subheader text", function(assert) {
+	QUnit.test("Suppress tooltip with space tooltip set by user with long header text, long subheader text", async function(assert) {
 		//Arrange
 		var sAriaLabel = "A long long long long long long long long long long header text\nA long long subheader text\n" + this.oGenericTile._oRb.getText("GENERIC_TILE_LINE_SIZE");
 		this.oGenericTile.setHeader("A long long long long long long long long long long header text");
 		this.oGenericTile.setSubheader("A long long subheader text");
 		this.oGenericTile.setTooltip(" ");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		// Trigger the mouseenter event on the element
 		this.oGenericTile.getDomRef().dispatchEvent(createMouseEnterEvent());
@@ -2370,7 +2382,7 @@ sap.ui.define([
 		assert.equal(this.oGenericTile.$().attr("aria-label"), sAriaLabel, "GenericTile has correct ARIA-label");
 	});
 
-	QUnit.test("Truncated header text tooltip is removed when mouse leaves the GenericTile", function(assert) {
+	QUnit.test("Truncated header text tooltip is removed when mouse leaves the GenericTile", async function(assert) {
 		//Arrange
 		this.oGenericTile.setHeader("A long long long long long long long long long long");
 
@@ -2378,14 +2390,14 @@ sap.ui.define([
 		this.oGenericTile.getDomRef().dispatchEvent(createMouseEnterEvent());
 		// Trigger the mouseenter event on the element
 		this.oGenericTile.getDomRef().dispatchEvent(createMouseLeaveEvent());
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		//Assert
 		assert.equal(null, this.oGenericTile.$().attr("title"), "Truncated text tooltip is removed");
 	});
 
 	QUnit.module("Tooltip handling in LineMode (small screens)", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.stub(Device.media, "attachHandler");
 			this.oGenericTile = new GenericTile("generic-tile", {
 				header: "header",
@@ -2410,7 +2422,7 @@ sap.ui.define([
 				width: "100px",
 				content: [this.oGenericTile]
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			jQuery("html").removeClass("sapUiMedia-GenericTileDeviceSet-large").removeClass("sapUiMedia-GenericTileDeviceSet-small");
@@ -2420,10 +2432,10 @@ sap.ui.define([
 			this.oParent = null;
 		}
 	});
-	QUnit.test("Tooltip for GenericTile with short header text and long subheader text", function(assert) {
+	QUnit.test("Tooltip for GenericTile with short header text and long subheader text", async function(assert) {
 		//Arrange
 		this.oGenericTile.setSubheader("A long long subheader text");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		// Trigger the mouseenter event on the element
 		this.oGenericTile.getDomRef().dispatchEvent(createMouseEnterEvent());
@@ -2432,11 +2444,11 @@ sap.ui.define([
 		assert.equal(this.oGenericTile.$().attr("title"), "header\nA long long subheader text", "Tooltip both Shot Header and Long SubHeader");
 	});
 
-	QUnit.test("Tooltip for GenericTile with long header text truncated, short subheader text", function(assert) {
+	QUnit.test("Tooltip for GenericTile with long header text truncated, short subheader text", async function(assert) {
 		//Arrange
 		this.oGenericTile.setHeader("A long long long long long long long long long long header text");
 		this.oGenericTile._oTitle.invalidate(); // needs to invalidate since the sap.m.Text doesn't invalidate (on purpose)
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		// Trigger the mouseenter event on the element
 		this.oGenericTile.getDomRef().dispatchEvent(createMouseEnterEvent());
@@ -2445,11 +2457,11 @@ sap.ui.define([
 		assert.equal(this.oGenericTile.$().attr("title"), "A long long long long long long long long long long header text\nsubheader", "Tooltip both Long Header and short SubHeader");
 	});
 
-	QUnit.test("Tooltip for GenericTile with long header text and long subheader text truncated", function(assert) {
+	QUnit.test("Tooltip for GenericTile with long header text and long subheader text truncated", async function(assert) {
 		//Arrange
 		this.oGenericTile.setHeader("A long long long long long long long long long long header text");
 		this.oGenericTile.setSubheader("A long long subheader text");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		// Trigger the mouseenter event on the element
 		this.oGenericTile.getDomRef().dispatchEvent(createMouseEnterEvent());
@@ -2458,7 +2470,7 @@ sap.ui.define([
 		assert.equal(this.oGenericTile.$().attr("title"), "A long long long long long long long long long long header text\nA long long subheader text", "Truncated texts for header and for subheader have tooltips");
 	});
 
-	QUnit.test("Truncated header text tooltip is removed when mouse leaves the GenericTile", function(assert) {
+	QUnit.test("Truncated header text tooltip is removed when mouse leaves the GenericTile", async function(assert) {
 		//Arrange
 		this.oGenericTile.setHeader("A long long long long long long long long long long");
 
@@ -2466,7 +2478,7 @@ sap.ui.define([
 		this.oGenericTile.getDomRef().dispatchEvent(createMouseEnterEvent());
 		// Trigger the mouseenter event on the element
 		this.oGenericTile.getDomRef().dispatchEvent(createMouseLeaveEvent());
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		//Assert
 		assert.equal(null, this.oGenericTile.$().attr("title"), "Truncated text tooltip is removed");
@@ -2485,7 +2497,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("Tooltip handling on content elements", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.oGenericTile = new GenericTile("generic-tile", {
 				header: "header text of GenericTile",
 				subheader: "subheader text of GenericTile",
@@ -2502,7 +2514,7 @@ sap.ui.define([
 			this.oGenericTile.getTileContent()[1].getContent()._getAriaAndTooltipText = function() {
 				return "ARIA and tooltip text of NumericContent";
 			};
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			this.oGenericTile.destroy();
@@ -2510,11 +2522,11 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("Actions scope - title attribute of Remove button in LineMode", function(assert) {
+	QUnit.test("Actions scope - title attribute of Remove button in LineMode", async function(assert) {
 		//Arrange
 		this.oGenericTile.setMode(GenericTileMode.LineMode);
 		this.oGenericTile.setScope(GenericTileScope.Actions);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		//Act
 		jQuery("#remove").trigger("mouseenter");
@@ -2550,7 +2562,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("Tooltip handling if content elements changed", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.oGenericTile = new GenericTile("generic-tile", {
 				header: "header text of GenericTile",
 				subheader: "subheader text of GenericTile",
@@ -2562,7 +2574,7 @@ sap.ui.define([
 					})
 				]
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			this.oGenericTile.destroy();
@@ -2591,18 +2603,32 @@ sap.ui.define([
 	});
 
 	QUnit.module("Event Tests", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.ftnPressHandler = function() {
 			};
+			this.sRequiredTheme = null;
+
+			var fnAttachApplied = (oEvent) => {
+				Theming.detachApplied(fnAttachApplied);
+				if (Theming.getTheme() === this.sRequiredTheme) {
+					if (typeof this.fnCallback === "function") {
+						this.fnCallback.bind(this)();
+						this.fnCallback = undefined;
+					}
+				}
+			};
+
 			this.applyTheme = function(sTheme, fnCallback) {
+				this.fnCallback = fnCallback;
 				this.sRequiredTheme = sTheme;
-				if (Theming.getTheme() === this.sRequiredTheme && false) {
+				if (Theming.getTheme() === this.sRequiredTheme) {
 					if (typeof fnCallback === "function") {
 						fnCallback.bind(this)();
 						fnCallback = undefined;
 					}
 				} else {
 					Theming.setTheme(sTheme);
+					Theming.attachApplied(fnAttachApplied.bind(this));
 				}
 			};
 			this.hasAttribute = function(sAttribute, oCurrentObject) {
@@ -2634,7 +2660,7 @@ sap.ui.define([
 					})
 				})
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 			this.spy(this, "ftnPressHandler");
 		},
 		afterEach: function() {
@@ -2690,11 +2716,11 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("Press event on 'tap' with correct parameters in Actions scope", function(assert) {
+	QUnit.test("Press event on 'tap' with correct parameters in Actions scope", async function(assert) {
 		//Arrange
 		var oGenericTile = this.oGenericTile;
 		this.oGenericTile.setScope(GenericTileScope.Actions);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		this.oGenericTile.attachEvent("press", handlePress);
 
 		//Act
@@ -2708,10 +2734,10 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("Press event on 'tap' with correct parameters in Remove Actions scope", function(assert) {
+	QUnit.test("Press event on 'tap' with correct parameters in Remove Actions scope", async function(assert) {
 		//Arrange
 		this.oGenericTile.setScope(GenericTileScope.ActionRemove);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		var oHandlePressSpy = this.spy();
 		this.oGenericTile.attachEvent("press", oHandlePressSpy);
 
@@ -2748,10 +2774,10 @@ sap.ui.define([
 		assert.ok(this.ftnPressHandler.calledOnce, "Press event is triggered on ENTER up");
 	});
 
-	QUnit.test("ENTER key event in Actions scope", function(assert) {
+	QUnit.test("ENTER key event in Actions scope", async function(assert) {
 		//Arrange
 		this.oGenericTile.setScope(GenericTileScope.Actions);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		this.oGenericTile.attachEvent("press", this.ftnPressHandler);
 		var e = jQuery.Event("keyup");
 		e.keyCode = KeyCodes.ENTER;
@@ -2776,11 +2802,11 @@ sap.ui.define([
 		assert.ok(this.ftnPressHandler.calledOnce, "Press event is triggered on SPACE up");
 	});
 
-	QUnit.test("SPACE key event in Display scope with correct parameters", function(assert) {
+	QUnit.test("SPACE key event in Display scope with correct parameters", async function(assert) {
 		//Arrange
 		var oGenericTile = this.oGenericTile;
 		this.oGenericTile.setScope(GenericTileScope.Display);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		this.oGenericTile.attachEvent("press", handlePress);
 		var e = jQuery.Event("keyup");
 		e.keyCode = KeyCodes.SPACE;
@@ -2796,10 +2822,10 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("SPACE key event in Actions scope", function(assert) {
+	QUnit.test("SPACE key event in Actions scope", async function(assert) {
 		//Arrange
 		this.oGenericTile.setScope(GenericTileScope.Actions);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		this.oGenericTile.attachEvent("press", this.ftnPressHandler);
 		var e = jQuery.Event("keyup");
 		e.keyCode = KeyCodes.SPACE;
@@ -2811,11 +2837,11 @@ sap.ui.define([
 		assert.ok(this.ftnPressHandler.calledOnce, "Press event is triggered on SPACE up");
 	});
 
-	QUnit.test("SPACE key event in Actions scope with correct parameters", function(assert) {
+	QUnit.test("SPACE key event in Actions scope with correct parameters", async function(assert) {
 		//Arrange
 		var oGenericTile = this.oGenericTile;
 		this.oGenericTile.setScope(GenericTileScope.Actions);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		this.oGenericTile.attachEvent("press", handlePress);
 		var e = jQuery.Event("keyup");
 		e.keyCode = KeyCodes.SPACE;
@@ -2857,11 +2883,11 @@ sap.ui.define([
 		assert.ok(!this.ftnPressHandler.called, "No press event is triggered on BACKSPACE up");
 	});
 
-	QUnit.test("DELETE key event in Actions scope with correct parameters", function(assert) {
+	QUnit.test("DELETE key event in Actions scope with correct parameters", async function(assert) {
 		//Arrange
 		var oGenericTile = this.oGenericTile;
 		this.oGenericTile.setScope(GenericTileScope.Actions);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		this.oGenericTile.attachEvent("press", handlePress);
 		var e = jQuery.Event("keyup");
 		e.keyCode = KeyCodes.DELETE;
@@ -2877,11 +2903,11 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("BACKSPACE key event in Actions scope with correct parameters", function(assert) {
+	QUnit.test("BACKSPACE key event in Actions scope with correct parameters", async function(assert) {
 		//Arrange
 		var oGenericTile = this.oGenericTile;
 		this.oGenericTile.setScope(GenericTileScope.Actions);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		this.oGenericTile.attachEvent("press", handlePress);
 		var e = jQuery.Event("keyup");
 		e.keyCode = KeyCodes.BACKSPACE;
@@ -3022,7 +3048,7 @@ sap.ui.define([
 
 	});
 
-	QUnit.test("Check the max line of header if footer exists", function(assert) {
+	QUnit.test("Check the max line of header if footer exists", async function(assert) {
 		this.oGenericTile.setFrameType("TwoByHalf");
 		this.oGenericTile.setSubheader("");
 		var tileContent =  new TileContent("tile-cont-two-by-half", {
@@ -3031,33 +3057,33 @@ sap.ui.define([
 		});
 		this.oGenericTile.destroyTileContent();
 		this.oGenericTile.addTileContent(tileContent);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		var check = document.getElementById("tile-cont-two-by-half-footer-text");
 		if (check != null) {
 			assert.equal(Element.getElementById("generic-tile-title").getMaxLines(), 2, "The header has 2 lines when footer is available");
 		}
 	});
 
-	QUnit.test("Check for the visibilty of content in header mode in 4*1 tile", function(assert) {
+	QUnit.test("Check for the visibilty of content in header mode in 4*1 tile", async function(assert) {
 		this.oGenericTile.setFrameType("TwoByHalf");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//to check if the content area is visible.
 		var oVisibilityCheck = this.spy(this.oGenericTile, "_changeTileContentContentVisibility");
 		this.oGenericTile.setMode(GenericTileMode.HeaderMode);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(oVisibilityCheck.calledWith(false), "The visibility is changed to not visible");
 	});
 
-	QUnit.test("Check the padding classes of the 4*1 tile", function(assert) {
+	QUnit.test("Check the padding classes of the 4*1 tile", async function(assert) {
 		this.oGenericTile.setFrameType("TwoByHalf");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		var check = this.oGenericTile.$().find(".sapMGTHdrContent").length == 1;
 		assert.ok(check,"true","all ok");
 		var height = getComputedStyle(this.oGenericTile.getDomRef().querySelector(".sapMGTHdrContent")).height;
 		assert.ok(height,20,"all ok");
 	});
 
-	QUnit.test("Content Proritisation - No Content rendered in OneByHalf in case of image", function(assert) {
+	QUnit.test("Content Proritisation - No Content rendered in OneByHalf in case of image", async function(assert) {
 		this.oGenericTile.setFrameType("OneByHalf");
 		var tileContent =  new TileContent("tile-cont-two-by-half", {
 			unit: "EUR",
@@ -3069,7 +3095,7 @@ sap.ui.define([
 		});
 		this.oGenericTile.destroyTileContent();
 		this.oGenericTile.addTileContent(tileContent);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		var tileContentChildren = this.oGenericTile.getTileContent()[0].getDomRef().children.length;
 		assert.equal(tileContentChildren, 0);
 		assert.notEqual(this.oGenericTile._oTitle.getDomRef(), null);
@@ -3077,25 +3103,25 @@ sap.ui.define([
 		assert.equal(this.oGenericTile.getTileContent()[0]._bRenderFooter, false);
 	});
 
-	QUnit.test("Content Proritisation - Numeric content rendered in OneByHalf ", function(assert) {
+	QUnit.test("Content Proritisation - Numeric content rendered in OneByHalf ", async function(assert) {
 		this.oGenericTile.setFrameType("OneByHalf");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.notEqual(this.oGenericTile.getTileContent()[0].getDomRef(), null);
 		assert.notEqual(this.oGenericTile._oTitle.getDomRef(), null);
 		assert.equal(this.oGenericTile._oSubTitle.getDomRef(), null);
 		assert.equal(this.oGenericTile.getTileContent()[0]._bRenderFooter, false);
 	});
 
-	QUnit.test("Content Proritisation - Header has max one line when Numeric Content is present ", function(assert) {
+	QUnit.test("Content Proritisation - Header has max one line when Numeric Content is present ", async function(assert) {
 		this.oGenericTile.setFrameType("OneByHalf");
 		this.oGenericTile.setHeader("this is a very long header which should exceed two lines so we can test it");
 		this.oGenericTile.setSubheader("this is a very long subheader which should exceed two lines so we can test it");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.equal(Element.getElementById("generic-tile-title").getMaxLines(), 1, "The header has 1 lines");
 	});
 
 
-	QUnit.test("Content Proritisation - Header has max two lines no Numeric Content is present ", function(assert) {
+	QUnit.test("Content Proritisation - Header has max two lines no Numeric Content is present ", async function(assert) {
 		this.oGenericTile.setFrameType("OneByHalf");
 		var tileContent =  new TileContent("tile-cont-two-by-half", {
 			unit: "EUR",
@@ -3109,20 +3135,20 @@ sap.ui.define([
 		this.oGenericTile.addTileContent(tileContent);
 		this.oGenericTile.setHeader("this is a very long header which should exceed two lines so we can test it");
 		this.oGenericTile.setSubheader("this is a very long subheader which should exceed two lines so we can test it");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.equal(Element.getElementById("generic-tile-title").getMaxLines(), 2, "The header has 2 lines");
 	});
 
-	QUnit.test("Content Proritisation -  Content rendered in TwoByHalf", function(assert) {
+	QUnit.test("Content Proritisation -  Content rendered in TwoByHalf", async function(assert) {
 		this.oGenericTile.setFrameType("TwoByHalf");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.notEqual(this.oGenericTile.getTileContent()[0].getDomRef(), null);
 		assert.notEqual(this.oGenericTile._oTitle.getDomRef(), null);
 		assert.equal(this.oGenericTile._oSubTitle.getDomRef(), null);
 		assert.equal(this.oGenericTile.getTileContent()[0]._bRenderFooter, false);
 	});
 
-	QUnit.test("Content Proritisation -  Header and subtitle rendered in TwoByHalf", function(assert) {
+	QUnit.test("Content Proritisation -  Header and subtitle rendered in TwoByHalf", async function(assert) {
 		this.oGenericTile.setFrameType("TwoByHalf");
 		var tileContent =  new TileContent("tile-cont-two-by-half", {
 			unit: "EUR",
@@ -3130,13 +3156,13 @@ sap.ui.define([
 		});
 		this.oGenericTile.destroyTileContent();
 		this.oGenericTile.addTileContent(tileContent);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.notEqual(this.oGenericTile._oTitle.getDomRef(), null);
 		assert.notEqual(this.oGenericTile._oSubTitle.getDomRef(), null);
 		assert.equal(this.oGenericTile.getTileContent()[0]._bRenderFooter, false);
 	});
 
-	QUnit.test("Content Proritisation -  Footer rendered in TwoByHalf", function(assert) {
+	QUnit.test("Content Proritisation -  Footer rendered in TwoByHalf", async function(assert) {
 		this.oGenericTile.setFrameType("TwoByHalf");
 		var tileContent =  new TileContent("tile-cont-two-by-half", {
 			unit: "EUR",
@@ -3145,13 +3171,13 @@ sap.ui.define([
 		this.oGenericTile.destroyTileContent();
 		this.oGenericTile.addTileContent(tileContent);
 		this.oGenericTile.setSubheader(null);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.notEqual(this.oGenericTile._oTitle.getDomRef(), null);
 		assert.equal(this.oGenericTile._oSubTitle.getDomRef(), null);
 		assert.equal(this.oGenericTile.getTileContent()[0]._bRenderFooter, true);
 	});
 
-	QUnit.test("Content Proritisation -  Subheader rendered in OneByHalf", function(assert) {
+	QUnit.test("Content Proritisation -  Subheader rendered in OneByHalf", async function(assert) {
 		this.oGenericTile.setFrameType("OneByHalf");
 		var tileContent =  new TileContent("tile-cont-one-by-half", {
 			footer: "Current Quarter"
@@ -3159,13 +3185,13 @@ sap.ui.define([
 		this.oGenericTile.destroyTileContent();
 		this.oGenericTile.addTileContent(tileContent);
 		this.oGenericTile.setSubheader("Subtitle Launch Tile");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.notEqual(this.oGenericTile._oTitle.getDomRef(), null);
 		assert.notEqual(this.oGenericTile._oSubTitle.getDomRef(), null);
 		assert.equal(this.oGenericTile.getTileContent()[0]._bRenderFooter, false);
 	});
 
-	QUnit.test("Content Proritisation -  Footer rendered in OneByHalf", function(assert) {
+	QUnit.test("Content Proritisation -  Footer rendered in OneByHalf", async function(assert) {
 		this.oGenericTile.setFrameType("OneByHalf");
 		var tileContent =  new TileContent("tile-cont-one-by-half", {
 			unit: "EUR",
@@ -3174,87 +3200,87 @@ sap.ui.define([
 		this.oGenericTile.destroyTileContent();
 		this.oGenericTile.addTileContent(tileContent);
 		this.oGenericTile.setSubheader(null);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.notEqual(this.oGenericTile._oTitle.getDomRef(), null);
 		assert.equal(this.oGenericTile._oSubTitle.getDomRef(), null);
 		assert.equal(this.oGenericTile.getTileContent()[0]._bRenderFooter, true);
 	});
 
-	QUnit.test("Height of the system Info Container for OneByOne tile", function(assert){
+	QUnit.test("Height of the system Info Container for OneByOne tile", async function(assert){
 			this.oGenericTile.setFrameType("OneByOne");
 			this.oGenericTile.setAppShortcut("app shortcut");
 			this.oGenericTile.setSystemInfo("system info");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 			assert.equal(this.oGenericTile.$().find(".sapMGTTInfoContainer").css("height"),"44px","Sufficient Height applied");
 	});
 
-	QUnit.test("Height of the system Info Container for TwoByOne tile", function(assert){
+	QUnit.test("Height of the system Info Container for TwoByOne tile", async function(assert){
 			this.oGenericTile.setFrameType("TwoByOne");
 			this.oGenericTile.setAppShortcut("app shortcut");
 			this.oGenericTile.setSystemInfo("system info");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 			assert.equal(this.oGenericTile.$().find(".sapMGTTInfo").css("margin-bottom"),"8px","Sufficient Height applied");
 	});
 
-	QUnit.test("App shortcut and System info only rendered in OneByOne", function(assert) {
+	QUnit.test("App shortcut and System info only rendered in OneByOne", async function(assert) {
 		this.oGenericTile.setFrameType("OneByOne");
 		this.oGenericTile.setAppShortcut("app shortcut");
 		this.oGenericTile.setSystemInfo("system info");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.notEqual(this.oGenericTile._oAppShortcut.getDomRef(), null);
 		assert.notEqual(this.oGenericTile._oSystemInfo.getDomRef(), null);
 
 		this.oGenericTile.setFrameType("OneByHalf");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.equal(this.oGenericTile._oAppShortcut.getDomRef(), null);
 		assert.equal(this.oGenericTile._oSystemInfo.getDomRef(), null);
 	});
 
-	QUnit.test("App shortcut and System info only rendered in TwoByOne", function(assert) {
+	QUnit.test("App shortcut and System info only rendered in TwoByOne", async function(assert) {
 		this.oGenericTile.setFrameType("TwoByOne");
 		this.oGenericTile.setAppShortcut("app shortcut");
 		this.oGenericTile.setSystemInfo("system info");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.equal(this.oGenericTile.getAppShortcut(), "app shortcut");
 		assert.equal(this.oGenericTile.getSystemInfo(),"system info" );
 	});
-	QUnit.test("App shortcut and System info only rendered in TwoByHalf", function(assert) {
+	QUnit.test("App shortcut and System info only rendered in TwoByHalf", async function(assert) {
 		this.oGenericTile.setFrameType("TwoByHalf");
 		this.oGenericTile.setAppShortcut("app shortcut");
 		this.oGenericTile.setSystemInfo("system info");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.equal(this.oGenericTile.getAppShortcut(), "app shortcut");
 		assert.equal(this.oGenericTile.getSystemInfo(),"system info" );
 	});
-	QUnit.test("App shortcut and System info only rendered in Linemode", function(assert) {
+	QUnit.test("App shortcut and System info only rendered in Linemode", async function(assert) {
 		this.oGenericTile.setMode(GenericTileMode.LineMode);
 		this.oGenericTile.setAppShortcut("app shortcut");
 		this.oGenericTile.setSystemInfo("system info");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.equal(this.oGenericTile.getAppShortcut(), "app shortcut");
 		assert.equal(this.oGenericTile.getSystemInfo(),"system info" );
 	});
 
-	QUnit.test("Check the padding classes of the 2*1 small tile", function(assert) {
+	QUnit.test("Check the padding classes of the 2*1 small tile", async function(assert) {
 		this.oGenericTile.setFrameType("OneByHalf");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		var check = this.oGenericTile.$().find(".sapMGTHdrContent").length == 1;
 		assert.ok(check,"true","all ok");
 		var height = getComputedStyle(this.oGenericTile.getDomRef().querySelector(".sapMGTHdrContent")).height;
 		assert.ok(height,28,"all ok");
 	});
 
-	QUnit.test("Check the padding classes of the 4*1 small tile", function(assert) {
+	QUnit.test("Check the padding classes of the 4*1 small tile", async function(assert) {
 		this.oGenericTile.setFrameType("TwoByHalf");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		var check = this.oGenericTile.$().find(".sapMGTHdrContent").length == 1;
 		assert.ok(check,"true","all ok");
 		var height = getComputedStyle(this.oGenericTile.getDomRef().querySelector(".sapMGTHdrContent")).height;
 		assert.ok(height,28,"all ok");
 	});
 
-	QUnit.test("Header has max two lines if subheader exists for 4*1 tile", function(assert) {
+	QUnit.test("Header has max two lines if subheader exists for 4*1 tile", async function(assert) {
 		this.oGenericTile.setFrameType("TwoByHalf");
 		var tileContent =  new TileContent("tile-cont-one-by-half", {
 			footer: "Current Quarter"
@@ -3263,11 +3289,11 @@ sap.ui.define([
 		this.oGenericTile.addTileContent(tileContent);
 		this.oGenericTile.setSubheader("Subtitle Launch Tile");
 		this.oGenericTile.setHeader("this is a very long header which should exceed two lines so we can test it");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.equal(Element.getElementById("generic-tile-title").getMaxLines(), 2, "The header has 2 lines");
 	});
 
-	QUnit.test("Header has max one lines if content aggregation exists for 4*1 tile", function(assert) {
+	QUnit.test("Header has max one lines if content aggregation exists for 4*1 tile", async function(assert) {
 		this.oGenericTile.setFrameType("TwoByHalf");
 		var tileContent =  new TileContent("tile-cont-one-by-half", {
 			unit: "EUR",
@@ -3287,35 +3313,35 @@ sap.ui.define([
 		this.oGenericTile.destroyTileContent();
 		this.oGenericTile.addTileContent(tileContent);
 		this.oGenericTile.setHeader("this is a very long header which should exceed one line so we can test it");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.equal(Element.getElementById("generic-tile-title").getMaxLines(), 1, "The header has 1 line");
 	});
 
-	QUnit.test("Check the padding classes of the 2*1 tile", function(assert) {
+	QUnit.test("Check the padding classes of the 2*1 tile", async function(assert) {
 		this.oGenericTile.setFrameType("OneByHalf");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		var check = this.oGenericTile.$().find(".sapMGTHdrContent").length == 1;
 		assert.ok(check,"true","all ok");
 	});
 
-	QUnit.test("Check for visibilty of content in header mode in 2*1 tile ", function(assert) {
+	QUnit.test("Check for visibilty of content in header mode in 2*1 tile ", async function(assert) {
 		this.oGenericTile.setFrameType("OneByHalf");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//to check if the content area is visible.
 		var oVisibilitySpy = this.spy(this.oGenericTile, "_changeTileContentContentVisibility");
 		this.oGenericTile.setMode(GenericTileMode.HeaderMode);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(oVisibilitySpy.calledWith(false), "The visibility is changed to not visible");
 		});
 
 	QUnit.module("GenericTile Overlay", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.oGenericTile = new GenericTile("generic-tile", {
 				header: "header text of GenericTile",
 				subheader: "subheader text of GenericTile",
 				tileContent: []
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			this.oGenericTile.destroy();
@@ -3323,7 +3349,7 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("OneByHalf Tile with NumericContent", function(assert){
+	QUnit.test("OneByHalf Tile with NumericContent", async function(assert){
 		this.oGenericTile.setFrameType("OneByHalf");
 		var oTileContent =  new TileContent("tile-cont-two-by-half", {
 			unit: "EUR",
@@ -3342,7 +3368,7 @@ sap.ui.define([
 		});
 		this.oGenericTile.destroyTileContent();
 		this.oGenericTile.addTileContent(oTileContent);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		var tileContentChildren = (this.oGenericTile.getTileContent()[0].getDomRef().children.length) > 0;
 		assert.equal(this.oGenericTile.getTileContent().length, 1, "Single Tile content is added to GenericTile.");
 		assert.equal(this.oGenericTile.getTileContent()[0].getAggregation('content').getMetadata()._sClassName, "sap.m.NumericContent", "Tile Content contains NumericContent.");
@@ -3350,7 +3376,7 @@ sap.ui.define([
 		assert.ok(tileContentChildren, "Tile Content with NumericContent does add overlay on the GenericTile.");
 	});
 
-	QUnit.test("OneByHalf Tile with ImageContent", function(assert){
+	QUnit.test("OneByHalf Tile with ImageContent", async function(assert){
 		this.oGenericTile.setFrameType("OneByHalf");
 		var oTileContent =  new TileContent("tile-cont-two-by-half", {
 			unit: "EUR",
@@ -3362,7 +3388,7 @@ sap.ui.define([
 		});
 		this.oGenericTile.destroyTileContent();
 		this.oGenericTile.addTileContent(oTileContent);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		var tileContentChildren = this.oGenericTile.getTileContent()[0].getDomRef().children.length;
 		assert.equal(this.oGenericTile.getTileContent().length, 1, "Single Tile content is added to GenericTile.");
 		assert.equal(this.oGenericTile.getTileContent()[0].getAggregation('content').getMetadata()._sClassName, "sap.m.ImageContent", "Tile Content contains ImageContent.");
@@ -3370,7 +3396,7 @@ sap.ui.define([
 		assert.equal(tileContentChildren, 0, "Tile Content with ImageContent does not add overlay on the GenericTile.");
 	});
 
-	QUnit.test("TwoByHalf Tile with NumericContent", function(assert){
+	QUnit.test("TwoByHalf Tile with NumericContent", async function(assert){
 		this.oGenericTile.setFrameType("TwoByHalf");
 		var oTileContent =  new TileContent("tile-cont-two-by-half", {
 			unit: "EUR",
@@ -3389,7 +3415,7 @@ sap.ui.define([
 		});
 		this.oGenericTile.destroyTileContent();
 		this.oGenericTile.addTileContent(oTileContent);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		var tileContentChildren = (this.oGenericTile.getTileContent()[0].getDomRef().children.length) > 0;
 		assert.equal(this.oGenericTile.getTileContent().length, 1, "Single Tile content is added to GenericTile.");
 		assert.equal(this.oGenericTile.getTileContent()[0].getAggregation('content').getMetadata()._sClassName, "sap.m.NumericContent", "Tile Content contains NumericContent.");
@@ -3397,7 +3423,7 @@ sap.ui.define([
 		assert.ok(tileContentChildren, "Tile Content with NumericContent does add overlay on the GenericTile.");
 	});
 
-	QUnit.test("TwoByHalf Tile with ImageContent", function(assert){
+	QUnit.test("TwoByHalf Tile with ImageContent", async function(assert){
 		this.oGenericTile.setFrameType("TwoByHalf");
 		var oTileContent =  new TileContent("tile-cont-two-by-half", {
 			unit: "EUR",
@@ -3409,7 +3435,7 @@ sap.ui.define([
 		});
 		this.oGenericTile.destroyTileContent();
 		this.oGenericTile.addTileContent(oTileContent);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		var tileContentChildren = (this.oGenericTile.getTileContent()[0].getDomRef().children.length) > 0;
 		assert.equal(this.oGenericTile.getTileContent().length, 1, "Single Tile content is added to GenericTile.");
 		assert.equal(this.oGenericTile.getTileContent()[0].getAggregation('content').getMetadata()._sClassName, "sap.m.ImageContent", "Tile Content contains ImageContent.");
@@ -3418,7 +3444,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("Action Mode Tests", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.oGenericTile = new GenericTile("generic-tile", {
 				mode: GenericTileMode.ActionMode,
 				subheader: "Expenses By Region",
@@ -3447,7 +3473,7 @@ sap.ui.define([
 					this.oActionButton2 = new Button()
 				]
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 
 		afterEach: function() {
@@ -3477,19 +3503,19 @@ sap.ui.define([
         assert.ok(document.querySelector('[id="'  + this.oGenericTile.getId() + "-actionButtons" + '"]'), "Html element is fetched");
     });
 
-	QUnit.test("_applyExtraHeight property should not be called when the tile is in loading state", function(assert) {
+	QUnit.test("_applyExtraHeight property should not be called when the tile is in loading state", async function(assert) {
 		this.fnWithRenderAsserts(assert);
 
 		var openSpy = sinon.spy(GenericTile.prototype, "_applyExtraHeight");
 
 		this.oGenericTile.setState(LoadState.Loaded);
 		this.oGenericTile.invalidate(); // force invalidation, in case state was already "Loaded"
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.equal(openSpy.callCount, 1, "The _applyExtraHeight function is called when the state is in loaded");
 		openSpy.resetHistory();
 
 		this.oGenericTile.setState(LoadState.Loading);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.equal(openSpy.callCount, 0, "The _applyExtraHeight function is not called when the state is in loading");
 	});
 
@@ -3520,59 +3546,59 @@ sap.ui.define([
 		assert.notOk(oButtonPressHandler.calledOnce, "Button press handler is not called on Tile Press");
 	});
 
-	QUnit.test("Addtion or Deletion of Action Buttons", function(assert) {
+	QUnit.test("Addtion or Deletion of Action Buttons", async function(assert) {
 		var oButton = new Button("test_button");
 
 		//add test button
 		this.oGenericTile.addActionButton(oButton);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(document.getElementById(oButton.getId()), "New Button is rendered successfully");
 
 		//remove test button
 		this.oGenericTile.removeActionButton(oButton);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.equal(document.getElementById(oButton.getId()), null, "New Button is removed successfully");
 
 		//remove all buttons
 		this.oGenericTile.removeAllActionButtons();
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.notOk(document.getElementById(this.oActionButton1.getId()), "Action Button 1 is not rendered");
 		assert.notOk(document.getElementById(this.oActionButton1.getId()), "Action Button 2 is rendered");
 		assert.notOk(document.getElementById("generic-tile-actionButtons"), "Action Buttons Container is not rendered");
 	});
 
-	QUnit.test("Header Icon Color changes upon ValueColor property change", function(assert) {
+	QUnit.test("Header Icon Color changes upon ValueColor property change", async function(assert) {
 		//Default Color Check
 		assert.ok(document.querySelector("#generic-tile-icon-image").classList.contains(ValueColor.None), "Default Color is applied");
 
 		//Change to Good ValueColor
 		this.oGenericTile.setValueColor(ValueColor.Good);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(document.querySelector("#generic-tile-icon-image").classList.contains(ValueColor.Good), "Good Color is applied");
 
 		//Change to Critical ValueColor
 		this.oGenericTile.setValueColor(ValueColor.Critical);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(document.querySelector("#generic-tile-icon-image").classList.contains(ValueColor.Critical), "Critical Color is applied");
 
 		//Change to Error ValueColor
 		this.oGenericTile.setValueColor(ValueColor.Error);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(document.querySelector("#generic-tile-icon-image").classList.contains(ValueColor.Error), "Error Color is applied");
 
 		//Change to Neutral ValueColor
 		this.oGenericTile.setValueColor(ValueColor.Neutral);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(document.querySelector("#generic-tile-icon-image").classList.contains(ValueColor.Neutral), "Neutral Color is applied");
 	});
 
-	QUnit.test("Priority Changes for TileContent", function(assert) {
+	QUnit.test("Priority Changes for TileContent", async function(assert) {
 		var oTileContent = this.oGenericTile.getTileContent()[0];
 		var sPriority = Library.getResourceBundleFor("sap.m").getText("TEXT_CONTENT_PRIORITY");
 
 		//Switch to None Priority
 		oTileContent.setPriority(Priority.None);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.notOk(document.getElementById("tile-cont-priority"), Priority.None + ": Priority container is not rendered");
 		assert.notOk(document.getElementById("tile-cont-priority-content"), Priority.None + ": Priority content is not rendered");
 		assert.notOk(document.getElementById("tile-cont-priority-border"), Priority.None + ": Priority border is not rendered");
@@ -3582,7 +3608,7 @@ sap.ui.define([
 		oTileContent.setPriority(Priority.VeryHigh);
 		oTileContent.setPriorityText("Very High");
 
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(document.getElementById("tile-cont-priority"), Priority.VeryHigh + ": Priority container is rendered");
 		assert.ok(document.getElementById("tile-cont-priority").classList.contains(Priority.VeryHigh), Priority.VeryHigh + ": VeryHigh StyleClass is applied");
 		assert.ok(document.getElementById("tile-cont-priority-content"), Priority.VeryHigh + ":Priority content is rendered");
@@ -3591,7 +3617,7 @@ sap.ui.define([
 		//Switch to High Priority
 		oTileContent.setPriority(Priority.High);
 		oTileContent.setPriorityText("High");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(document.getElementById("tile-cont-priority"), Priority.High + ": Priority container is rendered");
 		assert.ok(document.getElementById("tile-cont-priority").classList.contains(Priority.High), Priority.High + ": High StyleClass is applied");
 		assert.ok(document.getElementById("tile-cont-priority-content"), Priority.High + ":Priority content is rendered");
@@ -3601,7 +3627,7 @@ sap.ui.define([
 		oTileContent.setPriority(Priority.Medium);
 		oTileContent.setPriorityText("Medium");
 
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(document.getElementById("tile-cont-priority"), Priority.Medium + ": Priority container is rendered");
 		assert.ok(document.getElementById("tile-cont-priority").classList.contains(Priority.Medium), Priority.Medium + ": Medium StyleClass is applied");
 		assert.ok(document.getElementById("tile-cont-priority-content"), Priority.Medium + ":Priority content is rendered");
@@ -3611,7 +3637,7 @@ sap.ui.define([
 		oTileContent.setPriority(Priority.Low);
 		oTileContent.setPriorityText("Low");
 
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(document.getElementById("tile-cont-priority"), Priority.Low + ": Priority container is rendered");
 		assert.ok(document.getElementById("tile-cont-priority").classList.contains(Priority.Low), Priority.Low + ": Low StyleClass is applied");
 		assert.ok(document.getElementById("tile-cont-priority-content"), Priority.Low + ":Priority content is rendered");
@@ -3619,10 +3645,10 @@ sap.ui.define([
 		assert.notOk(this.oGenericTile.getTileContent()[0].getAltText().includes(sPriority),"Priority text is not rendered inside the tooltip");
 	});
 
-	QUnit.test("Action Mode for Different Frame Types", function(assert) {
+	QUnit.test("Action Mode for Different Frame Types", async function(assert) {
 		//Switch to OneByOne
 		this.oGenericTile.setFrameType(FrameType.OneByOne);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.ok(this.oGenericTile.getDomRef().classList.contains("OneByOne"), "OneByOne FrameType class has been added");
 		assert.notOk(document.getElementById("tile-cont-priority"), "Priority container is not rendered");
@@ -3630,7 +3656,7 @@ sap.ui.define([
 
 		//Switch to OneByHalf
 		this.oGenericTile.setFrameType(FrameType.OneByHalf);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.ok(this.oGenericTile.getDomRef().classList.contains("OneByHalf"), "OneByHalf FrameType class has been added");
 		assert.notOk(document.getElementById("tile-cont-priority"), "Priority container is not rendered");
@@ -3638,7 +3664,7 @@ sap.ui.define([
 
 		//Switch to TwoByHalf
 		this.oGenericTile.setFrameType(FrameType.TwoByHalf);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.ok(this.oGenericTile.getDomRef().classList.contains("TwoByHalf"), "TwoByHalf FrameType class has been added");
 		assert.notOk(document.getElementById("tile-cont-priority"), "Priority container is not rendered");
@@ -3646,38 +3672,38 @@ sap.ui.define([
 
 		//Switch to TwoByOne
 		this.oGenericTile.setFrameType(FrameType.TwoByOne);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.ok(this.oGenericTile.getDomRef().classList.contains("TwoByOne"), "TwoByOne FrameType class has been added");
 		assert.ok(document.getElementById("tile-cont-priority"), "Priority container is rendered");
 		assert.ok(document.getElementById("generic-tile-actionButtons"), "Action Buttons Container is rendered");
 	});
 
-	QUnit.test("TwoByOne Tile: Switch between modes", function(assert) {
+	QUnit.test("TwoByOne Tile: Switch between modes", async function(assert) {
 		//Switch to HeaderMode
 		this.oGenericTile.setMode(GenericTileMode.HeaderMode);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.notOk(document.getElementById("tile-cont-priority"), "Priority container is not rendered");
 		assert.notOk(document.getElementById("generic-tile-actionButtons"), "Action Buttons Container is not rendered in Header Mode");
 
 		//Switch to ContentMode
 		this.oGenericTile.setMode(GenericTileMode.ContentMode);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.notOk(document.getElementById("tile-cont-priority"), "Priority container is not rendered");
 		assert.notOk(document.getElementById("generic-tile-actionButtons"), "Action Buttons Container is not rendered in Content Mode");
 
 		//Switch to LineMode
 		this.oGenericTile.setMode(GenericTileMode.LineMode);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.notOk(document.getElementById("tile-cont-priority"), "Priority container is not rendered");
 		assert.notOk(document.getElementById("generic-tile-actionButtons"), "Action Buttons Container is not rendered in Line Mode");
 
 		//Switch to ActionMode
 		this.oGenericTile.setMode(GenericTileMode.ActionMode);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.ok(document.getElementById("tile-cont-priority"), "Priority container is rendered");
 		assert.ok(document.getElementById("generic-tile-actionButtons"), "Action Buttons Container is rendered in Action Mode");
@@ -3685,7 +3711,7 @@ sap.ui.define([
 
 
 	QUnit.module("Generic Tile in s4 Homes Tests", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.oTask = new GenericTile("genericTile", {
 				mode: GenericTileMode.ActionMode,
 				subheader: "Expenses By Region",
@@ -3715,7 +3741,7 @@ sap.ui.define([
 					})
 				})
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			this.oTask.destroy();
@@ -3778,7 +3804,7 @@ sap.ui.define([
 		before : function() {
 			setup.call(this);
 		},
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.oGenericTile = new GenericTile({
 				header: "GenericTile",
 				subheader: "GenericTile subHeader",
@@ -3794,7 +3820,7 @@ sap.ui.define([
 								})
 				})]
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			this.oGenericTile.destroy();
@@ -3802,11 +3828,11 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("OneByOne", function(assert){
+	QUnit.test("OneByOne", async function(assert){
 		var fnDone = assert.async();
 		this.oGenericTile.setFrameType(FrameType.OneByOne);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
-		setTimeout(function(){
+		await nextUIUpdate();
+		setTimeout(async function(){
 			assert.equal(this.oGenericTile.getMode(), GenericTileMode.IconMode, "CurrentMode is " + GenericTileMode.IconMode);
 			assert.equal(this.oGenericTile.getFrameType(), FrameType.OneByOne, "Current FrameType is " + FrameType.OneByOne);
 			assert.equal(this.oGenericTile.getTileIcon(), undefined, "No Tile Icon.");
@@ -3821,8 +3847,8 @@ sap.ui.define([
 			assert.equal(this.oGenericTile.getDomRef().querySelectorAll(".sapMGTOneByOne").length, 0, "No Text Container Created.");
 			this.oGenericTile.setTileIcon("sap-icon://key");
 			this.oGenericTile.setBackgroundColor("sapLegendColor1");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
-			setTimeout(function(){
+			await nextUIUpdate();
+			setTimeout(async function(){
 				assert.equal(this.oGenericTile.getMode(), GenericTileMode.IconMode, "CurrentMode is " + GenericTileMode.IconMode);
 				assert.equal(this.oGenericTile.getFrameType(), FrameType.OneByOne, "Current FrameType is " + FrameType.OneByOne);
 				assert.equal(this.oGenericTile.getTileIcon(), "sap-icon://key", "Tile Icon is present.");
@@ -3839,8 +3865,8 @@ sap.ui.define([
 				assert.ok(this.oGenericTile._oMoreIcon.isA("sap.m.Button"), "Button is created in place of action more icon");
 				assert.ok(this.oGenericTile.getAggregation("_tileIcon"), "Icon Aggregation has a valid value");
 				this.oGenericTile.setTileIcon(IMAGE_PATH + "female_BaySu.jpg");
-				nextUIUpdate.runSync()/*fake timer is used in module*/;
-				setTimeout(function(){
+				await nextUIUpdate();
+				setTimeout(async function(){
 					assert.equal(this.oGenericTile.getMode(), GenericTileMode.IconMode, "CurrentMode is " + GenericTileMode.IconMode);
 					assert.equal(this.oGenericTile.getFrameType(), FrameType.OneByOne, "Current FrameType is " + FrameType.OneByOne);
 					assert.equal(this.oGenericTile.getTileIcon(), IMAGE_PATH + "female_BaySu.jpg", "Tile Icon is present.");
@@ -3856,12 +3882,12 @@ sap.ui.define([
 					assert.equal(this.oGenericTile.getDomRef().querySelectorAll(".sapMGTOneByOne").length, 1, "Text Container Created.");
 					assert.ok(this.oGenericTile.getAggregation("_tileIconImage"), "Icon Image Aggregation has a valid value");
 					this.oGenericTile.setState("Loading");
-					nextUIUpdate.runSync()/*fake timer is used in module*/;
-					setTimeout(function(){
+					await nextUIUpdate();
+					setTimeout(async function(){
 						var oDomRef = this.oGenericTile.getDomRef().children[0];
 						assert.ok(oDomRef.classList.contains("sapMGTContentShimmerPlaceholderItemOneByOne"), "Placeholder div is present when state is loading");
 						this.oGenericTile.setState("Loaded");
-						nextUIUpdate.runSync()/*fake timer is used in module*/;
+						await nextUIUpdate();
 						setTimeout(function(){
 							assert.notOk(oDomRef.classList.contains("sapMGTContentShimmerPlaceholderItemOneByOne"), "Placeholder div is not present when state is loaded");
 							fnDone();
@@ -3872,11 +3898,11 @@ sap.ui.define([
 		}.bind(this), 100);
 	});
 
-	QUnit.test("TwoByHalf", function(assert){
+	QUnit.test("TwoByHalf", async function(assert){
 		var fnDone = assert.async();
 		this.oGenericTile.setFrameType(FrameType.TwoByHalf);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
-		setTimeout(function(){
+		await nextUIUpdate();
+		setTimeout(async function(){
 			assert.equal(this.oGenericTile.getMode(), GenericTileMode.IconMode, "CurrentMode is " + GenericTileMode.IconMode);
 			assert.equal(this.oGenericTile.getFrameType(), FrameType.TwoByHalf, "Current FrameType is " + FrameType.TwoByHalf);
 			assert.equal(this.oGenericTile.getTileIcon(), undefined, "No Tile Icon.");
@@ -3891,8 +3917,8 @@ sap.ui.define([
 			assert.equal(this.oGenericTile._oMoreIcon.getType(), "Unstyled", "Button Created in Unstyled Type");
 			this.oGenericTile.setTileIcon("sap-icon://key");
 			this.oGenericTile.setBackgroundColor("sapLegendColor2");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
-			setTimeout(function() {
+			await nextUIUpdate();
+			setTimeout(async function() {
 				assert.equal(this.oGenericTile.getMode(), GenericTileMode.IconMode, "CurrentMode is " + GenericTileMode.IconMode);
 				assert.equal(this.oGenericTile.getFrameType(), FrameType.TwoByHalf, "Current FrameType is " + FrameType.TwoByHalf);
 				assert.equal(this.oGenericTile.getTileIcon(), "sap-icon://key", "Tile Icon is present.");
@@ -3909,8 +3935,8 @@ sap.ui.define([
 				assert.equal(this.oGenericTile._oMoreIcon.getType(), "Transparent", "Button Created in Transparent Type");
 				assert.equal(this.oGenericTile._oMoreIcon.getTooltip_AsString(), this.oGenericTile._oRb.getText("GENERICTILE_MORE_ACTIONBUTTON_TEXT"), "More Action Button Tooltip is visible");
 				this.oGenericTile.setTileIcon(IMAGE_PATH + "female_BaySu.jpg");
-				nextUIUpdate.runSync()/*fake timer is used in module*/;
-				setTimeout(function(){
+				await nextUIUpdate();
+				setTimeout(async function(){
 					assert.equal(this.oGenericTile.getMode(), GenericTileMode.IconMode, "CurrentMode is " + GenericTileMode.IconMode);
 					assert.equal(this.oGenericTile.getFrameType(), FrameType.TwoByHalf, "Current FrameType is " + FrameType.TwoByHalf);
 					assert.equal(this.oGenericTile.getTileIcon(), IMAGE_PATH + "female_BaySu.jpg", "Tile Icon is present.");
@@ -3926,18 +3952,18 @@ sap.ui.define([
 					var sLink = "https://www.google.com/";
 					this.oGenericTile.setUrl(sLink);
 					this.oGenericTile.setScope(GenericTileScope.Actions);
-					nextUIUpdate.runSync()/*fake timer is used in module*/;
+					await nextUIUpdate();
 					setTimeout(function(){
 						assert.equal(this.oGenericTile.getDomRef().tagName, "A", "The GenericTile is rendered in anchor tag");
 					}.bind(this),100);
 					this.oGenericTile.setScope(GenericTileScope.Display);
 					this.oGenericTile.setState("Loading");
-					nextUIUpdate.runSync()/*fake timer is used in module*/;
-					setTimeout(function(){
+					await nextUIUpdate();
+					setTimeout(async function(){
 						var oDomRef = this.oGenericTile.getDomRef().children[0];
 						assert.ok(oDomRef.classList.contains("sapMGTContentShimmerPlaceholderItemTwoByHalf"), "Placeholder div is present when state is loading");
 						this.oGenericTile.setState("Loaded");
-						nextUIUpdate.runSync()/*fake timer is used in module*/;
+						await nextUIUpdate();
 						setTimeout(function(){
 							assert.notOk(oDomRef.classList.contains("sapMGTContentShimmerPlaceholderItemTwoByHalf"), "Placeholder div is not present when state is loaded");
 							fnDone();
@@ -3949,7 +3975,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("Article Mode Tests", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this._navigateEventHandlerStub = sinon.stub(GenericTile.prototype, "_navigateEventHandler");
 			this.oGenericTile = new GenericTile("generic-tile", {
 				mode: GenericTileMode.ArticleMode,
@@ -3975,7 +4001,7 @@ sap.ui.define([
 					})
 				})
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 
 		afterEach: function() {
@@ -4031,7 +4057,7 @@ sap.ui.define([
 		assert.notOk(oButtonPressHandler.calledOnce, "Button press handler is not called on Tile Press");
 	});
 
-	QUnit.test("Update Action Button Text", function(assert) {
+	QUnit.test("Update Action Button Text", async function(assert) {
 		var sDefaultText = "Read More",
 			sUpdatedText = "Read Article";
 
@@ -4039,52 +4065,52 @@ sap.ui.define([
 
 		//update button text
 		this.oGenericTile.setNavigationButtonText(sUpdatedText);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.equal(this.oGenericTile._getNavigateAction().getText(), sUpdatedText, "Button text is updated");
 	});
 
-	QUnit.test("enableNavigationButton property changes", function(assert) {
+	QUnit.test("enableNavigationButton property changes", async function(assert) {
 		assert.ok(document.getElementById("generic-tile-navigateActionContainer"), "navigateAction Container is rendered");
 		assert.ok(this.oGenericTile._getNavigateAction().getDomRef(), "Navigate Action Button is rendered");
 
 		// updated enableNavigationButton property
 		this.oGenericTile.setEnableNavigationButton(false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.notOk(document.getElementById("generic-tile-navigateActionContainer"), "navigateAction Container is not rendered");
 		assert.notOk(this.oGenericTile._getNavigateAction().getDomRef(), "Navigate Action Button is not rendered");
 	});
 
-	QUnit.test("Article Mode for Different Frame Types", function(assert) {
+	QUnit.test("Article Mode for Different Frame Types", async function(assert) {
 		//Switch to OneByOne
 		this.oGenericTile.setFrameType(FrameType.OneByOne);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.ok(this.oGenericTile.getDomRef().classList.contains("OneByOne"), "OneByOne FrameType class has been added");
 		assert.ok(document.getElementById("generic-tile-navigateActionContainer"), "navigateAction Container is rendered");
 
 		//Switch to OneByHalf
 		this.oGenericTile.setFrameType(FrameType.OneByHalf);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.ok(this.oGenericTile.getDomRef().classList.contains("OneByHalf"), "OneByHalf FrameType class has been added");
 		assert.notOk(document.getElementById("generic-tile-navigateActionContainer"), "navigateAction Container is not rendered");
 
 		//Switch to TwoByHalf
 		this.oGenericTile.setFrameType(FrameType.TwoByHalf);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.ok(this.oGenericTile.getDomRef().classList.contains("TwoByHalf"), "TwoByHalf FrameType class has been added");
 		assert.notOk(document.getElementById("generic-tile-navigateActionContainer"), "navigateAction Container is not rendered");
 
 		//Switch to TwoByOne
 		this.oGenericTile.setFrameType(FrameType.TwoByOne);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.ok(this.oGenericTile.getDomRef().classList.contains("TwoByOne"), "TwoByOne FrameType class has been added");
 		assert.ok(document.getElementById("generic-tile-navigateActionContainer"), "navigateAction Container is rendered");
 	});
 
-	QUnit.test("Generic Tile - Render footer div even if there are no footer elements", function(assert) {
+	QUnit.test("Generic Tile - Render footer div even if there are no footer elements", async function(assert) {
 		this.oCustomTile = new GenericTile({
 			subheader: "GenericTile SubHeader",
 			frameType: "OneByOne",
@@ -4105,7 +4131,7 @@ sap.ui.define([
 				})
 			})
 		}).placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.ok(document.querySelector("div[id*=footer]"), "Footer is rendered");
 		this.oCustomTile.destroy();
@@ -4116,7 +4142,7 @@ sap.ui.define([
 			this.oGenericTile.destroy();
 			this.oGenericTile = null;
 		},
-		fnCreateGenericTile: function(sGenericTileState, sTileContentState, sFrameType){
+		fnCreateGenericTile: async function(sGenericTileState, sTileContentState, sFrameType){
 			this.oGenericTile = new GenericTile("generic-tile", {
 				subheader: "GenericTile SubHeader",
 				frameType: sFrameType,
@@ -4140,7 +4166,7 @@ sap.ui.define([
 					})
 				})
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		fnWithRenderAsserts: function(assert, sGenericTileState, sTileContentState, sFrameType, oSpy) {
 			assert.ok(document.getElementById("generic-tile"), "Generic tile was rendered successfully.");
@@ -4191,225 +4217,225 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("GenericTile - Loaded/OneByOne , TileContent - Loaded", function(assert) {
-		this.fnCreateGenericTile(LoadState.Loaded, LoadState.Loaded, FrameType.OneByOne);
+	QUnit.test("GenericTile - Loaded/OneByOne , TileContent - Loaded", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Loaded, LoadState.Loaded, FrameType.OneByOne);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Loaded/OneByOne , TileContent - Loading", function(assert) {
-		this.fnCreateGenericTile(LoadState.Loaded, LoadState.Loading, FrameType.OneByOne);
+	QUnit.test("GenericTile - Loaded/OneByOne , TileContent - Loading", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Loaded, LoadState.Loading, FrameType.OneByOne);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Loaded/OneByOne , TileContent - Failed", function(assert) {
-		this.fnCreateGenericTile(LoadState.Loaded, LoadState.Failed, FrameType.OneByOne);
+	QUnit.test("GenericTile - Loaded/OneByOne , TileContent - Failed", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Loaded, LoadState.Failed, FrameType.OneByOne);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Loaded/OneByOne , TileContent - Disabled", function(assert) {
-		this.fnCreateGenericTile(LoadState.Loaded, LoadState.Disabled, FrameType.OneByOne);
+	QUnit.test("GenericTile - Loaded/OneByOne , TileContent - Disabled", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Loaded, LoadState.Disabled, FrameType.OneByOne);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Loading/OneByOne", function(assert) {
-		this.fnCreateGenericTile(LoadState.Loading, LoadState.Loaded, FrameType.OneByOne);
+	QUnit.test("GenericTile - Loading/OneByOne", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Loading, LoadState.Loaded, FrameType.OneByOne);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Disabled/OneByOne", function(assert) {
-		this.fnCreateGenericTile(LoadState.Disabled, LoadState.Loaded, FrameType.OneByOne);
+	QUnit.test("GenericTile - Disabled/OneByOne", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Disabled, LoadState.Loaded, FrameType.OneByOne);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Failed/OneByOne", function(assert) {
-		this.fnCreateGenericTile(LoadState.Failed, LoadState.Loaded, FrameType.OneByOne);
+	QUnit.test("GenericTile - Failed/OneByOne", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Failed, LoadState.Loaded, FrameType.OneByOne);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Loaded/TwoByOne , TileContent - Loaded", function(assert) {
-		this.fnCreateGenericTile(LoadState.Loaded, LoadState.Loaded, FrameType.TwoByOne);
+	QUnit.test("GenericTile - Loaded/TwoByOne , TileContent - Loaded", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Loaded, LoadState.Loaded, FrameType.TwoByOne);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Loaded/TwoByOne , TileContent - Loading", function(assert) {
-		this.fnCreateGenericTile(LoadState.Loaded, LoadState.Loading, FrameType.TwoByOne);
+	QUnit.test("GenericTile - Loaded/TwoByOne , TileContent - Loading", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Loaded, LoadState.Loading, FrameType.TwoByOne);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Loaded/TwoByOne , TileContent - Failed", function(assert) {
-		this.fnCreateGenericTile(LoadState.Loaded, LoadState.Failed, FrameType.TwoByOne);
+	QUnit.test("GenericTile - Loaded/TwoByOne , TileContent - Failed", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Loaded, LoadState.Failed, FrameType.TwoByOne);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Loaded/TwoByOne , TileContent - Disabled", function(assert) {
-		this.fnCreateGenericTile(LoadState.Loaded, LoadState.Disabled, FrameType.TwoByOne);
+	QUnit.test("GenericTile - Loaded/TwoByOne , TileContent - Disabled", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Loaded, LoadState.Disabled, FrameType.TwoByOne);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Loading/TwoByOne", function(assert) {
-		this.fnCreateGenericTile(LoadState.Loading, LoadState.Loaded, FrameType.TwoByOne);
+	QUnit.test("GenericTile - Loading/TwoByOne", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Loading, LoadState.Loaded, FrameType.TwoByOne);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Disabled/TwoByOne", function(assert) {
-		this.fnCreateGenericTile(LoadState.Disabled, LoadState.Loaded, FrameType.TwoByOne);
+	QUnit.test("GenericTile - Disabled/TwoByOne", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Disabled, LoadState.Loaded, FrameType.TwoByOne);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Failed/TwoByOne", function(assert) {
-		this.fnCreateGenericTile(LoadState.Failed, LoadState.Loaded, FrameType.TwoByOne);
+	QUnit.test("GenericTile - Failed/TwoByOne", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Failed, LoadState.Loaded, FrameType.TwoByOne);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Loaded/Auto , TileContent - Loaded", function(assert) {
-		this.fnCreateGenericTile(LoadState.Loaded, LoadState.Loaded, FrameType.Auto);
+	QUnit.test("GenericTile - Loaded/Auto , TileContent - Loaded", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Loaded, LoadState.Loaded, FrameType.Auto);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Loaded/Auto , TileContent - Loading", function(assert) {
-		this.fnCreateGenericTile(LoadState.Loaded, LoadState.Loading, FrameType.Auto);
+	QUnit.test("GenericTile - Loaded/Auto , TileContent - Loading", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Loaded, LoadState.Loading, FrameType.Auto);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Loaded/Auto , TileContent - Failed", function(assert) {
-		this.fnCreateGenericTile(LoadState.Loaded, LoadState.Failed, FrameType.Auto);
+	QUnit.test("GenericTile - Loaded/Auto , TileContent - Failed", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Loaded, LoadState.Failed, FrameType.Auto);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Loaded/Auto , TileContent - Disabled", function(assert) {
-		this.fnCreateGenericTile(LoadState.Loaded, LoadState.Disabled, FrameType.Auto);
+	QUnit.test("GenericTile - Loaded/Auto , TileContent - Disabled", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Loaded, LoadState.Disabled, FrameType.Auto);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Loading/Auto", function(assert) {
-		this.fnCreateGenericTile(LoadState.Loading, LoadState.Loaded, FrameType.Auto);
+	QUnit.test("GenericTile - Loading/Auto", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Loading, LoadState.Loaded, FrameType.Auto);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Disabled/Auto", function(assert) {
-		this.fnCreateGenericTile(LoadState.Disabled, LoadState.Loaded, FrameType.Auto);
+	QUnit.test("GenericTile - Disabled/Auto", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Disabled, LoadState.Loaded, FrameType.Auto);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Failed/Auto", function(assert) {
-		this.fnCreateGenericTile(LoadState.Failed, LoadState.Loaded, FrameType.Auto);
+	QUnit.test("GenericTile - Failed/Auto", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Failed, LoadState.Loaded, FrameType.Auto);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Loaded/TwoByHalf , TileContent - Loaded", function(assert) {
-		this.fnCreateGenericTile(LoadState.Loaded, LoadState.Loaded, FrameType.TwoByHalf);
+	QUnit.test("GenericTile - Loaded/TwoByHalf , TileContent - Loaded", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Loaded, LoadState.Loaded, FrameType.TwoByHalf);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Loaded/TwoByHalf , TileContent - Loading", function(assert) {
-		this.fnCreateGenericTile(LoadState.Loaded, LoadState.Loading, FrameType.TwoByHalf);
+	QUnit.test("GenericTile - Loaded/TwoByHalf , TileContent - Loading", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Loaded, LoadState.Loading, FrameType.TwoByHalf);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Loaded/TwoByHalf , TileContent - Failed", function(assert) {
-		this.fnCreateGenericTile(LoadState.FailLoadeded, LoadState.Failed, FrameType.TwoByHalf);
+	QUnit.test("GenericTile - Loaded/TwoByHalf , TileContent - Failed", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.FailLoadeded, LoadState.Failed, FrameType.TwoByHalf);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Loaded/TwoByHalf , TileContent - Disabled", function(assert) {
-		this.fnCreateGenericTile(LoadState.Loaded, LoadState.Disabled, FrameType.TwoByHalf);
+	QUnit.test("GenericTile - Loaded/TwoByHalf , TileContent - Disabled", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Loaded, LoadState.Disabled, FrameType.TwoByHalf);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Loading/TwoByHalf", function(assert) {
-		this.fnCreateGenericTile(LoadState.Loading, LoadState.Loaded, FrameType.TwoByHalf);
+	QUnit.test("GenericTile - Loading/TwoByHalf", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Loading, LoadState.Loaded, FrameType.TwoByHalf);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Disabled/TwoByHalf", function(assert) {
-		this.fnCreateGenericTile(LoadState.Disabled, LoadState.Loaded, FrameType.TwoByHalf);
+	QUnit.test("GenericTile - Disabled/TwoByHalf", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Disabled, LoadState.Loaded, FrameType.TwoByHalf);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Failed/TwoByHalf", function(assert) {
-		this.fnCreateGenericTile(LoadState.Failed, LoadState.Loaded, FrameType.TwoByHalf);
+	QUnit.test("GenericTile - Failed/TwoByHalf", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Failed, LoadState.Loaded, FrameType.TwoByHalf);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Loaded/OneByHalf , TileContent - Loaded", function(assert) {
-		this.fnCreateGenericTile(LoadState.Loaded, LoadState.Loaded, FrameType.OneByHalf);
+	QUnit.test("GenericTile - Loaded/OneByHalf , TileContent - Loaded", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Loaded, LoadState.Loaded, FrameType.OneByHalf);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Loaded/OneByHalf , TileContent - Loading", function(assert) {
-		this.fnCreateGenericTile(LoadState.Loaded, LoadState.Loading, FrameType.OneByHalf);
+	QUnit.test("GenericTile - Loaded/OneByHalf , TileContent - Loading", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Loaded, LoadState.Loading, FrameType.OneByHalf);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Loaded/OneByHalf , TileContent - Failed", function(assert) {
-		this.fnCreateGenericTile(LoadState.Loaded, LoadState.Failed, FrameType.OneByHalf);
+	QUnit.test("GenericTile - Loaded/OneByHalf , TileContent - Failed", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Loaded, LoadState.Failed, FrameType.OneByHalf);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Loaded/OneByHalf , TileContent - Disabled", function(assert) {
-		this.fnCreateGenericTile(LoadState.Loaded, LoadState.Disabled, FrameType.OneByHalf);
+	QUnit.test("GenericTile - Loaded/OneByHalf , TileContent - Disabled", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Loaded, LoadState.Disabled, FrameType.OneByHalf);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Loading/OneByHalf", function(assert) {
-		this.fnCreateGenericTile(LoadState.Loading, LoadState.Loaded, FrameType.TwoByHalf);
+	QUnit.test("GenericTile - Loading/OneByHalf", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Loading, LoadState.Loaded, FrameType.TwoByHalf);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Disabled/OneByHalf", function(assert) {
-		this.fnCreateGenericTile(LoadState.Disabled, LoadState.Loaded, FrameType.OneByHalf);
+	QUnit.test("GenericTile - Disabled/OneByHalf", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Disabled, LoadState.Loaded, FrameType.OneByHalf);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Failed/OneByHalf", function(assert) {
-		this.fnCreateGenericTile(LoadState.Failed, LoadState.Loaded, FrameType.OneByHalf);
+	QUnit.test("GenericTile - Failed/OneByHalf", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Failed, LoadState.Loaded, FrameType.OneByHalf);
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType());
 	});
 
-	QUnit.test("GenericTile - Loaded/Stretch , TileContent - Loaded", function(assert) {
-		this.fnCreateGenericTile(LoadState.Loaded, LoadState.Loaded, FrameType.Stretch);
+	QUnit.test("GenericTile - Loaded/Stretch , TileContent - Loaded", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Loaded, LoadState.Loaded, FrameType.Stretch);
 		var oSpy = this.spy(this.oGenericTile, "_getSizeDescription");
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType(), oSpy);
 	});
 
-	QUnit.test("GenericTile - Loaded/Stretch , TileContent - Loading", function(assert) {
-		this.fnCreateGenericTile(LoadState.Loaded, LoadState.Loading, FrameType.Stretch);
+	QUnit.test("GenericTile - Loaded/Stretch , TileContent - Loading", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Loaded, LoadState.Loading, FrameType.Stretch);
 		var oSpy = this.spy(this.oGenericTile, "_getSizeDescription");
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType(), oSpy);
 	});
 
-	QUnit.test("GenericTile - Loaded/Stretch , TileContent - Failed", function(assert) {
-		this.fnCreateGenericTile(LoadState.Loaded, LoadState.Failed, FrameType.Stretch);
+	QUnit.test("GenericTile - Loaded/Stretch , TileContent - Failed", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Loaded, LoadState.Failed, FrameType.Stretch);
 		var oSpy = this.spy(this.oGenericTile, "_getSizeDescription");
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType(), oSpy);
 	});
 
-	QUnit.test("GenericTile - Loaded/Stretch , TileContent - Disabled", function(assert) {
-		this.fnCreateGenericTile(LoadState.Loaded, LoadState.Disabled, FrameType.Stretch);
+	QUnit.test("GenericTile - Loaded/Stretch , TileContent - Disabled", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Loaded, LoadState.Disabled, FrameType.Stretch);
 		var oSpy = this.spy(this.oGenericTile, "_getSizeDescription");
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType(), oSpy);
 	});
 
-	QUnit.test("GenericTile - Loading/Stretch", function(assert) {
-		this.fnCreateGenericTile(LoadState.Loading, LoadState.Loaded, FrameType.Stretch);
+	QUnit.test("GenericTile - Loading/Stretch", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Loading, LoadState.Loaded, FrameType.Stretch);
 		var oSpy = this.spy(this.oGenericTile, "_getSizeDescription");
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType(), oSpy);
 	});
 
-	QUnit.test("GenericTile - Disabled/Stretch", function(assert) {
-		this.fnCreateGenericTile(LoadState.Disabled, LoadState.Loaded, FrameType.Stretch);
+	QUnit.test("GenericTile - Disabled/Stretch", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Disabled, LoadState.Loaded, FrameType.Stretch);
 		var oSpy = this.spy(this.oGenericTile, "_getSizeDescription");
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType(), oSpy);
 	});
 
-	QUnit.test("GenericTile - Failed/Stretch", function(assert) {
-		this.fnCreateGenericTile(LoadState.Failed, LoadState.Loaded, FrameType.Stretch);
+	QUnit.test("GenericTile - Failed/Stretch", async function(assert) {
+		await this.fnCreateGenericTile(LoadState.Failed, LoadState.Loaded, FrameType.Stretch);
 		var oSpy = this.spy(this.oGenericTile, "_getSizeDescription");
 		this.fnWithRenderAsserts(assert,this.oGenericTile.getState(), this.oGenericTile.getTileContent()[0].getState(), this.oGenericTile.getFrameType(), oSpy);
 	});
 
 	QUnit.module("NewsContent Tests", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.oGenericTile = new GenericTile("generic-tile", {
 				mode: GenericTileMode.ArticleMode,
 				subheader: "Expenses By Region",
@@ -4427,7 +4453,7 @@ sap.ui.define([
 					})
 				})
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			this.oGenericTile.destroy();
@@ -4450,8 +4476,8 @@ sap.ui.define([
 			this.oTile1 = null;
 			this.oTile2 = null;
 			this.oTile3 = null;
-		},
-		fnCreateGridContainer: function(sGap){
+                },
+		fnCreateGridContainer: async function(sGap){
 			var oSettings = new GridContainerSettings({columns: 6, rowSize: "80px", columnSize: "80px", gap: sGap});
 
 			this.oGrid = new GridContainer({
@@ -4489,20 +4515,20 @@ sap.ui.define([
 			});
 
 			this.oGrid.placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		}
 	});
 
-	QUnit.test("No border has been applied", function(assert) {
-		this.fnCreateGridContainer("1rem");
+	QUnit.test("No border has been applied", async function(assert) {
+		await this.fnCreateGridContainer("1rem");
 		var aItems = this.oGrid.getItems();
 		aItems[0].$().trigger("tap");
 		assert.ok(aItems[0].$().css("border"), "No extra thick border line in focus");
 	});
 
-	QUnit.test("Checking if the width has been applied only for TwoByOne and TwoByHalf tiles when the gap is 1rem", function (assert) {
+	QUnit.test("Checking if the width has been applied only for TwoByOne and TwoByHalf tiles when the gap is 1rem", async function (assert) {
 		// Arrange
-		this.fnCreateGridContainer("1rem");
+		await this.fnCreateGridContainer("1rem");
 		var aItems = this.oGrid.getItems();
 
 		// Assert
@@ -4525,9 +4551,9 @@ sap.ui.define([
 
 	});
 
-	QUnit.test("Checking if the Class has not been applied for the tiles when the gap is not 1rem", function (assert) {
+	QUnit.test("Checking if the Class has not been applied for the tiles when the gap is not 1rem", async function (assert) {
 		// Arrange
-		this.fnCreateGridContainer("0.5rem");
+		await this.fnCreateGridContainer("0.5rem");
 		var aItems = this.oGrid.getItems();
 		// Assert
 		assert.notOk(aItems[0].hasStyleClass("sapMGTGridContainerOneRemGap"),"Class has been not applied when the gap is 0.5rem");
@@ -4552,7 +4578,7 @@ sap.ui.define([
 			this.oGenericTile.destroy();
 			this.oGenericTile = null;
 		},
-		fnCreateGenericTile: function(sFrameType,sMode){
+		fnCreateGenericTile: async function(sFrameType,sMode){
 			this.oGenericTile = new GenericTile("generic-tile", {
 				subheader: "GenericTile SubHeader",
 				frameType: sFrameType,
@@ -4575,41 +4601,41 @@ sap.ui.define([
 					})
 				})
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		}
 	});
 
-	QUnit.test("Checking if the Button created for OneByOne tile", function (assert) {
+	QUnit.test("Checking if the Button created for OneByOne tile", async function (assert) {
 		// Arrange
-		this.fnCreateGenericTile(FrameType.OneByOne,GenericTileMode.ContentMode);
+		await this.fnCreateGenericTile(FrameType.OneByOne,GenericTileMode.ContentMode);
 		// Assert
 		assert.ok(this.oGenericTile._oMoreIcon.isA("sap.m.Button"), "Button is created in place of action more icon");
 	});
 
-	QUnit.test("Checking if the Button created for TwoByOne tile", function (assert) {
+	QUnit.test("Checking if the Button created for TwoByOne tile", async function (assert) {
 		// Arrange
-		this.fnCreateGenericTile(FrameType.TwoByOne,GenericTileMode.ContentMode);
+		await this.fnCreateGenericTile(FrameType.TwoByOne,GenericTileMode.ContentMode);
 		// Assert
 		assert.ok(this.oGenericTile._oMoreIcon.isA("sap.m.Button"), "Button is created in place of action more icon");
 	});
 
-	QUnit.test("Checking if the Button created for TwoByHalf tile", function (assert) {
+	QUnit.test("Checking if the Button created for TwoByHalf tile", async function (assert) {
 		// Arrange
-		this.fnCreateGenericTile(FrameType.TwoByHalf,GenericTileMode.ContentMode);
+		await this.fnCreateGenericTile(FrameType.TwoByHalf,GenericTileMode.ContentMode);
 
 		// Assert
 		assert.ok(this.oGenericTile._oMoreIcon.isA("sap.m.Button"), "Button is created in place of action more icon");
 	});
 
-	QUnit.test("Checking if the Button created for OneByHalf tile", function (assert) {
+	QUnit.test("Checking if the Button created for OneByHalf tile", async function (assert) {
 		// Arrange
-		this.fnCreateGenericTile(FrameType.OneByHalf,GenericTileMode.ContentMode);
+		await this.fnCreateGenericTile(FrameType.OneByHalf,GenericTileMode.ContentMode);
 		// Assert
 		assert.ok(this.oGenericTile._oMoreIcon.isA("sap.m.Button"), "Button is created in place of action more icon");
 	});
-	QUnit.test("Checking if the Button created for linemode tile", function (assert) {
+	QUnit.test("Checking if the Button created for linemode tile", async function (assert) {
 		// Arrange
-		this.fnCreateGenericTile(FrameType.Auto,GenericTileMode.LineMode);
+		await this.fnCreateGenericTile(FrameType.Auto,GenericTileMode.LineMode);
 		// Assert
 		assert.ok(this.oGenericTile._oMoreIcon.isA("sap.m.Button"), "Button is created in place of action more icon");
 	});
@@ -4619,7 +4645,7 @@ sap.ui.define([
 			this.oGenericTile.destroy();
 			this.oGenericTile = null;
 		},
-		createTile: function(sFrameType, sSizeBehavior, sSize) {
+		createTile: async function(sFrameType, sSizeBehavior, sSize) {
 			this.oGenericTile = new GenericTile("generic-tile", {
 				header: "GenericTile Header",
 				frameType: sFrameType,
@@ -4629,17 +4655,17 @@ sap.ui.define([
 				backgroundColor:"red",
 				tileIcon: "sap-icon://home-share"
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		}
 	});
 
-	QUnit.test("For FrameType = OneByOne and State = Loading", function (assert) {
+	QUnit.test("For FrameType = OneByOne and State = Loading", async function (assert) {
 		// Arrange
-		this.createTile(FrameType.OneByOne, "Responsive", Size.Auto);
+		await this.createTile(FrameType.OneByOne, "Responsive", Size.Auto);
 		// Assert
 		assert.equal(this.oGenericTile.getIconLoaded(), true, "IconLoaded property = true");
 		this.oGenericTile.setState(LoadState.Loading);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//Act
 		var oDomRef = this.oGenericTile.getDomRef().children[0];
 		//Assert
@@ -4649,13 +4675,13 @@ sap.ui.define([
 		assert.ok(oDomRef.children[0].children[1].classList.contains("sapMGTContentShimmerPlaceholderItemTextOneByOne"), "Text Placeholder div is present when state is loading");
 	});
 
-	QUnit.test("For IconLoaded = false, FrameType = OneByOne, State = Loading and TileIcon = ''", function (assert) {
+	QUnit.test("For IconLoaded = false, FrameType = OneByOne, State = Loading and TileIcon = ''", async function (assert) {
 		//Arrange
-		this.createTile(FrameType.OneByOne, "Responsive", Size.Auto);
+		await this.createTile(FrameType.OneByOne, "Responsive", Size.Auto);
 		this.oGenericTile.setState(LoadState.Loading);
 		this.oGenericTile.setProperty("tileIcon", "", true);
 		this.oGenericTile.setIconLoaded(false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//Act
 		var oDomRef = this.oGenericTile.getDomRef().children[0];
 		//Assert
@@ -4666,13 +4692,13 @@ sap.ui.define([
 		assert.ok(oDomRef.children[0].children[1].classList.contains("sapMGTContentShimmerPlaceholderItemTextOneByOne"), "Text Placeholder div is not present when state is loading");
 	});
 
-	QUnit.test("For IconLoaded = false, FrameType = OneByOne, State = Loaded and tileIcon = ''", function (assert) {
+	QUnit.test("For IconLoaded = false, FrameType = OneByOne, State = Loaded and tileIcon = ''", async function (assert) {
 		//Arrange
-		this.createTile(FrameType.OneByOne, "Responsive", Size.Auto);
+		await this.createTile(FrameType.OneByOne, "Responsive", Size.Auto);
 		this.oGenericTile.setProperty("tileIcon", "", true);
 		this.oGenericTile.setProperty("iconLoaded", false, false);
 		this.oGenericTile.setState(LoadState.Loaded);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//Act
 		var oPlaceHolderDomRef = this.oGenericTile.getDomRef().children[0];
 		var oContentDomRef = this.oGenericTile.getDomRef().children[1];
@@ -4684,13 +4710,13 @@ sap.ui.define([
 		assert.ok(oContentDomRef.children[0].classList.contains("sapMGTHdrTxt"), "Text div is present when state is loading");
 	});
 
-	QUnit.test("For IconLoaded = false, FrameType = OneByOne and State = Loaded", function (assert) {
+	QUnit.test("For IconLoaded = false, FrameType = OneByOne and State = Loaded", async function (assert) {
 		//Arrange
-		this.createTile(FrameType.OneByOne, "Responsive", Size.Auto);
+		await this.createTile(FrameType.OneByOne, "Responsive", Size.Auto);
 		this.oGenericTile.setProperty("tileIcon", "sap-icon://home-share", true);
 		this.oGenericTile.setState(LoadState.Loaded);
 		this.oGenericTile.setIconLoaded(true);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//Act
 		var oIconDomRef = document.querySelector(".sapMGTOneByOneIcon");
 		var oContentDomRef = document.querySelector(".sapMGTHdrContent");
@@ -4700,13 +4726,13 @@ sap.ui.define([
 		assert.ok(oContentDomRef.children[0].classList.contains("sapMGTHdrTxt"), "Text div is present when state is loaded");
 	});
 
-	QUnit.test("For IconLoaded = false, FrameType = OneByOne, State = Loading and backgroundColor = ''", function (assert) {
+	QUnit.test("For IconLoaded = false, FrameType = OneByOne, State = Loading and backgroundColor = ''", async function (assert) {
 		//Arrange
-		this.createTile(FrameType.OneByOne, "Responsive", Size.Auto);
+		await this.createTile(FrameType.OneByOne, "Responsive", Size.Auto);
 		this.oGenericTile.setProperty("backgroundColor", "", true);
 		this.oGenericTile.setProperty("state", LoadState.Loading, true);
 		this.oGenericTile.setIconLoaded(false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//Act
 		var oDomRef = this.oGenericTile.getDomRef().children[0];
 		//Assert
@@ -4717,13 +4743,13 @@ sap.ui.define([
 		assert.ok(oDomRef.children[0].children[1].classList.contains("sapMGTContentShimmerPlaceholderItemTextOneByOne"), "Text Placeholder div is present when state is loading");
 	});
 
-	QUnit.test("For IconLoaded = false, FrameType = OneByOne, State = Loaded and backgroundColor = ''", function (assert) {
+	QUnit.test("For IconLoaded = false, FrameType = OneByOne, State = Loaded and backgroundColor = ''", async function (assert) {
 		//Arrange
-		this.createTile(FrameType.OneByOne, "Responsive", Size.Auto);
+		await this.createTile(FrameType.OneByOne, "Responsive", Size.Auto);
 		this.oGenericTile.setProperty("backgroundColor", "", true);
 		this.oGenericTile.setState(LoadState.Loaded);
 		this.oGenericTile.setIconLoaded(false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//Act
 		var oPlaceHolderDomRef = this.oGenericTile.getDomRef().children[0];
 		var oContentDomRef = this.oGenericTile.getDomRef().children[1];
@@ -4735,13 +4761,13 @@ sap.ui.define([
 		assert.ok(oContentDomRef.children[0].classList.contains("sapMGTHdrTxt"), "Text div is present when state is loaded");
 	});
 
-	QUnit.test("For IconLoaded = false, FrameType = OneByOne, State = Loaded and backgroundColor = ''", function (assert) {
+	QUnit.test("For IconLoaded = false, FrameType = OneByOne, State = Loaded and backgroundColor = ''", async function (assert) {
 		//Arrange
-		this.createTile(FrameType.OneByOne, "Responsive", Size.Auto);
+		await this.createTile(FrameType.OneByOne, "Responsive", Size.Auto);
 		this.oGenericTile.setProperty("backgroundColor", "red", true);
 		this.oGenericTile.setState(LoadState.Loaded);
 		this.oGenericTile.setIconLoaded(true);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//Act
 		var oIconDomRef = document.querySelector(".sapMGTOneByOneIcon");
 		var oContentDomRef = document.querySelector(".sapMGTHdrContent");
@@ -4751,13 +4777,13 @@ sap.ui.define([
 		assert.ok(oContentDomRef.children[0].classList.contains("sapMGTHdrTxt"), "Text div is present when state is loaded");
 	});
 
-	QUnit.test("For FrameType = TwoByHalf and State = Loading", function (assert) {
+	QUnit.test("For FrameType = TwoByHalf and State = Loading", async function (assert) {
 		// Arrange
-		this.createTile(FrameType.TwoByHalf, "Small");
+		await this.createTile(FrameType.TwoByHalf, "Small");
 		// Assert
 		assert.equal(this.oGenericTile.getIconLoaded(), true, "IconLoaded property = true");
 		this.oGenericTile.setState(LoadState.Loading);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//Act
 		var oDomRef = this.oGenericTile.getDomRef().children[0];
 		//Assert
@@ -4767,13 +4793,13 @@ sap.ui.define([
 		assert.ok(oDomRef.children[0].children[1].classList.contains("sapMGTContentShimmerPlaceholderItemTextTwoByHalf"), "Text Placeholder div is present when state is loading");
 	});
 
-	QUnit.test("For IconLoaded = false, FrameType = TwoByHalf, State = Loading and TileIcon = ''", function (assert) {
+	QUnit.test("For IconLoaded = false, FrameType = TwoByHalf, State = Loading and TileIcon = ''", async function (assert) {
 		//Arrange
-		this.createTile(FrameType.TwoByHalf, "Small");
+		await this.createTile(FrameType.TwoByHalf, "Small");
 		this.oGenericTile.setState(LoadState.Loading);
 		this.oGenericTile.setProperty("tileIcon", "", true);
 		this.oGenericTile.setIconLoaded(false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//Act
 		var oDomRef = this.oGenericTile.getDomRef().children[0];
 		//Assert
@@ -4784,13 +4810,13 @@ sap.ui.define([
 		assert.ok(oDomRef.children[0].children[1].classList.contains("sapMGTContentShimmerPlaceholderItemTextTwoByHalf"), "Text Placeholder div is not present when state is loading");
 	});
 
-	QUnit.test("For IconLoaded = false, FrameType = TwoByHalf, State = Loaded and tileIcon = ''", function (assert) {
+	QUnit.test("For IconLoaded = false, FrameType = TwoByHalf, State = Loaded and tileIcon = ''", async function (assert) {
 		//Arrange
-		this.createTile(FrameType.TwoByHalf, "Small");
+		await this.createTile(FrameType.TwoByHalf, "Small");
 		this.oGenericTile.setProperty("tileIcon", "", true);
 		this.oGenericTile.setProperty("iconLoaded", false, false);
 		this.oGenericTile.setState(LoadState.Loaded);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//Act
 		var oPlaceHolderDomRef = this.oGenericTile.getDomRef().children[0];
 		var oContentDomRef = this.oGenericTile.getDomRef().children[1];
@@ -4802,13 +4828,13 @@ sap.ui.define([
 		assert.ok(oContentDomRef.children[0].classList.contains("sapMGTHdrTxt"), "Text div is present when state is loading");
 	});
 
-	QUnit.test("For IconLoaded = false, FrameType = TwoByHalf and State = Loaded", function (assert) {
+	QUnit.test("For IconLoaded = false, FrameType = TwoByHalf and State = Loaded", async function (assert) {
 		//Arrange
-		this.createTile(FrameType.TwoByHalf, "Small");
+		await this.createTile(FrameType.TwoByHalf, "Small");
 		this.oGenericTile.setProperty("tileIcon", "sap-icon://home-share", true);
 		this.oGenericTile.setState(LoadState.Loaded);
 		this.oGenericTile.setIconLoaded(true);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//Act
 		var oIconDomRef = this.oGenericTile.getDomRef().children[0];
 		var oContentDomRef = this.oGenericTile.getDomRef().children[1];
@@ -4818,13 +4844,13 @@ sap.ui.define([
 		assert.ok(oContentDomRef.children[0].classList.contains("sapMGTHdrTxt"), "Text div is present when state is loaded");
 	});
 
-	QUnit.test("For IconLoaded = false, FrameType = TwoByHalf, State = Loading and backgroundColor = ''", function (assert) {
+	QUnit.test("For IconLoaded = false, FrameType = TwoByHalf, State = Loading and backgroundColor = ''", async function (assert) {
 		//Arrange
-		this.createTile(FrameType.TwoByHalf, "Small");
+		await this.createTile(FrameType.TwoByHalf, "Small");
 		this.oGenericTile.setProperty("backgroundColor", "", true);
 		this.oGenericTile.setProperty("state", LoadState.Loading, true);
 		this.oGenericTile.setIconLoaded(false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//Act
 		var oDomRef = this.oGenericTile.getDomRef().children[0];
 		//Assert
@@ -4835,13 +4861,13 @@ sap.ui.define([
 		assert.ok(oDomRef.children[0].children[1].classList.contains("sapMGTContentShimmerPlaceholderItemTextTwoByHalf"), "Text Placeholder div is present when state is loading");
 	});
 
-	QUnit.test("For IconLoaded = false, FrameType = TwoByHalf, State = Loaded and backgroundColor = ''", function (assert) {
+	QUnit.test("For IconLoaded = false, FrameType = TwoByHalf, State = Loaded and backgroundColor = ''", async function (assert) {
 		//Arrange
-		this.createTile(FrameType.TwoByHalf, "Small");
+		await this.createTile(FrameType.TwoByHalf, "Small");
 		this.oGenericTile.setProperty("backgroundColor", "", true);
 		this.oGenericTile.setState(LoadState.Loaded);
 		this.oGenericTile.setIconLoaded(false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//Act
 		var oPlaceHolderDomRef = this.oGenericTile.getDomRef().children[0];
 		var oContentDomRef = this.oGenericTile.getDomRef().children[1];
@@ -4853,13 +4879,13 @@ sap.ui.define([
 		assert.ok(oContentDomRef.children[0].classList.contains("sapMGTHdrTxt"), "Text div is present when state is loaded");
 	});
 
-	QUnit.test("For IconLoaded = false, FrameType = TwoByHalf, State = Loaded and backgroundColor = ''", function (assert) {
+	QUnit.test("For IconLoaded = false, FrameType = TwoByHalf, State = Loaded and backgroundColor = ''", async function (assert) {
 		//Arrange
-		this.createTile(FrameType.TwoByHalf, "Small");
+		await this.createTile(FrameType.TwoByHalf, "Small");
 		this.oGenericTile.setProperty("backgroundColor", "red", true);
 		this.oGenericTile.setState(LoadState.Loaded);
 		this.oGenericTile.setIconLoaded(true);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		//Act
 		var oIconDomRef = this.oGenericTile.getDomRef().children[0];
 		var oContentDomRef = this.oGenericTile.getDomRef().children[1];
@@ -4870,7 +4896,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("sap.m.GenericTileMode.LineMode Test a Link", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.stub(Device.media, "attachHandler");
 			this.oGenericTile = new GenericTile({
 				state: LoadState.Loaded,
@@ -4879,7 +4905,7 @@ sap.ui.define([
 				mode: GenericTileMode.LineMode,
 				url: "Test url"
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			this.oGenericTile.destroy();
@@ -4894,7 +4920,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("sap.m.GenericTileMode.LineMode Test a button", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.stub(Device.media, "attachHandler");
 			this.oGenericTile = new GenericTile({
 				state: LoadState.Loaded,
@@ -4903,7 +4929,7 @@ sap.ui.define([
 				mode: GenericTileMode.LineMode,
 				press: "press"
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			this.oGenericTile.destroy();
@@ -4916,7 +4942,7 @@ sap.ui.define([
 		assert.ok(this.oGenericTile.getDomRef().getAttribute("aria-label").includes(sLineModeDescription),"Size description rendered successfully");
 	});
 	QUnit.module("Loading State Tests", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.oGenericTile = new GenericTile({
 				state: LoadState.Loading,
 				header: "headerText",
@@ -4928,7 +4954,7 @@ sap.ui.define([
 					footer: "Current Quarter"
 				})
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			this.oGenericTile.destroy();
@@ -4943,7 +4969,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("Tests for renderOnThemeChange property", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.oGenericTile = new GenericTile({
 				state: LoadState.Loading,
 				renderOnThemeChange: true,
@@ -4956,19 +4982,31 @@ sap.ui.define([
 					footer: "Current Quarter"
 				})
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 			this.sStartTheme = Theming.getTheme();
 			this.sRequiredTheme = null;
 
+			var fnAttachApplied = (oEvent) => {
+				Theming.detachApplied(fnAttachApplied);
+				if (Theming.getTheme() === this.sRequiredTheme) {
+					if (typeof this.fnCallback === "function") {
+						this.fnCallback.bind(this)();
+						this.fnCallback = undefined;
+					}
+				}
+			};
+
 			this.applyTheme = function(sTheme, fnCallback) {
+				this.fnCallback = fnCallback;
 				this.sRequiredTheme = sTheme;
-				if (Theming.getTheme() === this.sRequiredTheme && false) {
+				if (Theming.getTheme() === this.sRequiredTheme) {
 					if (typeof fnCallback === "function") {
 						fnCallback.bind(this)();
 						fnCallback = undefined;
 					}
 				} else {
 					Theming.setTheme(sTheme);
+					Theming.attachApplied(fnAttachApplied.bind(this));
 				}
 			};
 		},
@@ -4989,10 +5027,10 @@ sap.ui.define([
 		});
 	});
 
-	QUnit.test("Test if the tile has not rendered again on theme change", function(assert){
+	QUnit.test("Test if the tile has not rendered again on theme change", async function(assert){
 		var done = assert.async();
 		this.oGenericTile.setRenderOnThemeChange(false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		this.oSpy = this.spy(this.oGenericTile, "invalidate");
 		this.applyTheme("sap_horizon", function() {
 			assert.notOk(this.oSpy.callCount, "The Tile has not been Rendered upon theme change");
@@ -5001,7 +5039,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("Test if the dragging and dropping is working on anchor tagged rendered tiles", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.oGrid1 = new GridContainer({
 				layout: new GridContainerSettings({columns: 2, rowSize: "80px", columnSize: "80px", gap: "16px"}),
 				items: [
@@ -5034,7 +5072,7 @@ sap.ui.define([
 				]
 			});
 			this.oGrid1.placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			this.oGrid1.destroy();
@@ -5054,7 +5092,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("Test if the pressEnabled property is working on the IconMode tiles in action scope", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.oGenericTile = new GenericTile({
 				header: "GenericTile",
 				subheader: "GenericTile subHeader",
@@ -5065,7 +5103,7 @@ sap.ui.define([
 				pressEnabled : false,
 				scope : "ActionMore"
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			this.oGenericTile.destroy();
@@ -5133,7 +5171,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("Resize handler on IconMode tiles", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.oGenericTile = new GenericTile({
 				header: "GenericTile",
 				subheader: "GenericTile subHeader",
@@ -5142,7 +5180,7 @@ sap.ui.define([
 				backgroundColor: "red",
 				frameType: "OneByOne"
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			this.oGenericTile.destroy();
@@ -5165,7 +5203,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("Tab navigating inside the IconMode tiles", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.oGenericTile = new GenericTile("tile",{
 				header: "GenericTile",
 				subheader: "GenericTile subHeader",
@@ -5175,7 +5213,7 @@ sap.ui.define([
 				frameType: "TwoByHalf",
 				scope: "ActionMore"
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			this.oGenericTile.destroy();
@@ -5220,7 +5258,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("Getting focus on IconMode tiles", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.oGenericTile = new GenericTile("tile",{
 				header: "GenericTile",
 				subheader: "GenericTile subHeader",
@@ -5229,7 +5267,7 @@ sap.ui.define([
 				backgroundColor: "sapLegendColor1",
 				frameType: "OneByOne"
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			this.oGenericTile.destroy();
@@ -5245,7 +5283,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("Testing the ondragend event on the iconMode tiles", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.oGenericTile = new GenericTile("tile",{
 				header: "GenericTile",
 				subheader: "GenericTile subHeader",
@@ -5254,7 +5292,7 @@ sap.ui.define([
 				backgroundColor: "sapLegendColor1",
 				frameType: FrameType.TwoByHalf
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			this.oGenericTile.destroy();
@@ -5342,7 +5380,7 @@ sap.ui.define([
 	}
 
 	QUnit.module("Generic Tile: 'tileBadge' property tests", {
-		beforeEach: function () {
+		beforeEach: async function () {
 			this.oGenericTile = new GenericTile({
 				id: "badge-tile",
 				header: "Test Header",
@@ -5353,7 +5391,7 @@ sap.ui.define([
 				tileIcon: "sap-icon://folder-full",
 				tileBadge: "99"
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function () {
 			this.oGenericTile.destroy();
@@ -5361,44 +5399,44 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("Should Only be visible in IconMode and for TwoByHalf frameType", function (assert) {
+	QUnit.test("Should Only be visible in IconMode and for TwoByHalf frameType", async function (assert) {
 		assert.ok(document.getElementById("badge-tile-tileBadge"), "tile badge rendered initially");
 
 		//Switch Mode
 		this.oGenericTile.setMode("ContentMode");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.notOk(document.getElementById("badge-tile-tileBadge"), "tile badge not rendered for other mode");
 
 		//Switch Frame Type
 		this.oGenericTile.setFrameType(FrameType.OneByOne);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.notOk(document.getElementById("badge-tile-tileBadge"), "tile badge not rendered for other frame type");
 
 		//Switch back to original state
 		this.oGenericTile.setMode("IconMode");
 		this.oGenericTile.setFrameType(FrameType.TwoByHalf);
 		this.oGenericTile.setTileIcon("sap-icon://folder-full");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(document.getElementById("badge-tile-tileBadge"), "tile badge rendered again");
 
 		//Switch to invalid icon
 		this.oGenericTile.setTileIcon();
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(document.getElementById("badge-tile-tileBadge"), "tile badge rendered even if invalid icon");
 	});
 
-	QUnit.test("Should only display 2 characters", function (assert) {
+	QUnit.test("Should only display 2 characters", async function (assert) {
 		var sTestBadge = "1135";
 		assert.ok(document.getElementById("badge-tile-tileBadge"), "tile badge rendered initially");
 
 		//Change tile badge
 		this.oGenericTile.setTileBadge(sTestBadge);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.equal(document.getElementById("badge-tile-tileBadge").innerText, sTestBadge.substring(0, 3), "only first 2 characters of the badge value are displayed");
 	});
 
 	QUnit.module("Generic Tile: 'dropAreaOffset' property tests", {
-		beforeEach: function () {
+		beforeEach: async function () {
 			this.oGenericTile = new GenericTile({
 				id: "drop-tile",
 				header: "Test Header",
@@ -5409,7 +5447,7 @@ sap.ui.define([
 				tileIcon: "sap-icon://folder-full",
 				dropAreaOffset: 0
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function () {
 			this.oGenericTile.destroy();
@@ -5417,7 +5455,7 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("should verify that drop area bounding rectangle is influenced on change of dropAreaOffset", function (assert) {
+	QUnit.test("should verify that drop area bounding rectangle is influenced on change of dropAreaOffset", async function (assert) {
 		assert.ok(document.getElementById("drop-tile"), "tile rendered initially");
 
 		var OFFSET = 100,
@@ -5425,7 +5463,7 @@ sap.ui.define([
 
 		//Update dropAreaOffset
 		this.oGenericTile.setDropAreaOffset(OFFSET);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		//Horizontal Layout
 		var oBoundingRectHorizontal = this.oGenericTile.getDropAreaRect("Horizontal");
@@ -5438,7 +5476,7 @@ sap.ui.define([
 		assert.equal(Math.abs(oBoundingRectVertical.bottom - oBoundingRect.bottom), OFFSET, "bottom updated");
 	});
 	QUnit.module("GenericTile when linkTileContent is used", {
-		beforeEach: function () {
+		beforeEach: async function () {
 			this.oGenericTile = new GenericTile({
 				id: "linkTile",
 				header: "Test Header",
@@ -5448,7 +5486,7 @@ sap.ui.define([
 					new LinkTileContent({iconSrc:"sap-icon://action-settings",linkText:"SAP"})
 				]
 			}).placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 			this.isRepeatedTwice = function(sInputString, sWord) {
 				var sLowerInputString = sInputString.toLowerCase();
 				var sLowerWord = sWord.toLowerCase();

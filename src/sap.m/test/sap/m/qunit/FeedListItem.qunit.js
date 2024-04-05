@@ -1,8 +1,6 @@
 /*global QUnit, sinon */
 sap.ui.define([
-	"sap/ui/core/Theming",
 	"sap/ui/qunit/QUnitUtils",
-	"sap/ui/qunit/utils/nextUIUpdate",
 	"sap/ui/thirdparty/jquery",
 	"sap/m/FeedListItem",
 	"sap/m/FeedListItemAction",
@@ -21,8 +19,8 @@ sap.ui.define([
 	"sap/m/library",
 	"sap/base/Log",
 	"sap/ui/events/KeyCodes",
-	"sap/ui/core/Element"
-], function(Theming, qutils, nextUIUpdate, jQuery, FeedListItem, FeedListItemAction, List, StandardListItem, JSONModel, Button, Popover, Bar, ActionSheet, App, Page, Device, FormattedText, IconPool, library, Log, KeyCodes, Element) {
+	"sap/ui/qunit/utils/nextUIUpdate"
+], function(qutils, jQuery, FeedListItem, FeedListItemAction, List, StandardListItem, JSONModel, Button, Popover, Bar, ActionSheet, App, Page, Device, FormattedText, IconPool, library, Log, KeyCodes, nextUIUpdate) {
 	"use strict";
 
 	// shortcut for sap.m.PlacementType
@@ -334,35 +332,6 @@ sap.ui.define([
 	QUnit.test("Default src - icon size", function (assert) {
 		assert.ok(oFeedList.getItems()[4].oAvatar.$().hasClass("sapFAvatarS"), "Avatar has class sapAvatarS applied");
 		assert.equal(oFeedList.getItems()[4].oAvatar.$().css("font-size"), "32px", "Avatar icon font size is 2 rem");
-	});
-	/**
-	 * @deprecated Since version 1.121
-	 */
-	QUnit.test("Default src - icon color", function (assert) {
-		this.oNonActiveItem = oFeedList.getItems().filter(function(oListItem) {
-			return !oListItem.getIconActive();
-		})[0];
-		assert.ok(this.oNonActiveItem.oAvatar.$().hasClass("sapMFeedListItemImageInactive"), "Avatar has the Inactive icon class applied");
-		assert.equal(this.oNonActiveItem.oAvatar.$().css("color"), "rgb(255, 255, 255)", "The inactive icon color is white in Default theme");
-		this.applyTheme = function(sTheme, fnCallback) {
-			this.sRequiredTheme = sTheme;
-			if (Theming.getTheme() === this.sRequiredTheme && false) {
-				if (typeof fnCallback === "function") {
-					fnCallback.bind(this)();
-					fnCallback = undefined;
-				}
-			} else {
-				Theming.setTheme(sTheme);
-			}
-		};
-		var done = assert.async();
-		this.applyTheme("sap_belize", function() {
-			this.oNonActiveItem.invalidate();
-			nextUIUpdate.runSync()/*context not obviously suitable for an async function*/;
-
-			assert.equal(this.oNonActiveItem.oAvatar.$().css("color"), "rgb(255, 255, 255)", "The inactive icon color is white in sap_belize theme");
-			done();
-		}.bind(this));
 	});
 
 	QUnit.test("No Timestamp", function (assert) {
@@ -922,9 +891,9 @@ sap.ui.define([
 		}
 	});
 
-//	QUnit.test("Special characters in the sender property do not lead to an exception", function (assert) {
-//		assert.ok(true, "No exception occurred");
-//	});
+	//	QUnit.test("Special characters in the sender property do not lead to an exception", function (assert) {
+	//		assert.ok(true, "No exception occurred");
+	//	});
 
 	QUnit.module("Actions aggregation and hidden aggregations", {
 		beforeEach: async function() {
@@ -1150,66 +1119,6 @@ sap.ui.define([
 		}
 	});
 
-	/**
-	 * @deprecated Since version 1.121
-	 */
-	QUnit.test("When the theme is 'sap_belize' and the device is not a phone, the CSS contrast class 'sapContrast' is set on the ActionSheet's popover .", function (assert) {
-		// Arrange
-		var oPopover = new Popover();
-		var oEvent = {
-			getSource: function () {
-				return {
-					getParent: function () {
-						return oPopover;
-					}
-				};
-			}
-		};
-		var oThemeStub = sinon.stub(Theming, "getTheme").returns("sap_belize");
-		var bOriginSystemPhone = Device.system.phone;
-		Device.system.phone = false;
-
-		// Act
-		this.oFeedListItem._onBeforeOpenActionSheet(oEvent);
-
-		// Assert
-		assert.ok(oPopover.hasStyleClass("sapContrast"), "The correct CSS contrast class has been added.");
-
-		// Cleanup
-		oThemeStub.restore();
-		Device.system.phone = bOriginSystemPhone;
-	});
-
-	/**
-	 * @deprecated Since version 1.121
-	 */
-	QUnit.test("When the theme is 'sap_belize_plus' and the device is not a phone, the CSS contrast class 'sapContrastPlus' is set on the ActionSheet's popover.", function (assert) {
-		// Arrange
-		var oPopover = new Popover();
-		var oEvent = {
-			getSource: function () {
-				return {
-					getParent: function () {
-						return oPopover;
-					}
-				};
-			}
-		};
-		var oThemeStub = sinon.stub(Theming, "getTheme").returns("sap_belize_plus");
-		var bOriginSystemPhone = Device.system.phone;
-		Device.system.phone = false;
-
-		// Act
-		this.oFeedListItem._onBeforeOpenActionSheet(oEvent);
-
-		// Assert
-		assert.ok(oPopover.hasStyleClass("sapContrastPlus"), "The correct CSS contrast class has been added.");
-
-		// Cleanup
-		oThemeStub.restore();
-		Device.system.phone = bOriginSystemPhone;
-	});
-
 	QUnit.test("When the device is a phone, no CSS contrast class is set on the ActionSheet's popover.", function (assert) {
 		// Arrange
 		var oPopover = new Popover();
@@ -1305,5 +1214,4 @@ sap.ui.define([
 		oFeedListItem = null;
 		oList = null;
 	});
-
 });
