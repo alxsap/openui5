@@ -3,9 +3,8 @@ sap.ui.define([
 	"sap/m/NewsContent",
 	"sap/m/MessageToast",
 	"sap/ui/core/TooltipBase",
-	"sap/m/library",
 	"sap/ui/qunit/utils/nextUIUpdate"
-], function(NewsContent, MessageToast, TooltipBase, library, nextUIUpdate) {
+], function(NewsContent, MessageToast, TooltipBase, nextUIUpdate) {
 	"use strict";
 
 

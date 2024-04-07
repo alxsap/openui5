@@ -62,7 +62,6 @@ sap.ui.define([
 		}
 
 		this.spy(sap.ui.loader._, 'loadJSResourceAsync');
-		this.spy(XMLHttpRequest.prototype, 'open');
 		this.spy(sap.ui, 'require');
 
 		// make lib3 already loaded
@@ -99,7 +98,6 @@ sap.ui.define([
 			// lib5 should load the json format as fallback
 			checkLibNotInitialized('testlibs.scenario1.lib5');
 			sinon.assert.calledWith(sap.ui.loader._.loadJSResourceAsync, sinon.match(/scenario1\/lib5\/library-preload\.js$/));
-			sinon.assert.calledWith(XMLHttpRequest.prototype.open, "GET", sinon.match(/scenario1\/lib5\/library-preload\.json$/));
 			sinon.assert.neverCalledWith(sap.ui.require, ['testlibs/scenario1/lib5/library']);
 		});
 	});

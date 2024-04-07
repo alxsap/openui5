@@ -2,17 +2,10 @@
 sap.ui.define([
 	"sap/m/upload/UploadSet",
 	"sap/m/upload/UploadSetItem",
-	"sap/m/Toolbar",
-	"sap/m/Label",
-	"sap/m/upload/UploadSetRenderer",
-	"sap/m/ListItemBaseRenderer",
-	"sap/m/Dialog",
-	"sap/ui/Device",
 	"sap/ui/model/json/JSONModel",
 	"./UploadSetTestUtils",
 	"sap/ui/qunit/utils/nextUIUpdate"
-], function (UploadSet, UploadSetItem, Toolbar, Label, UploadSetRenderer, ListItemBaseRenderer, Dialog, Device,
-			 JSONModel, TestUtils, nextUIUpdate) {
+], function (UploadSet, UploadSetItem, JSONModel, TestUtils, nextUIUpdate) {
 	"use strict";
 
 	function getData() {
@@ -38,7 +31,7 @@ sap.ui.define([
 	}
 
 	QUnit.module("UploadSet restrictions", {
-		beforeEach: async function() {
+		beforeEach: async function () {
 			this.oUploadSet = new UploadSet("uploadSet", {
 				items: {
 					path: "/items",

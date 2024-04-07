@@ -1,16 +1,14 @@
 /*global QUnit */
 
 sap.ui.define("sap.m.qunit.UploadSetOpenFileDialog", [
-	"sap/ui/qunit/utils/nextUIUpdate",
 	"sap/ui/thirdparty/jquery",
 	"sap/m/upload/UploadSet",
 	"sap/ui/model/json/JSONModel",
-	"sap/ui/base/Event",
-	"sap/ui/Device",
 	"sap/m/upload/UploadSetItem",
 	"sap/m/ObjectMarker",
-	"sap/base/Log"
-], function (nextUIUpdate, jQuery, UploadSet, JSONModel, Event, Device, UploadSetItem, ObjectMarker, Log) {
+	"sap/base/Log",
+	"sap/ui/qunit/utils/nextUIUpdate"
+], function (jQuery, UploadSet, JSONModel, UploadSetItem, ObjectMarker, Log, nextUIUpdate) {
 	"use strict";
 
 	var IMAGE_PATH = "test-resources/sap/m/images/";
@@ -107,7 +105,7 @@ sap.ui.define("sap.m.qunit.UploadSetOpenFileDialog", [
 	}
 
 	QUnit.module("UploadSet openFileDialog method", {
-		beforeEach: async function() {
+		beforeEach: async function () {
 			this.oUploadSet = new UploadSet({
 				instantUpload: true,
 				items: {
@@ -191,7 +189,7 @@ sap.ui.define("sap.m.qunit.UploadSetOpenFileDialog", [
 		assert.deepEqual(this.oUploadSet._oItemToUpdate, oItem);
 	});
 
-	QUnit.test("onUploadComplete event test that _oItemToUpdate is set to null in the case of uploadComplete", async function(assert) {
+	QUnit.test("onUploadComplete event test that _oItemToUpdate is set to null in the case of uploadComplete", async function (assert) {
 		// Arrange
 		var oItem = this.oUploadSet.getItems()[0];
 		oItem.setUploadState("Ready");

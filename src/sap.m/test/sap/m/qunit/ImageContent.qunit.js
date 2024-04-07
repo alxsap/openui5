@@ -1,9 +1,9 @@
 /*global QUnit, sinon */
 sap.ui.define([
-	"sap/ui/qunit/utils/nextUIUpdate",
 	"sap/ui/thirdparty/jquery",
-	"sap/m/ImageContent"
-], function(nextUIUpdate, jQuery, ImageContent) {
+	"sap/m/ImageContent",
+	"sap/ui/qunit/utils/nextUIUpdate"
+], function(jQuery, ImageContent, nextUIUpdate) {
 	"use strict";
 
 

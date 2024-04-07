@@ -4,11 +4,11 @@ sap.ui.define([
 	"sap/m/upload/UploadSetwithTableItem",
 	"sap/m/upload/UploadSetwithTableRenderer",
 	"sap/ui/model/json/JSONModel",
+	"sap/ui/qunit/utils/nextUIUpdate",
 	"./UploadSetwithTableTestUtils",
 	"sap/m/upload/UploaderTableItem",
 	"sap/m/library",
 	"sap/m/ToolbarSpacer",
-	"sap/ui/qunit/utils/nextUIUpdate",
 	"sap/ui/unified/FileUploader",
 	"sap/m/upload/UploadSetToolbarPlaceholder",
 	"sap/m/Button",
@@ -16,8 +16,8 @@ sap.ui.define([
 	"sap/m/OverflowToolbar",
 	"sap/m/IllustratedMessageType",
 	"sap/m/upload/UploaderHttpRequestMethod"
-], function (UploadSetwithTable, UploadSetwithTableItem, UploadSetwithTableRenderer, JSONModel, TestUtils, Uploader, Library, ToolbarSpacer,
-	nextUIUpdate, FileUploader, UploadSetToolbarPlaceholder, Button, ToggleButton, OverflowToolbar, IllustratedMessageType, UploaderHttpRequestMethod) {
+], function (UploadSetwithTable, UploadSetwithTableItem, UploadSetwithTableRenderer, JSONModel, nextUIUpdate, TestUtils, Uploader, Library,
+	ToolbarSpacer, FileUploader, UploadSetToolbarPlaceholder, Button, ToggleButton, OverflowToolbar, IllustratedMessageType, UploaderHttpRequestMethod) {
 	"use strict";
 
 	function getData() {
@@ -39,7 +39,7 @@ sap.ui.define([
 	var UploadState = Library.UploadState;
 
 	QUnit.module("UploadSetwithTable general functionality", {
-		beforeEach: async function() {
+		beforeEach: async function () {
 			this.oUploadSetwithTable = new UploadSetwithTable("UploadSetwithTable", {
 				fileTypes: "txt,doc,png",
 				mediaTypes: "text/plain,application/msword,image/jpeg,image/png",
@@ -87,7 +87,7 @@ sap.ui.define([
 		assert.ok(this.oUploadSetwithTable.getHeaderToolbar(), "Instance of HearderTool Bar created successfully");
 	});
 
-	QUnit.test("Default No data type illustrated message/text/description rendering", async function(assert) {
+	QUnit.test("Default No data type illustrated message/text/description rendering", async function (assert) {
 		//Arrange
 		this.oUploadSetwithTable.unbindAggregation("items");
 		var oIllustratedMessage = this.oUploadSetwithTable.getNoData();
@@ -100,7 +100,7 @@ sap.ui.define([
 	});
 
 
-	QUnit.test("No data rendering - with user specified no data illustration type", async function(assert) {
+	QUnit.test("No data rendering - with user specified no data illustration type", async function (assert) {
 		//Arrange
 		this.oUploadSetwithTable.setNoDataIllustrationType(IllustratedMessageType.SuccessBalloon);
 		this.oUploadSetwithTable.setNoDataText("No Items");
@@ -382,7 +382,7 @@ sap.ui.define([
 		assert.equal(UploadSetwithTable.getIconForFileType(null, "sample.mp4"), "sap-icon://document", "IconForFileType .mp4 is set correctly");
 	});
 
-	QUnit.test("Test for method registerUploaderEvents (uploadstarted, uploadCompleted), oXhr parameters are not empty", async function(assert) {
+	QUnit.test("Test for method registerUploaderEvents (uploadstarted, uploadCompleted), oXhr parameters are not empty", async function (assert) {
 		var oUploader = new Uploader(),
 			oItem = this.oUploadSetwithTable.getItems()[0],
 			done = assert.async();
@@ -416,7 +416,7 @@ sap.ui.define([
 		oUploader.uploadItem(oItem);
 	});
 
-	QUnit.test("Check multi-part form data in XMLHttpRequest", async function(assert) {
+	QUnit.test("Check multi-part form data in XMLHttpRequest", async function (assert) {
 		//Setup
 		var oUploader = new Uploader({
 			useMultipart: true
@@ -507,7 +507,7 @@ sap.ui.define([
 
 
 	QUnit.module("UploadSet with Table HeaderToolbar Default", {
-		beforeEach: async function() {
+		beforeEach: async function () {
 			this.oUploadSetwithTable = new UploadSetwithTable("noToolbarTest", {});
 			this.oUploadSetwithTable.placeAt("qunit-fixture");
 			await nextUIUpdate();
@@ -537,7 +537,7 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("Test for adding file uploader to fallback position if UploadSetwithTable ToolbarPlaceHolder instance missing", async function(assert) {
+	QUnit.test("Test for adding file uploader to fallback position if UploadSetwithTable ToolbarPlaceHolder instance missing", async function (assert) {
 		//Act
 		this.oUploadSetwithTable = new UploadSetwithTable("noPHToolbarTest", {
 			headerToolbar: new OverflowToolbar({
@@ -553,7 +553,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("UploadSetwithTable HeaderToolbar Custom", {
-		beforeEach: async function() {
+		beforeEach: async function () {
 			this.oUploadSetwithTable = new UploadSetwithTable("PHToolbarTest", {
 				headerToolbar: new OverflowToolbar({
 					content: [new Button("element1", { text: "Filter" }),
@@ -631,7 +631,7 @@ sap.ui.define([
 		};
 	}
 	QUnit.module("Directory Uploads", {
-		beforeEach: async function() {
+		beforeEach: async function () {
 			this.oUploadSetwithTable = new UploadSetwithTable("UploadSetwithTable", {
 				items: {
 					path: "/items",

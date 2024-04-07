@@ -3,10 +3,10 @@ sap.ui.define([
 	"sap/m/TileContent",
 	"sap/m/Text",
 	"sap/m/library",
+	"sap/ui/qunit/utils/nextUIUpdate",
 	"sap/m/NumericContent",
-	"sap/m/GenericTile",
-	"sap/ui/qunit/utils/nextUIUpdate"
-], function(TileContent, Text, library, NumericContent, GenericTile, nextUIUpdate) {
+	"sap/m/GenericTile"
+], function(TileContent, Text, library, nextUIUpdate, NumericContent, GenericTile) {
 	"use strict";
 
 
@@ -45,7 +45,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("TileContent Inside GenericTile",{
-		beforeEach : async function() {
+		beforeEach : async function(){
 			this.tileContent = new TileContent({
 				content: new NumericContent({
 					icon: "sap-icon://world",

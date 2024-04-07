@@ -51,7 +51,7 @@ sap.ui.define([
 		};
 	}
 	QUnit.module("UploadSet general functionality", {
-		beforeEach: async function() {
+		beforeEach: async function () {
 			this.oUploadSet = new UploadSet("uploadSet", {
 				items: {
 					path: "/items",
@@ -76,7 +76,7 @@ sap.ui.define([
 	NoopUploader.prototype.uploadItem = function (oItem, aHeaders) {};
 	NoopUploader.prototype.downloadItem = function (oItem, aHeaders, bAskForLocation) {};
 
-	QUnit.test("Test for progressbar visibility", async function(assert) {
+	QUnit.test("Test for progressbar visibility", async function (assert) {
 		//arrange
 		var oItem = this.oUploadSet.getItems()[0];
 		oItem.setUploadState("Ready");
@@ -236,7 +236,7 @@ sap.ui.define([
 		assert.notOk(oDialog, "Remove dialog should not exist at this time.");
 	});
 
-	QUnit.test("Event beforeItemEdited is called at proper time and with correct parameters, prevent default applies.", async function(assert) {
+	QUnit.test("Event beforeItemEdited is called at proper time and with correct parameters, prevent default applies.", async function (assert) {
 		assert.expect(9);
 		var oItem = this.oUploadSet.getItems()[0];
 
@@ -267,7 +267,7 @@ sap.ui.define([
 		assert.equal(oItem._getFileNameLink().$().length, 0, "File name link should be ignored.");
 	});
 
-	QUnit.test("Event afterItemEdited is called at proper time and with correct parameters.", async function(assert) {
+	QUnit.test("Event afterItemEdited is called at proper time and with correct parameters.", async function (assert) {
 		assert.expect(1);
 		var oItem = this.oUploadSet.getItems()[0];
 
@@ -329,7 +329,7 @@ sap.ui.define([
 		});
 	});
 
-	QUnit.test("Rename filename with no extension", async function(assert) {
+	QUnit.test("Rename filename with no extension", async function (assert) {
 		assert.expect(2);
 		var oItem = this.oUploadSet.getItems()[0];
 
@@ -451,7 +451,7 @@ sap.ui.define([
 		assert.ok(spyHandleItemEditCancelation.notCalled, "UploadSet._handleItemEditCancelation is not called");
 	});
 
-	QUnit.test("Then hiding edit button, for item that is not in edit, but there is another item in edit mode UploadSet._handleItemEditCancelation is not called", async function(assert) {
+	QUnit.test("Then hiding edit button, for item that is not in edit, but there is another item in edit mode UploadSet._handleItemEditCancelation is not called", async function (assert) {
 		var spyHandleItemEditCancelation = this.spy(this.oUploadSet, "_handleItemEditCancelation");
 		var oItem0 = this.oUploadSet.getItems()[0],
 			oItem1 = this.oUploadSet.getItems()[1];
@@ -508,7 +508,7 @@ sap.ui.define([
 		});
 	});
 
-	QUnit.test("oXhr parameters are not empty", async function(assert) {
+	QUnit.test("oXhr parameters are not empty", async function (assert) {
 		var oUploader = new Uploader(),
 			oItem = this.oUploadSet.getItems()[0],
 			done = assert.async();
@@ -533,7 +533,7 @@ sap.ui.define([
 		oUploader.uploadItem(oItem);
 	});
 
-	QUnit.test("Check multi-part form data in XMLHttpRequest", async function(assert) {
+	QUnit.test("Check multi-part form data in XMLHttpRequest", async function (assert) {
 		//Setup
 		var oUploader = new Uploader({
 			useMultipart: true
@@ -572,7 +572,7 @@ sap.ui.define([
 		assert.equal(oIllustratedMessage.getDescription(), sNoDataDescription, "default discription is rendered in Upload set");
 	});
 
-	QUnit.test("No data type illustrated message rendering if not set via aggregation", async function(assert) {
+	QUnit.test("No data type illustrated message rendering if not set via aggregation", async function (assert) {
 		//Arrange
 		this.oUploadSet.unbindAggregation("items");
 		var oIllustratedMessage = this.oUploadSet._getIllustratedMessage();
@@ -583,7 +583,7 @@ sap.ui.define([
 		assert.equal(oIllustratedMessage.getDomRef().querySelector("svg").getAttribute("aria-labelledby"), this.oUploadSet._oInvisibleText.getId(), "AriaLabelledBy is set correctly.");
 	});
 
-	QUnit.test("No data type illustrated message rendering if set via aggregation", async function(assert) {
+	QUnit.test("No data type illustrated message rendering if set via aggregation", async function (assert) {
 		var oIllustratedMessage = new IllustratedMessage({
 			illustrationType: "sapIllus-NoActivities"
 		});
@@ -600,7 +600,7 @@ sap.ui.define([
 		oIllustratedMessage.destroy();
 	});
 
-	QUnit.test("Get ariaDescribedBy values and validate them with illustration message text and descriptions", async function(assert) {
+	QUnit.test("Get ariaDescribedBy values and validate them with illustration message text and descriptions", async function (assert) {
 		//Arrange
 		this.oUploadSet.unbindAggregation("items");
 		var oIllustratedMessage = this.oUploadSet._getIllustratedMessage();
@@ -614,7 +614,7 @@ sap.ui.define([
 		assert.equal(aAriaDescribedById[1], oTextAndDescriptionIds.description, "Description id is included in aria-describedBy");
 	});
 
-	QUnit.test("Test httpRequestMethod property with XMLHttpRequest", async function(assert) {
+	QUnit.test("Test httpRequestMethod property with XMLHttpRequest", async function (assert) {
 		//Setup
 		var oUploader = new Uploader({
 			httpRequestMethod: "PUT"
@@ -636,7 +636,7 @@ sap.ui.define([
 		oUploader.destroy();
 	});
 
-	QUnit.test("Test incomplete items are empty after upload completed", async function(assert) {
+	QUnit.test("Test incomplete items are empty after upload completed", async function (assert) {
 		var oItem = this.oUploadSet.getItems()[0];
 		oItem.setUploadState("Ready");
 		this.oUploadSet.placeAt("qunit-fixture");
@@ -649,7 +649,7 @@ sap.ui.define([
 		assert.equal(this.oUploadSet.getIncompleteItems(), 0, "incomplete items are empty");
 	});
 
-	QUnit.test("No Data is rendered after item is removed", async function(assert) {
+	QUnit.test("No Data is rendered after item is removed", async function (assert) {
 		assert.notOk(document.querySelector(".sapMUCNoDataPage"), "No Data template is not visible");
 
 		var oItem1 = this.oUploadSet.getItems()[0];
@@ -962,7 +962,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("UploadSet general functionality", {
-		beforeEach: async function() {
+		beforeEach: async function () {
 			this.oUploadSet = new UploadSet("uploadSet", {
 				uploadEnabled: false,
 				uploadButtonInvisible: false
@@ -984,7 +984,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("UploadSet general functionality", {
-		beforeEach: async function() {
+		beforeEach: async function () {
 			this.oUploadSet = new UploadSet("uploadSet", {
 				fileTypes:"txt,doc,png",
 				mediaTypes:"text/plain,application/msword,image/jpeg,image/png",
@@ -1005,7 +1005,7 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("SameFilenameAllowed set as false in uploadSet", async function(assert) {
+	QUnit.test("SameFilenameAllowed set as false in uploadSet", async function (assert) {
 		assert.expect(1);
 		var oItem = this.oUploadSet.getItems()[0];
 
@@ -1023,7 +1023,7 @@ sap.ui.define([
 		assert.equal(this.oUploadSet.getItems()[0].getFileName(), "Alice.mp4", "FileName will remain same");
 	});
 
-	QUnit.test("SameFilenameAllowed set as true in uploadSet", async function(assert) {
+	QUnit.test("SameFilenameAllowed set as true in uploadSet", async function (assert) {
 		assert.expect(2);
 		var oItem = this.oUploadSet.getItems()[0];
 
@@ -1388,7 +1388,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("Rendering of UploadSet with hideUploadButton = true", {
-		beforeEach: async function() {
+		beforeEach: async function () {
 			this.oUploadSet = new UploadSet("uploadSet", {
 				items: {
 					path: "/items",
@@ -1413,7 +1413,7 @@ sap.ui.define([
 		assert.equal(this.oUploadSet.getDefaultFileUploader().getVisible(), true, "File Uploader is visible");
 	});
 
-	QUnit.test("Remove Aggregation supports index", async function(assert) {
+	QUnit.test("Remove Aggregation supports index", async function (assert) {
 		assert.equal(this.oUploadSet.getItems().length, 2, "2 items are present before operation");
 
 		this.oUploadSet.removeItem(0);
@@ -1429,7 +1429,7 @@ sap.ui.define([
 		assert.equal(this.oUploadSet.getItems().length, 0, "item is successfully removed using index");
 	});
 
-	QUnit.test("Remove Aggregation destroys supplied control object", async function(assert) {
+	QUnit.test("Remove Aggregation destroys supplied control object", async function (assert) {
 		//Arrange
 		var uploadSetItem = this.oUploadSet.getItems()[0];
 
@@ -1441,7 +1441,7 @@ sap.ui.define([
 		assert.equal(this.oUploadSet.getList().getItems().length, 1, "List Item removed successfully");
 	});
 
-	QUnit.test("Remove all aggregations destroys complete list and also main list aggregation", async function(assert) {
+	QUnit.test("Remove all aggregations destroys complete list and also main list aggregation", async function (assert) {
 
 		//Arrange
 		var oItem = this.oUploadSet.getItems()[0];
@@ -1479,7 +1479,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("Drag and drop", {
-		beforeEach: async function() {
+		beforeEach: async function () {
 			this.$RootNode = jQuery(document.body);
 			this.oUploadSet = new UploadSet("uploadSet", {
 				items: {
@@ -2043,7 +2043,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("Directory Uploads", {
-		beforeEach: async function() {
+		beforeEach: async function () {
 			this.oUploadSet = new UploadSet("uploadSet", {
 				items: {
 					path: "/items",
@@ -2202,7 +2202,7 @@ sap.ui.define([
 	return Library0.load("sap.suite.ui.commons")
 	.then(function() {
 		QUnit.module("Cloud File Picker", {
-			beforeEach: async function() {
+			beforeEach: async function () {
 				this.$RootNode = jQuery(document.body);
 				this.oUploadSet = new UploadSet("uploadSet", {
 					items: {

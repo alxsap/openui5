@@ -1,12 +1,12 @@
 /*global QUnit*/
 
 sap.ui.define([
-	"sap/ui/qunit/utils/nextUIUpdate",
 	"sap/ui/thirdparty/jquery",
 	"sap/m/PDFViewer",
 	"sap/ui/model/json/JSONModel",
-	"sap/ui/Device"
-], function (nextUIUpdate, $, PDFViewer, JSONModel, Device) {
+	"sap/ui/Device",
+	"sap/ui/qunit/utils/nextUIUpdate"
+], function ($, PDFViewer, JSONModel, Device, nextUIUpdate) {
 	"use strict";
 
 	var testUtils = {};
@@ -49,7 +49,7 @@ sap.ui.define([
 			sTestName = oOptions.testName ? oOptions.testName : index.toString(),
 			oPdfViewer = null;
 
-		QUnit.test(sTestName, function (assert) {
+		QUnit.test(sTestName, async function (assert) {
 			var sResponseHttpCode = oOptions.setup.httpCode;
 			var bExpectLoad = oOptions.expected.load;
 			var bExpectError = oOptions.expected.error;
@@ -109,7 +109,7 @@ sap.ui.define([
 
 			oPdfViewer = that.createPdfViewer(oComponentOptions);
 			oPdfViewer.setModel(oModel);
-			that.renderPdfViewer(oPdfViewer);
+			await that.renderPdfViewer(oPdfViewer);
 		});
 	}.bind(testUtils);
 
@@ -118,13 +118,13 @@ sap.ui.define([
 		return pdfViewer;
 	};
 
-	testUtils.renderPdfViewer = function renderPdfViewer(oPdfViewer) {
+	testUtils.renderPdfViewer = async function renderPdfViewer(oPdfViewer) {
 		oPdfViewer.placeAt("content");
-		nextUIUpdate.runSync()/*context not obviously suitable for an async function*/;
+		await nextUIUpdate();
 	};
 
-	testUtils.triggerRerender = function triggerRerender() {
-		nextUIUpdate.runSync()/*context not obviously suitable for an async function*/;
+	testUtils.triggerRerender = async function triggerRerender() {
+		await nextUIUpdate();
 	};
 
 	testUtils.wait = function wait(duration) {

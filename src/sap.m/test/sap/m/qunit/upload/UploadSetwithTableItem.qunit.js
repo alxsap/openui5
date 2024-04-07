@@ -3,9 +3,9 @@ sap.ui.define([
 	"sap/m/upload/UploadSetwithTable",
 	"sap/m/upload/UploadSetwithTableItem",
 	"sap/ui/model/json/JSONModel",
-	"./UploadSetwithTableTestUtils",
-	"sap/ui/qunit/utils/nextUIUpdate"
-], function (UploadSetwithTable, UploadSetwithTableItem, JSONModel, TestUtils, nextUIUpdate) {
+	"sap/ui/qunit/utils/nextUIUpdate",
+	"./UploadSetwithTableTestUtils"
+], function (UploadSetwithTable, UploadSetwithTableItem, JSONModel, nextUIUpdate, TestUtils) {
 	"use strict";
 
 	function getData() {
@@ -25,7 +25,7 @@ sap.ui.define([
 		};
 	}
 	QUnit.module("UploadSet Table Item general functionality", {
-		beforeEach: async function() {
+		beforeEach: async function () {
 
 			this.oUploadSetwithTableItem = TestUtils.createItemTemplate();
 			this.oParent = {
@@ -62,7 +62,7 @@ sap.ui.define([
 		assert.ok(this.oUploadSetwithTable, "Instance created successfully");
 	});
 
-	QUnit.test("UploadSet Table Item get/set file name", async function(assert) {
+	QUnit.test("UploadSet Table Item get/set file name", async function (assert) {
 
 		assert.equal(this.oUploadSetwithTable.getItems()[0].getFileName(), 'Alice.mp4', "getting uploadsetwithTable item's file name successfully");
 
@@ -74,7 +74,7 @@ sap.ui.define([
 
 	});
 
-	QUnit.test("Getting/setting MIME type of the item", async function(assert) {
+	QUnit.test("Getting/setting MIME type of the item", async function (assert) {
 
 		assert.equal(this.oUploadSetwithTable.getItems()[0].getMediaType(), '', "getting uploadsetwithTable item's media type successfully");
 
@@ -86,7 +86,7 @@ sap.ui.define([
 
 	});
 
-	QUnit.test("Getting/setting URL of item", async function(assert) {
+	QUnit.test("Getting/setting URL of item", async function (assert) {
 
 		assert.equal(this.oUploadSetwithTable.getItems()[0].getUrl(), '', "getting uploadsetwithTable item's URL successfully");
 
@@ -98,7 +98,7 @@ sap.ui.define([
 
 	});
 
-	QUnit.test("Getting/setting upload_URL of item", async function(assert) {
+	QUnit.test("Getting/setting upload_URL of item", async function (assert) {
 		assert.equal(this.oUploadSetwithTable.getItems()[0].getUploadUrl(), '', "getting uploadsetwithTable item's Upload_URL successfully");
 
 		var Item = this.oUploadSetwithTable.getItems()[0];
@@ -115,7 +115,7 @@ sap.ui.define([
 
 	});
 
-	QUnit.test("Getting/setting Preview status of item", async function(assert) {
+	QUnit.test("Getting/setting Preview status of item", async function (assert) {
 
 		assert.equal(this.oUploadSetwithTable.getItems()[0].getPreviewable(), true, "getting uploadsetwithTable item's Preview status successfully");
 
@@ -126,7 +126,7 @@ sap.ui.define([
 		assert.equal(this.oUploadSetwithTable.getItems()[0].getUploadUrl(), false, "getting/setting uploadsetwithTable item's Preview status successfully");
 
 	});
-	QUnit.test("Getting/setting filesize of item", async function(assert) {
+	QUnit.test("Getting/setting filesize of item", async function (assert) {
 		assert.equal(this.oUploadSetwithTable.getItems()[0].getFileSize(), '', "getting uploadsetwithTable item's file size successfully");
 
 		var Item = this.oUploadSetwithTable.getItems()[0];
@@ -137,7 +137,7 @@ sap.ui.define([
 
 	});
 
-	QUnit.test("UploadSet Table Item get/set file name", async function(assert) {
+	QUnit.test("UploadSet Table Item get/set file name", async function (assert) {
 		var oItem = this.oUploadSetwithTable.getItems()[0];
 		await nextUIUpdate();
 		assert.equal(this.oUploadSetwithTable.getItems()[0].getFileName(), "Alice.mp4", "Getting/Setting the uploadsetwithTable item's name correctly");

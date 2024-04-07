@@ -7,14 +7,15 @@ sap.ui.define([
 	"sap/m/library",
 	"sap/m/FormattedText",
 	"sap/m/Button",
+	"sap/ui/core/Core",
 	"sap/ui/core/Lib",
 	"sap/ui/events/KeyCodes",
-	"sap/ui/qunit/utils/nextUIUpdate",
 	"sap/ui/thirdparty/jquery",
 	"sap/ui/model/json/JSONModel",
 	"sap/m/ContentConfig",
 	"sap/ui/core/theming/Parameters",
-	"sap/m/Link"
+	"sap/m/Link",
+	"sap/ui/qunit/utils/nextUIUpdate"
 ], function(
 	ActionTile,
 	ActionTileContent,
@@ -23,14 +24,15 @@ sap.ui.define([
 	library,
 	FormattedText,
 	Button,
+	oCore,
 	Library,
 	KeyCodes,
-	nextUIUpdate,
 	jQuery,
 	JSONModel,
 	ContentConfig,
 	Parameters,
-	Link
+	Link,
+	nextUIUpdate
 ) {
 	"use strict";
 
@@ -288,7 +290,7 @@ sap.ui.define([
 
 	});
 
-	QUnit.test("ActionTileContent: Header Link Tests", async function(assert) {
+	QUnit.test("ActionTileContent: Header Link Tests", async function (assert) {
 		//setup action tile content
 		var oActionTileContent = new ActionTileContent("action-tile-content", {
 			headerLink: new Link()
