@@ -207,8 +207,6 @@ sap.ui.define([
 
 			},
 			metadata: {
-				// ---- object ----
-				publicMethods : ["setRootNode", "getRootNode", "setRootControl", "getRootControl", "lock","unlock", "isLocked"],
 				aggregations : {
 					/**
 					 * Content that is displayed in the UIArea.

@@ -90,8 +90,8 @@ sap.ui.define([
 		metadata : {
 			stereotype : "control",
 			"abstract" : true,
-			publicMethods: ["placeAt", "attachBrowserEvent", "detachBrowserEvent", "getControlsByFieldGroup", "triggerValidateFieldGroup", "checkFieldGroupIds"],
 			library: "sap.ui.core",
+
 			properties : {
 				/**
 				 * Whether the control is currently in blocked state.
@@ -145,6 +145,7 @@ sap.ui.define([
 				"fieldGroupIds" : { type: "string[]", defaultValue: [] }
 
 			},
+
 			events : {
 				/**
 				 * Event is fired if a logical field group defined by <code>fieldGroupIds</code> of a control was left

@@ -62,9 +62,7 @@ sap.ui.define([
 			}
 		},
 
-		metadata : {
-			publicMethods : ["setJSON", "getJSON"]
-		}
+		metadata : {}
 
 	});
 

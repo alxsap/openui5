@@ -611,70 +611,7 @@ sap.ui.define([
 				}
 			},
 
-			metadata : {
-				// while this list contains mostly public methods,
-				// a set of private API is exposed for sap.ui.core restricted usage
-				publicMethods: [
-					// @public
-					//  - Ready Promise
-					"ready",
-
-					// @private, @ui5-restricted sap.ui.core
-					//  - Init
-					"boot",
-
-					// @deprecated
-					"getConfiguration",
-					"isMobile",
-					//  - Init & Plugins
-					"isInitialized","attachInit",
-					"lock", "unlock","isLocked",
-					"attachInitEvent",
-					"registerPlugin","unregisterPlugin",
-					//  - Application/Root-Component
-					"setRoot",
-					"getRootComponent", "getApplication",
-					//  - legacy registries & factories
-					"getControl", "getComponent", "getTemplate",
-					"createComponent",
-					//  - Control dev.
-					"getCurrentFocusedControlId",
-					"getEventBus",
-					"byId",
-					"attachIntervalTimer", "detachIntervalTimer",
-					"getElementById", "byFieldGroupId",
-					//  - Libraries
-					"getLoadedLibraries", "loadLibrary", "initLibrary",
-					"getLibraryResourceBundle",
-					"attachLibraryChanged", "detachLibraryChanged",
-					"loadLibraries",
-					//  - Models & Messaging
-					"setModel", "getModel", "hasModel",
-					"getMessageManager",
-					//  - Events
-					"attachEvent","detachEvent",
-					"attachControlEvent", "detachControlEvent",
-					"attachParseError", "detachParseError",
-					"attachValidationError", "detachValidationError",
-					"attachFormatError", "detachFormatError",
-					"attachValidationSuccess", "detachValidationSuccess",
-					"attachLocalizationChanged", "detachLocalizationChanged",
-					"fireFormatError", "fireValidationSuccess", "fireValidationError", "fireParseError",
-					//  - UIArea & Rendering
-					"getStaticAreaRef",
-					"isStaticAreaRef",
-					"createRenderManager",
-					"createUIArea", "getUIArea", "getUIDirty", "applyChanges",
-					"getRenderManager",
-					"addPrerenderingTask",
-					//  - Theming
-					"applyTheme","setThemeRoot","attachThemeChanged","detachThemeChanged",
-					"isThemeApplied",
-					"notifyContentDensityChanged",
-					"attachThemeScopingChanged","detachThemeScopingChanged","fireThemeScopingChanged",
-					"includeLibraryTheme"
-				]
-			}
+			metadata : {}
 
 		});
 

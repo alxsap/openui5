@@ -91,14 +91,7 @@ sap.ui.define([
 			},
 
 			metadata : {
-				"abstract" : true,
-				publicMethods : [
-					// methods
-					"bindProperty", "bindList", "bindTree", "bindContext", "createBindingContext", "destroyBindingContext", "getProperty",
-					"getDefaultBindingMode", "setDefaultBindingMode", "isBindingModeSupported", "attachParseError", "detachParseError",
-					"attachRequestCompleted", "detachRequestCompleted", "attachRequestFailed", "detachRequestFailed", "attachRequestSent",
-					"detachRequestSent", "attachPropertyChange", "detachPropertyChange", "setSizeLimit", "refresh", "isList", "getObject"
-				]
+				"abstract" : true
 			}
 		});
 

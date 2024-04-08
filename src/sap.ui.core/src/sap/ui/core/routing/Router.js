@@ -1478,9 +1478,7 @@ sap.ui.define([
 				return this._oConfig._async;
 			},
 
-			metadata : {
-				publicMethods: ["initialize", "getURL", "register", "getRoute"]
-			}
+			metadata : {}
 		});
 
 		function isHomeRouteTarget(sRouteTarget, sHomeRoute) {

@@ -90,8 +90,10 @@ sap.ui.define([
 
 		metadata : {
 			"abstract": true,
-			rootView : null, // the rootView to open (view name as string or view configuration object)
-			publicMethods: [ "render" ],
+
+			// the rootView to open (view name as string or view configuration object)
+			rootView : null,
+
 			aggregations: {
 				/**
 				 * The root control of the UIComponent.
@@ -100,10 +102,12 @@ sap.ui.define([
 				 */
 				"rootControl": { type: "sap.ui.core.Control", multiple: false, visibility: "hidden" }
 			},
+
 			designtime: "sap/ui/core/designtime/UIComponent.designtime",
+
+			//autoDestroy: false // TODO: destroy component when view should be destroyed (not implemented yet!)
 			routing: {
 			}
-			//autoDestroy: false // TODO: destroy component when view should be destroyed (not implemented yet!)
 		}
 
 	}, /* Metadata constructor */ UIComponentMetadata);

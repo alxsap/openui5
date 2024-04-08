@@ -141,8 +141,8 @@ sap.ui.define([
 			metadata : {
 				stereotype : "element",
 				"abstract" : true,
-				publicMethods : [ "getId", "getMetadata", "getTooltip_AsString", "getTooltip_Text", "getModel", "setModel", "hasModel", "bindElement", "unbindElement", "getElementBinding", "prop", "getLayoutData", "setLayoutData" ],
 				library : "sap.ui.core",
+
 				aggregations : {
 
 					/**

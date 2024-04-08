@@ -74,7 +74,6 @@ function(
 
 			library : "sap.m",
 			designtime: "sap/m/designtime/SegmentedButton.designtime",
-			publicMethods : ["createButton"],
 
 			properties : {
 

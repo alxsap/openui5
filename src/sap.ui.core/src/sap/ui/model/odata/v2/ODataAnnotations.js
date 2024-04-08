@@ -124,13 +124,7 @@ sap.ui.define([
 				}
 			}
 		},
-		metadata : {
-			publicMethods : [
-				"getData", "addSource", "getHeaders", "setHeaders",
-				"attachSuccess", "detachSuccess", "attachError", "detachError",
-				"attachLoaded", "detachLoaded", "attachFailed", "detachFailed"
-			]
-		}
+		metadata : {}
 	});
 
 

@@ -168,9 +168,7 @@ sap.ui.define([
 			this._reassignCreateActivate();
 		},
 
-		metadata : {
-			publicMethods : ["getLength"]
-		}
+		metadata : {}
 
 	});
 

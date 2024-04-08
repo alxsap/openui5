@@ -32,11 +32,7 @@ sap.ui.define([
 	var Uploader = Element.extend("sap.m.upload.Uploader", {
 		metadata: {
 			library: "sap.m",
-			publicMethods: [
-				"uploadItem",
-				"terminateItem",
-				"downloadItem"
-			],
+
 			properties: {
 				/**
 				 * URL where the next file is going to be uploaded to.
@@ -57,6 +53,7 @@ sap.ui.define([
 				*/
 				useMultipart: { type: "boolean", defaultValue: false }
             },
+
 			events: {
 				/**
 				 * The event is fired just after the POST request was sent.

@@ -64,9 +64,7 @@ sap.ui.define([
 			}
 		},
 
-		metadata : {
-			publicMethods : ["setXML", "getXML", "setNameSpace"]
-		}
+		metadata : {}
 
 	});
 

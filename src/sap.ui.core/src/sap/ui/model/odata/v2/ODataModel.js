@@ -519,14 +519,7 @@ sap.ui.define([
 				this.oHeaders["X-Requested-With"] = "XMLHttpRequest";
 			}
 		},
-		metadata : {
-			publicMethods : ["read", "create", "update", "remove", "submitChanges", "getServiceMetadata", "metadataLoaded",
-			                 "hasPendingChanges", "getPendingChanges", "refresh", "refreshMetadata", "resetChanges", "setDefaultCountMode",
-			                 "setDefaultBindingMode", "getDefaultBindingMode", "getDefaultCountMode",
-			                 "setProperty", "getSecurityToken", "refreshSecurityToken", "setHeaders",
-			                 "getHeaders", "setUseBatch", "setDeferredBatchGroups", "getDeferredBatchGroups",
-			                 "setChangeBatchGroups", "getChangeBatchGroups"]
-		}
+		metadata : {}
 	});
 
 	//

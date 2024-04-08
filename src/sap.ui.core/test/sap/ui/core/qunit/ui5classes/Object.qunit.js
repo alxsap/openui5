@@ -100,8 +100,7 @@ sap.ui.define([
 			this.value1 = v1;
 		},
 		metadata: {
-			interfaces: ["sap.ui.base.Poolable", "sap.test.MyInterface"],
-			publicMethods: ["method1"]
+			interfaces: ["sap.ui.base.Poolable", "sap.test.MyInterface"]
 		},
 		method1: function() {
 			return this.value1;
@@ -114,8 +113,7 @@ sap.ui.define([
 			this.value2 = v2;
 		},
 		metadata: {
-			interfaces: ["sap.ui.base.Cacheable", "sap.ui.base.Poolable"],
-			publicMethods: ["method2"]
+			interfaces: ["sap.ui.base.Cacheable", "sap.ui.base.Poolable"]
 		},
 		method2: function() {
 			return this.value2;

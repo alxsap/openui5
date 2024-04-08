@@ -53,10 +53,7 @@ sap.ui.define(['./Binding', './Filter', './Sorter'],
 			},
 
 			metadata : {
-				"abstract" : true,
-				publicMethods : [
-					"getRootContexts", "getNodeContexts", "hasChildren", "filter"
-				]
+				"abstract" : true
 			}
 
 		});

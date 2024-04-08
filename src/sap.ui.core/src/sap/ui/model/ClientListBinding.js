@@ -70,11 +70,7 @@ sap.ui.define([
 			this.update();
 		},
 
-		metadata : {
-			publicMethods : [
-				"getLength"
-			]
-		}
+		metadata : {}
 
 	});
 

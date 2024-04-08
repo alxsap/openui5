@@ -101,9 +101,7 @@ sap.ui.define([
 		 */
 		var Route = EventProvider.extend("sap.ui.core.routing.Route", /** @lends sap.ui.core.routing.Route.prototype */ {
 
-			metadata : {
-				publicMethods: ["getURL", "getPattern"]
-			},
+			metadata : {},
 
 			constructor : function(oRouter, oConfig, oParent) {
 				EventProvider.apply(this, arguments);

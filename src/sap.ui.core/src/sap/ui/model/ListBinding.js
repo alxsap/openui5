@@ -62,12 +62,7 @@ sap.ui.define(['./Binding', './Filter', './FilterType', './Sorter', 'sap/base/ut
 			},
 
 			metadata : {
-				"abstract" : true,
-
-				publicMethods : [
-					// methods
-					"getContexts", "getCurrentContexts", "sort", "attachSort", "detachSort", "filter", "attachFilter", "detachFilter", "getDistinctValues", "isGrouped", "getLength", "isLengthFinal"
-				]
+				"abstract" : true
 			}
 
 		});

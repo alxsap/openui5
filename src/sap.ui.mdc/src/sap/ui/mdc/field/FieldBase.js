@@ -116,6 +116,7 @@ sap.ui.define([
 			interfaces: ["sap.ui.core.IFormContent", "sap.ui.core.ISemanticFormContent", "sap.m.IOverflowToolbarContent"],
 			designtime: "sap/ui/mdc/designtime/field/FieldBase.designtime",
 			library: "sap.ui.mdc",
+
 			properties: {
 				/**
 				 * The type of data handled by the field.
@@ -379,6 +380,7 @@ sap.ui.define([
 				}
 
 			},
+
 			aggregations: {
 				/**
 				 * Optional content that can be rendered.
@@ -472,6 +474,7 @@ sap.ui.define([
 					multiple: false
 				}
 			},
+
 			associations: {
 				/**
 				 * Optional <code>ValueHelp</code>.
@@ -496,6 +499,7 @@ sap.ui.define([
 				 */
 				ariaLabelledBy: { type: "sap.ui.core.Control", multiple: true, singularName: "ariaLabelledBy" }
 			},
+
 			events: {
 				/**
 				 * This event is fired when the value of the field is changed, for example, each time a key is pressed.
@@ -543,7 +547,7 @@ sap.ui.define([
 					}
 				}
 			},
-			publicMethods: [],
+
 			defaultAggregation: "content"
 		},
 		renderer: FieldBaseRenderer,

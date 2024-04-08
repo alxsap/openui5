@@ -267,13 +267,18 @@ sap.ui.define([
 
 		metadata : {
 			"abstract" : true,
-			publicMethods : [ "getId", "getMetadata", "getModel", "setModel", "hasModel", "bindProperty", "unbindProperty", "bindAggregation", "unbindAggregation", "bindObject", "unbindObject", "getObjectBinding"],
-			library : "sap.ui.core", // UI Library that contains this class
+
+			// UI Library that contains this class
+			library : "sap.ui.core",
+
 			properties : {
 			},
+
 			aggregations : {
 			},
+
 			associations : {},
+
 			events : {
 				/**
 				 * Fired after a new value for a bound property has been propagated to the model.
@@ -408,6 +413,7 @@ sap.ui.define([
 				 */
 				"modelContextChange" : {}
 			},
+
 			specialSettings : {
 
 				/**

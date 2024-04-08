@@ -348,13 +348,6 @@ sap.ui.define([
 		metadata : {
 			library: "sap.ui.core",
 
-			publicMethods : ["open", "close",
-							 "setContent", "getContent",
-							 "setPosition",
-							 "setShadow", "setModal", "getModal", "setAutoClose", "setAutoCloseAreas", "setExtraContent",
-							 "isOpen", "getAutoClose", "getOpenState", "setAnimations", "setDurations",
-							 "attachOpened", "attachClosed", "detachOpened", "detachClosed"],
-
 			associations : {
 				"childPopups" : {
 					type : "sap.ui.core.Popup",

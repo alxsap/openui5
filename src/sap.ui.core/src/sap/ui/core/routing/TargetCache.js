@@ -65,9 +65,7 @@ sap.ui.define([
 				}
 			},
 
-			metadata : {
-				publicMethods: ["get", "set"]
-			},
+			metadata : {},
 
 			/**
 			 * Returns a cached view or component, for a given name. If it does not exist yet, it will create the view or component with the provided options.

@@ -40,10 +40,7 @@ sap.ui.define(['sap/ui/base/EventProvider', "sap/base/util/uid"],
 			},
 
 			metadata : {
-				"abstract" : true,
-				publicMethods : [
-					"getId", "setMessages", "attachMessageChange", "detachMessageChange"
-				]
+				"abstract" : true
 			}
 		});
 

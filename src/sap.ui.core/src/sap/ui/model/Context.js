@@ -45,10 +45,7 @@ sap.ui.define(['sap/ui/base/Object', "sap/base/util/isPlainObject"],
 			},
 
 			metadata : {
-				"abstract" : true,
-			  publicMethods : [
-					"getModel", "getPath", "getProperty", "getObject"
-				]
+				"abstract" : true
 			}
 
 		});
