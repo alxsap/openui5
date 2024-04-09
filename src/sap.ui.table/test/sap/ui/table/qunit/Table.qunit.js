@@ -28,7 +28,6 @@ sap.ui.define([
 	"sap/m/Title",
 	"sap/m/Toolbar",
 	"sap/m/IllustratedMessage",
-	"sap/m/library",
 	"sap/ui/unified/Menu",
 	"sap/ui/unified/MenuItem",
 	"sap/ui/model/json/JSONModel",
@@ -75,7 +74,6 @@ sap.ui.define([
 	Title,
 	Toolbar,
 	IllustratedMessage,
-	MLibrary,
 	Menu,
 	MenuItem,
 	JSONModel,
@@ -100,8 +98,6 @@ sap.ui.define([
 	var SortOrder = CoreLibrary.SortOrder;
 	var SelectionMode = library.SelectionMode;
 	var SharedDomRef = library.SharedDomRef;
-	var ToolbarDesign = MLibrary.ToolbarDesign;
-	var ToolbarStyle = MLibrary.ToolbarStyle;
 
 	// mapping of global function calls
 	var getCell = window.getCell;

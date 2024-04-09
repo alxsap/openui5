@@ -28,7 +28,7 @@ sap.ui.define([
 	}
 
 	function handleLocalizationChange(oEvent) {
-		let sEventId = "LocalizationChanged";
+		const sEventId = "LocalizationChanged";
 
 		const mChanges = BaseEvent.getParameters(oEvent),
 			oBrowserEvent = jQuery.Event(sEventId, {changes : mChanges}),

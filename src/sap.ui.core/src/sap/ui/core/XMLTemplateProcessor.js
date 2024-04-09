@@ -797,7 +797,7 @@ sap.ui.define([
 			 */
 			function validateClass(fnClass) {
 				if (!fnClass) {
-					let sErrorLogMessage = `Control '${sClassName}' did not return a class definition from sap.ui.define.`;
+					const sErrorLogMessage = `Control '${sClassName}' did not return a class definition from sap.ui.define.`;
 
 					future.errorThrows(sErrorLogMessage, "", "XMLTemplateProcessor");
 				}
@@ -1465,7 +1465,7 @@ sap.ui.define([
 
 										try {
 											setUI5Attribute(oStashedNode, "unstash");
-											let vUnstashedControl = handleChild(node, oStashedNode, {
+											const vUnstashedControl = handleChild(node, oStashedNode, {
 												aggregation: oAggregation,
 												allAggregations: mAggregations,
 												chain: SyncPromise.resolve(oRequireContext),

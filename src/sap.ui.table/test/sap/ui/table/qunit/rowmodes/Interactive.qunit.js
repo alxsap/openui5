@@ -21,7 +21,7 @@ sap.ui.define([
 ) {
 	"use strict";
 
-	var HeightTestControl = TableQUnitUtils.HeightTestControl;
+	TableQUnitUtils.HeightTestControl;
 
 	TableQUnitUtils.setDefaultSettings({
 		rowMode: new InteractiveRowMode(),

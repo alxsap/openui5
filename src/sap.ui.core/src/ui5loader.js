@@ -1834,7 +1834,7 @@
 					}
 					oModule.content = exports;
 				} catch (error) {
-					const wrappedError = oModule.failWith("failed to execute module factory for '{id}'", error);
+					oModule.failWith("failed to execute module factory for '{id}'", error);
 					// Note: in async mode, the error is reported via the oModule's promise
 					return;
 				}
@@ -1847,7 +1847,7 @@
 
 		// Note: dependencies will be resolved and converted from RJS to URN inside requireAll
 		requireAll(oModule, aDependencies, oModule.data ? scheduleExecution(onSuccess) : onSuccess, function(oErr) {
-			const oWrappedError = oModule.failWith("Failed to resolve dependencies of {id}", oErr);
+			oModule.failWith("Failed to resolve dependencies of {id}", oErr);
 		}, true);
 
 	}

@@ -523,7 +523,6 @@ sap.ui.define([
 	};
 
 	SimpleForm.prototype.addContent = function(oElement) {
-
 		oElement = this.validateAggregation("content", oElement, /* multiple */ true);
 
 		if (this.indexOfContent(oElement) >= 0) {
@@ -545,7 +544,6 @@ sap.ui.define([
 		var oFormElement;
 		var oParent;
 		var oLayoutData;
-		var sLayout = this.getLayout();
 
 		if (oElement.isA(["sap.ui.core.Title", "sap.ui.core.Toolbar"])) {
 			//start a new container with a title
@@ -607,11 +605,9 @@ sap.ui.define([
 		this.invalidate();
 		this._bChangedByMe = false;
 		return this;
-
 	};
 
 	SimpleForm.prototype.insertContent = function(oElement, iIndex) {
-
 		oElement = this.validateAggregation("content", oElement, /* multiple */ true);
 
 		if (this.indexOfContent(oElement) >= 0) {
@@ -659,7 +655,6 @@ sap.ui.define([
 		var i = 0;
 		var oField;
 		var oLayoutData;
-		var sLayout = this.getLayout();
 
 		if (oElement.isA(["sap.ui.core.Title", "sap.ui.core.Toolbar"])) {
 			//start a new container with a title
@@ -832,7 +827,6 @@ sap.ui.define([
 		this.invalidate();
 		this._bChangedByMe = false;
 		return this;
-
 	};
 
 	SimpleForm.prototype.removeContent = function(vElement) {
@@ -1349,7 +1343,7 @@ sap.ui.define([
 	}
 
 	function _createContainerLayoutData(oContainer) {
-		var sLayout = this.getLayout();
+		this.getLayout();
 		return;
 	}
 

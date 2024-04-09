@@ -438,7 +438,7 @@ sap.ui.define([
 		assert.ok(!oWarningSpy.called, "no warnings should be produced");
 
 		// eslint-disable-next-line no-undef-init, prefer-const
-		let expectedType = undefined;
+		const expectedType = undefined;
 
 		assert.strictEqual(DataType.getType("toString"), expectedType, "'toString' should not resolve to something");
 		assert.strictEqual(DataType.getType("hasOwnProperty"), expectedType, "'hasOwnProperty' should not resolve to something");

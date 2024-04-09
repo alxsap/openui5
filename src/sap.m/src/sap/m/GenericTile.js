@@ -59,7 +59,6 @@ sap.ui.define([
 		LoadState = library.LoadState,
 		CSSColor = coreLibrary.CSSColor,
 		FrameType = library.FrameType,
-		Size = library.Size,
 		GenericTileMode = library.GenericTileMode,
 		TileSizeBehavior = library.TileSizeBehavior,
 		WrappingType = library.WrappingType,

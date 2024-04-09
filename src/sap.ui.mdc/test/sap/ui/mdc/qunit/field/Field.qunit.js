@@ -123,20 +123,6 @@ sap.ui.define([
 		sPressId = oEvent.oSource.getId();
 	};
 
-	const _checkException = function(assert, oField, fnFunction, sName, vArgument) {
-
-		let oException;
-
-		try {
-			fnFunction.call(oField, vArgument);
-		} catch (e) {
-			oException = e;
-		}
-
-		assert.ok(oException, sName + " fires exception");
-
-	};
-
 	const _cleanupEvents = function() {
 		iCount = 0;
 		sId = null;

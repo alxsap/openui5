@@ -1,6 +1,5 @@
 sap.ui.define([
 	"sap/ui/core/library",
-	"sap/m/library",
 	"sap/ui/core/Element",
 	"sap/m/App",
 	"sap/m/Page",
@@ -18,7 +17,6 @@ sap.ui.define([
 	"sap/ui/core/date/UI5Date"
 ], function(
 	coreLibrary,
-	mLibrary,
 	Element,
 	App,
 	Page,
@@ -43,7 +41,6 @@ sap.ui.define([
 	var iNow = UI5Date.getInstance().getTime(),
 		oModel = new JSONModel(),
 		ValueState = coreLibrary.ValueState,
-		DateTimeInputType = mLibrary.DateTimeInputType,
 		oTypeInstances = {
 			"Date": new DateType(),
 			"Time": new TimeType(),

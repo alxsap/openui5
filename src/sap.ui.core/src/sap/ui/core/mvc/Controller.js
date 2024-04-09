@@ -280,7 +280,7 @@ sap.ui.define([
 		}
 
 		const sControllerName = sName.replace(/\./g, "/") + ".controller";
-		let ControllerClass = sap.ui.require(sControllerName);
+		const ControllerClass = sap.ui.require(sControllerName);
 
 		return new Promise(function(resolve, reject) {
 			if (!ControllerClass) {

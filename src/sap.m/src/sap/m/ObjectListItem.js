@@ -7,7 +7,6 @@ sap.ui.define([
 	"sap/base/i18n/Localization",
 	'sap/ui/base/ManagedObjectObserver',
 	'./ListItemBase',
-	'./library',
 	'sap/ui/core/IconPool',
 	'sap/m/ObjectNumber',
 	'sap/ui/core/library',
@@ -19,7 +18,6 @@ function(
 	Localization,
 	ManagedObjectObserver,
 	ListItemBase,
-	library,
 	IconPool,
 	ObjectNumber,
 	coreLibrary,
@@ -30,9 +28,6 @@ function(
 	"use strict";
 
 
-
-	// shortcut for sap.m.ObjectMarkerType
-	var ObjectMarkerType = library.ObjectMarkerType;
 
 	// shortcut for sap.ui.core.TextAlign
 	var TextAlign = coreLibrary.TextAlign;

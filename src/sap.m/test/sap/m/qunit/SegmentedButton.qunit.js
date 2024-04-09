@@ -5,7 +5,6 @@ sap.ui.define([
 	"sap/m/SegmentedButton",
 	"sap/m/SegmentedButtonItem",
 	"sap/m/Button",
-	"sap/m/library",
 	"sap/ui/core/library",
 	"sap/m/OverflowToolbar",
 	"sap/m/Label",
@@ -23,7 +22,6 @@ sap.ui.define([
 	SegmentedButton,
 	SegmentedButtonItem,
 	Button,
-	mobileLibrary,
 	coreLibrary,
 	OverflowToolbar,
 	Label,
@@ -40,9 +38,6 @@ sap.ui.define([
 
 	// shortcut for sap.ui.core.TextDirection
 	var TextDirection = coreLibrary.TextDirection;
-
-	// shortcut for sap.m.ButtonType
-	var ButtonType = mobileLibrary.ButtonType;
 
 	var IMAGE_PATH = "test-resources/sap/m/images/";
 

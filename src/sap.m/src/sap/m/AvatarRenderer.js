@@ -46,10 +46,11 @@ sap.ui.define(["sap/m/library", "sap/base/security/encodeCSS"], function (librar
 			aDescribedBy = oAvatar.getAriaDescribedBy(),
 			aHasPopup = oAvatar.getAriaHasPopup(),
 			bHasListener = oAvatar.hasListeners("press"),
-			oBadge = bHasListener ?  oAvatar._getBadge() : null,
+			bShouldBeClickable = (bHasListener && !oAvatar._bIsDefaultIcon && oAvatar.getDetailBox()) || (bHasListener && !oAvatar.getDetailBox()),
+			oBadge = bShouldBeClickable ?  oAvatar._getBadge() : null,
 			sDefaultTooltip = oAvatar._getDefaultTooltip(),
 			sInitialsLength = sInitials.length,
-			bActive = oAvatar.getActive() && bHasListener;
+			bActive = oAvatar.getActive() && bShouldBeClickable;
 
 		oRm.openStart("span", oAvatar);
 		oRm.class(sAvatarClass);
@@ -63,7 +64,7 @@ sap.ui.define(["sap/m/library", "sap/base/security/encodeCSS"], function (librar
 		}
 
 		if (bEnabled) {
-			if (bHasListener) {
+			if (bShouldBeClickable) {
 				oRm.class("sapMPointer");
 				oRm.class(sAvatarClass + "Focusable");
 				oRm.attr("role", "button");

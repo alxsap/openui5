@@ -51,9 +51,6 @@ sap.ui.define([
 	// shortcut for sap.m.PlacementType
 	var PlacementType = mobileLibrary.PlacementType;
 
-	// shortcut for sap.uxap.ObjectPageHeaderDesign
-	var ObjectPageHeaderDesign = library.ObjectPageHeaderDesign;
-
 	// shortcut for sap.m.AvatarShape
 	var ObjectPageHeaderPictureShape = mobileLibrary.AvatarShape;
 

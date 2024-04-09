@@ -1,54 +1,7 @@
 /*global QUnit, */
-sap.ui.define(["sap/ui/qunit/utils/nextUIUpdate", "sap/ui/thirdparty/jquery", "sap/ui/model/json/JSONModel", "sap/uxap/ObjectPageDynamicHeaderTitle", "sap/uxap/ObjectPageLayout"],
-function(nextUIUpdate, jQuery, JSONModel, ObjectPageDynamicHeaderTitle, ObjectPageLayout) {
+sap.ui.define(["sap/ui/qunit/utils/nextUIUpdate", "sap/ui/model/json/JSONModel", "sap/uxap/ObjectPageDynamicHeaderTitle", "sap/uxap/ObjectPageLayout"],
+function(nextUIUpdate, JSONModel, ObjectPageDynamicHeaderTitle, ObjectPageLayout) {
 	"use strict";
-
-	// utility function that will be used in these tests
-	var _getOneBlock = function () {
-		return {
-			Type: "sap.uxap.testblocks.employmentblockjob.EmploymentBlockJob",
-
-			mappings: [{
-				"externalModelName": "objectPageData",
-				"externalPath": "/Employee/0",
-				"internalModelName": "emp1"
-			}, {
-				"externalModelName": "objectPageData",
-				"externalPath": "/Employee/1",
-				"internalModelName": "emp2"
-			}, {
-				"externalModelName": "objectPageData",
-				"externalPath": "/Employee/2",
-				"internalModelName": "emp3"
-			}, {
-				"externalModelName": "objectPageData",
-				"externalPath": "/Employee/3",
-				"internalModelName": "emp4"
-			}, {
-				"externalModelName": "objectPageData",
-				"externalPath": "/Employee/4",
-				"internalModelName": "emp5"
-			}, {
-				"externalModelName": "objectPageData",
-				"externalPath": "/Employee/5",
-				"internalModelName": "emp6"
-			}
-
-			]
-		};
-	};
-
-	var _loadBlocksData = function (oData) {
-		jQuery.each(oData.sections, function (iIndexSection, oSection) {
-			jQuery.each(oSection.subSections, function (iIndex, oSubSection) {
-				oSubSection.blocks = [_getOneBlock()];
-				if (iIndexSection <= 4) {
-					oSubSection.mode = "Collapsed";
-					oSubSection.moreBlocks = [_getOneBlock()];
-				}
-			});
-		});
-	};
 
 	var oConfigModel = new JSONModel();
 	oConfigModel.loadData("test-resources/sap/uxap/qunit/model/ObjectPageConfig.json", {}, false);

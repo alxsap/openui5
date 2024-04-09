@@ -534,7 +534,7 @@ sap.ui.define([
 		 */
 		onSave: function() {
 			MessageToast.show("Submitting changes...");
-			var oBinding = oTable.getBinding();
+			oTable.getBinding();
 
 			oTable.setBusyIndicatorDelay(1);
 			oTable.setEnableBusyIndicator(true);

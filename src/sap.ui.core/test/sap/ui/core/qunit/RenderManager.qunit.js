@@ -207,7 +207,7 @@ sap.ui.define([
 	var aDomRendererMethods = ["openStart", "openEnd", "close", "voidStart", "voidEnd", "text", "attr", "class", "style",
 		"accessibilityState", "icon", "unsafeHtml"];
 
-	var aInterfaceMethods = aCommonMethods.concat(aStringRendererMethods, aDomRendererMethods);
+	aCommonMethods.concat(aStringRendererMethods, aDomRendererMethods);
 
 	// DOM rendering methods
 

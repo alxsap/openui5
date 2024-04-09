@@ -3899,14 +3899,9 @@ sap.ui.define([
 		}
 	};
 
-	ObjectPageLayout.prototype._adjustHeaderBackgroundSize = function () {
-		// Update the background image size and position
-		var oHeaderTitle = this.getHeaderTitle();
-	};
+	ObjectPageLayout.prototype._adjustHeaderBackgroundSize = function () {};
 
-	ObjectPageLayout.prototype._adjustHeaderTitleBackgroundPosition = function (iScrollTop) {
-		var oHeaderTitle = this.getHeaderTitle();
-	};
+	ObjectPageLayout.prototype._adjustHeaderTitleBackgroundPosition = function (iScrollTop) {};
 
 	ObjectPageLayout.prototype._adjustHeaderHeights = function () {
 		var oTitle = this.getHeaderTitle(),
@@ -4060,8 +4055,7 @@ sap.ui.define([
 	 * @returns {sap.uxap.ObjectPageHeaderDesign}
 	 */
 	ObjectPageLayout.prototype._getHeaderDesign = function () {
-		var oHeader = this.getHeaderTitle(),
-			sDesign = library.ObjectPageHeaderDesign.Light;
+		var sDesign = library.ObjectPageHeaderDesign.Light;
 
 		return sDesign;
 	};

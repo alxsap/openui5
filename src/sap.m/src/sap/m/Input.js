@@ -1401,7 +1401,7 @@ function(
 		const oSelectedItem = oSuggestionsPopover?.getItemsContainer()?.getSelectedItem();
 		const sText = oSelectedItem?.getTitle?.() || oSelectedItem?.getCells?.()[0]?.getText?.() || "";
 		const bPendingSuggest = !!this._iSuggestDelay && !sText.toLowerCase().includes(this._getTypedInValue().toLowerCase());
-		let bFireSubmit = this.getEnabled() && this.getEditable();
+		const bFireSubmit = this.getEnabled() && this.getEditable();
 		let iValueLength, oFocusedItem;
 
 		// when enter is pressed before the timeout of suggestion delay, suggest event is cancelled

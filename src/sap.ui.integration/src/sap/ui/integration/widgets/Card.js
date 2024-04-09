@@ -107,8 +107,6 @@ sap.ui.define([
 
 	var CardPreviewMode = library.CardPreviewMode;
 
-	var CardBlockingMessageType = library.CardBlockingMessageType;
-
 	var CARD_DESTROYED_ERROR = "Card is destroyed!";
 
 	var MODULE_PREFIX = "module:";
@@ -1248,8 +1246,9 @@ sap.ui.define([
 	Card.prototype._refreshActionsMenu = function () {
 		var oCardHeader = this.getCardHeader(),
 			oHost = this.getHostInstance(),
-			oExtension = this.getAggregation("_extension"),
 			aActions = [];
+
+		this.getAggregation("_extension");
 
 		if (!oCardHeader) {
 			return;

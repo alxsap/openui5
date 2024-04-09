@@ -73,9 +73,6 @@ function(
 	// shortcut for sap.m.ListMode
 	var ListMode = library.ListMode;
 
-	// shortcut for sap.m.ListHeaderDesign
-	var ListHeaderDesign = library.ListHeaderDesign;
-
 	// shortcut for sap.m.Sticky
 	var Sticky = library.Sticky;
 
@@ -2879,5 +2876,4 @@ function(
 	};
 
 	return ListBase;
-
 });

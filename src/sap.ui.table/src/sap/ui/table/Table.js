@@ -65,7 +65,6 @@ sap.ui.define([
 ) {
 	"use strict";
 
-	var GroupEventType = library.GroupEventType;
 	var SelectionMode = library.SelectionMode;
 	var SelectionBehavior = library.SelectionBehavior;
 	var SortOrder = CoreLibrary.SortOrder;

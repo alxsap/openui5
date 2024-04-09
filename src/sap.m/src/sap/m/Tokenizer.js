@@ -211,8 +211,7 @@ sap.ui.define([
 			// listen for delete event of tokens, it bubbles
 			this.attachEvent("delete", function(oEvent) {
 				var oToken = oEvent.getSource();
-				var aSelectedTokens = this.getSelectedTokens();
-
+				this.getSelectedTokens();
 				this.fireEvent("tokenDelete", {
 					tokens: [oToken]
 				});

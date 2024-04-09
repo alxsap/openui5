@@ -28,7 +28,7 @@ sap.ui.define([
 	var getRowHeader = window.getRowHeader;
 	var getRowAction = window.getRowAction;
 	var getSelectAll = window.getSelectAll;
-	var iNumberOfRows = window.iNumberOfRows;
+	window.iNumberOfRows;
 	var initRowActions = window.initRowActions;
 	var fakeSumRow = window.fakeSumRow;
 	var fakeGroupRow = window.fakeGroupRow;

@@ -48,9 +48,6 @@ sap.ui.define([
 		var TextAlign = coreLibrary.TextAlign;
 
 
-		// shortcut for sap.m.ObjectMarkerType
-		var ObjectMarkerType = library.ObjectMarkerType;
-
 		// shortcut for sap.ui.core.TitleLevel
 		var TitleLevel = coreLibrary.TitleLevel;
 

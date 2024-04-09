@@ -664,7 +664,7 @@ sap.ui.define([
 			this.oTable = createTable.call(this);
 
 			var fnHandler1 = function() {
-				var oBinding = this.oTable.getBinding();
+				this.oTable.getBinding();
 
 				var oContext = this.oTable.getContextByIndex(0);
 				assert.equal(oContext.getProperty("ActualCosts"), "1588416", "First row data is correct");

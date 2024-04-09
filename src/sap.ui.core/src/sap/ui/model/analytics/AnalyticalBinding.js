@@ -290,7 +290,7 @@ sap.ui.define([
 			// attribute members for maintaining aggregated OData requests
 			this.bArtificalRootContext = false;
 			// Note: aApplicationFilter is used by sap.ui.comp.smarttable.SmartTable
-			this.aApplicationFilter = this._convertDeprecatedFilterObjects(aFilters);
+			this.aApplicationFilter = aFilters;
 			this.aControlFilter = undefined;
 			this.aSorter = aSorter ? aSorter : [];
 			if (!Array.isArray(this.aSorter)) {
@@ -993,8 +993,6 @@ sap.ui.define([
 			aFilter = [aFilter];
 		}
 
-		aFilter = this._convertDeprecatedFilterObjects(aFilter);
-
 		if (sFilterType == FilterType.Application) {
 			this.aApplicationFilter = aFilter;
 		} else {
@@ -1565,7 +1563,7 @@ sap.ui.define([
 	 */
 	AnalyticalBinding._getModelVersion = function (oModel) {
 		const sModelName = oModel.getMetadata().getName();
-		let iVersion = sModelName === "sap.ui.model.odata.v2.ODataModel" ? 2 : null;
+		const iVersion = sModelName === "sap.ui.model.odata.v2.ODataModel" ? 2 : null;
 
 		return iVersion;
 	};
@@ -3680,27 +3678,6 @@ sap.ui.define([
 				sFilterOperator = FilterOperator.GT;
 		}
 		return sFilterOperator;
-	};
-
-	/**
-	 * @private
-	 */
-	AnalyticalBinding.prototype._convertDeprecatedFilterObjects = function(aFilter) {
-		if (!aFilter) {
-			return aFilter;
-		}
-
-		// check if some filter object use the deprecated class sap.ui.model.odata.Filter;
-		// if so, convert them to sap.ui.model.Filter
-		var ODataFilter = sap.ui.require("sap/ui/model/odata/Filter");
-		if ( typeof ODataFilter === 'function' ) {
-			for (var i = 0, l = aFilter.length; i < l; i++) {
-				if (aFilter[i] instanceof ODataFilter) {
-					aFilter[i] = aFilter[i].convert();
-				}
-			}
-		}
-		return aFilter;
 	};
 
 	/********************************

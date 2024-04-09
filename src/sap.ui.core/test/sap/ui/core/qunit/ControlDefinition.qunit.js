@@ -34,7 +34,7 @@ sap.ui.define([
 	var MyControl;
 
 	QUnit.test("Extend sap.ui.core.Control", async function(assert) {
-		let expectedAsserts = 4;
+		const expectedAsserts = 4;
 
 		assert.expect(expectedAsserts);
 		assert.equal(window.my, undefined, "'my' should not be defined yet");

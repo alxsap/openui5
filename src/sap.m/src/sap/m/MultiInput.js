@@ -256,7 +256,7 @@ function(
 
 					break;
 				case "remove":
-					var sType = oChange.object.getTokens().length ? Tokenizer.TokenChangeType.Removed : Tokenizer.TokenChangeType.RemovedAll;
+					oChange.object.getTokens().length ? Tokenizer.TokenChangeType.Removed : Tokenizer.TokenChangeType.RemovedAll;
 					oToken.detachEvent("_change", this.invalidate, this);
 
 					break;

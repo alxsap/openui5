@@ -55,7 +55,7 @@ sap.ui.define([
 		 * @public
 		 */
 
-		let Global = {
+		const Global = {
 			/**
 			 * The version of the SAP UI Library
 			 * @type string

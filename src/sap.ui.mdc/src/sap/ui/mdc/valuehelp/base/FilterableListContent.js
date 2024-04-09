@@ -301,8 +301,8 @@ sap.ui.define([
 		if (oFilterBar) {
 			const oExistingBasicSearchField = oFilterBar.getBasicSearchField();
 
-			let bSearchSupported = this.isSearchSupported();
-			let sSearchPath = "$search";
+			const bSearchSupported = this.isSearchSupported();
+			const sSearchPath = "$search";
 
 			if (!oExistingBasicSearchField && bSearchSupported) {
 				if (!this._oSearchField) {
@@ -520,7 +520,7 @@ sap.ui.define([
 				const oFilterBar = this.getActiveFilterBar();
 				if (oFilterBar) {
 					// apply initial conditions to filterbar if existing
-					let sSearchPath = "$search";
+					const sSearchPath = "$search";
 
 					const oNewConditions = merge({}, this._oInitialFilterConditions);
 					const pHandleConditions = Promise.resolve(!oNewConditions[sSearchPath] && StateUtil.retrieveExternalState(oFilterBar).then((oState) => {

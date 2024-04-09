@@ -5,7 +5,6 @@
 // Provides control sap.uxap.ObjectPageHeaderContent.
 sap.ui.define([
 	"sap/ui/core/Control",
-	"./library",
 	"sap/m/Button",
 	"./ObjectImageHelper",
 	"./ObjectPageHeaderContentRenderer",
@@ -13,16 +12,12 @@ sap.ui.define([
 ],
 	function(
 		Control,
-		library,
 		Button,
 		ObjectImageHelper,
 		ObjectPageHeaderContentRenderer,
 		Library
 	) {
 		"use strict";
-
-		// shortcut for sap.uxap.ObjectPageHeaderDesign
-		var ObjectPageHeaderDesign = library.ObjectPageHeaderDesign;
 
 		/**
 		 * Constructor for a new <code>ObjectPageHeaderContent</code>.
@@ -269,5 +264,4 @@ sap.ui.define([
 		};
 
 		return ObjectPageHeaderContent;
-
 	});

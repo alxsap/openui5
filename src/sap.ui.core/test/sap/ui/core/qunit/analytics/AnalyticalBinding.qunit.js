@@ -2369,7 +2369,6 @@ sap.ui.define([
 
 	//*********************************************************************************************
 	QUnit.test("constructor: unsupported model", function (assert) {
-		this.mock(AnalyticalBinding.prototype).expects("_convertDeprecatedFilterObjects").withExactArgs(undefined);
 		const oModel = {createCustomParams() {}};
 		this.mock(oModel).expects("createCustomParams").withExactArgs({custom: undefined});
 		this.mock(AnalyticalBinding).expects("_getModelVersion").withExactArgs(sinon.match.same(oModel)).returns(null);

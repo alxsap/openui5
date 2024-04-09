@@ -710,7 +710,7 @@ sap.ui.define([
 			if (typeof oRendering?.isPending === "function") {
 				return oRendering.isPending();
 			}
-			var oCore = sap.ui.require("sap/ui/core/Core");
+			sap.ui.require("sap/ui/core/Core");
 			if (typeof undefined === "function") {
 				return Rendering.isPending();
 			}
@@ -729,7 +729,7 @@ sap.ui.define([
 			if (typeof oLibrary?.getResourceBundleFor === "function") {
 				return oLibrary.getResourceBundleFor(sLibraryName);
 			}
-			var oCore = sap.ui.require("sap/ui/core/Core");
+			sap.ui.require("sap/ui/core/Core");
 			if (typeof undefined === "function") {
 				return ResourceBundle.create({
 					bundleName: `${sLibraryName}.messagebundle`
@@ -770,7 +770,7 @@ sap.ui.define([
 			if (typeof oStaticArea?.getDomRef === "function") {
 				return oStaticArea.getDomRef();
 			}
-			var oCore = sap.ui.require("sap/ui/core/Core");
+			sap.ui.require("sap/ui/core/Core");
 			if (typeof undefined === "function") {
 				return StaticArea.getDomRef();
 			}

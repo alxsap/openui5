@@ -12,7 +12,7 @@ sap.ui.define(["sap/base/future", "sap/base/Log", "sap/ui/core/mvc/View", "sap/u
 		 * @namespace
 		 * @public
 		 */
-		let ExtensionPoint = {};
+		const ExtensionPoint = {};
 
 		/**
 		 * API documentation see ExtensionPoint.load() (v2 API) and sap.ui.extensionpoint() (v1 API).

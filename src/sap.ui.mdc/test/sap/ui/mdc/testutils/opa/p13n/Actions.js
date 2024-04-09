@@ -671,8 +671,7 @@ sap.ui.define([
 			fnOpenThePersonalizationDialog = fnOpenThePersonalizationDialog ? fnOpenThePersonalizationDialog : iOpenThePersonalizationDialog;
 			return iPersonalize.call(this, oControl, Util.texts.chart, fnOpenThePersonalizationDialog, {
 				success: function(oP13nDialog) {
-					var sViewName = bIsMDC ? "Item" : "dimeasure";
-
+					bIsMDC ? "Item" : "dimeasure";
 					this.waitFor({
 						controlType: "sap.ui.mdc.p13n.panels.ChartItemPanel",
 						matchers: new Ancestor(oP13nDialog, false),

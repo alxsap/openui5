@@ -497,8 +497,9 @@ sap.ui.define([
 	 * @returns {object} The modified request
 	 */
 	RequestDataProvider.prototype._modifyRequestBeforeSent = function (oRequest, oSettings) {
-		var oCard = Element.getElementById(this.getCard()),
-			oHost = Element.getElementById(this.getHost());
+		var oHost = Element.getElementById(this.getHost());
+
+		Element.getElementById(this.getCard());
 
 		if (!oHost) {
 			return oRequest;

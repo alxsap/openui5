@@ -8,7 +8,7 @@ sap.ui.define([
 ], function(Localization, ObjectPath, Device, Library, nextUIUpdate) {
 	"use strict";
 
-	var privateLoaderAPI = sap.ui.loader._;
+	sap.ui.loader._;
 
 	// custom assertion
 	QUnit.assert.equalControls = function(actual, expected, message) {
