@@ -1883,10 +1883,7 @@ sap.ui.define([
 			},
 
 			Tree: {
-				title: "QUnit Page for sap.m.Tree",
-				sinon: {
-					useFakeTimers: true
-				}
+				title: "QUnit Page for sap.m.Tree"
 			},
 
 			Treeodata: {
