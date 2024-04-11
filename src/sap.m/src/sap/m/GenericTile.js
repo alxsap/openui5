@@ -1533,7 +1533,8 @@ sap.ui.define([
 				this._oTitle.setMaxLines(2);
 			}
 		} else if (frameType === FrameType.TwoByOne && (this.getLinkTileContents().length > 0 || this.getMode() === GenericTileMode.ActionMode)) {
-			if (bSubheader) {
+			var bIsPriorityPresent = this.isA("sap.m.ActionTile") && this.getProperty("priority") && this.getProperty("priorityText");
+			if (bSubheader && !bIsPriorityPresent) {
 				this._oTitle.setMaxLines(1);
 			} else {
 				this._oTitle.setMaxLines(2);
@@ -1581,7 +1582,10 @@ sap.ui.define([
 			bIsFirst = false;
 		}
 
-		if (this.getSubheader()) {
+		if (this.isA("sap.m.ActionTile") && this.getProperty("priority") && this.getProperty("priorityText")) {
+			sText += (bIsFirst ? "" : "\n") + this.getProperty("priorityText");
+			bIsFirst = false;
+		} else if (this.getSubheader()) {
 			sText += (bIsFirst ? "" : "\n") + this.getSubheader();
 			bIsFirst = false;
 		}
