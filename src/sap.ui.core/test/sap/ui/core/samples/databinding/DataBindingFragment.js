@@ -1,0 +1,1 @@
+var oXMLView = sap.ui.xmlview("my.View").placeAt("content");

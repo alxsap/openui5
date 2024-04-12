@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head><meta charset="utf-8">
 	<title>Card Actions</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="../../../scripts/boot.js"></script>
 </head>
@@ -73,7 +73,7 @@
 						<td>string</td>
 						<td></td>
 						<td>No</td>
-						<td>If the manifest is provided as an object the "baseUrl" can be specified to be used for loading relative resources in the opened card. If not provided the main card's "baseUrl" will be used.</td>
+						<td>If the manifest is provided as an object the &quot;baseUrl&quot; can be specified to be used for loading relative resources in the opened card. If not provided the main card&apos;s &quot;baseUrl&quot; will be used.</td>
 						<td>1.51.0</td>
 						<td>1.112</td>
 					</tr>
@@ -90,73 +90,73 @@
 			</div>
 
 			<h2 id="examples">Examples</h2>
-			<p>Example how to show a card with manifest "detailsManifest.json":</p>
+			<p>Example how to show a card with manifest &quot;detailsManifest.json&quot;:</p>
 			<pre class="lang-json">
 {
-	"sap.app": {
-		"id": "card.explorer.actions.showHideCard",
-		"type": "card",
+	&quot;sap.app&quot;: {
+		&quot;id&quot;: &quot;card.explorer.actions.showHideCard&quot;,
+		&quot;type&quot;: &quot;card&quot;,
 		...
 	},
-	"sap.card": {
-		"type": "Object",
-		"configuration": {
-			"parameters": {
-				"orderId": {
-					"value": 10249
+	&quot;sap.card&quot;: {
+		&quot;type&quot;: &quot;Object&quot;,
+		&quot;configuration&quot;: {
+			&quot;parameters&quot;: {
+				&quot;orderId&quot;: {
+					&quot;value&quot;: 10249
 				}
 			}
 		},
-		"data": {
+		&quot;data&quot;: {
 			...
 		},
-		"header": {
-			"data": {
-				"path": "/value/0"
+		&quot;header&quot;: {
+			&quot;data&quot;: {
+				&quot;path&quot;: &quot;/value/0&quot;
 			},
-			"icon": {
-				"src": "sap-icon://sap-ui5"
+			&quot;icon&quot;: {
+				&quot;src&quot;: &quot;sap-icon://sap-ui5&quot;
 			},
-			"title": "Order for {ShipName}",
-			"subTitle": "ID {parameters>/orderId/value}"
+			&quot;title&quot;: &quot;Order for {ShipName}&quot;,
+			&quot;subTitle&quot;: &quot;ID {parameters&gt;/orderId/value}&quot;
 		},
-		"content": {
-			"groups": [
+		&quot;content&quot;: {
+			&quot;groups&quot;: [
 				{
-					"items": [
+					&quot;items&quot;: [
 						{
-							"label": "Name",
-							"value": "{ShipName}"
+							&quot;label&quot;: &quot;Name&quot;,
+							&quot;value&quot;: &quot;{ShipName}&quot;
 						}
 					]
 				},
 				{
-					"items": [
+					&quot;items&quot;: [
 						{
-							"label": "Address",
-							"value": "{ShipAddress}"
+							&quot;label&quot;: &quot;Address&quot;,
+							&quot;value&quot;: &quot;{ShipAddress}&quot;
 						}
 					]
 				}
 			]
 		},
-		"footer": {
-			"actionsStrip": [
+		&quot;footer&quot;: {
+			&quot;actionsStrip&quot;: [
 				{
-					"text": "Show More",
-					"buttonType": "Accept",
-					<mark>"actions": [
+					&quot;text&quot;: &quot;Show More&quot;,
+					&quot;buttonType&quot;: &quot;Accept&quot;,
+					<mark>&quot;actions&quot;: [
 						{
-							"type": "ShowCard",
-							"parameters": {
-								"manifest": "./detailsManifest.json",
-								"parameters": {
-									"orderId": "{parameters>/orderId/value}"
+							&quot;type&quot;: &quot;ShowCard&quot;,
+							&quot;parameters&quot;: {
+								&quot;manifest&quot;: &quot;./detailsManifest.json&quot;,
+								&quot;parameters&quot;: {
+									&quot;orderId&quot;: &quot;{parameters&gt;/orderId/value}&quot;
 								},
-								"data": {
-									"orderData": "{/value/0}"
+								&quot;data&quot;: {
+									&quot;orderData&quot;: &quot;{/value/0}&quot;
 								},
-								"width": "480px"
+								&quot;width&quot;: &quot;480px&quot;
 							}
 						}
 					]</mark>

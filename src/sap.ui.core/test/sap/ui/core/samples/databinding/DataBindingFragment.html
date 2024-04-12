@@ -1,18 +1,20 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
-		<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'>
+	<head><meta charset="UTF-8">
+		
 
 		<title>Binding at a Fragment</title>
 
 		<script src="../../../../../../resources/sap-ui-core.js"
-			id="sap-ui-bootstrap"
-			data-sap-ui-libs="sap.m,sap.ui.layout"
-			data-sap-ui-resourceroots='{ "my": "./fragment" }'></script>
+				id="sap-ui-bootstrap"
+				data-sap-ui-libs="sap.m,sap.ui.layout"
+				data-sap-ui-resource-roots='{"my":"./fragment","local":"./"}'
+				data-sap-ui-async="true"
+				data-sap-ui-compat-version="edge"
+				data-sap-ui-on-init="module:local/DataBindingFragment"
+		></script>
 
-		<script>
-			var oXMLView = sap.ui.xmlview("my.View").placeAt("content");
-		</script>
+		
 
 	</head>
 	<body class="sapUiBody">

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head><meta charset="utf-8">
 	<title>Destinations</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="../../../scripts/boot.js"></script>
 </head>
@@ -31,8 +31,7 @@
 				destination name to an absolute URL. This happens with the help of the sap.ui.integration.Host element.
 			</p>
 			<p>
-				For more information of SAP Business Technology Platform destinations, check our <a data-demokit-href="#/topic/3a16c7a2f1e944deb000db49e5ece6be"
-					target="_blank">Create a Northwind Destination</a> example.
+				For more information of SAP Business Technology Platform destinations, check our <a data-demokit-href="#/topic/3a16c7a2f1e944deb000db49e5ece6be" target="_blank">Create a Northwind Destination</a> example.
 			</p>
 
 			<h2 id="inTheManifest">
@@ -83,8 +82,7 @@
 			</div>
 
 			<p>
-				<b>Note</b>: If you are developing a Component Card please check the <a
-					href="../../../index.html#/explore/destinations/component" target="_parent">Component Card
+				<b>Note</b>: If you are developing a Component Card please check the <a href="../../../index.html#/explore/destinations/component" target="_parent">Component Card
 					sample</a>.
 			</p>
 
@@ -93,8 +91,7 @@
 			</h2>
 
 			<p>
-				For detailed information about the contribution from host environment, see <a
-					href="../../../index.html#/integrate/destinations" target="_parent">Integrate Destinations</a>.
+				For detailed information about the contribution from host environment, see <a href="../../../index.html#/integrate/destinations" target="_parent">Integrate Destinations</a>.
 			</p>
 
 			<h2 id="examples">
@@ -103,48 +100,48 @@
 
 			<p>An example with a card which fetches data from Northwind service:</p>
 			<pre class="lang-json">
-"sap.card": {
-	"type": "Table",
-	"data": {
-		"request": {
-			"url": "{{destinations.myDestination}}/Orders",
-			"parameters": {
-				"$format": "json",
-				"$top": "{parameters>/maxItems/value}",
-				"$orderby": "Freight desc"
+&quot;sap.card&quot;: {
+	&quot;type&quot;: &quot;Table&quot;,
+	&quot;data&quot;: {
+		&quot;request&quot;: {
+			&quot;url&quot;: &quot;{{destinations.myDestination}}/Orders&quot;,
+			&quot;parameters&quot;: {
+				&quot;&#x24;format&quot;: &quot;json&quot;,
+				&quot;&#x24;top&quot;: &quot;{parameters&gt;/maxItems/value}&quot;,
+				&quot;&#x24;orderby&quot;: &quot;Freight desc&quot;
 			}
 		}
 	},
-	"configuration": {
-		"destinations": {
-			"myDestination": {
-				"name": "Northwind"
+	&quot;configuration&quot;: {
+		&quot;destinations&quot;: {
+			&quot;myDestination&quot;: {
+				&quot;name&quot;: &quot;Northwind&quot;
 			}
 		},
-		"parameters": {
-			"maxItems": {
-				"value": 7,
-				"type": "integer"
+		&quot;parameters&quot;: {
+			&quot;maxItems&quot;: {
+				&quot;value&quot;: 7,
+				&quot;type&quot;: &quot;integer&quot;
 			}
 		}
 	},
-	"content": {
-		"data": {
-			"path": "/value/"
+	&quot;content&quot;: {
+		&quot;data&quot;: {
+			&quot;path&quot;: &quot;/value/&quot;
 		},
-		"maxItems": "{parameters>/maxItems/value}",
-		"row": {
-			"columns": [{
-					"title": "Customer",
-					"value": "{ShipName}"
+		&quot;maxItems&quot;: &quot;{parameters&gt;/maxItems/value}&quot;,
+		&quot;row&quot;: {
+			&quot;columns&quot;: [{
+					&quot;title&quot;: &quot;Customer&quot;,
+					&quot;value&quot;: &quot;{ShipName}&quot;
 				},
 				{
-					"title": "Country",
-					"value": "{ShipCountry}"
+					&quot;title&quot;: &quot;Country&quot;,
+					&quot;value&quot;: &quot;{ShipCountry}&quot;
 				},
 				{
-					"title": "Freight",
-					"value": "{Freight}"
+					&quot;title&quot;: &quot;Freight&quot;,
+					&quot;value&quot;: &quot;{Freight}&quot;
 				}
 			]
 		}

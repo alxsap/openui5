@@ -1,32 +1,19 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
+	<head><meta charset="utf-8">
 		<title>DataType - sap.ui.core</title>
 
 		<script src="shared-config.js"></script>
 		<script id="sap-ui-bootstrap"
-				src="../../../../resources/sap-ui-core.js">
+				src="../../../../resources/sap-ui-core.js"
+				data-sap-ui-async="true"
+				data-sap-ui-compat-version="edge"
+				data-sap-ui-on-init="module:local/DataTypeNormalizer"
+				data-sap-ui-resource-roots='{"local":"./"}'
+		>
 		</script>
 
-		<script>
-
-		sap.ui.core.URI.setNormalizer(function(sUri) {
-
-			if (sUri === "sap-icon://sys-cancel") {
-				sUri = "sap-icon://sys-enter";
-			}
-
-			return sUri;
-		});
-
-		var oIcon = new sap.ui.core.Icon({
-			src: "sap-icon://sys-cancel",
-			size: "10rem"
-		});
-
-		oIcon.placeAt("normalized");
-
-		</script>
+		
 
 </head>
 	<body class="sapUiBody">
@@ -35,9 +22,9 @@
 		<h2>DataType Normalizer:</h2>
 		<div id="normalized"></div>
 
-		<br />
+		<br>
 
-		<a href="#" onclick="oIcon.setSrc('sap-icon://sys-cancel');">Change src</a>
+		<a href="#" onclick="oIcon.setSrc(&apos;sap-icon://sys-cancel&apos;);">Change src</a>
 
 	</body>
 </html>

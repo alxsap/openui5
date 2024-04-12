@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head><meta charset="utf-8">
 	<title>Select Filter</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="../../../scripts/boot.js"></script>
 </head>
@@ -43,7 +43,7 @@
 						<td><a href="#selectFilterItemProperties">SelectFilterItem[]</a></td>
 						<td></td>
 						<td>No</td>
-						<td>The items which will appear in the dropdown. Cannot be used together with 'item'.</td>
+						<td>The items which will appear in the dropdown. Cannot be used together with &apos;item&apos;.</td>
 						<td>1.24.0</td>
 						<td>1.80</td>
 					</tr>
@@ -52,7 +52,7 @@
 						<td><a href="#selectFilterItemBindingInfoProperties">SelectFilterItemBindingInfo</a></td>
 						<td></td>
 						<td>No</td>
-						<td>Binding info object used to bind data to items of a filter. Cannot be used together with 'items'.</td>
+						<td>Binding info object used to bind data to items of a filter. Cannot be used together with &apos;items&apos;.</td>
 						<td>1.27.0</td>
 						<td>1.83</td>
 					</tr>
@@ -135,22 +135,22 @@
 			</div>
 
 			<h2 id="filtersModel">Filters Model</h2>
-			<p>The following values are available for filter of type "Select":</p>
+			<p>The following values are available for filter of type &quot;Select&quot;:</p>
 			<table>
 				<tr>
 					<th>Path</th>
 					<th>Description</th>
 				</tr>
 				<tr>
-					<td>{filters>/keyOfTheFilter/value}</td>
+					<td>{filters&gt;/keyOfTheFilter/value}</td>
 					<td>The current value of the filter.</td>
 				</tr>
 				<tr>
-					<td>{filters>/keyOfTheFilter/selectedItem/title}</td>
+					<td>{filters&gt;/keyOfTheFilter/selectedItem/title}</td>
 					<td>The title of the selected item.</td>
 				</tr>
 				<tr>
-					<td>{filters>/keyOfTheFilter/selectedItem/key}</td>
+					<td>{filters&gt;/keyOfTheFilter/selectedItem/key}</td>
 					<td>The key of the selected item.</td>
 				</tr>
 			</table>
@@ -158,34 +158,34 @@
 			<h2 id="examples">Examples</h2>
 			<p>A filter for product category is defined and later used inside a data request.</p>
 			<pre class="lang-json">{
-	"sap.card": {
-		"configuration": {
-			"filters": {
-				<mark>"productCategory": {
-					"value": "Notebooks",
-					"type": "Select",
-					"label": "Category",
-					"item": {
-						"path": "/items",
-						"template": {
-							"key": "{key}",
-							"title": "{title}"
+	&quot;sap.card&quot;: {
+		&quot;configuration&quot;: {
+			&quot;filters&quot;: {
+				<mark>&quot;productCategory&quot;: {
+					&quot;value&quot;: &quot;Notebooks&quot;,
+					&quot;type&quot;: &quot;Select&quot;,
+					&quot;label&quot;: &quot;Category&quot;,
+					&quot;item&quot;: {
+						&quot;path&quot;: &quot;/items&quot;,
+						&quot;template&quot;: {
+							&quot;key&quot;: &quot;{key}&quot;,
+							&quot;title&quot;: &quot;{title}&quot;
 						}
 					},
-					"data": {
-						"json": {
-							"items": [
+					&quot;data&quot;: {
+						&quot;json&quot;: {
+							&quot;items&quot;: [
 								{
-									"title": "All",
-									"key": "all"
+									&quot;title&quot;: &quot;All&quot;,
+									&quot;key&quot;: &quot;all&quot;
 								},
 								{
-									"title": "Flat Screen Monitors",
-									"key": "Flat Screen Monitors"
+									&quot;title&quot;: &quot;Flat Screen Monitors&quot;,
+									&quot;key&quot;: &quot;Flat Screen Monitors&quot;
 								},
 								{
-									"title": "Notebooks",
-									"key": "Notebooks"
+									&quot;title&quot;: &quot;Notebooks&quot;,
+									&quot;key&quot;: &quot;Notebooks&quot;
 								}
 							]
 						}
@@ -193,21 +193,21 @@
 				}</mark>
 			}
 		},
-		"data": {
-			"request": {
-				"url": "/SEPMRA_PROD_MAN/SEPMRA_C_PD_Product",
-				"parameters": {
-					<mark>"$filter": "{= ${filters>/productCategory/value} !== 'all' ? 'ProductCategory eq ' + ${filters>/productCategory/value} + ' and ' : ''}AverageRatingValue gt 3",</mark>
-					"$orderby": "AverageRatingValue desc",
-					"$inlinecount": "allpages"
+		&quot;data&quot;: {
+			&quot;request&quot;: {
+				&quot;url&quot;: &quot;/SEPMRA_PROD_MAN/SEPMRA_C_PD_Product&quot;,
+				&quot;parameters&quot;: {
+					<mark>&quot;&#x24;filter&quot;: &quot;{= &#x24;{filters&gt;/productCategory/value} !== &apos;all&apos; ? &apos;ProductCategory eq &apos; + &#x24;{filters&gt;/productCategory/value} + &apos; and &apos; : &apos;&apos;}AverageRatingValue gt 3&quot;,</mark>
+					&quot;&#x24;orderby&quot;: &quot;AverageRatingValue desc&quot;,
+					&quot;&#x24;inlinecount&quot;: &quot;allpages&quot;
 				}
 			}
 		},
-		"header": {
-			"title": "Products by category",
-			"subTitle": "Category {filters>/productCategory/selectedItem/title}"
+		&quot;header&quot;: {
+			&quot;title&quot;: &quot;Products by category&quot;,
+			&quot;subTitle&quot;: &quot;Category {filters&gt;/productCategory/selectedItem/title}&quot;
 		},
-		"content": {
+		&quot;content&quot;: {
 			...
 		}
 	}

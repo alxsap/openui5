@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head><meta charset="utf-8">
 	<title>Custom the Field</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script data-require-ui5-init src="../../../scripts/boot.js"></script>
 </head>
@@ -23,21 +23,21 @@
 				<li>Extends class VizBase
 					<pre class="lang-js">
 sap.ui.define([
-	"sap/ui/integration/editor/fields/viz/VizBase",
-	"sap/m/DateRangeSelection",
-	"sap/base/util/merge"
+	&quot;sap/ui/integration/editor/fields/viz/VizBase&quot;,
+	&quot;sap/m/DateRangeSelection&quot;,
+	&quot;sap/base/util/merge&quot;
 ], function (
 	VizBase, DateRangeSelection, merge
 ) {
-	"use strict";
+	&quot;use strict&quot;;
 
-	var CustomDateRangeSelection = VizBase.extend("sap.ui5.test.cardeditor.listcard.viz.CustomDateRangeSelection", {
+	var CustomDateRangeSelection = VizBase.extend(&quot;sap.ui5.test.cardeditor.listcard.viz.CustomDateRangeSelection&quot;, {
 		metadata: {
-			library: "sap.ui5.test.cardeditor.listcard",
+			library: &quot;sap.ui5.test.cardeditor.listcard&quot;,
 			properties: {
 				displayFormat: {
-					type: "string",
-					defaultValue: ""
+					type: &quot;string&quot;,
+					defaultValue: &quot;&quot;
 				}
 			}
 		},
@@ -50,7 +50,7 @@ sap.ui.define([
 });
 </pre>
 					<p>
-						VizBase has 2 default properties: "value" and "editable". Customer can add new properties, here is "dispalyFormat".
+						VizBase has 2 default properties: &quot;value&quot; and &quot;editable&quot;. Customer can add new properties, here is &quot;dispalyFormat&quot;.
 					</p>
 				</li>
 				<li>Implement the onInit function
@@ -67,9 +67,9 @@ CustomDateRangeSelection.prototype.onInit = function () {
 				<li>Add the set function of new properties
 					<pre class="lang-js">
 CustomDateRangeSelection.prototype.setDisplayFormat = function (sValue) {
-	this.setProperty("displayFormat", sValue, true);
+	this.setProperty(&quot;displayFormat&quot;, sValue, true);
 	sValue = this.getDisplayFormat();
-	this._oControl.setProperty("displayFormat", sValue);
+	this._oControl.setProperty(&quot;displayFormat&quot;, sValue);
 	return this;
 };
 </pre>
@@ -79,41 +79,41 @@ CustomDateRangeSelection.prototype.setDisplayFormat = function (sValue) {
 // bind propeties to this._oControl
 CustomDateRangeSelection.prototype.bindPropertyToControl = function (sProperty, oBindingInfo) {
 	VizBase.prototype.bindPropertyToControl.apply(this, arguments);
-	if (sProperty === "displayFormat") {
+	if (sProperty === &quot;displayFormat&quot;) {
 		var oControlBindingInfo = merge({}, oBindingInfo);
-		this._oControl.bindProperty("displayFormat", oControlBindingInfo);
+		this._oControl.bindProperty(&quot;displayFormat&quot;, oControlBindingInfo);
 	}
 };
 </pre>
 					<p>
 						If customer want to bind value or editable to other property of the UI5 control, please not call the bindPropertyToControl of VizBase.
-					<pre class="lang-js">
+					</p><pre class="lang-js">
 ShapeSelect.prototype.bindPropertyToControl = function (sProperty, oBindingInfo) {
-	if (sProperty === "editable") {
+	if (sProperty === &quot;editable&quot;) {
 		var oControlBindingInfo = merge({}, oBindingInfo);
-		this._oControl.bindProperty("enabled", oControlBindingInfo);
+		this._oControl.bindProperty(&quot;enabled&quot;, oControlBindingInfo);
 	}
-	if (sProperty === "value") {
+	if (sProperty === &quot;value&quot;) {
 		var oControlBindingInfo = merge({}, oBindingInfo);
-		this._oControl.bindProperty("selectedKey", oControlBindingInfo);
+		this._oControl.bindProperty(&quot;selectedKey&quot;, oControlBindingInfo);
 	}
 };
 </pre>
-					</p>
+					<p></p>
 				</li>
 				<li>Use the new class as visualization type of the property in Configuration
 					<pre class="lang-js">
-"dateRange": {
-	"manifestpath": "/sap.card/configuration/parameters/dateRange/value",
-	"type": "string",
-	"label": "Date Range",
-	"displayFormat": "yyyy/MM/dd",
-	"visualization": {
-		"type": "sap/ui5/test/cardeditor/listcard/viz/CustomDateRangeSelection",
-		"settings": {
-			"value": "{currentSettings>value}",
-			"editable": "{currentSettings>editable}",
-			"displayFormat": "{currentSettings>displayFormat}"
+&quot;dateRange&quot;: {
+	&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/dateRange/value&quot;,
+	&quot;type&quot;: &quot;string&quot;,
+	&quot;label&quot;: &quot;Date Range&quot;,
+	&quot;displayFormat&quot;: &quot;yyyy/MM/dd&quot;,
+	&quot;visualization&quot;: {
+		&quot;type&quot;: &quot;sap/ui5/test/cardeditor/listcard/viz/CustomDateRangeSelection&quot;,
+		&quot;settings&quot;: {
+			&quot;value&quot;: &quot;{currentSettings&gt;value}&quot;,
+			&quot;editable&quot;: &quot;{currentSettings&gt;editable}&quot;,
+			&quot;displayFormat&quot;: &quot;{currentSettings&gt;displayFormat}&quot;
 		}
 	}
 },
@@ -128,20 +128,20 @@ ShapeSelect.prototype.bindPropertyToControl = function (sProperty, oBindingInfo)
 			<ol>
 				<li>Create fragment xml view file
 					<p>
-						<img src="../img/fragmentXMLFile.PNG" alt="" style="margin:2px;width:800px;border:1px solid #f5f5f5">
+						<img src="../img/fragmentXMLFile.PNG" alt style="margin:2px;width:800px;border:1px solid #f5f5f5">
 					</p>
 					<p>
-						Use the UI5 Controls in the xml file, and the data models: "currentSettings", "items", "i18n", "context", "contextflat" and undefined.
+						Use the UI5 Controls in the xml file, and the data models: &quot;currentSettings&quot;, &quot;items&quot;, &quot;i18n&quot;, &quot;context&quot;, &quot;contextflat&quot; and undefined.
 					</p>
 				</li>
 				<li>Create controller.js File which extends sap.ui.integration.editor.fields.fragment.Controller
 					<pre class="lang-js">
 sap.ui.define([
-	"sap/ui/integration/editor/fields/fragment/Controller"
+	&quot;sap/ui/integration/editor/fields/fragment/Controller&quot;
 ], function(Controller) {
-	"use strict";
+	&quot;use strict&quot;;
 
-	var InputController = Controller.extend("sap.ui5.test.cardeditor.listcard.viz.Input", {
+	var InputController = Controller.extend(&quot;sap.ui5.test.cardeditor.listcard.viz.Input&quot;, {
 	});
 
 	return InputController;
@@ -151,7 +151,7 @@ sap.ui.define([
 				<li>Implement the init function and the event handlers
 					<pre class="lang-js">
 InputController.prototype.init = function () {
-	this._aa = "aa";
+	this._aa = &quot;aa&quot;;
 };
 
 InputController.prototype.handleChange = function (oEvent) {
@@ -166,19 +166,19 @@ InputController.prototype.handleChange = function (oEvent) {
 				</li>
 				<li>Use the fragment as visualization.fragment in Configuration
 					<pre class="lang-js">
-"cardTitle": {
-	"manifestpath": "/sap.card/configuration/parameters/cardTitle/value",
-	"type": "string",
-	"translatable": true,
-	"required": true,
-	"label": "Card Title",
-	"allowDynamicValues": true,
-	"editableToUser": false,
-	"visibleToUser": true,
-	"description": "Card Title",
-	"cols": 1,
-	"visualization": {
-		"fragment": "sap/ui5/test/cardeditor/listcard/viz/Input"
+&quot;cardTitle&quot;: {
+	&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/cardTitle/value&quot;,
+	&quot;type&quot;: &quot;string&quot;,
+	&quot;translatable&quot;: true,
+	&quot;required&quot;: true,
+	&quot;label&quot;: &quot;Card Title&quot;,
+	&quot;allowDynamicValues&quot;: true,
+	&quot;editableToUser&quot;: false,
+	&quot;visibleToUser&quot;: true,
+	&quot;description&quot;: &quot;Card Title&quot;,
+	&quot;cols&quot;: 1,
+	&quot;visualization&quot;: {
+		&quot;fragment&quot;: &quot;sap/ui5/test/cardeditor/listcard/viz/Input&quot;
 	}
 }
 </pre>

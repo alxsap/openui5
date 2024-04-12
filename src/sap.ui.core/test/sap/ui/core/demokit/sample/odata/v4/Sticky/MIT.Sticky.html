@@ -1,9 +1,7 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
-		<style type="text/css">
-			body {font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;}
-		</style>
+	<head><meta charset="utf-8">
+		<link rel="stylesheet" href="./MIT.Sticky.css">
 		<title>Manual Integration Test: Stateful Session OData V4 App</title>
 	</head>
 	<body>
@@ -35,8 +33,8 @@
 		session is opened and sent with all following requests until the session is closed.<br>
 		The session is opened with <code>Edit</code> and closed via <code>Save</code> or
 		<code>Discard</code> buttons.<br>
-		<b>Check</b>: If <code>realOData=true</code>, open the network tab in the browser's
-		developer tools and check that each request following the "prepare" request contains the
+		<b>Check</b>: If <code>realOData=true</code>, open the network tab in the browser&apos;s
+		developer tools and check that each request following the &quot;prepare&quot; request contains the
 		header <code>SAP-ContextId</code>. (Note that headers are case-insenstive.)
 		For <code>realOData=false</code> you may only check that no errors are displayed,
 		- neither in the message popover nor in the browser console (after app is started)<br>
@@ -44,7 +42,7 @@
 		<h3>Check stateful session handling</h3>
 		<ul>
 			<li>After the application is started, within the table select the Sticky Type with Id
-				<code>10</code>, for <code>realOData=true</code> the Id doesn't matter</li>
+				<code>10</code>, for <code>realOData=true</code> the Id doesn&apos;t matter</li>
 		</ul>
 		<h4>Save scenario:</h4>
 		<ul>

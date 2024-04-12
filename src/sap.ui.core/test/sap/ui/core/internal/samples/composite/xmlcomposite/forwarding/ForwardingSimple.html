@@ -6,29 +6,17 @@
 
     <title>CompositeSample - sap.ui.core</title>
 
-    <script id="sap-ui-bootstrap" data-sap-ui-libs="sap.m" data-sap-ui-bindingSyntax="complex"
-        src="../../../../../../../../../resources/sap-ui-core.js" data-sap-ui-resourceroots='{"composites": "./composites"}'>
+    <script id="sap-ui-bootstrap"
+            data-sap-ui-libs="sap.m"
+            src="../../../../../../../../../resources/sap-ui-core.js"
+            data-sap-ui-resource-roots='{"composites":"./composites","local":"./"}'
+            data-sap-ui-async="true"
+            data-sap-ui-compat-version="edge"
+            data-sap-ui-on-init="module:local/ForwardingSimple"
+    >
         </script>
 
-    <script>
-        jQuery.sap.require("composites.ForwardText");
-
-        //add a ForwardText with single aggregation
-        var oForwardText = new composites.ForwardText({
-            text: new sap.m.Text({
-                text: "Text added to text aggregation",
-            }),
-            textItems: [
-                new sap.m.Text({
-                    text: "Text 1 added to textItems aggregation"
-                }),
-                new sap.m.Text({
-                    text: "Text 2 added to textItems aggregation"
-                })
-            ]
-        });
-        oForwardText.placeAt("body");
-    </script>
+    
 </head>
 
 <body id="body" class="sapUiBody" style="margin-left:10px">

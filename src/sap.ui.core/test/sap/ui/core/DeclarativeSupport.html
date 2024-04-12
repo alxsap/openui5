@@ -8,36 +8,16 @@
 
 	<script src="shared-config.js"></script>
 	<script id="sap-ui-bootstrap"
-			src="../../../../resources/sap-ui-core.js",
+			src="../../../../resources/sap-ui-core.js" ,
 			data-sap-ui-modules="sap.ui.core.plugin.DeclarativeSupport"
-			>
+			data-sap-ui-async="true"
+			data-sap-ui-compat-version="edge"
+			data-sap-ui-on-init="module:local/DeclarativeSupport"
+			data-sap-ui-resource-roots='{"local":"./"}'
+	>
 	</script>
 
-	<script>
-		try{
-			sap.ui.getCore().loadLibrary("sap.ui.commons");
-		}catch(e){
-			alert("This test page requires the library 'sap.ui.commons' which is not available.");
-			throw(e);
-		}
-
-		function handlePress() {
-			alert("PRESS");
-		}
-
-		function handleChange(oEvent) {
-			alert(oEvent.getSource().getValue());
-		}
-
-		test = {
-
-				handleEvent: function() {
-					alert("EVENT");
-				}
-
-		}
-
-	</script>
+	
 
 </head>
 <body class="sapUiBody">
@@ -121,7 +101,7 @@
 			</table>
 		</div>
 
-		<div data-sap-ui-type="sap.ui.commons.Panel"  data-sap-ui-default-aggregation="title">
+		<div data-sap-ui-type="sap.ui.commons.Panel" data-sap-ui-default-aggregation="title">
 			<div data-sap-ui-type="sap.ui.core.Title" data-text="Other Panel"></div>
 			<div data-sap-ui-aggregation="content">
 				<div data-sap-ui-type="sap.ui.commons.Image" data-src="http://www.sap.com/global/images/SAPLogo.gif"></div>

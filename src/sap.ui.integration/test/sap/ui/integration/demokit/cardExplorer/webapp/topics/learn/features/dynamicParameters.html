@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head><meta charset="utf-8">
 	<title>Dynamic Parameters</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="../../../scripts/boot.js"></script>
 </head>
@@ -21,7 +21,7 @@
 				The dynamic parameters are created and updated by the card.
 				Unlike the manifest parameters the dynamic parameters are not related to the manifest processing
 				and cannot be changed from outside the card.
-				They are accessed by using UI5's binding syntax with a named model "parameters" (e.g. "{parameters>/visibleItems}").
+				They are accessed by using UI5&apos;s binding syntax with a named model &quot;parameters&quot; (e.g. &quot;{parameters&gt;/visibleItems}&quot;).
 			</p>
 
 			<table>
@@ -49,15 +49,15 @@
 			</h2>
 
 			<p>
-				Using the dynamic parameter "visibleItems" inside the subtitle of the card:
+				Using the dynamic parameter &quot;visibleItems&quot; inside the subtitle of the card:
 			</p>
 
 			<pre class="lang-json">{
-	"sap.card": {
-		"type": "List",
-		"header": {
-			"title": "Some title",
-			"subTitle": "Number of items: {parameters>/visibleItems}"
+	&quot;sap.card&quot;: {
+		&quot;type&quot;: &quot;List&quot;,
+		&quot;header&quot;: {
+			&quot;title&quot;: &quot;Some title&quot;,
+			&quot;subTitle&quot;: &quot;Number of items: {parameters&gt;/visibleItems}&quot;
 		},
 		...
 	}

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head><meta charset="utf-8">
 	<title>Card Custom Action</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="../../../scripts/boot.js"></script>
 </head>
@@ -23,43 +23,43 @@
 			<p>Custom action handled by extension:</p>
 			<pre class="lang-json">
 {
-	"sap.card": {
-		"extension": "./ShowMessageExtension",
-		"header": {
+	&quot;sap.card&quot;: {
+		&quot;extension&quot;: &quot;./ShowMessageExtension&quot;,
+		&quot;header&quot;: {
 			...
 		},
-		"content": {
-			"data": {
-				"request": {
-					"url": "/products"
+		&quot;content&quot;: {
+			&quot;data&quot;: {
+				&quot;request&quot;: {
+					&quot;url&quot;: &quot;/products&quot;
 				}
 			},
-			"item": {
-				"title": "{Name}",
-				"actionsStrip": [
+			&quot;item&quot;: {
+				&quot;title&quot;: &quot;{Name}&quot;,
+				&quot;actionsStrip&quot;: [
 					{
-						"text": "Add to Favorites",
-						"actions": [
+						&quot;text&quot;: &quot;Add to Favorites&quot;,
+						&quot;actions&quot;: [
 							{
-								"type": "Custom",
-								"parameters": {
-									"method": "addToFavorites",
-									"name": "{Name}",
-									"id": "{Id}"
+								&quot;type&quot;: &quot;Custom&quot;,
+								&quot;parameters&quot;: {
+									&quot;method&quot;: &quot;addToFavorites&quot;,
+									&quot;name&quot;: &quot;{Name}&quot;,
+									&quot;id&quot;: &quot;{Id}&quot;
 								}
 							}
 						]
 					},
 					{
-						"buttonType": "Transparent",
-						"text": "Remove",
-						"actions": [
+						&quot;buttonType&quot;: &quot;Transparent&quot;,
+						&quot;text&quot;: &quot;Remove&quot;,
+						&quot;actions&quot;: [
 							{
-								"type": "Custom",
-								"parameters": {
-									"method": "remove",
-									"name": "{Name}",
-									"id": "{Id}"
+								&quot;type&quot;: &quot;Custom&quot;,
+								&quot;parameters&quot;: {
+									&quot;method&quot;: &quot;remove&quot;,
+									&quot;name&quot;: &quot;{Name}&quot;,
+									&quot;id&quot;: &quot;{Id}&quot;
 								}
 							}
 						]
@@ -78,16 +78,16 @@ ShowMessageExtension.prototype.init = function () {
 };
 
 ShowMessageExtension.prototype._handleAction = function (oEvent) {
-	if (oEvent.getParameter("type") !== CardActionType.Custom) {
+	if (oEvent.getParameter(&quot;type&quot;) !== CardActionType.Custom) {
 		return;
 	}
 
-	var oActionParams = oEvent.getParameter("parameters");
+	var oActionParams = oEvent.getParameter(&quot;parameters&quot;);
 	var pExecuteAction;
 
-	if (oActionParams.method === "addToFavorites") {
+	if (oActionParams.method === &quot;addToFavorites&quot;) {
 		this._addItemToFavorites(oActionParams.id);
-	} else if (oActionParams.method === "remove") {
+	} else if (oActionParams.method === &quot;remove&quot;) {
 		this._removeItem(oActionParams.id);
 	}
 	...

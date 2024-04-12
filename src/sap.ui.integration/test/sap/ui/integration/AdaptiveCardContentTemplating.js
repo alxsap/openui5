@@ -1,0 +1,1 @@
+delete Document.prototype.adoptedStyleSheets;

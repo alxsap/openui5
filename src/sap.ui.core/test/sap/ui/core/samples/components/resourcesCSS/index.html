@@ -1,28 +1,22 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<link rel="stylesheet" href="./main.css" />
-	<script src="../../../../../../../resources/sap-ui-core.js"
-			data-sap-ui-theme='sap_horizon'
-			data-sap-ui-libs="sap.ui.core"
-			data-sap-ui-compatVersion="edge"
-			data-sap-ui-async="true"
-			data-sap-ui-resourceroots='{
-				"sample": ".",
-				"test1/Component": "./Component1",
-				"test1":  "./",
-				"test2/Component": "./Component2",
-				"test2": "./",
-				"test3/Component": "./Component3",
-				"test3": "./"
-			}'
-			data-sap-ui-oninit="module:sample/main"></script>
+<head><meta charset="utf-8">
+	<link rel="stylesheet" href="./main.css">
+	<script src="../../../../../../../resources/sap-ui-core.js" data-sap-ui-theme="sap_horizon" data-sap-ui-libs="sap.ui.core" data-sap-ui-compatversion="edge" data-sap-ui-async="true" data-sap-ui-resourceroots="{
+				&quot;sample&quot;: &quot;.&quot;,
+				&quot;test1/Component&quot;: &quot;./Component1&quot;,
+				&quot;test1&quot;:  &quot;./&quot;,
+				&quot;test2/Component&quot;: &quot;./Component2&quot;,
+				&quot;test2&quot;: &quot;./&quot;,
+				&quot;test3/Component&quot;: &quot;./Component3&quot;,
+				&quot;test3&quot;: &quot;./&quot;
+			}" data-sap-ui-oninit="module:sample/main"></script>
 </head>
 <body>
 	<div id="test"></div>
 	<div>
 		Test for including stylesheets via Component manifest (including variants).
-		<br/>
+		<br>
 		Should switch color every 3 seconds, from red to green to yellow to blue.
 	</div>
 	<div id="target"></div>

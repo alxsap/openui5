@@ -1,14 +1,19 @@
 <!DOCTYPE HTML>
 <html>
-<head>
+<head><meta charset="utf-8">
     <title>sap.uxap.ObjectPage</title>
     <script src="shared-config.js"></script>
     <script src="../../../resources/sap-ui-core.js"
             id="sap-ui-bootstrap"
-            data-sap-ui-xx-waitForTheme="true"
-            data-sap-ui-libs="sap.m,sap.uxap,sap.ui.layout">
+            data-sap-ui-xx-waitfortheme="true"
+            data-sap-ui-libs="sap.m,sap.uxap,sap.ui.layout"
+            data-sap-ui-async="true"
+            data-sap-ui-compat-version="edge"
+            data-sap-ui-on-init="module:local/Old"
+            data-sap-ui-resource-roots='{"local":"./"}'
+    >
     </script>
-    <script id="view1" type="sapui5/xmlview">
+    <script id="view1" type="text/xml">
 		<m:View xmlns="sap.uxap" xmlns:m="sap.m" xmlns:l="sap.ui.layout" displayBlock="true" height="100%">
 
             <ObjectPageLayout id="ObjectPageLayout"
@@ -256,19 +261,7 @@
 	</script>
 </head>
 <body id="body" class="sapUiBody">
-<script>
-	(function (jQuery, App, Page) {
-		sap.ui.getCore().attachInit(function() {
-			var oApp = new App(),
-				myView = sap.ui.xmlview({viewContent: jQuery('#view1').html()});
 
-			oApp.addPage(new Page({
-				title: "Old Header",
-				content: [myView]
-			})).placeAt("content");
-		});
-	}(jQuery, sap.m.App, sap.m.Page));
-</script>
 <div id="content"></div>
 </body>
 </html>

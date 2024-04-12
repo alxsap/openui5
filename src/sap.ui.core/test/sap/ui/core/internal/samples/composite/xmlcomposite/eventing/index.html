@@ -2,33 +2,21 @@
 <html>
 
 <head>
-	<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta charset="UTF-8">
 
 	<title>XMLComposite Eventing</title>
-	<script
-		id="sap-ui-bootstrap"
-		data-sap-ui-libs="sap.m"
-		data-sap-ui-bindingSyntax="complex"
-		src="../../../../../../../../../resources/sap-ui-core.js"
-		data-sap-ui-resourceroots='{"composites": "./composites"}'>
+	<script id="sap-ui-bootstrap"
+			data-sap-ui-libs="sap.m"
+			src="../../../../../../../../../resources/sap-ui-core.js"
+			data-sap-ui-resource-roots='{"composites":"./composites","local":"./"}'
+			data-sap-ui-async="true"
+			data-sap-ui-compat-version="edge"
+			data-sap-ui-on-init="module:local/index"
+	>
 	</script>
 
-	<script>
-		jQuery.sap.require("composites.ButtonList");
-		var oFragment1 = new composites.ButtonList("Frag1", {
-			items: [ new sap.ui.core.Item("I1", {key: "K1", text: "Text 1"}),
-			         new sap.ui.core.Item("I2", {key: "K2", text: "Text 2"}),
-			         new sap.ui.core.Item("I3", {key: "K3", text: "Text 3"})
-			        ],
-			press: function(oEvent) {
-				alert("Item " + oEvent.getParameter("index") + " with key " + oEvent.getParameter("key") + " pressed");
-			}
-		}).placeAt("sample1");
-
-		var oFragment2 = oFragment1.clone("MyClone");
-		oFragment2.placeAt("clone1");
-	</script>
+	
 </head>
 
 <body class="sapUiBody" style="margin:1rem">

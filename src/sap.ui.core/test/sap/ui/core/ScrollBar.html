@@ -1,55 +1,20 @@
 <!DOCTYPE HTML>
 <html>
-<head>
+<head><meta charset="utf-8">
 	<title>ScrollBar - sap.ui.core</title>
 
 	<script src="shared-config.js"></script>
 	<script id="sap-ui-bootstrap"
-			src="../../../../resources/sap-ui-core.js">
+			src="../../../../resources/sap-ui-core.js"
+			data-sap-ui-async="true"
+			data-sap-ui-compat-version="edge"
+			data-sap-ui-on-init="module:local/ScrollBar"
+			data-sap-ui-resource-roots='{"local":"./"}'
+	>
 	</script>
 
 
-	<script>
-
-	   	// Vertical Scrollbar
-		var oVSB = new sap.ui.core.ScrollBar("vertSB");
-		oVSB.setVertical(true);
-		oVSB.setSize("200px");
-		oVSB.setScrollPosition(0);
-		oVSB.setSteps(100);
-		oVSB.attachScroll(function(oEvent) {
-			jQuery.sap.log.debug("vertical scroll position: " + oVSB.getScrollPosition());
-	    	jQuery("#owner").scrollTop(oVSB.getScrollPosition());
-		});
-
-
-		oVSB.placeAt("target1");
-
-
-		// Horizontal Scrollbar
-		var oHSB = new sap.ui.core.ScrollBar("horiSB");
-		oHSB.setVertical(false);
-		oHSB.setSize("200px");
-		oHSB.setScrollPosition(50);
-		oHSB.attachScroll(function(oEvent) {
-			jQuery.sap.log.debug("horizontal scroll position: " + oHSB.getScrollPosition());
-			jQuery("#owner").scrollLeft(oHSB.getScrollPosition());
-		});
-		oHSB.placeAt("target2");
-
-
-		jQuery(function() {
-			var $owner = jQuery("#owner");
-			oVSB.setContentSize($owner[0].scrollHeight +'px').bind($owner[0]);
-			oHSB.setContentSize($owner[0].scrollWidth +'px').bind($owner[0]);
-			$owner.scrollTop(oVSB.getScrollPosition()).scrollLeft(oHSB.getScrollPosition());
-
-		//	jQuery("#vertSB-sb").on("scroll",function(){jQuery("#owner").scrollTop(oVSB.getScrollPosition());});
-			//alert(jQuery("#owner").scrollTop());
-		//	jQuery("#testResult").html("StepSize (FF only): " + jQuery("#vertSB-ffsize").outerHeight());
-		});
-
-	</script>
+	
 
 </head>
 	<body class="sapUiBody">
@@ -60,7 +25,7 @@
 			<div id="owner" style="overflow:hidden; width: 200px; height: 200px;">
 <pre>
   if (jQuery.browser.mozilla) {
-		stepSize = jQuery('#' + this.getId() + "-ffsize").outerHeight();
+		stepSize = jQuery(&apos;#&apos; + this.getId() + &quot;-ffsize&quot;).outerHeight();
 	}
 
 	if  (jQuery.browser.webkit) {
@@ -104,7 +69,7 @@
 			<td>
 			   <div id="target1"> </div>
 			</td></tr>
-		    <tr><td colSpan=1>
+		    <tr><td colspan="1">
 			<div id="target2"></div></td>
 			</tr>
 			</table>

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head><meta charset="utf-8">
 	<title>Dynamic Counter</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="../../../scripts/boot.js"></script>
 </head>
@@ -29,32 +29,32 @@
 
 			<p>Using header status text along with predefined translation key and a dynamic parameter:</p>
 			<pre class="lang-json">{
-	"sap.app": {
-		"id": "card.explorer.dynamic.counter.card",
-		"type": "card",
-		"i18n": "i18n/i18n.properties",
-		"applicationVersion": {
-			"version": "1.0.0"
+	&quot;sap.app&quot;: {
+		&quot;id&quot;: &quot;card.explorer.dynamic.counter.card&quot;,
+		&quot;type&quot;: &quot;card&quot;,
+		&quot;i18n&quot;: &quot;i18n/i18n.properties&quot;,
+		&quot;applicationVersion&quot;: {
+			&quot;version&quot;: &quot;1.0.0&quot;
 		}
 	},
-	"sap.card": {
-		"header": {
+	&quot;sap.card&quot;: {
+		&quot;header&quot;: {
 			...
-			"status": {
-				"text": {
-					"format": {
-						"translationKey": "i18n>CARD.COUNT_X_OF_Y",
-						"parts": [
-							"parameters>/visibleItems",
-							"/count"
+			&quot;status&quot;: {
+				&quot;text&quot;: {
+					&quot;format&quot;: {
+						&quot;translationKey&quot;: &quot;i18n&gt;CARD.COUNT_X_OF_Y&quot;,
+						&quot;parts&quot;: [
+							&quot;parameters&gt;/visibleItems&quot;,
+							&quot;/count&quot;
 						]
 					}
 				}
 			}
 		},
-		"content": {
-			"maxItems": 2,
-			"item": {
+		&quot;content&quot;: {
+			&quot;maxItems&quot;: 2,
+			&quot;item&quot;: {
 				....
 			}
 		}

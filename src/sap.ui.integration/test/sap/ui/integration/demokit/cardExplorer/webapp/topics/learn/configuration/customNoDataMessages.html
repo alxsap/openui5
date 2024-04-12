@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head><meta charset="utf-8">
 	<title>Custom No Data Messages</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="../../../scripts/boot.js"></script>
 </head>
@@ -16,7 +16,7 @@
 			Custom No Data Message
 		</h1>
 		<p>
-			A customized "No Data" message allows the card developer to display information to the users,
+			A customized &quot;No Data&quot; message allows the card developer to display information to the users,
 			when <b>no data</b> is returned from the server, so they will have additional information about the missing data.
 
 			The messages are displayed via the <a data-demokit-href="#/api/sap.m.IllustratedMessage" target="_blank">sap.m.IllustratedMessage</a> control.
@@ -35,8 +35,7 @@
 				</tr>
 				<tr>
 					<td>type</td>
-					<td><a data-demokit-href="#/api/sap.m.IllustratedMessageType"
-						   target="_blank">sap.m.IllustratedMessageType</a></td>
+					<td><a data-demokit-href="#/api/sap.m.IllustratedMessageType" target="_blank">sap.m.IllustratedMessageType</a></td>
 					<td>Yes</td>
 					<td>The illustration type</td>
 					<td>1.24.0</td>
@@ -44,8 +43,7 @@
 				</tr>
 				<tr>
 					<td>size</td>
-					<td><a data-demokit-href="#/api/sap.m.IllustratedMessageSize"
-						   target="_parent">sap.m.IllustratedMessageSize</a></td>
+					<td><a data-demokit-href="#/api/sap.m.IllustratedMessageSize" target="_parent">sap.m.IllustratedMessageSize</a></td>
 					<td>Yes</td>
 					<td>The illustration size</td>
 					<td>1.24.0</td>
@@ -72,43 +70,43 @@
 		<h2 id="examples">
 			Example
 		</h2>
-		<p>An example with a card which uses custom "No Data" messages in content:</p>
+		<p>An example with a card which uses custom &quot;No Data&quot; messages in content:</p>
 		<pre class="lang-json">
-"sap.card": {
-	"configuration": {
-	  "messages": {
-		"noData": {
-		  "type": "NoSearchResults",
-		  "title": "No products are available with your inquiry",
-		  "size": "Auto"
+&quot;sap.card&quot;: {
+	&quot;configuration&quot;: {
+	  &quot;messages&quot;: {
+		&quot;noData&quot;: {
+		  &quot;type&quot;: &quot;NoSearchResults&quot;,
+		  &quot;title&quot;: &quot;No products are available with your inquiry&quot;,
+		  &quot;size&quot;: &quot;Auto&quot;
 		}
 	  }
 	},
-	"type": "List",
-	"header": {
-	  "title": "Products",
-	  "subTitle": "In Stock Information",
-	  "icon": {
-		"src": "sap-icon://product"
+	&quot;type&quot;: &quot;List&quot;,
+	&quot;header&quot;: {
+	  &quot;title&quot;: &quot;Products&quot;,
+	  &quot;subTitle&quot;: &quot;In Stock Information&quot;,
+	  &quot;icon&quot;: {
+		&quot;src&quot;: &quot;sap-icon://product&quot;
 	  }
 	},
-	"content": {
-	  "data": {
-		"request": {
-		  "url": "https://services.odata.org/V4/Northwind/Northwind.svc/Products",
-		  "parameters": {
-			"$format": "json",
-			"filter": "UnitPrice eq 0"
+	&quot;content&quot;: {
+	  &quot;data&quot;: {
+		&quot;request&quot;: {
+		  &quot;url&quot;: &quot;https://services.odata.org/V4/Northwind/Northwind.svc/Products&quot;,
+		  &quot;parameters&quot;: {
+			&quot;&#x24;format&quot;: &quot;json&quot;,
+			&quot;filter&quot;: &quot;UnitPrice eq 0&quot;
 		  }
 		},
-		"path": "/value"
+		&quot;path&quot;: &quot;/value&quot;
 	  },
-	  "item": {
-		"title": "{ProductName}",
-		"description": "{UnitsInStock} units in stock",
-		"highlight": "{= ${Discontinued} ? 'Error' : 'Success'}"
+	  &quot;item&quot;: {
+		&quot;title&quot;: &quot;{ProductName}&quot;,
+		&quot;description&quot;: &quot;{UnitsInStock} units in stock&quot;,
+		&quot;highlight&quot;: &quot;{= &#x24;{Discontinued} ? &apos;Error&apos; : &apos;Success&apos;}&quot;
 	  },
-	  "maxItems": 5
+	  &quot;maxItems&quot;: 5
 	}
   }
 </pre>

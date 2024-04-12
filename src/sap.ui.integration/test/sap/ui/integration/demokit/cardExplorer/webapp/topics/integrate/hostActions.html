@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head><meta charset="utf-8">
 	<title>Host Actions</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="../../scripts/boot.js"></script>
 </head>
@@ -25,12 +25,12 @@
 					Actions</a>,
 				a card can have optional application-level actions depending on the host environment.
 				Examples may include, but are not limited to options like: share a card, remove a card.
-				<br />
-				<br />
+				<br>
+				<br>
 				When there are host actions defined, an additional toolbar is displayed in the card:
-				<br />
-				<img src="../images/hostActions.png" alt="">
-				<br />
+				<br>
+				<img src="../images/hostActions.png" alt>
+				<br>
 				Each host action is represented as a button in the toolbar.
 				The button options can be specified.
 				The host action may be managed as enabled or visible depending on the card.
@@ -52,7 +52,7 @@
 						<td>type</td>
 						<td>string</td>
 						<td>Yes</td>
-						<td>The type of the action. Possible values: "Navigation", "Submit" and "Custom".</td>
+						<td>The type of the action. Possible values: &quot;Navigation&quot;, &quot;Submit&quot; and &quot;Custom&quot;.</td>
 					</tr>
 					<tr>
 						<td>text</td>
@@ -116,9 +116,9 @@
 var oHost = new sap.ui.integration.Host({
 	actions: [
 		{
-			type: 'Custom',
-			icon: 'sap-icon://add',
-			text: 'Action name',
+			type: &apos;Custom&apos;,
+			icon: &apos;sap-icon://add&apos;,
+			text: &apos;Action name&apos;,
 			action: function (oCard, oButton) {
 				// do some action
 			},
@@ -137,12 +137,12 @@ var oHost = new sap.ui.integration.Host({
 	]
 });
 
-this.getView().byId('card1').setHost(oHost);</pre>
+this.getView().byId(&apos;card1&apos;).setHost(oHost);</pre>
 
 			XML View
 			<pre class="lang-xml">
-&lt;mvc:View xmlns:w="sap.ui.integration.widgets"&gt;
-	&lt;w:Card id="card1" manifest="./manifest.json" /&gt;
+&lt;mvc:View xmlns:w=&quot;sap.ui.integration.widgets&quot;&gt;
+	&lt;w:Card id=&quot;card1&quot; manifest=&quot;./manifest.json&quot; /&gt;
 &lt;/mvc:View&gt;</pre>
 			<a class="try-button" href="../../index.html#/explore/hostActions" target="_parent">Try it Out</a>
 		</div>

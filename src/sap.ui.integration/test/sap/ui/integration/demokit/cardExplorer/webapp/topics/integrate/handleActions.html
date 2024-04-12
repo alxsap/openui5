@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head><meta charset="utf-8">
 	<title>Handle Actions</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="../../scripts/boot.js"></script>
 </head>
@@ -14,7 +14,7 @@
 			<h1 id="handleActions">Handle Actions</h1>
 			<p>
 				Host environment can listen for actions dispatched by the cards and handle them.
-				Some actions like the "Navigation" should be handled entirely by the host environment.
+				Some actions like the &quot;Navigation&quot; should be handled entirely by the host environment.
 				Each hosted card instance can dispatch <code>action</code> events of different types. The type determines the purpose of the action.
 				For more information about what action types to expect from cards, as well as their parameters, see
 				<a target="_top" href="../../index.html#/learn/actions">actions in Learn section</a>.
@@ -27,31 +27,31 @@
 			<p>The example below shows how to listen for the action event.</p>
 			<p>1. Create the cards</p>
 			<pre class="lang-xml">
-&lt;mvc:View xmlns:w="sap.ui.integration.widgets" controllerName="hostController"&gt;
-	&lt;w:Card id="card1" manifest="./manifest1.json" /&gt;
-	&lt;w:Card id="card2" manifest="./manifest2.json" /&gt;
+&lt;mvc:View xmlns:w=&quot;sap.ui.integration.widgets&quot; controllerName=&quot;hostController&quot;&gt;
+	&lt;w:Card id=&quot;card1&quot; manifest=&quot;./manifest1.json&quot; /&gt;
+	&lt;w:Card id=&quot;card2&quot; manifest=&quot;./manifest2.json&quot; /&gt;
 &lt;/mvc:View&gt;
 </pre>
 			<p>2. Create the host, set the <code>host</code> association of the cards and implement <action>action</action> event handler</p>
 			<pre class="lang-js">
 sap.ui.define([
-	"sap/ui/core/mvc/Controller",
-	"sap/ui/integration/library",
-	"sap/ui/integration/Host"
+	&quot;sap/ui/core/mvc/Controller&quot;,
+	&quot;sap/ui/integration/library&quot;,
+	&quot;sap/ui/integration/Host&quot;
 ], function (Controller, integrationLibrary, Host) {
-	"use strict";
+	&quot;use strict&quot;;
 
-	return Controller.extend("hostController", {
+	return Controller.extend(&quot;hostController&quot;, {
 		onInit: function () {
 			var oHost = new Host({
 				action: this.onAction.bind(this)
 			});
-			this.byId("card1").setHost(oHost);
-			this.byId("card2").setHost(oHost);
+			this.byId(&quot;card1&quot;).setHost(oHost);
+			this.byId(&quot;card2&quot;).setHost(oHost);
 		},
 		onAction: function (oEvent) {
-			var sType = oEvent.getParameter("type"); // The type of the action. One of "Navigation", "Submit", "Custom", etc.
-			var oParameters = oEvent.getParameter("parameters"); // The action parameters. The different actions types have different parameters
+			var sType = oEvent.getParameter(&quot;type&quot;); // The type of the action. One of &quot;Navigation&quot;, &quot;Submit&quot;, &quot;Custom&quot;, etc.
+			var oParameters = oEvent.getParameter(&quot;parameters&quot;); // The action parameters. The different actions types have different parameters
 			var bHandled = false; // Flag indicating if the action is handled
 
 			if (sType === integrationLibrary.CardActionType.Navigation) {
@@ -93,20 +93,20 @@ sap.ui.define([
 			<pre class="lang-js">
 ...
 onAction: function (oEvent) {
-	var sType = oEvent.getParameter("type");
+	var sType = oEvent.getParameter(&quot;type&quot;);
 
 	// handle Navigation action
 	if (sType !== integrationLibrary.CardActionType.Navigation) {
 		return;
 	}
 
-	var oParameters = oEvent.getParameter("parameters");
+	var oParameters = oEvent.getParameter(&quot;parameters&quot;);
 
 	if (oParameters.ibnTarget) {
 		oEvent.preventDefault(); // as the action will be handled by the host, prevent its default behavior
 
 		// possible variant how to perform intent-based navigation
-		sap.ushell.Container.getServiceAsync("CrossApplicationNavigation").then(function (CrossApplicationNavigationService) {
+		sap.ushell.Container.getServiceAsync(&quot;CrossApplicationNavigation&quot;).then(function (CrossApplicationNavigationService) {
 			CrossApplicationNavigationService.toExternal({
 				target: oParameters.ibnTarget,
 				params: oParameters.ibnParams

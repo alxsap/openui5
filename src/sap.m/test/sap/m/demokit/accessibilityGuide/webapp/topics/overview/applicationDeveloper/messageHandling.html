@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head><meta charset="utf-8">
 	<title>Message Handling</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="../../../scripts/boot.js"></script>
 </head>
@@ -21,14 +21,14 @@
 			<p>The MessageToast provides a way for the application to show non-disruptive message on screen.</p>
 			<pre class="lang-js">
 sap.ui.define([
-	"sap/ui/core/mvc/Controller",
-	<mark>"sap/m/MessageToast"</mark>
+	&quot;sap/ui/core/mvc/Controller&quot;,
+	<mark>&quot;sap/m/MessageToast&quot;</mark>
 ], function(Controller, MessageToast) {
-"use strict";
+&quot;use strict&quot;;
 
-	return Controller.extend("sap.m.sample.messageToast.Controller", {
+	return Controller.extend(&quot;sap.m.sample.messageToast.Controller&quot;, {
 		fnHandler: function () {
-			<mark>MessageToast.show("Toasted!!!");</mark>
+			<mark>MessageToast.show(&quot;Toasted!!!&quot;);</mark>
 		}
 	});
 });

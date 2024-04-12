@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head><meta charset="utf-8">
 	<title>Extension</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="../../../scripts/boot.js"></script>
 </head>
@@ -115,9 +115,9 @@
 							It is important to return a <code>Promise</code>, which will be awaited by the card.
 							Until the promise is resolved, the card content displays a loading animation.
 							For performance optimization the dependencies loading happens in parallel with data loading,
-							therefore your data loading method shouldn't depend on this hook.
+							therefore your data loading method shouldn&apos;t depend on this hook.
 							<br>
-							<b>Note:</b> This hook can only be used in conjunction with the card content (<code>"sap.card"/content</code>),
+							<b>Note:</b> This hook can only be used in conjunction with the card content (<code>&quot;sap.card&quot;/content</code>),
 								not with the card header, footer, or other part.
 							<br>
 							<b>Note:</b> This hook is experimental since 1.108 and may change!
@@ -128,19 +128,16 @@
 
 			<h2 id="extensionApi">Extension API</h2>
 			<p>
-				In the Extension JavaScript module you can use <code>getCard()</code> method, which provides an <a
-					data-demokit-href="#/api/sap.ui.integration.widgets.CardFacade" target="_blank">interface</a> to the card API.
+				In the Extension JavaScript module you can use <code>getCard()</code> method, which provides an <a data-demokit-href="#/api/sap.ui.integration.widgets.CardFacade" target="_blank">interface</a> to the card API.
 				For example you can resolve destinations or get access to the card parameters.
-				For detailed information about all the available methods, read the <a data-demokit-href="#/api/sap.ui.integration.Extension"
-					target="_blank">sap.ui.integration.Extension API.</a>
+				For detailed information about all the available methods, read the <a data-demokit-href="#/api/sap.ui.integration.Extension" target="_blank">sap.ui.integration.Extension API.</a>
 			</p>
 
 			<h2 id="extensionRequirements">
 				Extension Requirements
 			</h2>
 			<ul>
-				<li>The extension should be defined in a UI5 Module and extend the <a data-demokit-href="#/api/sap.ui.integration.Extension"
-						target="_blank">sap.ui.integration.Extension</a> class.</li>
+				<li>The extension should be defined in a UI5 Module and extend the <a data-demokit-href="#/api/sap.ui.integration.Extension" target="_blank">sap.ui.integration.Extension</a> class.</li>
 				<li>For optimal loading performance it is recommended to avoid any dependencies that are not part of the sap.ui.integration library.</li>
 			</ul>
 			<b>Note:</b> Each card can have only one extension.
@@ -150,56 +147,56 @@
 			</h2>
 			<p>
 				Shared extensions allow one extension to be reused by multiple cards.
-				</br>
-				</br>
+				<br>
+				<br>
 				<b>Prerequisite:</b> The extension must be part of a UI5 library and this library has to be registered by the host developers. This library may also include other modules which are used in the extension if needed.
 
 				To use an extension from a shared library first define this library as dependency of the card:
 
-				<pre class="lang-json">
-"sap.ui5": {
-	"dependencies": {
-		"libs": {
-			"my.lib.cards": {}
+				</p><pre class="lang-json">
+&quot;sap.ui5&quot;: {
+	&quot;dependencies&quot;: {
+		&quot;libs&quot;: {
+			&quot;my.lib.cards&quot;: {}
 		}
 	}
 }</pre>
 
 				Then you can refer to the extension from this library with the following syntax:
 				<pre class="lang-json">
-"sap.card"{
-	"extension": "module:my/lib/cards/CommonExtension"
+&quot;sap.card&quot;{
+	&quot;extension&quot;: &quot;module:my/lib/cards/CommonExtension&quot;
 }
 </pre>
 
 			<a class="try-button sapUiSmallMarginTop" href="../../../index.html#/explore/extension/sharedExtension" target="_parent">Try
 				it Out</a>
 
-			</p>
+			<p></p>
 
 			<h2 id="examples">
 				Examples
 			</h2>
 			<p>Manifest</p>
 			<pre class="lang-json">{
-	"sap.app": {
-		"id": "card.explorer.cardWithExtension",
-		"type": "card",
-		"applicationVersion": {
-			"version": "1.0.0"
+	&quot;sap.app&quot;: {
+		&quot;id&quot;: &quot;card.explorer.cardWithExtension&quot;,
+		&quot;type&quot;: &quot;card&quot;,
+		&quot;applicationVersion&quot;: {
+			&quot;version&quot;: &quot;1.0.0&quot;
 		}
 	},
-	"sap.card": {
-		"extension": "./SampleExtension",
-		"data": {
-			"extension": {
-				"method": "myGetDataMethod"
+	&quot;sap.card&quot;: {
+		&quot;extension&quot;: &quot;./SampleExtension&quot;,
+		&quot;data&quot;: {
+			&quot;extension&quot;: {
+				&quot;method&quot;: &quot;myGetDataMethod&quot;
 			}
 		}
-		"header": {
+		&quot;header&quot;: {
 			...
 		},
-		"content": {
+		&quot;content&quot;: {
 			...
 		}
 	}
@@ -207,13 +204,13 @@
 </pre>
 			<p>Extension</p>
 			<pre class="lang-js">
-sap.ui.define(["sap/ui/integration/Extension"], function (Extension) {
+sap.ui.define([&quot;sap/ui/integration/Extension&quot;], function (Extension) {
 
-	var SampleExtension = Extension.extend("card.explorer.cardWithExtension.SampleExtension");
+	var SampleExtension = Extension.extend(&quot;card.explorer.cardWithExtension.SampleExtension&quot;);
 
 	SampleExtension.prototype.myGetDataMethod = function () {
-		var oData1 = { user: "John" }; // this data can be fetched from data service
-		var oData2 = { user: "Peter" }; // this data can be fetched from another data service
+		var oData1 = { user: &quot;John&quot; }; // this data can be fetched from data service
+		var oData2 = { user: &quot;Peter&quot; }; // this data can be fetched from another data service
 
 		// in the end data from both data services is combined into a single array
 		return Promise.resolve([oData1, oData2]);

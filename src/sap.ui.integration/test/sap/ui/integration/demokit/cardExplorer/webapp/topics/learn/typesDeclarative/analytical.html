@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head><meta charset="utf-8">
 	<title>Analytical Card</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="../../../scripts/boot.js"></script>
 </head>
@@ -48,9 +48,9 @@
 						<td></td>
 						<td>Yes</td>
 						<td>
-							The type of the chart, for example "stacked_column", "bar", "donut".
+							The type of the chart, for example &quot;stacked_column&quot;, &quot;bar&quot;, &quot;donut&quot;.
 							The full list of supported types can be found in the <a data-demokit-href="/docs/vizdocs/index.html" target="_blank">VizDocs</a>.
-							Values "Line", "StackedBar", "StackedColumn" and "Donut" are also allowed, but deprecated.
+							Values &quot;Line&quot;, &quot;StackedBar&quot;, &quot;StackedColumn&quot; and &quot;Donut&quot; are also allowed, but deprecated.
 						</td>
 						<td>1.14.0</td>
 						<td>1.62</td>
@@ -62,7 +62,7 @@
 						<td>No</td>
 						<td>
 							Configuration for the chart. Different chart types have different configurations.
-							For each type see its "Properties" documentation in the <a data-demokit-href="/docs/vizdocs/index.html" target="_blank">VizDocs</a>.
+							For each type see its &quot;Properties&quot; documentation in the <a data-demokit-href="/docs/vizdocs/index.html" target="_blank">VizDocs</a>.
 							<br>
 							<b>Note:</b> This property is experimental and may change!<br>
 							<b>Note:</b> Some properties might require additional coding, which should be implemented by the card developer.<br>
@@ -125,12 +125,12 @@
 					<tr>
 						<td>actionableArea</td>
 						<td>string</td>
-						<td>"Full"</td>
+						<td>&quot;Full&quot;</td>
 						<td>No</td>
 						<td>Defines which parts of the content are interactive. Possible values are:
 							<ul>
-								<li>"Full" - pressing anywhere in the content will trigger the defined actions</li>
-								<li>"Chart" - only pressing over the parts of the chart will trigger the defined actions</li>
+								<li>&quot;Full&quot; - pressing anywhere in the content will trigger the defined actions</li>
+								<li>&quot;Chart&quot; - only pressing over the parts of the chart will trigger the defined actions</li>
 							</ul>
 							<b>Note:</b> This property is experimental and may change!
 							<br>
@@ -258,7 +258,7 @@
 						<td>displayValue</td>
 						<td>string</td>
 						<td>No</td>
-						<td>Display value for the dimension. It doesn't work with 'waterfallType'</td>
+						<td>Display value for the dimension. It doesn&apos;t work with &apos;waterfallType&apos;</td>
 						<td>1.43.0</td>
 						<td>1.102</td>
 					</tr>
@@ -266,7 +266,7 @@
 						<td>dataType</td>
 						<td>string</td>
 						<td>No</td>
-						<td>Data type of the dimension as displayed in the chart. Possible values are "string", "number" or "date".</td>
+						<td>Data type of the dimension as displayed in the chart. Possible values are &quot;string&quot;, &quot;number&quot; or &quot;date&quot;.</td>
 						<td>1.45.0</td>
 						<td>1.103</td>
 					</tr>
@@ -374,7 +374,7 @@
 						<td>type</td>
 						<td>string</td>
 						<td>Yes</td>
-						<td>The type of the feed. Either "Measure" or "Dimension"</td>
+						<td>The type of the feed. Either &quot;Measure&quot; or &quot;Dimension&quot;</td>
 						<td>1.36.0</td>
 						<td>1.95</td>
 					</tr>
@@ -383,8 +383,8 @@
 						<td>string</td>
 						<td>Yes</td>
 						<td>The <code>uid</code> instructs the charting library what this feed is used for. It can be different for the different chart types.
-							For example for "donut" chart it can be used for color or size by setting the <code>uid</code> to "color" or "size" respectively.
-							For each chart type see the section "Bindings" in the <a data-demokit-href="/docs/vizdocs/index.html" target="_blank">VizDocs</a>.
+							For example for &quot;donut&quot; chart it can be used for color or size by setting the <code>uid</code> to &quot;color&quot; or &quot;size&quot; respectively.
+							For each chart type see the section &quot;Bindings&quot; in the <a data-demokit-href="/docs/vizdocs/index.html" target="_blank">VizDocs</a>.
 						</td>
 						<td>1.36.0</td>
 						<td>1.95</td>
@@ -418,7 +418,7 @@
 						<td>false</td>
 						<td>No</td>
 						<td>
-							Whether the popover is active. If it's not it won't open.<br>
+							Whether the popover is active. If it&apos;s not it won&apos;t open.<br>
 							<b>Note:</b> If there are actions attached, they will take precedence over the opening of the popover.
 						</td>
 						<td>1.34.0</td>
@@ -505,18 +505,18 @@
 					<tr>
 						<td>position</td>
 						<td>string</td>
-						<td>"Right"</td>
+						<td>&quot;Right&quot;</td>
 						<td>No</td>
-						<td>The position of the legend. Possible values are "Top", "Bottom", "Left" and "Right"</td>
+						<td>The position of the legend. Possible values are &quot;Top&quot;, &quot;Bottom&quot;, &quot;Left&quot; and &quot;Right&quot;</td>
 						<td>1.14.0</td>
 						<td>1.62</td>
 					</tr>
 					<tr>
 						<td>alignment</td>
 						<td>string</td>
-						<td>"TopLeft</td>
+						<td>&quot;TopLeft</td>
 						<td>No</td>
-						<td>Defines how the how the legend will be aligned. Possible values are "TopLeft" and "Center"</td>
+						<td>Defines how the how the legend will be aligned. Possible values are &quot;TopLeft&quot; and &quot;Center&quot;</td>
 						<td>1.14.0</td>
 						<td>1.62</td>
 					</tr>
@@ -655,9 +655,9 @@
 					<tr>
 						<td>alignment</td>
 						<td>string</td>
-						<td>"Center</td>
+						<td>&quot;Center</td>
 						<td>No</td>
-						<td>The position of the title. Possible values are "Left", "Center" and "Right".</td>
+						<td>The position of the title. Possible values are &quot;Left&quot;, &quot;Center&quot; and &quot;Right&quot;.</td>
 						<td>1.14.0</td>
 						<td>1.62</td>
 					</tr>
@@ -668,188 +668,188 @@
 			<p>Define the type and data for the card:
 			</p>
 			<pre class="lang-json">{
-	"sap.card": {
-		"type": "Analytical",
-		"header": {},
-		"content": {}
+	&quot;sap.card&quot;: {
+		&quot;type&quot;: &quot;Analytical&quot;,
+		&quot;header&quot;: {},
+		&quot;content&quot;: {}
 	}
 }</pre>
 			<p>
 				Define the header of the card:
 			</p>
 			<pre class="lang-json">{
-	"header": {
-		"type": "Numeric",
-		"data": {
-			"json": {
-				"n": "56",
-				"u": "%",
-				"trend": "Up",
-				"valueColor": "Good"
+	&quot;header&quot;: {
+		&quot;type&quot;: &quot;Numeric&quot;,
+		&quot;data&quot;: {
+			&quot;json&quot;: {
+				&quot;n&quot;: &quot;56&quot;,
+				&quot;u&quot;: &quot;%&quot;,
+				&quot;trend&quot;: &quot;Up&quot;,
+				&quot;valueColor&quot;: &quot;Good&quot;
 			}
 		},
-		"title": "Project Cloud Transformation",
-		"subTitle": "Forecasted goal achievement depending on business logic and other important information",
-		"unitOfMeasurement": "EUR",
-		"mainIndicator": {
-			"number": "{n}",
-			"unit": "{u}",
-			"trend": "{trend}",
-			"state": "{valueColor}"
+		&quot;title&quot;: &quot;Project Cloud Transformation&quot;,
+		&quot;subTitle&quot;: &quot;Forecasted goal achievement depending on business logic and other important information&quot;,
+		&quot;unitOfMeasurement&quot;: &quot;EUR&quot;,
+		&quot;mainIndicator&quot;: {
+			&quot;number&quot;: &quot;{n}&quot;,
+			&quot;unit&quot;: &quot;{u}&quot;,
+			&quot;trend&quot;: &quot;{trend}&quot;,
+			&quot;state&quot;: &quot;{valueColor}&quot;
 		},
-		"details": "Project Cloud Transformation details and additional information",
-		"sideIndicators": [
+		&quot;details&quot;: &quot;Project Cloud Transformation details and additional information&quot;,
+		&quot;sideIndicators&quot;: [
 			{
-				"title": "Long title",
-				"number": "3252.234",
-				"unit": "K"
+				&quot;title&quot;: &quot;Long title&quot;,
+				&quot;number&quot;: &quot;3252.234&quot;,
+				&quot;unit&quot;: &quot;K&quot;
 			},
 			{
-				"title": "Long Deviation Long Deviation",
-				"number": "22.43",
-				"unit": "%"
+				&quot;title&quot;: &quot;Long Deviation Long Deviation&quot;,
+				&quot;number&quot;: &quot;22.43&quot;,
+				&quot;unit&quot;: &quot;%&quot;
 			}
 		]
 	}
 }</pre>
 			<p>Define the content of the card:
 			</p>
-			<pre class="lang-json">"content": {
-	"chartType": "stacked_column",
-	"chartProperties": {
-		"legend": {
-			"visible": false
+			<pre class="lang-json">&quot;content&quot;: {
+	&quot;chartType&quot;: &quot;stacked_column&quot;,
+	&quot;chartProperties&quot;: {
+		&quot;legend&quot;: {
+			&quot;visible&quot;: false
 		},
-		"plotArea": {
-			"dataLabel": {
-				"visible": false,
-				"showTotal": true
+		&quot;plotArea&quot;: {
+			&quot;dataLabel&quot;: {
+				&quot;visible&quot;: false,
+				&quot;showTotal&quot;: true
 			}
 		},
-		"title": {
-			"text": "Stacked column chart",
-			"alignment": "bottom"
+		&quot;title&quot;: {
+			&quot;text&quot;: &quot;Stacked column chart&quot;,
+			&quot;alignment&quot;: &quot;bottom&quot;
 		}
 	},
-	"data": {
-		"request": {
-			"url": "./cardcontent/revenue.json"
+	&quot;data&quot;: {
+		&quot;request&quot;: {
+			&quot;url&quot;: &quot;./cardcontent/revenue.json&quot;
 		},
-		"path": "/list"
+		&quot;path&quot;: &quot;/list&quot;
 	},
-	"dimensions": [
+	&quot;dimensions&quot;: [
 		{
-			"name": "Weeks",
-			"value": "{Week}"
+			&quot;name&quot;: &quot;Weeks&quot;,
+			&quot;value&quot;: &quot;{Week}&quot;
 		}
 	],
-	"measures": [
+	&quot;measures&quot;: [
 		{
-			"name": "Revenue",
-			"value": "{Revenue}"
+			&quot;name&quot;: &quot;Revenue&quot;,
+			&quot;value&quot;: &quot;{Revenue}&quot;
 		},
 		{
-			"name": "Cost",
-			"value": "{Cost}"
+			&quot;name&quot;: &quot;Cost&quot;,
+			&quot;value&quot;: &quot;{Cost}&quot;
 		}
 	],
-	"feeds": [
+	&quot;feeds&quot;: [
 		{
-			"type": "Dimension",
-			"uid": "categoryAxis",
-			"values": [
-				"Weeks"
+			&quot;type&quot;: &quot;Dimension&quot;,
+			&quot;uid&quot;: &quot;categoryAxis&quot;,
+			&quot;values&quot;: [
+				&quot;Weeks&quot;
 			]
 		},
 		{
-			"type": "Measure",
-			"uid": "valueAxis",
-			"values": [
-				"Revenue",
-				"Cost"
+			&quot;type&quot;: &quot;Measure&quot;,
+			&quot;uid&quot;: &quot;valueAxis&quot;,
+			&quot;values&quot;: [
+				&quot;Revenue&quot;,
+				&quot;Cost&quot;
 			]
 		}
 	]
 }</pre>
 			<p>The content of the revenue.json which we are requesting:
 			</p>
-			<pre class="lang-json">"list": [
+			<pre class="lang-json">&quot;list&quot;: [
 	{
-	  "Week": "CW14",
-	  "Revenue": 431000.22,
-	  "Cost": 230000.00,
-	  "Cost1": 24800.63,
-	  "Cost2": 205199.37,
-	  "Cost3": 199999.37,
-	  "Target": 500000.00,
-	  "Budget": 210000.00
+	  &quot;Week&quot;: &quot;CW14&quot;,
+	  &quot;Revenue&quot;: 431000.22,
+	  &quot;Cost&quot;: 230000.00,
+	  &quot;Cost1&quot;: 24800.63,
+	  &quot;Cost2&quot;: 205199.37,
+	  &quot;Cost3&quot;: 199999.37,
+	  &quot;Target&quot;: 500000.00,
+	  &quot;Budget&quot;: 210000.00
 	},
 	{
-	  "Week": "CW15",
-	  "Revenue": 494000.30,
-	  "Cost": 238000.00,
-	  "Cost1": 99200.39,
-	  "Cost2": 138799.61,
-	  "Cost3": 200199.37,
-	  "Target": 500000.00,
-	  "Budget": 224000.00
+	  &quot;Week&quot;: &quot;CW15&quot;,
+	  &quot;Revenue&quot;: 494000.30,
+	  &quot;Cost&quot;: 238000.00,
+	  &quot;Cost1&quot;: 99200.39,
+	  &quot;Cost2&quot;: 138799.61,
+	  &quot;Cost3&quot;: 200199.37,
+	  &quot;Target&quot;: 500000.00,
+	  &quot;Budget&quot;: 224000.00
 	},
 	{
-	  "Week": "CW16",
-	  "Revenue": 491000.17,
-	  "Cost": 221000.00,
-	  "Cost1": 70200.54,
-	  "Cost2": 150799.46,
-	  "Cost3": 80799.46,
-	  "Target": 500000.00,
-	  "Budget": 238000.00
+	  &quot;Week&quot;: &quot;CW16&quot;,
+	  &quot;Revenue&quot;: 491000.17,
+	  &quot;Cost&quot;: 221000.00,
+	  &quot;Cost1&quot;: 70200.54,
+	  &quot;Cost2&quot;: 150799.46,
+	  &quot;Cost3&quot;: 80799.46,
+	  &quot;Target&quot;: 500000.00,
+	  &quot;Budget&quot;: 238000.00
 	},
 	{
-	  "Week": "CW17",
-	  "Revenue": 536000.34,
-	  "Cost": 280000.00,
-	  "Cost1": 158800.73,
-	  "Cost2": 121199.27,
-	  "Cost3": 108800.46,
-	  "Target": 500000.00,
-	  "Budget": 252000.00
+	  &quot;Week&quot;: &quot;CW17&quot;,
+	  &quot;Revenue&quot;: 536000.34,
+	  &quot;Cost&quot;: 280000.00,
+	  &quot;Cost1&quot;: 158800.73,
+	  &quot;Cost2&quot;: 121199.27,
+	  &quot;Cost3&quot;: 108800.46,
+	  &quot;Target&quot;: 500000.00,
+	  &quot;Budget&quot;: 252000.00
 	},
 	{
-	  "Week": "CW18",
-	  "Revenue": 675000.00,
-	  "Cost": 230000.00,
-	  "Cost1": 140000.91,
-	  "Cost2": 89999.09,
-	  "Cost3": 100099.09,
-	  "Target": 600000.00,
-	  "Budget": 266000.00
+	  &quot;Week&quot;: &quot;CW18&quot;,
+	  &quot;Revenue&quot;: 675000.00,
+	  &quot;Cost&quot;: 230000.00,
+	  &quot;Cost1&quot;: 140000.91,
+	  &quot;Cost2&quot;: 89999.09,
+	  &quot;Cost3&quot;: 100099.09,
+	  &quot;Target&quot;: 600000.00,
+	  &quot;Budget&quot;: 266000.00
 	},
 	{
-	  "Week": "CW19",
-	  "Revenue": 680000.00,
-	  "Cost": 250000.00,
-	  "Cost1": 172800.15,
-	  "Cost2": 77199.85,
-	  "Cost3": 57199.85,
-	  "Target": 600000.00,
-	  "Budget": 280000.00
+	  &quot;Week&quot;: &quot;CW19&quot;,
+	  &quot;Revenue&quot;: 680000.00,
+	  &quot;Cost&quot;: 250000.00,
+	  &quot;Cost1&quot;: 172800.15,
+	  &quot;Cost2&quot;: 77199.85,
+	  &quot;Cost3&quot;: 57199.85,
+	  &quot;Target&quot;: 600000.00,
+	  &quot;Budget&quot;: 280000.00
 	},
 	{
-	  "Week": "CW20",
-	  "Revenue": 659000.14,
-	  "Cost": 325000.00,
-	  "Cost1": 237200.74,
-	  "Cost2": 87799.26,
-	  "Cost3": 187799.26,
-	  "Target": 600000.00,
-	  "Budget": 294000.00
+	  &quot;Week&quot;: &quot;CW20&quot;,
+	  &quot;Revenue&quot;: 659000.14,
+	  &quot;Cost&quot;: 325000.00,
+	  &quot;Cost1&quot;: 237200.74,
+	  &quot;Cost2&quot;: 87799.26,
+	  &quot;Cost3&quot;: 187799.26,
+	  &quot;Target&quot;: 600000.00,
+	  &quot;Budget&quot;: 294000.00
 	}
 ]</pre>
 
 			<p>Create the view to display the card:</p>
 			<pre class="lang-xml">
-&lt;mvc:View xmlns:w="sap.ui.integration.widgets"&gt;
-	&lt;w:Card manifest="./manifest.json" width="400px" height="auto"/&gt;
+&lt;mvc:View xmlns:w=&quot;sap.ui.integration.widgets&quot;&gt;
+	&lt;w:Card manifest=&quot;./manifest.json&quot; width=&quot;400px&quot; height=&quot;auto&quot;/&gt;
 &lt;/mvc:View&gt;</pre>
 			<a class="try-button" href="../../../index.html#/explore/analytical" target="_parent">Try it Out</a>
 		</div>

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head><meta charset="utf-8">
 	<title>Labeling</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="../../../scripts/boot.js"></script>
 </head>
@@ -14,7 +14,7 @@
 			<h2 id="landmark-api">Landmark API</h2>
 			<p>
 				The landmark API enables app developers to set different roles and labels that allow users to access different sections of the page using the screen reader shortcuts.
-				Landmark roles (or "landmarks") programmatically identify sections of a page.
+				Landmark roles (or &quot;landmarks&quot;) programmatically identify sections of a page.
 				Landmarks help assistive technology (AT) users orient themselves in a page and help them navigate easily to various sections within the page.
 			</p>
 			<p>
@@ -40,14 +40,14 @@
 			<pre class="lang-xml">
 &lt;landmarkInfo&gt;
 	&lt;DynamicPageAccessibleLandmarkInfo
-			rootRole="Region"
-			rootLabel="Product Details"
-			contentRole="Main"
-			contentLabel="Product Description"
-			footerRole="Banner"
-			footerLabel="Product Footer"
-			headerRole="Banner"
-			headerLabel="Product Header" /&gt;
+			rootRole=&quot;Region&quot;
+			rootLabel=&quot;Product Details&quot;
+			contentRole=&quot;Main&quot;
+			contentLabel=&quot;Product Description&quot;
+			footerRole=&quot;Banner&quot;
+			footerLabel=&quot;Product Footer&quot;
+			headerRole=&quot;Banner&quot;
+			headerLabel=&quot;Product Header&quot; /&gt;
 &lt;/landmarkInfo&gt;</pre>
 			<a class="try-button" href="../../../index.html#/explore/dynamicPage" target="_parent">See Example</a>
 
@@ -56,23 +56,23 @@
 				<pre class="lang-xml">
 &lt;landmarkInfo&gt;
 	&lt;PageAccessibleLandmarkInfo
-			rootRole="Region"
-			rootLabel="Product Details"
-			contentRole="Main"
-			contentLabel="Product Description"
-			headerRole="Region"
-			headerLabel="Product Header"
-			footerRole="Region"
-			footerLabel="Product Footer"
-			subHeaderRole="Region"
-			subHeaderLabel="Product second header" /&gt;
+			rootRole=&quot;Region&quot;
+			rootLabel=&quot;Product Details&quot;
+			contentRole=&quot;Main&quot;
+			contentLabel=&quot;Product Description&quot;
+			headerRole=&quot;Region&quot;
+			headerLabel=&quot;Product Header&quot;
+			footerRole=&quot;Region&quot;
+			footerLabel=&quot;Product Footer&quot;
+			subHeaderRole=&quot;Region&quot;
+			subHeaderLabel=&quot;Product second header&quot; /&gt;
 &lt;/landmarkInfo&gt;</pre>
 			<a class="try-button" href="../../../index.html#/explore/page" target="_parent">See Example</a>
 
 			<h2 id="m-panel">sap.m.Panel</h2>
 			<p>To add a landmark to the Panel you should use <code>accessibleRole</code> property with value from enum <a href="https://sdk.openui5.org/api/sap.m.PanelAccessibleRole"></a>sap.m.PanelAccessibleRole.</p>
 			<pre class="lang-xml">
-&lt;Panel accessibleRole="Region"&gt;&lt;/Panel&gt;</pre>
+&lt;Panel accessibleRole=&quot;Region&quot;&gt;&lt;/Panel&gt;</pre>
 
 			<a class="try-button" href="../../../index.html#/explore/panel" target="_parent">See Example</a>
 			<h2 id="object-page">sap.uxap.ObjectPage</h2>
@@ -80,16 +80,16 @@
 			<pre class="lang-xml">
 &lt;landmarkInfo&gt;
 	&lt;ObjectPageAccessibleLandmarkInfo
-			rootRole="Region"
-			rootLabel="Order Information"
-			contentRole="Main"
-			contentLabel="Order Details"
-			headerRole="Region"
-			headerLabel="Order Header"
-			footerRole="Region"
-			footerLabel="Order Footer"
-			navigationRole="Navigation"
-			navigationLabel="Order navigation" /&gt;
+			rootRole=&quot;Region&quot;
+			rootLabel=&quot;Order Information&quot;
+			contentRole=&quot;Main&quot;
+			contentLabel=&quot;Order Details&quot;
+			headerRole=&quot;Region&quot;
+			headerLabel=&quot;Order Header&quot;
+			footerRole=&quot;Region&quot;
+			footerLabel=&quot;Order Footer&quot;
+			navigationRole=&quot;Navigation&quot;
+			navigationLabel=&quot;Order navigation&quot; /&gt;
 &lt;/landmarkInfo&gt;</pre>
 			<a class="try-button" href="../../../index.html#/explore/objectPage" target="_parent">See Example</a>
 		</div>

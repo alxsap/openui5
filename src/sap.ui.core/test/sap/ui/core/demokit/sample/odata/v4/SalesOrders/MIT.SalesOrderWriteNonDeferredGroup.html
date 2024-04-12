@@ -1,9 +1,7 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
-		<style type="text/css">
-			body {font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;}
-		</style>
+	<head><meta charset="utf-8">
+		<link rel="stylesheet" href="./MIT.SalesOrderWriteNonDeferredGroup.css">
 		<title>Manual Integration Test: Create and Change Sales Orders via Auto/Direct application
 		groups</title>
 	</head>
@@ -25,24 +23,24 @@
 		<h2>REALIZE and CHECK</h2>
 		<h3>Create a new invalid Sales Order and correct</h3>
 			<b>Note: </b>An invalid Sales Order for SubmitMode.Auto or .Direct can only be created
-			via API, hence we have to create it via API within developer tools F12 -> console
+			via API, hence we have to create it via API within developer tools F12 -&gt; console
 		<ol>
-			<li>Create an invalid Sales Order via console: <code>sap.ui.getCore().byId("sap.ui.core.sample.odata.v4.SalesOrders.Main--SalesOrders").getBinding("items").create({"Note" : "RAISE_ERROR", "BuyerID" : "0100000000", "LifecycleStatus" : "N"})</code></li>
+			<li>Create an invalid Sales Order via console: <code>sap.ui.getCore().byId(&quot;sap.ui.core.sample.odata.v4.SalesOrders.Main--SalesOrders&quot;).getBinding(&quot;items&quot;).create({&quot;Note&quot; : &quot;RAISE_ERROR&quot;, &quot;BuyerID&quot; : &quot;0100000000&quot;, &quot;LifecycleStatus&quot; : &quot;N&quot;})</code></li>
 			<li><b>Observe</b> that an error message is sent; close the error popup</li>
-			<li>Change the Sales Order 'Note' to some other value</li>
+			<li>Change the Sales Order &apos;Note&apos; to some other value</li>
 			<li><b>Observe</b> that no error message is sent and the order is created</li>
 		</ol>
 
 		<h3>Change the newly created or an already existing Sales Order</h3>
 		<ol>
-			<li>In the 'Note' field type in the value RAISE_ERROR</li>
+			<li>In the &apos;Note&apos; field type in the value RAISE_ERROR</li>
 			<li>You should get an error that this value is not allowed</li>
 			<li>Select the error in the message popover.</li>
-			<li><b>Check:</b> There is a link with text "Technical Details".</li>
+			<li><b>Check:</b> There is a link with text &quot;Technical Details&quot;.</li>
 			<li>Click the link.</li>
 			<li><b>Check:</b> A popover opens with the technical details as JSON.</li>
 			<li>Close the technical details popover.</li>
-			<li>Click on the message title "Property `Note` value `RAISE_ERROR` not allowed!"</li>
+			<li>Click on the message title &quot;Property `Note` value `RAISE_ERROR` not allowed!&quot;</li>
 			<li><b>Check:</b> The <code>Note</code> field of the right sales order gets focused and
 				the same message is highlighted below/beside the input field.</li>
 			<li>Correct the value and <b>observe</b> that a new PATCH request is automatically send
@@ -54,24 +52,24 @@
 			<li>Press the <code>Create</code> button for the Sales Order Line <b>Items</b> list</li>
 			<li>Close the <code>Success</code> dialog; ignore any warnings and errors at this point
 			</li>
-			<li>Enter a 0 value for the 'Quantity' field and press ENTER</li>
-			<li><b>Observe</b> the error message "Value must be greater than 0"; close the error
+			<li>Enter a 0 value for the &apos;Quantity&apos; field and press ENTER</li>
+			<li><b>Observe</b> the error message &quot;Value must be greater than 0&quot;; close the error
 			popup</li>
-			<li>Enter any value for the 'Note' field and press ENTER</li>
-			<li><b>Observe</b> that the error message "Value must be greater than 0" is sent again;
+			<li>Enter any value for the &apos;Note&apos; field and press ENTER</li>
+			<li><b>Observe</b> that the error message &quot;Value must be greater than 0&quot; is sent again;
 			close the error popup</li>
-			<li>Enter the value 2 for the 'Quantity' field and press ENTER</li>
+			<li>Enter the value 2 for the &apos;Quantity&apos; field and press ENTER</li>
 			<li><b>Observe</b> that no error message is sent</li>
 			<li>Press the <code>Refresh selected sales order</code> button for the Sales Orders
 			list</li>
-			<li><b>Observe</b> that no error message is sent and that both the 'Note' and 'Quantity'
+			<li><b>Observe</b> that no error message is sent and that both the &apos;Note&apos; and &apos;Quantity&apos;
 			fields have the right value</li>
 		</ol>
 
-		<h1>Manual Integration Test: Support PATCH With 204 "No Content"</h1>
+		<h1>Manual Integration Test: Support PATCH With 204 &quot;No Content&quot;</h1>
 		<h2>DESCRIPTION</h2>
-		Test whether PATCH responses with 204 "No Content" are handled correctly, including the
-		"ETag" header.
+		Test whether PATCH responses with 204 &quot;No Content&quot; are handled correctly, including the
+		&quot;ETag&quot; header.
 		<h2>PREPARATION</h2>
 		To check console errors open the developer tools before starting the application and check
 		with each step, that there are no errors and warnings.
@@ -84,16 +82,16 @@
 		<h2>REALIZE and CHECK</h2>
 		<h3>Second edit uses ETag returned in response header of first edit</h3>
 		<ol>
-			<li>In the second row's 'Note' field, type in the value "204" and press ENTER.</li>
-			<li>In the second row's 'Note' field, type in any other value, for example "*", and
+			<li>In the second row&apos;s &apos;Note&apos; field, type in the value &quot;204&quot; and press ENTER.</li>
+			<li>In the second row&apos;s &apos;Note&apos; field, type in any other value, for example &quot;*&quot;, and
 			press ENTER.</li>
-			<li><b>Observe</b> that the 'Note' field turns into "You have used the new ETag!"</li>
+			<li><b>Observe</b> that the &apos;Note&apos; field turns into &quot;You have used the new ETag!&quot;</li>
 			<li>Press the <code>Refresh</code> button for the Sales Order List.</li>
-			<li>In the second row's 'Note' field, type in the value "ETag" and press ENTER.</li>
-			<li><b>Observe</b> that the 'Note' field turns into "Sending ETag header..."</li>
-			<li>In the second row's 'Note' field, type in any other value, for example "*", and
+			<li>In the second row&apos;s &apos;Note&apos; field, type in the value &quot;ETag&quot; and press ENTER.</li>
+			<li><b>Observe</b> that the &apos;Note&apos; field turns into &quot;Sending ETag header...&quot;</li>
+			<li>In the second row&apos;s &apos;Note&apos; field, type in any other value, for example &quot;*&quot;, and
 			press ENTER.</li>
-			<li><b>Observe</b> that the 'Note' field turns into "You have used the new ETag!"</li>
+			<li><b>Observe</b> that the &apos;Note&apos; field turns into &quot;You have used the new ETag!&quot;</li>
 		</ol>
 	</body>
 </html>

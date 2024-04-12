@@ -1,15 +1,20 @@
 <!DOCTYPE html>
-<html><head>
-	<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'>
+<html><head><meta charset="UTF-8">
+	
 
 	<title>LabelEnablement - sap.ui.core</title>
 
 	<script src="shared-config.js"></script>
-	<script id='sap-ui-bootstrap'
-		src='../../../../resources/sap-ui-core.js'
-		data-sap-ui-libs='sap.ui.core'></script>
+	<script id="sap-ui-bootstrap"
+			src="../../../../resources/sap-ui-core.js"
+			data-sap-ui-libs="sap.ui.core"
+			data-sap-ui-async="true"
+			data-sap-ui-compat-version="edge"
+			data-sap-ui-on-init="module:local/LabelEnablement"
+			data-sap-ui-resource-roots='{"local":"./"}'
+	></script>
 
-	<script id="view1" type="sapui5/xmlview">
+	<script id="view1" type="text/xml">
 		<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.ui.commons" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form"
 				controllerName="my.own.controller" xmlns:html="http://www.w3.org/1999/xhtml">
 
@@ -90,24 +95,7 @@
 		</mvc:View>
 	</script>
 
-	<script>
-		try {
-			sap.ui.getCore().loadLibrary("sap.ui.commons");
-		} catch (e) {
-			alert("This test page requires the library 'sap.ui.commons' which is not available.");
-			throw (e);
-		}
-		try {
-			sap.ui.getCore().loadLibrary("sap.ui.layout");
-		} catch (e) {
-			alert("This test page requires the library 'sap.ui.layout' which is not available.");
-			throw (e);
-		}
-
-		sap.ui.controller("my.own.controller", {});
-		var myView = sap.ui.xmlview({viewContent: jQuery('#view1').html()});
-		myView.placeAt("content");
-	</script>
+	
 
 	</head>
 	<body class="sapUiBody">

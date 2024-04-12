@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head><meta charset="utf-8">
 	<title>Input Validation</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="../../../scripts/boot.js"></script>
 </head>
@@ -25,15 +25,15 @@
 			<p>Here is an example how form field user input can be validated:</p>
 				<pre class="lang-json">
 {
-	"id": "comment",
-	"label": "Comment",
-	"type": "TextArea",
-	"placeholder": "Comment",
-	"validations": [
+	&quot;id&quot;: &quot;comment&quot;,
+	&quot;label&quot;: &quot;Comment&quot;,
+	&quot;type&quot;: &quot;TextArea&quot;,
+	&quot;placeholder&quot;: &quot;Comment&quot;,
+	&quot;validations&quot;: [
 		{
-			"required": true,
-			"message": "Field is required. Please enter a text.",
-			"type": "Error"
+			&quot;required&quot;: true,
+			&quot;message&quot;: &quot;Field is required. Please enter a text.&quot;,
+			&quot;type&quot;: &quot;Error&quot;
 		}
 	]
 }</pre>
@@ -41,74 +41,74 @@
 			<p>For each form input field can be added one or more validations. Each validation contains:</p>
 			<ul>
 				<li>One or more validation functions</li>
-				<li>message – Validation message. By default each validation function has its own message text, but the message can also be a custom text.</li>
-				<li>type -  The type of the validation – “Error”, “Warning” or “Information”. By default the validation type is “Error”.</li>
+				<li>message &#x2013; Validation message. By default each validation function has its own message text, but the message can also be a custom text.</li>
+				<li>type -  The type of the validation &#x2013; &#x201c;Error&#x201d;, &#x201c;Warning&#x201d; or &#x201c;Information&#x201d;. By default the validation type is &#x201c;Error&#x201d;.</li>
 			</ul>
 
 			<p>The currently available validation functions are:</p>
 			<ul>
-				<li>required – defines if the value is required</li>
-				<li>minLength – defines the minimum number of characters the user can enter into the input</li>
+				<li>required &#x2013; defines if the value is required</li>
+				<li>minLength &#x2013; defines the minimum number of characters the user can enter into the input</li>
 				<li>maxLength - defines the maximum number of characters the user can enter into the input</li>
-				<li>restrictToPredefinedOptions – defines whether the value is restricted to predefined options</li>
-				<li>pattern – defines the regular expression pattern that should match the value</li>
+				<li>restrictToPredefinedOptions &#x2013; defines whether the value is restricted to predefined options</li>
+				<li>pattern &#x2013; defines the regular expression pattern that should match the value</li>
 			</ul>
 
 			<p>Here is an example of adding multiple validation functions in a single validation:</p>
 			<pre class="lang-json">
-"validations": [
+&quot;validations&quot;: [
 	{
-		"minLength": 10,
-		"maxLength": 200,
-		"message": "Your comment should be between 10 and 200 characters.",
-		"type": "Warning"
+		&quot;minLength&quot;: 10,
+		&quot;maxLength&quot;: 200,
+		&quot;message&quot;: &quot;Your comment should be between 10 and 200 characters.&quot;,
+		&quot;type&quot;: &quot;Warning&quot;
 	}
 ]</pre>
 			<p>Here is an example of adding multiple validations to a single input:</p>
 			<pre class="lang-json">
-"validations": [
+&quot;validations&quot;: [
 	{
-		"required": true
+		&quot;required&quot;: true
 	},
 	{
-		"minLength": 10,
-		"maxLength": 200,
-		"message": "Your comment should be between 10 and 200 characters.",
-		"type": "Warning"
+		&quot;minLength&quot;: 10,
+		&quot;maxLength&quot;: 200,
+		&quot;message&quot;: &quot;Your comment should be between 10 and 200 characters.&quot;,
+		&quot;type&quot;: &quot;Warning&quot;
 	}
 ]</pre>
 			<p>Here is an example of adding a regular expression pattern to a single input:</p>
 			<pre class="lang-json">
-"validations": [
+&quot;validations&quot;: [
 	{
-		"required": true
+		&quot;required&quot;: true
 	},
 	{
-		"pattern": "^\\w+[\\w-+\\.]*\\@\\w+([-\\.]\\w+)*\\.[a-zA-Z]{2,}$",
-		"message": "You should enter a valid e-mail."
+		&quot;pattern&quot;: &quot;^\\w+[\\w-+\\.]*\\@\\w+([-\\.]\\w+)*\\.[a-zA-Z]{2,}&#x24;&quot;,
+		&quot;message&quot;: &quot;You should enter a valid e-mail.&quot;
 	}
 ]</pre>
 			<a class="try-button sapUiSmallMarginTop" href="../../../index.html#/explore/object/formWithValidation" target="_parent">Try
 				it Out</a>
-			<h2 id="messages">"messages" Model</h2>
-			<p>For each card a "messages" model is created. It contains all
-				validation messages. Here is the "messages" model structure:</p>
+			<h2 id="messages">&quot;messages&quot; Model</h2>
+			<p>For each card a &quot;messages&quot; model is created. It contains all
+				validation messages. Here is the &quot;messages&quot; model structure:</p>
 			<ul>
-				<li>messages>/hasErrors - if some field has a validation message with type "Error"</li>
-				<li>messages>/hasWarnings - if some field has a validation message with type "Warning"</li>
-				<li>messages>/records - contains all validation messages</li>
+				<li>messages&gt;/hasErrors - if some field has a validation message with type &quot;Error&quot;</li>
+				<li>messages&gt;/hasWarnings - if some field has a validation message with type &quot;Warning&quot;</li>
+				<li>messages&gt;/records - contains all validation messages</li>
 			</ul>
-			<p>Here is an example how the "messages" model
-				can be used to disable the "Submit" button if there are any validation errors:</p>
-			<pre class="lang-json">"footer": {
-	"actionsStrip": [
+			<p>Here is an example how the &quot;messages&quot; model
+				can be used to disable the &quot;Submit&quot; button if there are any validation errors:</p>
+			<pre class="lang-json">&quot;footer&quot;: {
+	&quot;actionsStrip&quot;: [
 		{
-			"text": "Submit",
-			"buttonType": "Accept",
-			"actions": [
+			&quot;text&quot;: &quot;Submit&quot;,
+			&quot;buttonType&quot;: &quot;Accept&quot;,
+			&quot;actions&quot;: [
 				{
-					"enabled": "{= !${messages>/hasErrors}}",
-					"type": "Submit"
+					&quot;enabled&quot;: &quot;{= !&#x24;{messages&gt;/hasErrors}}&quot;,
+					&quot;type&quot;: &quot;Submit&quot;
 				}
 			]
 		}

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head><meta charset="utf-8">
 	<title>Card Submit Action</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="../../../scripts/boot.js"></script>
 </head>
@@ -14,7 +14,7 @@
 		<div class="content">
 			<h1 id="overview">Submit</h1>
 			Submit action type is used for submitting forms. Currently forms are available for <a href="../../../index.html#/learn/typesDeclarative/object" target="_parent">Object Cards</a> and for <a href="../../../index.html#/learn/typesOther/adaptive" target="_parent">Adaptive Cards</a>.
-			<p>Default behavior: submits the form if <code>"sap.card"/configuration/actionHandlers/submit</code> is provided. See the <a href="../../../index.html#/explore/object/form" target="_parent">Object Card Form Inputs</a> sample and the <a href="../../../index.html#/learn/configuration/actionHandlers" target="_parent">Actions Handlers</a> documentation.</p>
+			<p>Default behavior: submits the form if <code>&quot;sap.card&quot;/configuration/actionHandlers/submit</code> is provided. See the <a href="../../../index.html#/explore/object/form" target="_parent">Object Card Form Inputs</a> sample and the <a href="../../../index.html#/learn/configuration/actionHandlers" target="_parent">Actions Handlers</a> documentation.</p>
 			<p>Additionally the form can be submitted through an <a href="../../../index.html#/learn/features/extension" target="_parent">Extension</a>. See the <a href="../../../index.html#/explore/object/formWithExtension" target="_parent">Object Card Form Inputs With Extension</a> sample.</p>
 
 			<h2 id="relatedInformation">Related Information</h2>
@@ -34,76 +34,76 @@
 			</ul>
 			<p>Example how to trigger Submit action from Object Card</p>
 			<pre class="lang-json">
-"sap.card": {
-	"type": "Object",
-	"header": {
+&quot;sap.card&quot;: {
+	&quot;type&quot;: &quot;Object&quot;,
+	&quot;header&quot;: {
 		...
 	},
-	"configuration": {
-		"actionHandlers": {
-			"submit": {
-				"url": "./MOCK.json",
-				"method": "GET",
-				"parameters": {
-					"status": "approved",
-					"reason": "{form>/reason/key}",
-					"reasonText": "{form>/reason/value}",
-					"comment": "{form>/comment}"
+	&quot;configuration&quot;: {
+		&quot;actionHandlers&quot;: {
+			&quot;submit&quot;: {
+				&quot;url&quot;: &quot;./MOCK.json&quot;,
+				&quot;method&quot;: &quot;GET&quot;,
+				&quot;parameters&quot;: {
+					&quot;status&quot;: &quot;approved&quot;,
+					&quot;reason&quot;: &quot;{form&gt;/reason/key}&quot;,
+					&quot;reasonText&quot;: &quot;{form&gt;/reason/value}&quot;,
+					&quot;comment&quot;: &quot;{form&gt;/comment}&quot;
 				}
 			}
 		}
 	},
-	"data": {
-		"json": {
-			"reasons": [
+	&quot;data&quot;: {
+		&quot;json&quot;: {
+			&quot;reasons&quot;: [
 				{
-					"id": "reason1",
-					"title": "Reason 1"
+					&quot;id&quot;: &quot;reason1&quot;,
+					&quot;title&quot;: &quot;Reason 1&quot;
 				},
 				{
-					"id": "reason2",
-					"title": "Reason 2"
+					&quot;id&quot;: &quot;reason2&quot;,
+					&quot;title&quot;: &quot;Reason 2&quot;
 				}
 			]
 		}
 	},
-	"content": {
-		"groups": [
+	&quot;content&quot;: {
+		&quot;groups&quot;: [
 			{
-				"alignment": "Stretch",
-				"items": [
+				&quot;alignment&quot;: &quot;Stretch&quot;,
+				&quot;items&quot;: [
 					{
-						"id": "reason",
-						"label": "Reason",
-						"type": "ComboBox",
-						"placeholder": "Select",
-						"item": {
-							"path": "/reasons",
-							"template": {
-								"key": "{id}",
-								"title": "{title}"
+						&quot;id&quot;: &quot;reason&quot;,
+						&quot;label&quot;: &quot;Reason&quot;,
+						&quot;type&quot;: &quot;ComboBox&quot;,
+						&quot;placeholder&quot;: &quot;Select&quot;,
+						&quot;item&quot;: {
+							&quot;path&quot;: &quot;/reasons&quot;,
+							&quot;template&quot;: {
+								&quot;key&quot;: &quot;{id}&quot;,
+								&quot;title&quot;: &quot;{title}&quot;
 							}
 						}
 					},
 					{
-						"id": "comment",
-						"label": "Comment",
-						"type": "TextArea",
-						"rows": 4,
-						"placeholder": "Comment"
+						&quot;id&quot;: &quot;comment&quot;,
+						&quot;label&quot;: &quot;Comment&quot;,
+						&quot;type&quot;: &quot;TextArea&quot;,
+						&quot;rows&quot;: 4,
+						&quot;placeholder&quot;: &quot;Comment&quot;
 					}
 				]
 			}
 		]
 	},
-	"footer": {
-		"actionsStrip": [
+	&quot;footer&quot;: {
+		&quot;actionsStrip&quot;: [
 			{
-				"text": "Submit",
-				"buttonType": "Accept",
-				"actions": [
+				&quot;text&quot;: &quot;Submit&quot;,
+				&quot;buttonType&quot;: &quot;Accept&quot;,
+				&quot;actions&quot;: [
 					{
-						"type": "Submit"
+						&quot;type&quot;: &quot;Submit&quot;
 					}
 				]
 			}

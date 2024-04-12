@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head><meta charset="utf-8">
 	<title>DateRange Filter</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="../../../scripts/boot.js"></script>
 </head>
@@ -17,7 +17,7 @@
 				Experimental feature since version 1.96. The API may change.
 			</div>
 			<p>
-				Date Range filter allows users to select a relative or an absolute time period. <br/>
+				Date Range filter allows users to select a relative or an absolute time period. <br>
 				The Date Range filter is implemented based on the <a data-demokit-href="#/api/sap.m.DynamicDateRange" target="_blank">sap.m.DynamicDateRange</a> control and follows the date and time format of the latter.
 			</p>
 
@@ -46,15 +46,15 @@
 						<td>options</td>
 						<td>string[]</td>
 						<td>[
-							"date",
-							"today",
-							"dateRange",
-							"from",
-							"to",
-							"lastDays",
-							"nextDays",
-							"lastWeeks",
-							"nextWeeks"
+							&quot;date&quot;,
+							&quot;today&quot;,
+							&quot;dateRange&quot;,
+							&quot;from&quot;,
+							&quot;to&quot;,
+							&quot;lastDays&quot;,
+							&quot;nextDays&quot;,
+							&quot;lastWeeks&quot;,
+							&quot;nextWeeks&quot;
 						]</td>
 						<td>No</td>
 						<td>
@@ -178,57 +178,57 @@
 					</tr>
 					<tr>
 						<td>lastDays</td>
-						<td>Last "X" days</td>
+						<td>Last &quot;X&quot; days</td>
 						<td>[int]</td>
 					</tr>
 					<tr>
 						<td>lastWeeks</td>
-						<td>Last "X" weeks</td>
+						<td>Last &quot;X&quot; weeks</td>
 						<td>[int]</td>
 					</tr>
 					<tr>
 						<td>lastMonths</td>
-						<td>Last "X" months</td>
+						<td>Last &quot;X&quot; months</td>
 						<td>[int]</td>
 					</tr>
 					<tr>
 						<td>lastQuarters</td>
-						<td>Last "X" quarters</td>
+						<td>Last &quot;X&quot; quarters</td>
 						<td>[int]</td>
 					</tr>
 					<tr>
 						<td>lastYears</td>
-						<td>Last "X" years</td>
+						<td>Last &quot;X&quot; years</td>
 						<td>[int]</td>
 					</tr>
 					<tr>
 						<td>nextDays</td>
-						<td>Next "X" days</td>
+						<td>Next &quot;X&quot; days</td>
 						<td>[int]</td>
 					</tr>
 					<tr>
 						<td>nextWeeks</td>
-						<td>Next "X" weeks</td>
+						<td>Next &quot;X&quot; weeks</td>
 						<td>[int]</td>
 					</tr>
 					<tr>
 						<td>nextMonths</td>
-						<td>Next "X" months</td>
+						<td>Next &quot;X&quot; months</td>
 						<td>[int]</td>
 					</tr>
 					<tr>
 						<td>nextQuarters</td>
-						<td>Next "X" quarters</td>
+						<td>Next &quot;X&quot; quarters</td>
 						<td>[int]</td>
 					</tr>
 					<tr>
 						<td>nextYears</td>
-						<td>Next "X" years</td>
+						<td>Next &quot;X&quot; years</td>
 						<td>[int]</td>
 					</tr>
 					<tr>
 						<td>todayFromTo</td>
-						<td>Today - "X" days / + "Y" days </td>
+						<td>Today - &quot;X&quot; days / + &quot;Y&quot; days </td>
 						<td>[int, int]</td>
 					</tr>
 
@@ -253,8 +253,8 @@
 					<tr>
 						<td>specificMonth</td>
 						<td>
-							Month from the start of the year. For example, "0" for January, "11" for December,
-							"-1" for December the previous year, "12" for January of the following year, and so on.</td>
+							Month from the start of the year. For example, &quot;0&quot; for January, &quot;11&quot; for December,
+							&quot;-1&quot; for December the previous year, &quot;12&quot; for January of the following year, and so on.</td>
 						<td>[int]</td>
 					</tr>
 					<tr>
@@ -325,50 +325,50 @@
 			</div>
 
 			<h2 id="filtersModel">Filters Model</h2>
-			<p>The following values are available for filter of type "DateRange":</p>
+			<p>The following values are available for filter of type &quot;DateRange&quot;:</p>
 			<table>
 				<tr>
 					<th>Path</th>
 					<th>Description</th>
 				</tr>
 				<tr>
-					<td>{filters>/keyOfTheFilter/value/option}</td>
+					<td>{filters&gt;/keyOfTheFilter/value/option}</td>
 					<td>The current option.</td>
 				</tr>
 				<tr>
-					<td>{filters>/keyOfTheFilter/value/values}</td>
+					<td>{filters&gt;/keyOfTheFilter/value/values}</td>
 					<td>The current option values.</td>
 				</tr>
 				<tr>
-					<td>{filters>/keyOfTheFilter/range/start}</td>
+					<td>{filters&gt;/keyOfTheFilter/range/start}</td>
 					<td>The start date of the range in ISO 8601 format in UTC time zone.</td>
 				</tr>
 				<tr>
-					<td>{filters>/keyOfTheFilter/range/end}</td>
+					<td>{filters&gt;/keyOfTheFilter/range/end}</td>
 					<td>The end date of the range in ISO 8601 format in UTC time zone.</td>
 				</tr>
 				<tr>
-					<td>{filters>/keyOfTheFilter/range/startLocalDate}</td>
+					<td>{filters&gt;/keyOfTheFilter/range/startLocalDate}</td>
 					<td>The start date of the range in short ISO 8601 date format in the local time zone. Use this property if you want to select a single date without reference to the time of the day.</td>
 				</tr>
 				<tr>
-					<td>{filters>/keyOfTheFilter/range/endLocalDate}</td>
+					<td>{filters&gt;/keyOfTheFilter/range/endLocalDate}</td>
 					<td>The end date of the range in short ISO 8601 date format in the local time zone.</td>
 				</tr>
 				<tr>
-					<td>{filters>/keyOfTheFilter/rangeOData/start}</td>
+					<td>{filters&gt;/keyOfTheFilter/rangeOData/start}</td>
 					<td>The start date of the range in ISO 8601 format in UTC time zone. It is in the boundaries of Edm.DateTime type of the OData protocol.</td>
 				</tr>
 				<tr>
-					<td>{filters>/keyOfTheFilter/rangeOData/end}</td>
+					<td>{filters&gt;/keyOfTheFilter/rangeOData/end}</td>
 					<td>The end date of the range in ISO 8601 format in UTC time zone. It is in the boundaries of Edm.DateTime type of the OData protocol.</td>
 				</tr>
 				<tr>
-					<td>{filters>/keyOfTheFilter/range/startLocalDate}</td>
+					<td>{filters&gt;/keyOfTheFilter/range/startLocalDate}</td>
 					<td>The start date of the range in short ISO 8601 date format in the local time zone. It is in the boundaries of Edm.DateTime type of the OData protocol.</td>
 				</tr>
 				<tr>
-					<td>{filters>/keyOfTheFilter/range/endLocalDate}</td>
+					<td>{filters&gt;/keyOfTheFilter/range/endLocalDate}</td>
 					<td>The end date of the range in short ISO 8601 date format in the local time zone. It is in the boundaries of Edm.DateTime type of the OData protocol.</td>
 				</tr>
 			</table>
@@ -377,34 +377,34 @@
 
 			<p>A filter for product category is defined and later used inside a data request.</p>
 			<pre class="lang-json">{
-	"sap.card": {
-		"configuration": {
-			"filters": {
-				<mark>"activityPeriod": {
-					"type": "DateRange",
-					"value": {
-						"option": "today",
-						"values": []
+	&quot;sap.card&quot;: {
+		&quot;configuration&quot;: {
+			&quot;filters&quot;: {
+				<mark>&quot;activityPeriod&quot;: {
+					&quot;type&quot;: &quot;DateRange&quot;,
+					&quot;value&quot;: {
+						&quot;option&quot;: &quot;today&quot;,
+						&quot;values&quot;: []
 					}
 				}</mark>
 			}
 		},
-		"data": {
-			"request": {
-				"request": {
-					"url": "/activities",
-					"parameters": {
-						<mark>"startDate": "{filters>/activityPeriod/range/start}",
-						"endDate": "{filters>/activityPeriod/range/end}"</mark>
+		&quot;data&quot;: {
+			&quot;request&quot;: {
+				&quot;request&quot;: {
+					&quot;url&quot;: &quot;/activities&quot;,
+					&quot;parameters&quot;: {
+						<mark>&quot;startDate&quot;: &quot;{filters&gt;/activityPeriod/range/start}&quot;,
+						&quot;endDate&quot;: &quot;{filters&gt;/activityPeriod/range/end}&quot;</mark>
 					}
 				}
 			}
 		},
-		"type": "Timeline",
-		"header": {
-			"title": "My Activities"
+		&quot;type&quot;: &quot;Timeline&quot;,
+		&quot;header&quot;: {
+			&quot;title&quot;: &quot;My Activities&quot;
 		},
-		"content": {
+		&quot;content&quot;: {
 			...
 		}
 	}

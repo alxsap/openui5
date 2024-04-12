@@ -1,0 +1,1 @@
+var oCore = sap.ui.getCore();

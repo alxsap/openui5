@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head><meta charset="utf-8">
 	<title>Date and Time Formatters</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="../../../scripts/boot.js"></script>
 </head>
@@ -146,50 +146,50 @@
 			</p>
 			<p>
 				The <code>date</code> parameter can come from different places including
-				<code>{parameters>/TODAY_ISO}}</code>, <code>{parameters>/NOW_ISO}}</code>,
+				<code>{parameters&gt;/TODAY_ISO}}</code>, <code>{parameters&gt;/NOW_ISO}}</code>,
 				data binding, <code>Date.now()</code> and many more.
 			</p>
 
 			<h2 id="examples">Examples</h2>
 
 			<p>A card with a <code>dateTime</code> formatter using expression binding for today with
-				<code>{pattern: 'MMMM d, y'}</code> as format options</p>
+				<code>{pattern: &apos;MMMM d, y&apos;}</code> as format options</p>
 
 			<pre class="lang-json">
-"sap.card": {
-	"type": "List",
-	"header": {
-		"title": "Orders in the Interval {= format.date(['2020-05-05T00:00:00.000Z', Date.now()], { interval: true }) }"
+&quot;sap.card&quot;: {
+	&quot;type&quot;: &quot;List&quot;,
+	&quot;header&quot;: {
+		&quot;title&quot;: &quot;Orders in the Interval {= format.date([&apos;2020-05-05T00:00:00.000Z&apos;, Date.now()], { interval: true }) }&quot;
 	},
-	"content": {
-		"data": {
-			"json": [
+	&quot;content&quot;: {
+		&quot;data&quot;: {
+			&quot;json&quot;: [
 				{
-					"Name": "Keyboard and Mouse",
-					"CreatedAt": "/Date(1600430944000)/"
+					&quot;Name&quot;: &quot;Keyboard and Mouse&quot;,
+					&quot;CreatedAt&quot;: &quot;/Date(1600430944000)/&quot;
 				},
 				{
-					"Name": "ITelO Vault",
-					"CreatedAt": 1600430944000
+					&quot;Name&quot;: &quot;ITelO Vault&quot;,
+					&quot;CreatedAt&quot;: 1600430944000
 				},
 				{
-					"Name": "Notebook Professional 15",
-					"CreatedAt": "Fri Sep 18 2020 03:24:00 GMT+0200 (Eastern European Standard Time)"
+					&quot;Name&quot;: &quot;Notebook Professional 15&quot;,
+					&quot;CreatedAt&quot;: &quot;Fri Sep 18 2020 03:24:00 GMT+0200 (Eastern European Standard Time)&quot;
 				},
 				{
-					"Name": "Ergo Screen E-I",
-					"CreatedAt": "Sun May 2 2021 03:24:00 GMT+0200 (Eastern European Standard Time)",
+					&quot;Name&quot;: &quot;Ergo Screen E-I&quot;,
+					&quot;CreatedAt&quot;: &quot;Sun May 2 2021 03:24:00 GMT+0200 (Eastern European Standard Time)&quot;,
 				},
 				{
-					"Name": "Laser Professional Eco",
-					"CreatedAt": "2020-08-17T01:24:00.000Z",
+					&quot;Name&quot;: &quot;Laser Professional Eco&quot;,
+					&quot;CreatedAt&quot;: &quot;2020-08-17T01:24:00.000Z&quot;,
 				}
 			]
 		},
-		"maxItems": 4,
-		"item": {
-			"title": "{Name}",
-			"description": "Created {= format.dateTime(${CreatedAt}, {relative: true}) }",
+		&quot;maxItems&quot;: 4,
+		&quot;item&quot;: {
+			&quot;title&quot;: &quot;{Name}&quot;,
+			&quot;description&quot;: &quot;Created {= format.dateTime(&#x24;{CreatedAt}, {relative: true}) }&quot;,
 		}
 	}
 }

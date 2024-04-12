@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head><meta charset="utf-8">
 	<title>Indicating Empty Values</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="../../../scripts/boot.js"></script>
 </head>
@@ -10,27 +10,27 @@
 	<div class="topic">
 		<div class="content">
 			<h1 id="overview">Improve Screen Reader Announcements</h1>
-			<h2>sap.m.Text Empty Value Indicator</h3>
+			<h2>sap.m.Text Empty Value Indicator
 				<p>
-					An indicator should be displayed when the text value is empty. The sap.m.Text control allows developers to indicate an empty text using a dash “–” character.
+					An indicator should be displayed when the text value is empty. The sap.m.Text control allows developers to indicate an empty text using a dash &#x201c;&#x2013;&#x201d; character.
 					Note, that specific symbol used may vary depending on the language.
 				</p>
 			</h2>
 
 <pre class="lang-js">
 new sap.m.Text({
-	text: "",
+	text: &quot;&quot;,
 	emptyIndicatorMode: sap.m.EmptyIndicatorMode.On
 })
 </pre>
 
-			<h2>sap.m.Table Cell with Empty Value Indicator</h3>
+			<h2>sap.m.Table Cell with Empty Value Indicator
 				<p>
-					You have to set <code>visible</code> property to <code>false</code> for all <code>sap.m.Link</code> and <code>sap.m.Text</code> controls’ instances
+					You have to set <code>visible</code> property to <code>false</code> for all <code>sap.m.Link</code> and <code>sap.m.Text</code> controls&#x2019; instances
 					that are used inside a <code>sap.m.Table</code> cell and have empty <code>text</code> properties.
-					Same should be done for <code>sap.m.ObjectIdentifier</code>’s instances that have empty <code>title</code> properties.
+					Same should be done for <code>sap.m.ObjectIdentifier</code>&#x2019;s instances that have empty <code>title</code> properties.
 					This will improve the screen reader announcements of <code>sap.m.Table</code> rows or <code>sap.m.List</code> items because
-					all visually empty cells or items will be announced as "empty".
+					all visually empty cells or items will be announced as &quot;empty&quot;.
 				</p>
 			</h2>
 
@@ -39,25 +39,25 @@ new sap.m.Table({
 	headerToolbar: new sap.m.OverflowToolbar({
 		content: [
 			new sap.m.Title({
-				text: "Products",
-				level: "H2"
+				text: &quot;Products&quot;,
+				level: &quot;H2&quot;
 			})
 		]
 	}),
 	columns: [
 		new sap.m.Column({
 			header: new sap.m.Text({
-				text: "Product Name"
+				text: &quot;Product Name&quot;
 			})
 		}),
 		new sap.m.Column({
 			header: new sap.m.Text({
-				text: "Supplier Name"
+				text: &quot;Supplier Name&quot;
 			})
 		}),
 		new sap.m.Column({
 			header: new sap.m.Text({
-				text: "Description"
+				text: &quot;Description&quot;
 			})
 		})
 	],
@@ -65,51 +65,51 @@ new sap.m.Table({
 		new sap.m.ColumnListItem({
 			cells: [
 				new sap.m.Link({
-					text: "",
-					href: "",
+					text: &quot;&quot;,
+					href: &quot;&quot;,
 					<mark>visible: false</mark>,
-					tooltip: "Audio/Video Cable Kit - 4m"
+					tooltip: &quot;Audio/Video Cable Kit - 4m&quot;
 				}),
 				new sap.m.ObjectIdentifier({
-					title: "Titanium",
+					title: &quot;Titanium&quot;,
 					titleActive: true
 				}),
 				new sap.m.Text({
-					text: "Quality cables for notebooks and projectors"
+					text: &quot;Quality cables for notebooks and projectors&quot;
 				})
 			]
 		}),
 		new sap.m.ColumnListItem({
 			cells: [
 				new sap.m.Link({
-					text: "Blaster Extreme",
-					href: ""
+					text: &quot;Blaster Extreme&quot;,
+					href: &quot;&quot;
 				}),
 				new sap.m.ObjectIdentifier({
-					title: "",
+					title: &quot;&quot;,
 					titleActive: true,
 					<mark>visible: false</mark>,
-					tooltip: "Speaker Experts"
+					tooltip: &quot;Speaker Experts&quot;
 				}),
 				new sap.m.Text({
-					text: "PC multimedia speakers - 10 Watt (Total) - 2-way"
+					text: &quot;PC multimedia speakers - 10 Watt (Total) - 2-way&quot;
 				})
 			]
 		}),
 		new sap.m.ColumnListItem({
 			cells: [
 				new sap.m.Link({
-					text: "Copymaster",
-					href: ""
+					text: &quot;Copymaster&quot;,
+					href: &quot;&quot;
 				}),
 				new sap.m.ObjectIdentifier({
-					title: "Alpha Printers",
+					title: &quot;Alpha Printers&quot;,
 					titleActive: true
 				}),
 				new sap.m.Text({
-					text: "",
+					text: &quot;&quot;,
 					<mark>visible: false</mark>,
-					tooltip: "Copymaster"
+					tooltip: &quot;Copymaster&quot;
 				})
 			]
 		})

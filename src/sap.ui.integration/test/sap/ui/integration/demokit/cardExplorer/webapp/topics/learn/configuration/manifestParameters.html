@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head><meta charset="utf-8">
 	<title>Manifest Parameters</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="../../../scripts/boot.js"></script>
 </head>
@@ -20,8 +20,8 @@
 			<p>
 				Parameters are means to provide dynamic values for certain card attributes.
 				The manifest parameters are replaced during manifest processing and
-				can be used with a double bracket syntax like: "<code>{parameters>/city/value}</code>".
-				Parameters can be used inside "<code>sap.card</code>" scope.
+				can be used with a double bracket syntax like: &quot;<code>{parameters&gt;/city/value}</code>&quot;.
+				Parameters can be used inside &quot;<code>sap.card</code>&quot; scope.
 			</p>
 			<p>
 				There are two groups of parameters:
@@ -41,13 +41,13 @@
 				IDs, authentication tokens, locations, language etc...
 				It is possible to assign default values to the input parameters in the manifest.
 				If parameter value is not set during card creation or integration, default value will be used.
-				Parameters are defined in the "configuration" section of the manifest.
+				Parameters are defined in the &quot;configuration&quot; section of the manifest.
 				All parameters are replaced during manifest processing and changing them will cause re-processing of the
 				manifest.
 			</p>
 			<p>
 				Since version 1.87 user-defined parameters can also be accessed in expression binding with single brackets binding syntax
-				"{parameters>/city/value}".
+				&quot;{parameters&gt;/city/value}&quot;.
 			</p>
 
 			<h3 id="properties">Parameter properties</h3>
@@ -77,7 +77,7 @@
 						<td>string</td>
 						<td>No</td>
 						<td>string</td>
-						<td>The type of the value for the parameter. See 'Parameters types' below for list of available types.</td>
+						<td>The type of the value for the parameter. See &apos;Parameters types&apos; below for list of available types.</td>
 						<td>1.20.0</td>
 						<td></td>
 					</tr>
@@ -141,7 +141,7 @@
 
 			<p>
 				The following parameters can be used in the manifest and do not require definition in the
-				"configuration" section.
+				&quot;configuration&quot; section.
 			</p>
 
 			<table>
@@ -153,12 +153,12 @@
 				<tr>
 					<td>TODAY_ISO</td>
 					<td>string</td>
-					<td>Replaced with the today's date in ISO format</td>
+					<td>Replaced with the today&apos;s date in ISO format</td>
 				</tr>
 				<tr>
 					<td>NOW_ISO</td>
 					<td>string</td>
-					<td>Replaced with the "now" timestamp in ISO format</td>
+					<td>Replaced with the &quot;now&quot; timestamp in ISO format</td>
 				</tr>
 				<tr>
 					<td>LOCALE</td>
@@ -171,45 +171,45 @@
 				Examples
 			</h2>
 
-			<p>User defined manifest parameters "city" and "weatherServices" with default values set.
-				The "city" value is used inside the request. The "weatherServices" value is used inside the title.</p>
+			<p>User defined manifest parameters &quot;city&quot; and &quot;weatherServices&quot; with default values set.
+				The &quot;city&quot; value is used inside the request. The &quot;weatherServices&quot; value is used inside the title.</p>
 			<pre class="lang-js">{
-	"sap.card": {
-		"configuration": {
-			"parameters": {
-				"city": {
-					"value": "Berlin",
-					"type": "string"
+	&quot;sap.card&quot;: {
+		&quot;configuration&quot;: {
+			&quot;parameters&quot;: {
+				&quot;city&quot;: {
+					&quot;value&quot;: &quot;Berlin&quot;,
+					&quot;type&quot;: &quot;string&quot;
 				},
-				"numberOfCustomers": {
-					"value": 5,
-					"type": "integer"
+				&quot;numberOfCustomers&quot;: {
+					&quot;value&quot;: 5,
+					&quot;type&quot;: &quot;integer&quot;
 				}
 			}
 		},
-		"type": "List",
-		"header": {
-			"title": "Customers & Suppliers of '{parameters>/companyName/value}'",
-			"subTitle": "Situated in {parameters>/city/value}.",
-			"icon": {
-				"src": "sap-icon://customer-briefing"
+		&quot;type&quot;: &quot;List&quot;,
+		&quot;header&quot;: {
+			&quot;title&quot;: &quot;Customers &amp; Suppliers of &apos;{parameters&gt;/companyName/value}&apos;&quot;,
+			&quot;subTitle&quot;: &quot;Situated in {parameters&gt;/city/value}.&quot;,
+			&quot;icon&quot;: {
+				&quot;src&quot;: &quot;sap-icon://customer-briefing&quot;
 			}
 		},
-		"content": {
-			"data": {
-				"request": {
-					"url": "https://services.odata.org/V2/Northwind/Northwind.svc/Customer_and_Suppliers_by_Cities",
-					"parameters": {
-						"$filter": "{parameters>/city/value}",
+		&quot;content&quot;: {
+			&quot;data&quot;: {
+				&quot;request&quot;: {
+					&quot;url&quot;: &quot;https://services.odata.org/V2/Northwind/Northwind.svc/Customer_and_Suppliers_by_Cities&quot;,
+					&quot;parameters&quot;: {
+						&quot;&#x24;filter&quot;: &quot;{parameters&gt;/city/value}&quot;,
 					}
 				},
-				"path": "/articles"
+				&quot;path&quot;: &quot;/articles&quot;
 			},
-			"item": {
-				"title": "{CompanyName}",
-				"description": "{ContactName}",
+			&quot;item&quot;: {
+				&quot;title&quot;: &quot;{CompanyName}&quot;,
+				&quot;description&quot;: &quot;{ContactName}&quot;,
 			},
-			"maxItems": "{parameters>/numberOfCustomers/value}"
+			&quot;maxItems&quot;: &quot;{parameters&gt;/numberOfCustomers/value}&quot;
 		}
 	}
 }</pre>
@@ -220,19 +220,19 @@
 			</p>
 			<pre class="lang-js">
 var oParameters = {
-	"city": "Sofia"
+	&quot;city&quot;: &quot;Sofia&quot;
 }
 oCard.setParameters(oParameters);</pre>
 
 			<p>
-				Using the predefined manifest parameter "TODAY_ISO" inside the subtitle of the card:
+				Using the predefined manifest parameter &quot;TODAY_ISO&quot; inside the subtitle of the card:
 			</p>
 			<pre class="lang-json">{
-	"sap.card": {
-		"type": "List",
-		"header": {
-			"title": "Some title",
-			"subTitle": "Date: {parameters>/TODAY_ISO}"
+	&quot;sap.card&quot;: {
+		&quot;type&quot;: &quot;List&quot;,
+		&quot;header&quot;: {
+			&quot;title&quot;: &quot;Some title&quot;,
+			&quot;subTitle&quot;: &quot;Date: {parameters&gt;/TODAY_ISO}&quot;
 		},
 		...
 	}
@@ -241,26 +241,26 @@ oCard.setParameters(oParameters);</pre>
 				Parameters of type array can be used in expression binding:
 			</p>
 			<pre class="lang-json">{
-	"sap.card": {
-		"type": "Object",
-		"configuration": {
-			"parameters": {
+	&quot;sap.card&quot;: {
+		&quot;type&quot;: &quot;Object&quot;,
+		&quot;configuration&quot;: {
+			&quot;parameters&quot;: {
 
-				"teamMembers": {
-					"value": ["Donna Moore", "Alain Chevalier"]
+				&quot;teamMembers&quot;: {
+					&quot;value&quot;: [&quot;Donna Moore&quot;, &quot;Alain Chevalier&quot;]
 				},
 
-				"visibleFields": {
-					"value": ["firstName", "lastName"]
+				&quot;visibleFields&quot;: {
+					&quot;value&quot;: [&quot;firstName&quot;, &quot;lastName&quot;]
 				}
 			}
 		},
 		...
-	"content": {
-		"groups": [
+	&quot;content&quot;: {
+		&quot;groups&quot;: [
 			{
-				"title": "Contact Details for: {=${parameters>/teamMembers/value}[0]}",
-				"visible": "{= ${parameters>/visibleFields/value}.indexOf('firstName')>-1}"
+				&quot;title&quot;: &quot;Contact Details for: {=&#x24;{parameters&gt;/teamMembers/value}[0]}&quot;,
+				&quot;visible&quot;: &quot;{= &#x24;{parameters&gt;/visibleFields/value}.indexOf(&apos;firstName&apos;)&gt;-1}&quot;
 		...
 	}
 }</pre>

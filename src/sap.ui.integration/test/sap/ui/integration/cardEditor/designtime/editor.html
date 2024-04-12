@@ -2,16 +2,18 @@
 <html>
 
 <head>
-	<meta charset="utf-8" />
+	<meta charset="utf-8">
 	<title>Editor Test Page with designtime files</title>
 	<script src="../sharedTest.js" localstoragekey="card-designtime-"></script>
 	<script src="../../../../../../resources/sap-ui-integration.js"
-		id="sap-ui-bootstrap"
-		data-sap-ui-theme="sap_horizon"
-		data-sap-ui-oninit="init"
-		data-sap-ui-resourceroots='{"testjs":"../","sap.ui.integration.cardEditor.test":"../"}'>
+			id="sap-ui-bootstrap"
+			data-sap-ui-on-init="init"
+			data-sap-ui-resource-roots='{"testjs":"../","sap.ui.integration.cardEditor.test":"../"}'
+			data-sap-ui-async="true"
+			data-sap-ui-compat-version="edge"
+	>
 	</script>
-	<link rel="stylesheet" href="../sharedTest.css" />
+	<link rel="stylesheet" href="../sharedTest.css">
 </head>
 
 <body class="sapUiBody sapUiSizeCompact">
@@ -34,34 +36,33 @@
 		<ui-integration-card-editor id="cardEditorAdmin" mode="admin" allow-dynamic-values="true" allow-settings="true">
 		</ui-integration-card-editor>
 		<div class="buttons">
-			<button onclick="showCurrentValues('cardEditorAdmin')">
+			<button onclick="showCurrentValues(&apos;cardEditorAdmin&apos;)">
 				Show Current Values (Admin Mode)
 			</button>
-			<button onclick="saveCurrentValues('cardEditorAdmin')">
+			<button onclick="saveCurrentValues(&apos;cardEditorAdmin&apos;)">
 				Save Current Values (Admin Mode)
 			</button>
-			<button onclick="loadCurrentValues('cardEditorAdmin')">
+			<button onclick="loadCurrentValues(&apos;cardEditorAdmin&apos;)">
 				Load Values (Admin Mode)
 			</button>
-			<button onclick="deleteCurrentValues('cardEditorAdmin')">
+			<button onclick="deleteCurrentValues(&apos;cardEditorAdmin&apos;)">
 				Delete Values (Admin Mode)
 			</button>
 		</div>
 		<h3>Content Mode (only)</h3>
-		<ui-integration-card-editor id="cardEditorContent" preview-position="left" mode="content" allow-dynamic-values="true"
-			allow-settings="true">
+		<ui-integration-card-editor id="cardEditorContent" preview-position="left" mode="content" allow-dynamic-values="true" allow-settings="true">
 		</ui-integration-card-editor>
 		<div class="buttons">
-			<button onclick="showCurrentValues('cardEditorContent')">
+			<button onclick="showCurrentValues(&apos;cardEditorContent&apos;)">
 				Show Current Values (Content Mode)
 			</button>
-			<button onclick="saveCurrentValues('cardEditorContent')">
+			<button onclick="saveCurrentValues(&apos;cardEditorContent&apos;)">
 				Save Current Values (Content Mode)
 			</button>
-			<button onclick="loadCurrentValues('cardEditorContent')">
+			<button onclick="loadCurrentValues(&apos;cardEditorContent&apos;)">
 				Load Values (Content Mode)
 			</button>
-			<button onclick="deleteCurrentValues('cardEditorContent')">
+			<button onclick="deleteCurrentValues(&apos;cardEditorContent&apos;)">
 				Delete Values (Content Mode)
 			</button>
 		</div>
@@ -69,20 +70,20 @@
 		<label>Translation Language:</label>
 		<select id="translationLanguageSelectForOnlyMode" onchange="switchTranslationLanguageForOnlyMode(this)">
 		</select>
-		<ui-integration-card-editor id="cardEditorTranslation" card='{
-			}' mode="translation" allow-dynamic-values="true" allow-settings="true">
+		<ui-integration-card-editor id="cardEditorTranslation" card="{
+			}" mode="translation" allow-dynamic-values="true" allow-settings="true">
 		</ui-integration-card-editor>
 		<div class="buttons">
-			<button onclick="showCurrentValues('cardEditorTranslation')">
+			<button onclick="showCurrentValues(&apos;cardEditorTranslation&apos;)">
 				Show Current Values (Translation Mode)
 			</button>
-			<button onclick="saveCurrentValues('cardEditorTranslation')">
+			<button onclick="saveCurrentValues(&apos;cardEditorTranslation&apos;)">
 				Save Current Values (Translation Mode)
 			</button>
-			<button onclick="loadCurrentValues('cardEditorTranslation')">
+			<button onclick="loadCurrentValues(&apos;cardEditorTranslation&apos;)">
 				Load Values (Translation Mode)
 			</button>
-			<button onclick="deleteCurrentValues('cardEditorTranslation')">
+			<button onclick="deleteCurrentValues(&apos;cardEditorTranslation&apos;)">
 				Delete Values (Translation Mode)
 			</button>
 		</div>
@@ -91,16 +92,16 @@
 
 		</div>
 		<div class="buttons">
-			<button onclick="showCurrentValues('cardEditorAdminContent')">
+			<button onclick="showCurrentValues(&apos;cardEditorAdminContent&apos;)">
 				Show Current Values (with admin layer)
 			</button>
-			<button onclick="saveCurrentValues('cardEditorAdminContent')">
+			<button onclick="saveCurrentValues(&apos;cardEditorAdminContent&apos;)">
 				Save Current Values (with admin layer)
 			</button>
-			<button onclick="loadCurrentValues('cardEditorAdminContent')">
+			<button onclick="loadCurrentValues(&apos;cardEditorAdminContent&apos;)">
 				Load Values (with admin layer)
 			</button>
-			<button onclick="deleteCurrentValues('cardEditorAdminContent')">
+			<button onclick="deleteCurrentValues(&apos;cardEditorAdminContent&apos;)">
 				Delete Values (with admin layer)
 			</button>
 		</div>

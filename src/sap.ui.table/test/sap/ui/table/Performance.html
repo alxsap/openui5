@@ -5,46 +5,17 @@
 <title>sap.ui.table - Performance measurement 2</title>
 <script src="shared-config.js"></script>
 <script id="sap-ui-bootstrap"
-		src="../../../../resources/sap-ui-core.js"
-		data-sap-ui-libs="sap.m, sap.ui.layout, sap.ui.table"
-		data-sap-ui-compatVersion="edge"
-		data-sap-ui-preload="async"
-		data-sap-ui-resourceroots='{
-			"sap.ui.table.mvc": "./mvc"
-		}'>
+        src="../../../../resources/sap-ui-core.js"
+        data-sap-ui-libs="sap.m, sap.ui.layout, sap.ui.table"
+        data-sap-ui-preload="async"
+        data-sap-ui-compat-version="edge"
+        data-sap-ui-resource-roots='{"sap.ui.table.mvc":"./mvc","local":"./"}'
+        data-sap-ui-async="true"
+        data-sap-ui-on-init="module:local/Performance"
+>
 </script>
-<style>
-	.flexView {
-		display: flex !important;
-		flex-direction: column !important;
-	}
+<link rel="stylesheet" href="./Performance.css">
 
-	#tableContainer {
-		flex: 1 1 auto;
-	}
-
-	#results {
-		position: absolute;
-		right: 0;
-		bottom: 0;
-		background-color: white;
-	}
-
-	#results:empty {
-		display: none;
-	}
-</style>
-<script>
-	jQuery.sap.measure.setActive(true);
-
-	sap.ui.getCore().attachInit(function() {
-		jQuery.sap.require("sap.ui.table.Table");
-
-		sap.ui.xmlview({
-			viewName: "sap.ui.table.mvc.Performance"
-		}).placeAt("content");
-	});
-</script>
 </head>
 <body class="sapUiBody sapUiSizeCompact" id="content">
 </body>

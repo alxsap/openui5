@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head><meta charset="utf-8">
 	<title>Card Actions</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="../../../scripts/boot.js"></script>
 </head>
@@ -21,74 +21,74 @@
 			</div>
 
 			<h2 id="parameters">Parameters</h2>
-			<p>This actions doesn't have parameters.</p>
+			<p>This actions doesn&apos;t have parameters.</p>
 
 			<h2 id="examples">Examples</h2>
 			<p>Example how to hide a card that was shown by the <code>ShowCard</code> action:</p>
 			<pre class="lang-json">
 {
-	"sap.app": {
-		"id": "card.explorer.actions.showHideDetailsCard",
-		"type": "card",
+	&quot;sap.app&quot;: {
+		&quot;id&quot;: &quot;card.explorer.actions.showHideDetailsCard&quot;,
+		&quot;type&quot;: &quot;card&quot;,
 	},
-	"sap.card": {
-		"type": "Object",
-		"configuration": {
-			"parameters": {
-				"orderId": {
-					"value": ""
+	&quot;sap.card&quot;: {
+		&quot;type&quot;: &quot;Object&quot;,
+		&quot;configuration&quot;: {
+			&quot;parameters&quot;: {
+				&quot;orderId&quot;: {
+					&quot;value&quot;: &quot;&quot;
 				}
 			}
 		},
-		"data": {
+		&quot;data&quot;: {
 			...
 		},
-		"header": {
-			"data": {
-				"path": "/value/0"
+		&quot;header&quot;: {
+			&quot;data&quot;: {
+				&quot;path&quot;: &quot;/value/0&quot;
 			},
-			"icon": {
-				"src": "sap-icon://sap-ui5"
+			&quot;icon&quot;: {
+				&quot;src&quot;: &quot;sap-icon://sap-ui5&quot;
 			},
-			"title": "Order for {ShipName}",
-			"subTitle": "ID {parameters>/orderId/value}"
+			&quot;title&quot;: &quot;Order for {ShipName}&quot;,
+			&quot;subTitle&quot;: &quot;ID {parameters&gt;/orderId/value}&quot;
 		},
-		"content": {
-			"groups": [
+		&quot;content&quot;: {
+			&quot;groups&quot;: [
 				{
-					"items": [
+					&quot;items&quot;: [
 						{
-							"label": "Name",
-							"value": "{ShipName}"
+							&quot;label&quot;: &quot;Name&quot;,
+							&quot;value&quot;: &quot;{ShipName}&quot;
 						},
 						{
-							"label": "Address",
-							"value": "{ShipAddress}"
+							&quot;label&quot;: &quot;Address&quot;,
+							&quot;value&quot;: &quot;{ShipAddress}&quot;
 						},
 						{
-							"label": "Country",
-							"value": "{ShipCountry}"
+							&quot;label&quot;: &quot;Country&quot;,
+							&quot;value&quot;: &quot;{ShipCountry}&quot;
 						},
 						{
-							"label": "City",
-							"value": "{ShipCity}"
+							&quot;label&quot;: &quot;City&quot;,
+							&quot;value&quot;: &quot;{ShipCity}&quot;
 						},
 						{
-							"label": "Postal code",
-							"value": "{ShipPostalCode}"
+							&quot;label&quot;: &quot;Postal code&quot;,
+							&quot;value&quot;: &quot;{ShipPostalCode}&quot;
 						}
 					]
 				}
 			]
 		},
-		"footer": {
-			"actionsStrip": [
+		&quot;footer&quot;: {
+			&quot;actionsStrip&quot;: [
 				{
-					"text": "Close",
-					"buttonType": "Emphasized",
-					<mark>"actions": [
+					&quot;text&quot;: &quot;Close&quot;,
+					&quot;buttonType&quot;: &quot;Emphasized&quot;,
+					<mark>&quot;actions&quot;: [
 						{
-							"type": "HideCard"
+							&quot;type&quot;: &quot;HideCard&quot;
 						}
 					]</mark>
 				}

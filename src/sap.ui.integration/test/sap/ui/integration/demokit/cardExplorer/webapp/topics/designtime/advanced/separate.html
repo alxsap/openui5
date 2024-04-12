@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head><meta charset="utf-8">
 	<title>Separate the Configuration file</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script data-require-ui5-init src="../../../scripts/boot.js"></script>
 </head>
@@ -24,72 +24,72 @@
 			</p>
 			<pre class="lang-js">
 {
-	"generalGroup": {
-		"type": "group",
-		"label": "All Data Type",
-		"expanded": false,
-		"hint": "Please refer to the <a href='https://www.sap.com'>documentation</a> lets see how this will behave if the text is wrapping to the next line and has <a href='https://www.sap.com'>two links</a>. good?"
+	&quot;generalGroup&quot;: {
+		&quot;type&quot;: &quot;group&quot;,
+		&quot;label&quot;: &quot;All Data Type&quot;,
+		&quot;expanded&quot;: false,
+		&quot;hint&quot;: &quot;Please refer to the <a href="https://www.sap.com">documentation</a> lets see how this will behave if the text is wrapping to the next line and has <a href="https://www.sap.com">two links</a>. good?&quot;
 	},
-	"cardTitle": {
-		"manifestpath": "/sap.card/configuration/parameters/cardTitle/value",
-		"type": "string",
-		"translatable": true,
-		"required": true,
-		"label": "cardTitle",
-		"allowDynamicValues": true,
-		"editableToUser": false,
-		"visibleToUser": true,
-		"description": "Card Title",
-		"cols": 1,
+	&quot;cardTitle&quot;: {
+		&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/cardTitle/value&quot;,
+		&quot;type&quot;: &quot;string&quot;,
+		&quot;translatable&quot;: true,
+		&quot;required&quot;: true,
+		&quot;label&quot;: &quot;cardTitle&quot;,
+		&quot;allowDynamicValues&quot;: true,
+		&quot;editableToUser&quot;: false,
+		&quot;visibleToUser&quot;: true,
+		&quot;description&quot;: &quot;Card Title&quot;,
+		&quot;cols&quot;: 1,
 		// js file
-		"testJS": "sap/ui5/test/editor/listcard/dt/TestJs1",
-		"hint": "Please refer to the <a href='https://www.sap.com'>documentation</a> lets see how this will behave if the text is wrapping to the next line and has <a href='https://www.sap.com'>two links</a>. good?"
+		&quot;testJS&quot;: &quot;sap/ui5/test/editor/listcard/dt/TestJs1&quot;,
+		&quot;hint&quot;: &quot;Please refer to the <a href="https://www.sap.com">documentation</a> lets see how this will behave if the text is wrapping to the next line and has <a href="https://www.sap.com">two links</a>. good?&quot;
 	},
-	"stringWithTextArea": {
-		"manifestpath": "/sap.card/configuration/parameters/stringWithTextArea/value",
-		"type": "string",
-		"label": "Use TextArea for a string field",
+	&quot;stringWithTextArea&quot;: {
+		&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/stringWithTextArea/value&quot;,
+		&quot;type&quot;: &quot;string&quot;,
+		&quot;label&quot;: &quot;Use TextArea for a string field&quot;,
 		// js file
-		"testJS": "sap/ui5/test/editor/listcard/dt/TestJs2",
-		"visualization": {
-			"type": "TextArea",
-			"settings": {
-				"value": "{currentSettings>value}",
-				"width": "100%",
-				"editable": "{config/editable}",
-				"placeholder": "{currentSettings>placeholder}",
-				"rows": 7
+		&quot;testJS&quot;: &quot;sap/ui5/test/editor/listcard/dt/TestJs2&quot;,
+		&quot;visualization&quot;: {
+			&quot;type&quot;: &quot;TextArea&quot;,
+			&quot;settings&quot;: {
+				&quot;value&quot;: &quot;{currentSettings&gt;value}&quot;,
+				&quot;width&quot;: &quot;100%&quot;,
+				&quot;editable&quot;: &quot;{config/editable}&quot;,
+				&quot;placeholder&quot;: &quot;{currentSettings&gt;placeholder}&quot;,
+				&quot;rows&quot;: 7
 			}
 		}
 	},
-	"stringLabelTrans": {
-		"manifestpath": "/sap.card/configuration/parameters/stringLabelTrans/value",
-		"type": "string",
-		"label": "{i18n>TRANSLATED_STRING_LABEL}",
+	&quot;stringLabelTrans&quot;: {
+		&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/stringLabelTrans/value&quot;,
+		&quot;type&quot;: &quot;string&quot;,
+		&quot;label&quot;: &quot;{i18n&gt;TRANSLATED_STRING_LABEL}&quot;,
 		// js file
-		"testJS": "sap/ui5/test/editor/listcard/dt/TestJs3",
-		"cols": 2,
-		"translatable": true,
-		"allowDynamicValues": false
+		&quot;testJS&quot;: &quot;sap/ui5/test/editor/listcard/dt/TestJs3&quot;,
+		&quot;cols&quot;: 2,
+		&quot;translatable&quot;: true,
+		&quot;allowDynamicValues&quot;: false
 	},
-	"stringLabelTrans2": {
-		"manifestpath": "/sap.card/configuration/parameters/stringLabelTrans2/value",
-		"type": "string",
-		"label": "{{TRANSLATED_STRING_LABEL}}",
-		"translatable": true,
-		"allowDynamicValues": false,
-		"description": "A very long description text that should wrap into the next line"
+	&quot;stringLabelTrans2&quot;: {
+		&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/stringLabelTrans2/value&quot;,
+		&quot;type&quot;: &quot;string&quot;,
+		&quot;label&quot;: &quot;{{TRANSLATED_STRING_LABEL}}&quot;,
+		&quot;translatable&quot;: true,
+		&quot;allowDynamicValues&quot;: false,
+		&quot;description&quot;: &quot;A very long description text that should wrap into the next line&quot;
 	},
-	"stringWithTranslatedValue": {
-		"manifestpath": "/sap.card/configuration/parameters/stringWithTranslatedValue/value",
-		"type": "string",
-		"label": "String with translated value",
-		"translatable": true
+	&quot;stringWithTranslatedValue&quot;: {
+		&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/stringWithTranslatedValue/value&quot;,
+		&quot;type&quot;: &quot;string&quot;,
+		&quot;label&quot;: &quot;String with translated value&quot;,
+		&quot;translatable&quot;: true
 	},
-	"stringWithTranslatedValueIni18nFormat": {
-		"manifestpath": "/sap.card/configuration/parameters/stringWithTranslatedValueIni18nFormat/value",
-		"type": "string",
-		"label": "String with translated value in i18n format"
+	&quot;stringWithTranslatedValueIni18nFormat&quot;: {
+		&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/stringWithTranslatedValueIni18nFormat/value&quot;,
+		&quot;type&quot;: &quot;string&quot;,
+		&quot;label&quot;: &quot;String with translated value in i18n format&quot;
 	}
 }
 </pre>
@@ -99,17 +99,17 @@
 			</p>
 			<pre class="lang-js">
 sap.ui.define([
-	"sap/ui/integration/Designtime",
-	"sap/ui/thirdparty/jquery",
-	"sap/base/util/merge"
+	&quot;sap/ui/integration/Designtime&quot;,
+	&quot;sap/ui/thirdparty/jquery&quot;,
+	&quot;sap/base/util/merge&quot;
 ], function (
 	Designtime,
 	jQuery,
 	merge
 ) {
-	"use strict";
+	&quot;use strict&quot;;
 	return function (sTestName) {
-		return sTestName + " value 1";
+		return sTestName + &quot; value 1&quot;;
 	};
 });
 </pre>
@@ -118,18 +118,18 @@ sap.ui.define([
 				Create the configuration as below:
 			</p>
 			<pre class="lang-js">
-sap.ui.define(["sap/ui/integration/Designtime"], function (
+sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
 	Designtime
 ) {
-	"use strict";
+	&quot;use strict&quot;;
 	return function () {
 		var oDesigntime = new Designtime({
-			"form": {
-				"items": {
+			&quot;form&quot;: {
+				&quot;items&quot;: {
 				}
 			},
-			"preview": {
-				"modes": "Abstract"
+			&quot;preview&quot;: {
+				&quot;modes&quot;: &quot;Abstract&quot;
 			}
 		});
 		oDesigntime._readyPromise = function (oCardInterface, oInternalCard) {
@@ -152,19 +152,19 @@ oDesigntime._readyPromise = function (oCardInterface, oInternalCard) {
 	var that = this;
 	that.onCardReady(oCardInterface, oInternalCard);
 	var aJsonFiles = [
-		"dt/items1.json",
-		"dt/items2.json",
-		"dt/items3.json"
+		&quot;dt/items1.json&quot;,
+		&quot;dt/items2.json&quot;,
+		&quot;dt/items3.json&quot;
 	];
 	var aPromises = [];
 	aJsonFiles.forEach(function (sFileName) {
 		// the prefix of the json files should match the id in manifest.json
-		// "id": "sap.ui5.test.editor.listcard"
-		var sItemsPath = sap.ui.require.toUrl("sap/ui5/test/editor/listcard/" + sFileName);
+		// &quot;id&quot;: &quot;sap.ui5.test.editor.listcard&quot;
+		var sItemsPath = sap.ui.require.toUrl(&quot;sap/ui5/test/editor/listcard/&quot; + sFileName);
 		aPromises.push(
 			new Promise(function (resolve, reject) {
 				jQuery.ajax(sItemsPath, {
-					dataType: "json"
+					dataType: &quot;json&quot;
 				}).done(function (oItems) {
 					resolve(oItems);
 				}).fail(function (jqXHR, sTextStatus, sError) {
@@ -195,13 +195,13 @@ oDesigntime._readyPromise = function (oCardInterface, oInternalCard) {
 		// create promises for loading js files
 		for (var n in that.settings.form.items) {
 			var oItem = that.settings.form.items[n];
-			if (oItem.testJS && oItem.testJS !== "") {
+			if (oItem.testJS &amp;&amp; oItem.testJS !== &quot;&quot;) {
 				aPromises.push(
 					createPromise(oItem, n)
 				);
 			}
 		}
-		if (aPromises.length > 0) {
+		if (aPromises.length &gt; 0) {
 			// loading js files
 			return Promise.all(aPromises);
 		} else {

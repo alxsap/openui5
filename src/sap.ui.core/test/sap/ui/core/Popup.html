@@ -1,140 +1,22 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
+	<head><meta charset="utf-8">
 
 		<title>Popup - sap.ui.core</title>
 
 		<script src="shared-config.js"></script>
 		<script id="sap-ui-bootstrap"
-				src="../../../../resources/sap-ui-core.js">
+				src="../../../../resources/sap-ui-core.js"
+				data-sap-ui-async="true"
+				data-sap-ui-compat-version="edge"
+				data-sap-ui-on-init="module:local/Popup"
+				data-sap-ui-resource-roots='{"local":"./"}'
+		>
 		</script>
 
-		<style>
-		body {
-			margin: 122px 22px !important;
-		}
+		<link rel="stylesheet" href="./Popup.css">
 
-		#within {
-			position: absolute;
-			right: 100px;
-			bottom: 200px;
-			width: 50%;
-			height: 70%;
-			pointer-events: none;
-		}
-
-		#popup {
-		  background-color: yellow;
-		  width: 300px;
-		  height: 100px;
-		  position: absolute;
-		  left: -560px;
-		  top: 270px;
-		}
-
-		.popupcontent {
-		  background-color: red;
-		  width: 100px;
-		  height: 50px;
-		}
-
-		.secondpopupcontent {
-		  background-color: lightgreen;
-		  width: 100px;
-		  position: absolute;
-		  left: 150px;
-		  top: 40px;
-		  height: 50px;
-		}
-
-		:focus {
-		  outline: 3px dotted black;
-		}
-
-		.important {
-			font-weight: bold;
-		}
-
-		</style>
-
-		<script>
-		var openPopup, closePopup, greenClicked, openAnim, closeAnim;
-
-		sap.ui.require(["sap/ui/core/Popup"], function(Popup) {
-			openAnim = function($Ref, iDuration, fnCallback) {
-			  $Ref.slideDown(iDuration, fnCallback);
-			};
-
-			closeAnim = function($Ref, iDuration, fnCallback) {
-			  $Ref.slideUp(iDuration, fnCallback);
-			};
-
-			var popup = null;
-			var modal = false;
-
-			openPopup = function (iDuration, bModal, bAutoClose, fnOpenAnim, fnCloseAnim, oOf, bNotCenter) {
-				if (bModal) {
-					modal = true;
-					var oWithinArea = Popup.getWithinAreaDomRef();
-					if (oWithinArea !== window) {
-						oOf = oWithinArea;
-					}
-					alert("Click the green rectangle to close the popup!");
-				}
-
-				if (popup) {
-					alert("This test page only allows one open popup at a time");
-					return;
-				}
-
-				var element = jQuery.sap.domById("popup");
-
-				popup = new Popup(element, bModal, true, bAutoClose);
-				popup.attachClosed(popupClosed);
-				if (fnOpenAnim || fnCloseAnim) {
-					popup.setAnimations(openAnim, fnCloseAnim);
-				}
-
-				if (bNotCenter) {
-					popup.open(iDuration, "begin top", "end top", oOf || window, null, "fit");
-				} else {
-					popup.open(iDuration, "center center", "center center", oOf || window, null);
-				}
-			}
-
-			closePopup = function (iDuration) {
-			  if(popup) {
-				popup.close(iDuration);
-			  }
-			}
-
-			function popupClosed() {
-				popup = null;
-				modal = false;
-			}
-
-			greenClicked = function () {
-				if (modal) {
-					popup.close();
-				}
-			}
-
-			jQuery(function() {
-				document.getElementById("check").addEventListener("click", function(event) {
-					if (event.target.checked) {
-						var oWithinArea = document.getElementById("within");
-						Popup.setWithinArea(oWithinArea);
-						oWithinArea.style["background-color"] = "rgba(255, 0, 0, 0.5)";
-					} else {
-						Popup.setWithinArea(null);
-						oWithinArea.style.removeProperty("background-color");
-					}
-				});
-			});
-		});
-
-
-		</script>
+		
 	</head>
 	<body class="sapUiBody">
 		<div id="within"></div>
@@ -142,7 +24,7 @@
 
 		This page displays several usages of the Popup functionality.
 		<p class="important">
-		IMPORTANT: the "sap.ui.core.Popup" is not a visible control!! <br>
+		IMPORTANT: the &quot;sap.ui.core.Popup&quot; is not a visible control!! <br>
 		It is a helper that works in the background and can be used to convert any control
 		or any HTML element into a popup that sits on top of the rest of the screen and can be modal or can auto-close when losing the focus.
 		</p>
@@ -158,7 +40,7 @@
 		<br>
 		<button onclick="closePopup(-1)">Close Popup</button><br>
 		<button onclick="closePopup(0)">Close Popup With No Animation</button><br>
-		<input type="checkbox" id="check" />Custom Within
+		<input type="checkbox" id="check">Custom Within
 
 
 		<div id="popup" tabindex="0">

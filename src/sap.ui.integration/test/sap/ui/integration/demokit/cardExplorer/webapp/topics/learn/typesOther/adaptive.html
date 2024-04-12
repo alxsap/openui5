@@ -1,20 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head><meta charset="utf-8">
 	<title>Adaptive Card</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="../../../scripts/boot.js"></script>
-	<style>
-		code {
-			font-size: 16px;
-		}
-
-		.sapUiSizeCompact code {
-			font-size: 14px;
-		}
-	</style>
+	<link rel="stylesheet" href="./adaptive.css">
 
 </head>
 
@@ -30,17 +22,16 @@
 				Default and Numeric card headers can be optionally used in order to provide a title and general
 				information about the Adaptive Card. The content of the card
 				consist of a JSON object, which defines the card structure, content, and actions. For more information
-				of all properties of Adaptive Card, see <a href="https://adaptivecards.io/explorer/"
-					target="_blank">https://adaptivecards.io</a>.
+				of all properties of Adaptive Card, see <a href="https://adaptivecards.io/explorer/" target="_blank">https://adaptivecards.io</a>.
 			</p>
 			<h2 id="properties">Usage</h2>
 			<ul>
 				<li><b>Loading</b> - The JSON-serialized card object model of a MS Adaptive Card could be added inline
 					or dynamically, requested as a JSON file in the content area of an Integration Card.</li>
-				<br/>
+				<br>
 				<li>
 					<b>Templating</b> - Templating enables the separation of data from the layout in an MS Adaptive
-					Card. To provide data directly within the card content, simply add a <code>$data</code> attribute to
+					Card. To provide data directly within the card content, simply add a <code>&#x24;data</code> attribute to
 					your Adaptive Card JSON card model, as shown in the
 					<a target="_blank" href="../../../index.html#/explore/adaptive/templating">Templating example</a>.
 					Data could be provided also by using
@@ -51,7 +42,7 @@
 					syntax. For more information, see
 					<a target="_blank" href="https://docs.microsoft.com/en-us/adaptive-cards/templating/">Adaptive Cards
 						Templating</a>.
-					<br/><br/>
+					<br><br>
 					<i>Note: As of version 1.98 the Integration Cards of type adaptive, support the new binding syntax of
 						the Templating feature. For reference, check
 					<a target="_blank" href="https://docs.microsoft.com/en-us/adaptive-cards/templating/language">Adaptive Cards
@@ -59,17 +50,16 @@
 						and might be a subject of incompatible changes in future as well.
 					</i>
 				</li>
-				<br/>
+				<br>
 				<li><b>Markdown</b> - To support inline markup, MS Adaptive Card supports a
-					<a target="_blank"
-						href="https://docs.microsoft.com/en-us/adaptive-cards/authoring-cards/text-features">subset of
+					<a target="_blank" href="https://docs.microsoft.com/en-us/adaptive-cards/authoring-cards/text-features">subset of
 						Commonmark Markdown syntax</a>.
 					In order to enable this feature, set the <code>enableMarkdown</code> boolean property to
 					<code>true</code> and add it in the configuration object under <code>sap.card</code> of the
 					manifest. See the
 					<a target="_blank" href="../../../index.html#/explore/adaptive/markdown">Markdown example</a>.
 				</li>
-				<br/>
+				<br>
 				<li>
 					<b>Actions</b> - The <code>Action.OpenUrl</code> and <code>Action.Submit</code> are dispatched by the card
 					as <code>Navigation</code> and <code>Submit</code>.
@@ -78,8 +68,7 @@
 					<b>Action.OpenUrl</b>
 					<p>
 						The developers of the Adaptive Card are able to add button(s) with an URL link to navigate to.
-						For more information see the <a target="_blank"
-							href="../../../index.html#/explore/adaptive/adaptive-action-openurl">OpenURL action
+						For more information see the <a target="_blank" href="../../../index.html#/explore/adaptive/adaptive-action-openurl">OpenURL action
 							example</a>.
 					</p>
 					<table>
@@ -90,7 +79,7 @@
 						</tr>
 						<tr>
 							<td>type</td>
-							<td>"Navigation"</td>
+							<td>&quot;Navigation&quot;</td>
 							<td>1.74</td>
 						</tr>
 						<tr>
@@ -103,12 +92,11 @@
 					<p>
 						The developers of the Adaptive Card manifest are able to specify the target endpoint for each
 						request by defining the URL property of the Submit action handler in the
-						'configuration/actionHandlers' section of the card.
-						Тhe request type can be defined using the "method" property in the same configuration section.
+						&apos;configuration/actionHandlers&apos; section of the card.
+						&#x422;he request type can be defined using the &quot;method&quot; property in the same configuration section.
 						This allows them to configure where the data from the card will be sent. It is essential, as
 						this information is not always
-						available for the host environment developers. For more information see the <a target="_blank"
-							href="../../../index.html#/explore/adaptive/adaptive-action-submit">Submit action
+						available for the host environment developers. For more information see the <a target="_blank" href="../../../index.html#/explore/adaptive/adaptive-action-submit">Submit action
 							example</a>.
 					</p>
 					<table>
@@ -119,7 +107,7 @@
 						</tr>
 						<tr>
 							<td>type</td>
-							<td>"Submit"</td>
+							<td>&quot;Submit&quot;</td>
 							<td>1.74</td>
 						</tr>
 						<tr>
@@ -134,88 +122,88 @@
 			<h2 id="example">Example</h2>
 			<p>Define the type of the card:</p>
 			<pre class="lang-json">{
-	"sap.card": {
-		"type": "AdaptiveCard",
-		"content": {}
+	&quot;sap.card&quot;: {
+		&quot;type&quot;: &quot;AdaptiveCard&quot;,
+		&quot;content&quot;: {}
 	}
 }</pre>
 
 			<p>Define the content of the card by including the JSON-serialized card object model inline:</p>
-			<pre class="lang-json">"content": {
-	"$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-	"type": "AdaptiveCard",
-	"version": "1.0",
-	"body": [
+			<pre class="lang-json">&quot;content&quot;: {
+	&quot;&#x24;schema&quot;: &quot;http://adaptivecards.io/schemas/adaptive-card.json&quot;,
+	&quot;type&quot;: &quot;AdaptiveCard&quot;,
+	&quot;version&quot;: &quot;1.0&quot;,
+	&quot;body&quot;: [
 		{
-			"type": "TextBlock",
-			"text": "Publish Adaptive Card schema",
-			"weight": "Bolder",
-			"size": "Medium"
+			&quot;type&quot;: &quot;TextBlock&quot;,
+			&quot;text&quot;: &quot;Publish Adaptive Card schema&quot;,
+			&quot;weight&quot;: &quot;Bolder&quot;,
+			&quot;size&quot;: &quot;Medium&quot;
 		},
 		{
-			"type": "ColumnSet",
-			"columns": [
+			&quot;type&quot;: &quot;ColumnSet&quot;,
+			&quot;columns&quot;: [
 				{
-					"type": "Column",
-					"width": "auto",
-					"items": [
+					&quot;type&quot;: &quot;Column&quot;,
+					&quot;width&quot;: &quot;auto&quot;,
+					&quot;items&quot;: [
 						{
-							"type": "Image",
-							"url": "https://pbs.twimg.com/profile_images/3647943215/d7f12830b3c17a5a9e4afcc370e3a37e_400x400.jpeg",
-							"size": "Small",
-							"style": "Person"
+							&quot;type&quot;: &quot;Image&quot;,
+							&quot;url&quot;: &quot;https://pbs.twimg.com/profile_images/3647943215/d7f12830b3c17a5a9e4afcc370e3a37e_400x400.jpeg&quot;,
+							&quot;size&quot;: &quot;Small&quot;,
+							&quot;style&quot;: &quot;Person&quot;
 						}
 					]
 				},
 				{
-					"type": "Column",
-					"width": "auto",
-					"items": [
+					&quot;type&quot;: &quot;Column&quot;,
+					&quot;width&quot;: &quot;auto&quot;,
+					&quot;items&quot;: [
 						{
-							"type": "TextBlock",
-							"text": "Matt Hidinger",
-							"weight": "Bolder",
-							"wrap": true
+							&quot;type&quot;: &quot;TextBlock&quot;,
+							&quot;text&quot;: &quot;Matt Hidinger&quot;,
+							&quot;weight&quot;: &quot;Bolder&quot;,
+							&quot;wrap&quot;: true
 						}
 					]
 				}
 			]
 		},
 		{
-			"type": "TextBlock",
-			"text": "Now that we have defined the main rules and features of the format, we need to produce a schema and publish it to GitHub. The schema will be the starting point of our reference documentation.",
-			"wrap": true
+			&quot;type&quot;: &quot;TextBlock&quot;,
+			&quot;text&quot;: &quot;Now that we have defined the main rules and features of the format, we need to produce a schema and publish it to GitHub. The schema will be the starting point of our reference documentation.&quot;,
+			&quot;wrap&quot;: true
 		},
 		{
-			"type": "FactSet",
-			"facts": [
+			&quot;type&quot;: &quot;FactSet&quot;,
+			&quot;facts&quot;: [
 				{
-					"title": "Board:",
-					"value": "Adaptive Card"
+					&quot;title&quot;: &quot;Board:&quot;,
+					&quot;value&quot;: &quot;Adaptive Card&quot;
 				},
 				{
-					"title": "List:",
-					"value": "Backlog"
+					&quot;title&quot;: &quot;List:&quot;,
+					&quot;value&quot;: &quot;Backlog&quot;
 				}
 			]
 		}
 	],
-	"actions": [
+	&quot;actions&quot;: [
 		{
-			"type": "Action.ShowCard",
-			"title": "Set due date",
-			"card": {
-				"type": "AdaptiveCard",
-				"body": [
+			&quot;type&quot;: &quot;Action.ShowCard&quot;,
+			&quot;title&quot;: &quot;Set due date&quot;,
+			&quot;card&quot;: {
+				&quot;type&quot;: &quot;AdaptiveCard&quot;,
+				&quot;body&quot;: [
 					{
-						"type": "Input.Date",
-						"id": "dueDate"
+						&quot;type&quot;: &quot;Input.Date&quot;,
+						&quot;id&quot;: &quot;dueDate&quot;
 					}
 				],
-				"actions": [
+				&quot;actions&quot;: [
 					{
-						"type": "Action.Submit",
-						"title": "OK"
+						&quot;type&quot;: &quot;Action.Submit&quot;,
+						&quot;title&quot;: &quot;OK&quot;
 					}
 				]
 			}
@@ -225,32 +213,32 @@
 
 			<p>Or load it from a JSON file:</p>
 
-			<pre class="lang-json">"content": {
-	"request": {
-		"url": "./adaptiveCard.json"
+			<pre class="lang-json">&quot;content&quot;: {
+	&quot;request&quot;: {
+		&quot;url&quot;: &quot;./adaptiveCard.json&quot;
 	}
 }</pre>
 
 			<p>You could also include configuration for the <code>Action.Submit</code>:</p>
 			<pre class="lang-json">{
-	"sap.card": {
-		"configuration": {
-			"actionHandlers": {
-				"submit": {
-					"url": "./NorthwindSvc/formData",
-					"method": "POST"
+	&quot;sap.card&quot;: {
+		&quot;configuration&quot;: {
+			&quot;actionHandlers&quot;: {
+				&quot;submit&quot;: {
+					&quot;url&quot;: &quot;./NorthwindSvc/formData&quot;,
+					&quot;method&quot;: &quot;POST&quot;
 				}
 			}
 		},
-		"type": "AdaptiveCard",
-		"content": {}
+		&quot;type&quot;: &quot;AdaptiveCard&quot;,
+		&quot;content&quot;: {}
 	}
 }</pre>
 
 			<p>Create the view to display the card:</p>
 			<pre class="lang-xml">
-&lt;mvc:View xmlns:w="sap.ui.integration.widgets"&gt;
-	&lt;w:Card manifest="./manifest.json" width="400px" height="auto"/&gt;
+&lt;mvc:View xmlns:w=&quot;sap.ui.integration.widgets&quot;&gt;
+	&lt;w:Card manifest=&quot;./manifest.json&quot; width=&quot;400px&quot; height=&quot;auto&quot;/&gt;
 &lt;/mvc:View&gt;</pre>
 			<a class="try-button" href="../../../index.html#/explore/adaptive" target="_parent">Try it Out</a>
 

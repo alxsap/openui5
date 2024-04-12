@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head><meta charset="utf-8">
 	<title>Invisible Content</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="../../../scripts/boot.js"></script>
 </head>
@@ -39,21 +39,21 @@ fnHandler: function () {
 			<p>The invisible text provides a hidden text that can be used by screen readers to give contextual information. The hidden text can for example be referenced in the <code>ariaLabelledBy</code> or <code>ariaDescribedBy</code> associations of other controls.</p>
 			<pre class="lang-xml">
 &lt;form:SimpleForm
-	maxContainerCols="2"
-	editable="true"&gt;
+	maxContainerCols=&quot;2&quot;
+	editable=&quot;true&quot;&gt;
 	&lt;Label
-		text= "Postal code / City" /&gt;
+		text= &quot;Postal code / City&quot; /&gt;
 	&lt;Input
-<mark>		ariaLabelledBy="postal"</mark>
-		value="12345"
-		fieldWidth="35%" /&gt;
+<mark>		ariaLabelledBy=&quot;postal&quot;</mark>
+		value=&quot;12345&quot;
+		fieldWidth=&quot;35%&quot; /&gt;
 	&lt;Input
-		value="Sofia"
-<mark>		ariaLabelledBy="city"</mark>
-		fieldWidth="35%" /&gt;
+		value=&quot;Sofia&quot;
+<mark>		ariaLabelledBy=&quot;city&quot;</mark>
+		fieldWidth=&quot;35%&quot; /&gt;
 &lt;/form:SimpleForm&gt;
-<mark>&lt;core:InvisibleText id="postal" text="Postal code" /&gt;</mark>
-<mark>&lt;core:InvisibleText id="city" text="City" /&gt;</mark>
+<mark>&lt;core:InvisibleText id=&quot;postal&quot; text=&quot;Postal code&quot; /&gt;</mark>
+<mark>&lt;core:InvisibleText id=&quot;city&quot; text=&quot;City&quot; /&gt;</mark>
 			</pre>
 			<a class="try-button" href="../../../index.html#/explore/invisibleText" target="_parent">See Example</a>
 		</div>
