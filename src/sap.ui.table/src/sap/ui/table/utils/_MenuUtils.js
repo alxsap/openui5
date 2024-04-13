@@ -16,9 +16,9 @@ sap.ui.define([
 
 	function onCellFilterSelect(oColumn, oRow) {
 		// "this" is the table instance.
-		var oRowContext = oRow.getRowBindingContext();
-		var sFilterProperty = oColumn.getFilterProperty();
-		var sFilterValue = oRowContext.getProperty(sFilterProperty);
+		const oRowContext = oRow.getRowBindingContext();
+		const sFilterProperty = oColumn.getFilterProperty();
+		let sFilterValue = oRowContext.getProperty(sFilterProperty);
 
 		if (sFilterValue != null && typeof sFilterValue !== "string") {
 			sFilterValue = sFilterValue.toString();
@@ -45,7 +45,7 @@ sap.ui.define([
 	 * @alias sap.ui.table.utils._MenuUtils
 	 * @private
 	 */
-	var MenuUtils = {
+	const MenuUtils = {
 
 		TableUtils: null, // Avoid cyclic dependency. Will be filled by TableUtils
 
@@ -63,8 +63,8 @@ sap.ui.define([
 		 * @param {jQuery.Event} oEvent The event object
 		 */
 		openContextMenu: function(oTable, oEvent) {
-			var $Cell = MenuUtils.TableUtils.getCell(oTable, oEvent.target);
-			var oCellInfo = MenuUtils.TableUtils.getCellInfo($Cell);
+			const $Cell = MenuUtils.TableUtils.getCell(oTable, oEvent.target);
+			const oCellInfo = MenuUtils.TableUtils.getCellInfo($Cell);
 
 			if (oCellInfo.isOfType(MenuUtils.TableUtils.CELLTYPE.COLUMNHEADER)) {
 				oTable.getColumns()[oCellInfo.columnIndex]._openHeaderMenu(oCellInfo.cell);
@@ -86,7 +86,7 @@ sap.ui.define([
 		 * @private
 		 */
 		_openContentCellContextMenu: function(oTable, oCellInfo, oEvent) {
-			var oRow = oTable.getRows()[oCellInfo.rowIndex];
+			const oRow = oTable.getRows()[oCellInfo.rowIndex];
 
 			if (oRow.isEmpty()) {
 				return;
@@ -111,12 +111,12 @@ sap.ui.define([
 		 * @private
 		 */
 		_openCustomContentCellContextMenu: function(oTable, oCellInfo, oEvent) {
-			var oRow = oTable.getRows()[oCellInfo.rowIndex];
-			var oContextMenu = oTable.getContextMenu();
+			const oRow = oTable.getRows()[oCellInfo.rowIndex];
+			const oContextMenu = oTable.getContextMenu();
 
 			oContextMenu.setBindingContext(oRow.getRowBindingContext(), oTable.getBindingInfo("rows").model);
 
-			var bExecuteDefault = oTable.fireBeforeOpenContextMenu({
+			const bExecuteDefault = oTable.fireBeforeOpenContextMenu({
 				rowIndex: oRow.getIndex(),
 				columnIndex: oCellInfo.columnIndex >= 0 ? oCellInfo.columnIndex : null,
 				contextMenu: oContextMenu
@@ -140,16 +140,16 @@ sap.ui.define([
 		 * @private
 		 */
 		_openDefaultContentCellContextMenu: function(oTable, oCellInfo, oEvent) {
-			var iRowIndex = oCellInfo.rowIndex;
-			var oRow = oTable.getRows()[iRowIndex];
-			var oColumn = oTable.getColumns()[oCellInfo.columnIndex];
+			const iRowIndex = oCellInfo.rowIndex;
+			const oRow = oTable.getRows()[iRowIndex];
+			const oColumn = oTable.getColumns()[oCellInfo.columnIndex];
 
 			if (!oTable._oCellContextMenu) {
 				oTable._oCellContextMenu = new Menu(oTable.getId() + "-cellcontextmenu");
 			}
 
-			var sCellFilterMenuItemId = oTable._oCellContextMenu.getId() + "-cellfilter";
-			var oCellFilterMenuItem = Element.getElementById(sCellFilterMenuItemId);
+			const sCellFilterMenuItemId = oTable._oCellContextMenu.getId() + "-cellfilter";
+			let oCellFilterMenuItem = Element.getElementById(sCellFilterMenuItemId);
 
 			if (oTable.getEnableCellFilter() && oColumn?.isFilterableByMenu() && !oRow.isGroupHeader() && !oRow.isSummary()) {
 				if (!oCellFilterMenuItem) {
@@ -204,7 +204,7 @@ sap.ui.define([
 			}
 
 			// Destroy the items of the table.
-			var sCellFilterMenuItemId = oTable._oCellContextMenu.getId() + "-cellfilter";
+			const sCellFilterMenuItemId = oTable._oCellContextMenu.getId() + "-cellfilter";
 			Element.getElementById(sCellFilterMenuItemId)?.destroy();
 
 			// We don't want to destroy items which were added, for example, by hooks. The owners of the items are responsible for them.

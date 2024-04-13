@@ -40,9 +40,9 @@
 						</td>
 						<td>
 							<pre class="lang-json" data-sample="1">{
-	&quot;manifestpath&quot;: &quot;/sap.card...param/value&quot;,
-	&quot;label&quot;: &quot;String&quot;,
-	&quot;type&quot;: &quot;string&quot;
+	"manifestpath": "/sap.card...param/value",
+	"label": "String",
+	"type": "string"
 }</pre>
 						</td>
 					</tr>
@@ -55,10 +55,10 @@
 						</td>
 						<td>
 							<pre class="lang-js" data-sample>{
-	&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/string/value&quot;,
-	&quot;label&quot;: &quot;String&quot;,
-	&quot;type&quot;: &quot;string&quot;,
-	&quot;translatable&quot;: true
+	"manifestpath": "/sap.card/configuration/parameters/string/value",
+	"label": "String",
+	"type": "string",
+	"translatable": true
 }</pre>
 						</td>
 					</tr>
@@ -71,9 +71,9 @@
 						</td>
 						<td>
 							<pre class="lang-json" data-sample="2">{
-	&quot;manifestpath&quot;: &quot;/sap.card...param/value&quot;,
-	&quot;label&quot;: &quot;Boolean&quot;,
-	&quot;type&quot;: &quot;boolean&quot;
+	"manifestpath": "/sap.card...param/value",
+	"label": "Boolean",
+	"type": "boolean"
 }</pre>
 						</td>
 					</tr>
@@ -86,9 +86,9 @@
 						</td>
 						<td>
 							<pre class="lang-json" data-sample="3">{
-	&quot;manifestpath&quot;: &quot;/sap.card...param/value&quot;,
-	&quot;label&quot;: &quot;Integer&quot;,
-	&quot;type&quot;: &quot;integer&quot;
+	"manifestpath": "/sap.card...param/value",
+	"label": "Integer",
+	"type": "integer"
 }</pre>
 						</td>
 					</tr>
@@ -101,10 +101,10 @@
 						</td>
 						<td>
 							<pre class="lang-json" data-sample="4">{
-	&quot;param1&quot;: {
-		&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/param1/value&quot;,
-		&quot;label&quot;: &quot;Date&quot;,
-		&quot;type&quot;: &quot;date&quot;
+	"param1": {
+		"manifestpath": "/sap.card/configuration/parameters/param1/value",
+		"label": "Date",
+		"type": "date"
 	}
 }</pre>
 						</td>
@@ -118,10 +118,10 @@
 						</td>
 						<td>
 							<pre class="lang-json" data-sample="5">{
-	&quot;param1&quot;: {
-		&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/param1/value&quot;,
-		&quot;label&quot;: &quot;Datetime&quot;,
-		&quot;type&quot;: &quot;datetime&quot;
+	"param1": {
+		"manifestpath": "/sap.card/configuration/parameters/param1/value",
+		"label": "Datetime",
+		"type": "datetime"
 	}
 }</pre>
 						</td>
@@ -135,23 +135,23 @@
 						</td>
 						<td>
 							<pre class="lang-json" data-sample="6">{
-	&quot;param1&quot;: {
-		&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/param1/value&quot;,
-		&quot;label&quot;: &quot;String Array (MultiComboBox)&quot;,
-		&quot;type&quot;: &quot;string[]&quot;,
-		&quot;values&quot;: {
-			&quot;data&quot;: {
-				&quot;json&quot;: [
-					{&quot;text&quot;: &quot;text1&quot;, &quot;key&quot;: &quot;key1&quot;, &quot;additionalText&quot;: &quot;addtext1&quot;},
-					{&quot;text&quot;: &quot;text2&quot;, &quot;key&quot;: &quot;key2&quot;, &quot;additionalText&quot;: &quot;addtext2&quot;},
-					{&quot;text&quot;: &quot;text3&quot;, &quot;key&quot;: &quot;key3&quot;, &quot;additionalText&quot;: &quot;addtext3&quot;}
+	"param1": {
+		"manifestpath": "/sap.card/configuration/parameters/param1/value",
+		"label": "String Array (MultiComboBox)",
+		"type": "string[]",
+		"values": {
+			"data": {
+				"json": [
+					{"text": "text1", "key": "key1", "additionalText": "addtext1"},
+					{"text": "text2", "key": "key2", "additionalText": "addtext2"},
+					{"text": "text3", "key": "key3", "additionalText": "addtext3"}
 				],
-				&quot;path&quot;: &quot;/&quot;
+				"path": "/"
 			},
-			&quot;item&quot;: {
-				&quot;text&quot;: &quot;{text}&quot;,
-				&quot;key&quot;: &quot;{key}&quot;,
-				&quot;additionalText&quot;: &quot;{additionalText}&quot;
+			"item": {
+				"text": "{text}",
+				"key": "{key}",
+				"additionalText": "{additionalText}"
 			}
 		}
 	}
@@ -167,29 +167,29 @@
 						</td>
 						<td>
 							<pre class="lang-json" data-sample="7">{
-	&quot;param1&quot;: {
-		&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/param1/value&quot;,
-		&quot;label&quot;: &quot;String Array (MultiInput)&quot;,
-		&quot;type&quot;: &quot;string[]&quot;,
-		&quot;values&quot;: {
-			&quot;data&quot;: {
-				&quot;request&quot;: {
-					&quot;url&quot;: &quot;https://services.odata.org/V4/Northwind/Northwind.svc/Customers&quot;,
-					&quot;parameters&quot;: {
-						&quot;&#x24;select&quot;: &quot;CustomerID, CompanyName, Country, City, Address&quot;,
-						&quot;&#x24;filter&quot;: &quot;startswith(CompanyName,&apos;{currentSettings&gt;suggestValue}&apos;)&quot;
+	"param1": {
+		"manifestpath": "/sap.card/configuration/parameters/param1/value",
+		"label": "String Array (MultiInput)",
+		"type": "string[]",
+		"values": {
+			"data": {
+				"request": {
+					"url": "https://services.odata.org/V4/Northwind/Northwind.svc/Customers",
+					"parameters": {
+						"$select": "CustomerID, CompanyName, Country, City, Address",
+						"$filter": "startswith(CompanyName,'{currentSettings>suggestValue}')"
 					}
 				},
-				&quot;path&quot;: &quot;/value&quot;
+				"path": "/value"
 			},
-			&quot;item&quot;: {
-				&quot;text&quot;: &quot;{CompanyName}&quot;,
-				&quot;key&quot;: &quot;{CustomerID}&quot;,
-				&quot;additionalText&quot;: &quot;{Country}&quot;
+			"item": {
+				"text": "{CompanyName}",
+				"key": "{CustomerID}",
+				"additionalText": "{Country}"
 			}
 		},<mark>
-		&quot;visualization&quot;: {
-			&quot;type&quot;: &quot;MultiInput&quot;
+		"visualization": {
+			"type": "MultiInput"
 		}</mark>
 	}
 }</pre>
@@ -203,9 +203,9 @@
 						<td>
 							<pre class="lang-js" data-sample style="height:250px">
 {
-	&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/object/value&quot;,
-	&quot;type&quot;: &quot;object&quot;,
-	&quot;label&quot;: &quot;Object Field&quot;
+	"manifestpath": "/sap.card/configuration/parameters/object/value",
+	"type": "object",
+	"label": "Object Field"
 }</pre>
 						</td>
 					</tr>
@@ -217,73 +217,73 @@
 						<td>
 							<pre class="lang-js" data-sample style="height:350px">
 {
-	&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/object/value&quot;,
-	&quot;type&quot;: &quot;object&quot;,
-	&quot;label&quot;: &quot;Object properties defined&quot;,<mark>
-		&quot;properties&quot;: {
-			&quot;key&quot;: {
-				&quot;label&quot;: &quot;Key&quot;
+	"manifestpath": "/sap.card/configuration/parameters/object/value",
+	"type": "object",
+	"label": "Object properties defined",<mark>
+		"properties": {
+			"key": {
+				"label": "Key"
 			},
-			&quot;icon&quot;: {
-				&quot;label&quot;: &quot;Icon&quot;
+			"icon": {
+				"label": "Icon"
 			},
-			&quot;type&quot;: {
-				&quot;label&quot;: &quot;Type&quot;,
-				&quot;type&quot;: &quot;string&quot;,
-				&quot;values&quot;: {
-					&quot;data&quot;: {
-						&quot;json&quot;: {
-							&quot;values&quot;: [
-								{ &quot;text&quot;: &quot;Type 01&quot;, &quot;key&quot;: &quot;type01&quot;},
-								{ &quot;text&quot;: &quot;Type 02&quot;, &quot;key&quot;: &quot;type02&quot;},
-								{ &quot;text&quot;: &quot;Type 03&quot;, &quot;key&quot;: &quot;type03&quot;},
-								{ &quot;text&quot;: &quot;Type 04&quot;, &quot;key&quot;: &quot;type04&quot;},
-								{ &quot;text&quot;: &quot;Type 05&quot;, &quot;key&quot;: &quot;type05&quot;},
-								{ &quot;text&quot;: &quot;Type 06&quot;, &quot;key&quot;: &quot;type06&quot;}
+			"type": {
+				"label": "Type",
+				"type": "string",
+				"values": {
+					"data": {
+						"json": {
+							"values": [
+								{ "text": "Type 01", "key": "type01"},
+								{ "text": "Type 02", "key": "type02"},
+								{ "text": "Type 03", "key": "type03"},
+								{ "text": "Type 04", "key": "type04"},
+								{ "text": "Type 05", "key": "type05"},
+								{ "text": "Type 06", "key": "type06"}
 							]
 						},
-						&quot;path&quot;: &quot;/values&quot;
+						"path": "/values"
 					},
-					&quot;item&quot;: {
-						&quot;text&quot;: &quot;{text}&quot;,
-						&quot;key&quot;: &quot;{key}&quot;
+					"item": {
+						"text": "{text}",
+						"key": "{key}"
 					}
 				}
 			},
-			&quot;text&quot;: {
-				&quot;label&quot;: &quot;Text&quot;,
-				&quot;translatable&quot;: true
+			"text": {
+				"label": "Text",
+				"translatable": true
 			},
-			&quot;url&quot;: {
-				&quot;label&quot;: &quot;URL&quot;
+			"url": {
+				"label": "URL"
 			},
-			&quot;editable&quot;: {
-				&quot;label&quot;: &quot;Editable&quot;,
-				&quot;type&quot;: &quot;boolean&quot;
+			"editable": {
+				"label": "Editable",
+				"type": "boolean"
 			},
-			&quot;int&quot;: {
-				&quot;label&quot;: &quot;Integer&quot;,
-				&quot;type&quot;: &quot;int&quot;,
-				&quot;formatter&quot;: {
-					&quot;minIntegerDigits&quot;: 1,
-					&quot;maxIntegerDigits&quot;: 6,
-					&quot;emptyString&quot;: &quot;&quot;
+			"int": {
+				"label": "Integer",
+				"type": "int",
+				"formatter": {
+					"minIntegerDigits": 1,
+					"maxIntegerDigits": 6,
+					"emptyString": ""
 				}
 			},
-			&quot;number&quot;: {
-				&quot;label&quot;: &quot;Number&quot;,
-				&quot;type&quot;: &quot;number&quot;,
-				&quot;formatter&quot;: {
-					&quot;decimals&quot;: 1,
-					&quot;style&quot;:&quot;short&quot;
+			"number": {
+				"label": "Number",
+				"type": "number",
+				"formatter": {
+					"decimals": 1,
+					"style":"short"
 				}
 			},
-			&quot;object&quot;: {
-				&quot;label&quot;: &quot;Object&quot;,
-				&quot;type&quot;: &quot;object&quot;,
-				&quot;column&quot;: {
-					&quot;hAlign&quot;: &quot;Center&quot;,
-					&quot;width&quot;: &quot;10rem&quot;
+			"object": {
+				"label": "Object",
+				"type": "object",
+				"column": {
+					"hAlign": "Center",
+					"width": "10rem"
 				}
 			}
 		}</mark>
@@ -298,137 +298,137 @@
 						<td>
 							<pre class="lang-js" style="height:350px">
 {
-	&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/object/value&quot;,
-	&quot;type&quot;: &quot;object&quot;,
-	&quot;label&quot;: &quot;Object properties defined: value from Json list&quot;,<mark>
-	&quot;values&quot;: {
-		&quot;data&quot;: {
-			&quot;json&quot;: {
-				&quot;values&quot;: [
-					{ &quot;text&quot;: &quot;text01&quot;, &quot;key&quot;: &quot;key01&quot;, &quot;type&quot;: &quot;type01&quot;, &quot;url&quot;: &quot;https://sap.com/06&quot;, &quot;icon&quot;: &quot;sap-icon://accept&quot;, &quot;iconcolor&quot;: &quot;#031E48&quot;, &quot;int&quot;: 1 , &quot;object&quot;: {&quot;text&quot;: &quot;text01&quot;, &quot;key&quot;: &quot;key01&quot;}},
-					{ &quot;text&quot;: &quot;text02&quot;, &quot;key&quot;: &quot;key02&quot;, &quot;type&quot;: &quot;type02&quot;, &quot;url&quot;: &quot;http://sap.com/05&quot;, &quot;icon&quot;: &quot;sap-icon://cart&quot;, &quot;iconcolor&quot;: &quot;#64E4CE&quot;, &quot;int&quot;: 2 , &quot;object&quot;: {&quot;text&quot;: &quot;text02&quot;, &quot;key&quot;: &quot;key02&quot;}},
-					{ &quot;text&quot;: &quot;text03&quot;, &quot;key&quot;: &quot;key03&quot;, &quot;type&quot;: &quot;type03&quot;, &quot;url&quot;: &quot;https://sap.com/04&quot;, &quot;icon&quot;: &quot;sap-icon://zoom-in&quot;, &quot;iconcolor&quot;: &quot;#E69A17&quot;, &quot;int&quot;: 3 , &quot;object&quot;: {&quot;text&quot;: &quot;text03&quot;, &quot;key&quot;: &quot;key03&quot;}},
-					{ &quot;text&quot;: &quot;text04&quot;, &quot;key&quot;: &quot;key04&quot;, &quot;type&quot;: &quot;type04&quot;, &quot;url&quot;: &quot;https://sap.com/03&quot;, &quot;icon&quot;: &quot;sap-icon://accept&quot;, &quot;iconcolor&quot;: &quot;#1C4C98&quot;, &quot;int&quot;: 4 , &quot;object&quot;: {&quot;text&quot;: &quot;text04&quot;, &quot;key&quot;: &quot;key04&quot;}},
-					{ &quot;text&quot;: &quot;text05&quot;, &quot;key&quot;: &quot;key05&quot;, &quot;type&quot;: &quot;type05&quot;, &quot;url&quot;: &quot;http://sap.com/02&quot;, &quot;icon&quot;: &quot;sap-icon://cart&quot;, &quot;iconcolor&quot;: &quot;#8875E7&quot;, &quot;int&quot;: 5 , &quot;object&quot;: {&quot;text&quot;: &quot;text05&quot;, &quot;key&quot;: &quot;key05&quot;}},
-					{ &quot;text&quot;: &quot;text06&quot;, &quot;key&quot;: &quot;key06&quot;, &quot;type&quot;: &quot;type06&quot;, &quot;url&quot;: &quot;https://sap.com/01&quot;, &quot;icon&quot;: &quot;sap-icon://zoom-in&quot;, &quot;iconcolor&quot;: &quot;#E69A17&quot;, &quot;int&quot;: 6 , &quot;object&quot;: {&quot;text&quot;: &quot;text06&quot;, &quot;key&quot;: &quot;key06&quot;}},
-					{ &quot;text&quot;: &quot;text07&quot;, &quot;key&quot;: &quot;key07&quot;, &quot;type&quot;: &quot;type05&quot;, &quot;url&quot;: &quot;http://sap.com/02&quot;, &quot;icon&quot;: &quot;sap-icon://cart&quot;, &quot;iconcolor&quot;: &quot;#1C4C98&quot;, &quot;int&quot;: 7 , &quot;object&quot;: {&quot;text&quot;: &quot;text07&quot;, &quot;key&quot;: &quot;key07&quot;}},
-					{ &quot;text&quot;: &quot;text08&quot;, &quot;key&quot;: &quot;key08&quot;, &quot;type&quot;: &quot;type06&quot;, &quot;url&quot;: &quot;https://sap.com/01&quot;, &quot;icon&quot;: &quot;sap-icon://zoom-in&quot;, &quot;iconcolor&quot;: &quot;#8875E7&quot;, &quot;int&quot;: 8 , &quot;object&quot;: {&quot;text&quot;: &quot;text08&quot;, &quot;key&quot;: &quot;key08&quot;}}
+	"manifestpath": "/sap.card/configuration/parameters/object/value",
+	"type": "object",
+	"label": "Object properties defined: value from Json list",<mark>
+	"values": {
+		"data": {
+			"json": {
+				"values": [
+					{ "text": "text01", "key": "key01", "type": "type01", "url": "https://sap.com/06", "icon": "sap-icon://accept", "iconcolor": "#031E48", "int": 1 , "object": {"text": "text01", "key": "key01"}},
+					{ "text": "text02", "key": "key02", "type": "type02", "url": "http://sap.com/05", "icon": "sap-icon://cart", "iconcolor": "#64E4CE", "int": 2 , "object": {"text": "text02", "key": "key02"}},
+					{ "text": "text03", "key": "key03", "type": "type03", "url": "https://sap.com/04", "icon": "sap-icon://zoom-in", "iconcolor": "#E69A17", "int": 3 , "object": {"text": "text03", "key": "key03"}},
+					{ "text": "text04", "key": "key04", "type": "type04", "url": "https://sap.com/03", "icon": "sap-icon://accept", "iconcolor": "#1C4C98", "int": 4 , "object": {"text": "text04", "key": "key04"}},
+					{ "text": "text05", "key": "key05", "type": "type05", "url": "http://sap.com/02", "icon": "sap-icon://cart", "iconcolor": "#8875E7", "int": 5 , "object": {"text": "text05", "key": "key05"}},
+					{ "text": "text06", "key": "key06", "type": "type06", "url": "https://sap.com/01", "icon": "sap-icon://zoom-in", "iconcolor": "#E69A17", "int": 6 , "object": {"text": "text06", "key": "key06"}},
+					{ "text": "text07", "key": "key07", "type": "type05", "url": "http://sap.com/02", "icon": "sap-icon://cart", "iconcolor": "#1C4C98", "int": 7 , "object": {"text": "text07", "key": "key07"}},
+					{ "text": "text08", "key": "key08", "type": "type06", "url": "https://sap.com/01", "icon": "sap-icon://zoom-in", "iconcolor": "#8875E7", "int": 8 , "object": {"text": "text08", "key": "key08"}}
 				]
 			},
-			&quot;path&quot;: &quot;/values&quot;
+			"path": "/values"
 		},
-		&quot;allowAdd&quot;: true
+		"allowAdd": true
 	},
-	&quot;properties&quot;: {
-		&quot;key&quot;: {
-			&quot;label&quot;: &quot;Key&quot;,
-			&quot;column&quot;: {
-				&quot;filterProperty&quot;: &quot;key&quot;
+	"properties": {
+		"key": {
+			"label": "Key",
+			"column": {
+				"filterProperty": "key"
 			}
 		},
-		&quot;icon&quot;: {
-			&quot;label&quot;: &quot;Icon&quot;,
-			&quot;defaultValue&quot;: &quot;sap-icon://add&quot;,
-			&quot;column&quot;: {
-				&quot;hAlign&quot;: &quot;Center&quot;,
-				&quot;width&quot;: &quot;4rem&quot;
+		"icon": {
+			"label": "Icon",
+			"defaultValue": "sap-icon://add",
+			"column": {
+				"hAlign": "Center",
+				"width": "4rem"
 			},
-			&quot;cell&quot;: {
-				&quot;type&quot;: &quot;Icon&quot;,
-				&quot;color&quot;: &quot;{iconcolor}&quot;
+			"cell": {
+				"type": "Icon",
+				"color": "{iconcolor}"
 			}
 		},
-		&quot;type&quot;: {
-			&quot;label&quot;: &quot;Type&quot;,
-			&quot;type&quot;: &quot;string&quot;,
-			&quot;values&quot;: {
-				&quot;data&quot;: {
-					&quot;json&quot;: {
-						&quot;values&quot;: [
-							{ &quot;text&quot;: &quot;Type 01&quot;, &quot;key&quot;: &quot;type01&quot;},
-							{ &quot;text&quot;: &quot;Type 02&quot;, &quot;key&quot;: &quot;type02&quot;},
-							{ &quot;text&quot;: &quot;Type 03&quot;, &quot;key&quot;: &quot;type03&quot;},
-							{ &quot;text&quot;: &quot;Type 04&quot;, &quot;key&quot;: &quot;type04&quot;},
-							{ &quot;text&quot;: &quot;Type 05&quot;, &quot;key&quot;: &quot;type05&quot;},
-							{ &quot;text&quot;: &quot;Type 06&quot;, &quot;key&quot;: &quot;type06&quot;}
+		"type": {
+			"label": "Type",
+			"type": "string",
+			"values": {
+				"data": {
+					"json": {
+						"values": [
+							{ "text": "Type 01", "key": "type01"},
+							{ "text": "Type 02", "key": "type02"},
+							{ "text": "Type 03", "key": "type03"},
+							{ "text": "Type 04", "key": "type04"},
+							{ "text": "Type 05", "key": "type05"},
+							{ "text": "Type 06", "key": "type06"}
 						]
 					},
-					&quot;path&quot;: &quot;/values&quot;
+					"path": "/values"
 				},
-				&quot;item&quot;: {
-					&quot;text&quot;: &quot;{text}&quot;,
-					&quot;key&quot;: &quot;{key}&quot;
+				"item": {
+					"text": "{text}",
+					"key": "{key}"
 				}
 			}
 		},
-		&quot;text&quot;: {
-			&quot;label&quot;: &quot;Text&quot;,
-			&quot;defaultValue&quot;: &quot;text&quot;,
-			&quot;translatable&quot;: true,
-			&quot;column&quot;: {
-				&quot;hAlign&quot;: &quot;Center&quot;,
-				&quot;width&quot;: &quot;6rem&quot;,
-				&quot;filterProperty&quot;: &quot;text&quot;,
-				&quot;defaultFilterOperator&quot;: &quot;Contains&quot;   // values are in enum sap.ui.model.FilterOperator
+		"text": {
+			"label": "Text",
+			"defaultValue": "text",
+			"translatable": true,
+			"column": {
+				"hAlign": "Center",
+				"width": "6rem",
+				"filterProperty": "text",
+				"defaultFilterOperator": "Contains"   // values are in enum sap.ui.model.FilterOperator
 			}
 		},
-		&quot;url&quot;: {
-			&quot;label&quot;: &quot;URL&quot;,
-			&quot;defaultValue&quot;: &quot;http://&quot;,
-			&quot;column&quot;: {
-				&quot;hAlign&quot;: &quot;Center&quot;,
-				&quot;width&quot;: &quot;10rem&quot;,
-				&quot;label&quot;: &quot;URL Link&quot;,
-				&quot;filterProperty&quot;: &quot;url&quot;,
-				&quot;defaultFilterOperator&quot;: &quot;StartsWith&quot;
+		"url": {
+			"label": "URL",
+			"defaultValue": "http://",
+			"column": {
+				"hAlign": "Center",
+				"width": "10rem",
+				"label": "URL Link",
+				"filterProperty": "url",
+				"defaultFilterOperator": "StartsWith"
 			},
-			&quot;cell&quot;: {
-				&quot;type&quot;: &quot;Link&quot;,
-				&quot;href&quot;: &quot;{url}&quot;
+			"cell": {
+				"type": "Link",
+				"href": "{url}"
 			}
 		},
-		&quot;editable&quot;: {
-			&quot;label&quot;: &quot;Editable&quot;,
-			&quot;defaultValue&quot;: false,
-			&quot;type&quot;: &quot;boolean&quot;
+		"editable": {
+			"label": "Editable",
+			"defaultValue": false,
+			"type": "boolean"
 		},
-		&quot;int&quot;: {
-			&quot;label&quot;: &quot;Integer&quot;,
-			&quot;defaultValue&quot;: 0,
-			&quot;type&quot;: &quot;int&quot;,
-			&quot;formatter&quot;: {
-				&quot;minIntegerDigits&quot;: 1,
-				&quot;maxIntegerDigits&quot;: 6,
-				&quot;emptyString&quot;: &quot;&quot;
+		"int": {
+			"label": "Integer",
+			"defaultValue": 0,
+			"type": "int",
+			"formatter": {
+				"minIntegerDigits": 1,
+				"maxIntegerDigits": 6,
+				"emptyString": ""
 			},
-			&quot;column&quot;: {
-				&quot;hAlign&quot;: &quot;Center&quot;,
-				&quot;width&quot;: &quot;5rem&quot;,
-				&quot;label&quot;: &quot;Integer&quot;,
-				&quot;filterProperty&quot;: &quot;int&quot;,
-				&quot;defaultFilterOperator&quot;: &quot;EQ&quot;,
-				&quot;filterType&quot;: &quot;sap.ui.model.type.Integer&quot;   //sap.ui.model.type
+			"column": {
+				"hAlign": "Center",
+				"width": "5rem",
+				"label": "Integer",
+				"filterProperty": "int",
+				"defaultFilterOperator": "EQ",
+				"filterType": "sap.ui.model.type.Integer"   //sap.ui.model.type
 			}
 		},
-		&quot;number&quot;: {
-			&quot;label&quot;: &quot;Number&quot;,
-			&quot;defaultValue&quot;: 0.5,
-			&quot;type&quot;: &quot;number&quot;,
-			&quot;formatter&quot;: {
-				&quot;decimals&quot;: 1,
-				&quot;style&quot;:&quot;short&quot;
+		"number": {
+			"label": "Number",
+			"defaultValue": 0.5,
+			"type": "number",
+			"formatter": {
+				"decimals": 1,
+				"style":"short"
 			}
 		},
-		&quot;object&quot;: {
-			&quot;label&quot;: &quot;Object&quot;,
-			&quot;type&quot;: &quot;object&quot;,
-			&quot;column&quot;: {
-				&quot;hAlign&quot;: &quot;Center&quot;,
-				&quot;width&quot;: &quot;10rem&quot;
+		"object": {
+			"label": "Object",
+			"type": "object",
+			"column": {
+				"hAlign": "Center",
+				"width": "10rem"
 			}
 		}
 	},
-	&quot;addButtonText&quot;: &quot;Add a new step&quot;</mark>
+	"addButtonText": "Add a new step"</mark>
 }</pre>
 						</td>
 					</tr>
@@ -440,54 +440,54 @@
 						<td>
 							<pre class="lang-js" style="height:350px">
 {
-	&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/objectWithPropertiesDefinedAndValueFromRequestedFile/value&quot;,
-	&quot;type&quot;: &quot;object&quot;,
-	&quot;label&quot;: &quot;Object properties defined: value from requested file&quot;,
-	&quot;values&quot;: {<mark>
-		&quot;data&quot;: {
-			&quot;request&quot;: {
-				&quot;url&quot;: &quot;./objectWithRequestList.json&quot;
+	"manifestpath": "/sap.card/configuration/parameters/objectWithPropertiesDefinedAndValueFromRequestedFile/value",
+	"type": "object",
+	"label": "Object properties defined: value from requested file",
+	"values": {<mark>
+		"data": {
+			"request": {
+				"url": "./objectWithRequestList.json"
 			},
-			&quot;path&quot;: &quot;/values&quot;
+			"path": "/values"
 		},</mark>
-		&quot;allowAdd&quot;: true
+		"allowAdd": true
 	},
-	&quot;properties&quot;: {
-		&quot;key&quot;: {
-			&quot;label&quot;: &quot;Key&quot;,
-			&quot;column&quot;: {
-				&quot;filterProperty&quot;: &quot;key&quot;
+	"properties": {
+		"key": {
+			"label": "Key",
+			"column": {
+				"filterProperty": "key"
 			}
 		},
-		&quot;icon&quot;: {
-			&quot;label&quot;: &quot;Icon&quot;,
-			&quot;defaultValue&quot;: &quot;sap-icon://add&quot;,
-			&quot;column&quot;: {
-				&quot;hAlign&quot;: &quot;Center&quot;,
-				&quot;width&quot;: &quot;4rem&quot;
+		"icon": {
+			"label": "Icon",
+			"defaultValue": "sap-icon://add",
+			"column": {
+				"hAlign": "Center",
+				"width": "4rem"
 			},
-			&quot;cell&quot;: {
-				&quot;type&quot;: &quot;Icon&quot;,
-				&quot;color&quot;: &quot;{iconcolor}&quot;
+			"cell": {
+				"type": "Icon",
+				"color": "{iconcolor}"
 			}
 		},
-		&quot;text&quot;: {
-			&quot;label&quot;: &quot;Text&quot;,
-			&quot;defaultValue&quot;: &quot;text&quot;,
-			&quot;column&quot;: {
-				&quot;hAlign&quot;: &quot;Center&quot;,
-				&quot;width&quot;: &quot;6rem&quot;,
-				&quot;filterProperty&quot;: &quot;text&quot;,
-				&quot;defaultFilterOperator&quot;: &quot;Contains&quot;   // values are in enum sap.ui.model.FilterOperator
+		"text": {
+			"label": "Text",
+			"defaultValue": "text",
+			"column": {
+				"hAlign": "Center",
+				"width": "6rem",
+				"filterProperty": "text",
+				"defaultFilterOperator": "Contains"   // values are in enum sap.ui.model.FilterOperator
 			}
 		},
-		&quot;additionalText&quot;: {
-			&quot;label&quot;: &quot;Additional Text&quot;,
-			&quot;column&quot;: {
-				&quot;hAlign&quot;: &quot;Center&quot;,
-				&quot;width&quot;: &quot;10rem&quot;,
-				&quot;filterProperty&quot;: &quot;text&quot;,
-				&quot;defaultFilterOperator&quot;: &quot;Contains&quot;   // values are in enum sap.ui.model.FilterOperator
+		"additionalText": {
+			"label": "Additional Text",
+			"column": {
+				"hAlign": "Center",
+				"width": "10rem",
+				"filterProperty": "text",
+				"defaultFilterOperator": "Contains"   // values are in enum sap.ui.model.FilterOperator
 			}
 		}
 	}
@@ -502,58 +502,58 @@
 						<td>
 							<pre class="lang-js" style="height:350px">
 {
-	&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/objectWithPropertiesDefinedAndValueFromODataRequest/value&quot;,
-	&quot;type&quot;: &quot;object&quot;,
-	&quot;label&quot;: &quot;Object properties defined: value from OData request&quot;,
-	&quot;values&quot;: {<mark>
-		&quot;data&quot;: {
-			&quot;request&quot;: {
-				&quot;url&quot;: &quot;{{destinations.northwind}}/Customers&quot;,
-				&quot;parameters&quot;: {
-					&quot;&#x24;select&quot;: &quot;CustomerID, CompanyName, Country, City, Address&quot;
+	"manifestpath": "/sap.card/configuration/parameters/objectWithPropertiesDefinedAndValueFromODataRequest/value",
+	"type": "object",
+	"label": "Object properties defined: value from OData request",
+	"values": {<mark>
+		"data": {
+			"request": {
+				"url": "{{destinations.northwind}}/Customers",
+				"parameters": {
+					"$select": "CustomerID, CompanyName, Country, City, Address"
 				}
 			},
-			&quot;path&quot;: &quot;/value&quot;
+			"path": "/value"
 		},</mark>
-		&quot;allowAdd&quot;: true
+		"allowAdd": true
 	},
-	&quot;properties&quot;: {
-		&quot;CustomerID&quot;: {
-			&quot;label&quot;: &quot;Customer ID&quot;,
-			&quot;column&quot;: {
-				&quot;filterProperty&quot;: &quot;CustomerID&quot;,
-				&quot;defaultFilterOperator&quot;: &quot;Contains&quot;   // values are in enum sap.ui.model.FilterOperator
+	"properties": {
+		"CustomerID": {
+			"label": "Customer ID",
+			"column": {
+				"filterProperty": "CustomerID",
+				"defaultFilterOperator": "Contains"   // values are in enum sap.ui.model.FilterOperator
 			}
 		},
-		&quot;CompanyName&quot;: {
-			&quot;label&quot;: &quot;Company Name&quot;,
-			&quot;column&quot;: {
-				&quot;width&quot;: &quot;10rem&quot;,
-				&quot;filterProperty&quot;: &quot;CompanyName&quot;,
-				&quot;defaultFilterOperator&quot;: &quot;Contains&quot;   // values are in enum sap.ui.model.FilterOperator
+		"CompanyName": {
+			"label": "Company Name",
+			"column": {
+				"width": "10rem",
+				"filterProperty": "CompanyName",
+				"defaultFilterOperator": "Contains"   // values are in enum sap.ui.model.FilterOperator
 			}
 		},
-		&quot;Country&quot;: {
-			&quot;column&quot;: {
-				&quot;hAlign&quot;: &quot;Center&quot;,
-				&quot;width&quot;: &quot;6rem&quot;,
-				&quot;filterProperty&quot;: &quot;Country&quot;,
-				&quot;defaultFilterOperator&quot;: &quot;Contains&quot;   // values are in enum sap.ui.model.FilterOperator
+		"Country": {
+			"column": {
+				"hAlign": "Center",
+				"width": "6rem",
+				"filterProperty": "Country",
+				"defaultFilterOperator": "Contains"   // values are in enum sap.ui.model.FilterOperator
 			}
 		},
-		&quot;City&quot;: {
-			&quot;column&quot;: {
-				&quot;hAlign&quot;: &quot;Center&quot;,
-				&quot;width&quot;: &quot;6rem&quot;,
-				&quot;filterProperty&quot;: &quot;City&quot;,
-				&quot;defaultFilterOperator&quot;: &quot;Contains&quot;   // values are in enum sap.ui.model.FilterOperator
+		"City": {
+			"column": {
+				"hAlign": "Center",
+				"width": "6rem",
+				"filterProperty": "City",
+				"defaultFilterOperator": "Contains"   // values are in enum sap.ui.model.FilterOperator
 			}
 		},
-		&quot;Address&quot;: {
-			&quot;column&quot;: {
-				&quot;width&quot;: &quot;10rem&quot;,
-				&quot;filterProperty&quot;: &quot;Address&quot;,
-				&quot;defaultFilterOperator&quot;: &quot;Contains&quot;   // values are in enum sap.ui.model.FilterOperator
+		"Address": {
+			"column": {
+				"width": "10rem",
+				"filterProperty": "Address",
+				"defaultFilterOperator": "Contains"   // values are in enum sap.ui.model.FilterOperator
 			}
 		}
 	}
@@ -568,9 +568,9 @@
 						<td>
 							<pre class="lang-js" data-sample style="height:350px">
 {
-	&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/objects/value&quot;,
-	&quot;type&quot;: &quot;object[]&quot;,
-	&quot;label&quot;: &quot;Object Array Field&quot;
+	"manifestpath": "/sap.card/configuration/parameters/objects/value",
+	"type": "object[]",
+	"label": "Object Array Field"
 }</pre>
 						</td>
 					</tr>
@@ -582,119 +582,119 @@
 						<td>
 							<pre class="lang-js" style="height:350px">
 {
-	&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/objects/value&quot;,
-	&quot;type&quot;: &quot;object[]&quot;,
-	&quot;label&quot;: &quot;Object properties defined&quot;,<mark>
-	&quot;properties&quot;: {
-		&quot;key&quot;: {
-			&quot;label&quot;: &quot;Key&quot;,
-			&quot;column&quot;: {
-				&quot;filterProperty&quot;: &quot;key&quot;
+	"manifestpath": "/sap.card/configuration/parameters/objects/value",
+	"type": "object[]",
+	"label": "Object properties defined",<mark>
+	"properties": {
+		"key": {
+			"label": "Key",
+			"column": {
+				"filterProperty": "key"
 			}
 		},
-		&quot;icon&quot;: {
-			&quot;label&quot;: &quot;Icon&quot;,
-			&quot;defaultValue&quot;: &quot;sap-icon://add&quot;,
-			&quot;column&quot;: {
-				&quot;hAlign&quot;: &quot;Center&quot;,
-				&quot;width&quot;: &quot;4rem&quot;
+		"icon": {
+			"label": "Icon",
+			"defaultValue": "sap-icon://add",
+			"column": {
+				"hAlign": "Center",
+				"width": "4rem"
 			},
-			&quot;cell&quot;: {
-				&quot;type&quot;: &quot;Icon&quot;,
-				&quot;color&quot;: &quot;{iconcolor}&quot;
+			"cell": {
+				"type": "Icon",
+				"color": "{iconcolor}"
 			}
 		},
-		&quot;type&quot;: {
-			&quot;label&quot;: &quot;Type&quot;,
-			&quot;type&quot;: &quot;string&quot;,
-			&quot;values&quot;: {
-				&quot;data&quot;: {
-					&quot;json&quot;: {
-						&quot;values&quot;: [
-							{ &quot;text&quot;: &quot;Type 01&quot;, &quot;key&quot;: &quot;type01&quot;},
-							{ &quot;text&quot;: &quot;Type 02&quot;, &quot;key&quot;: &quot;type02&quot;},
-							{ &quot;text&quot;: &quot;Type 03&quot;, &quot;key&quot;: &quot;type03&quot;},
-							{ &quot;text&quot;: &quot;Type 04&quot;, &quot;key&quot;: &quot;type04&quot;},
-							{ &quot;text&quot;: &quot;Type 05&quot;, &quot;key&quot;: &quot;type05&quot;},
-							{ &quot;text&quot;: &quot;Type 06&quot;, &quot;key&quot;: &quot;type06&quot;}
+		"type": {
+			"label": "Type",
+			"type": "string",
+			"values": {
+				"data": {
+					"json": {
+						"values": [
+							{ "text": "Type 01", "key": "type01"},
+							{ "text": "Type 02", "key": "type02"},
+							{ "text": "Type 03", "key": "type03"},
+							{ "text": "Type 04", "key": "type04"},
+							{ "text": "Type 05", "key": "type05"},
+							{ "text": "Type 06", "key": "type06"}
 						]
 					},
-					&quot;path&quot;: &quot;/values&quot;
+					"path": "/values"
 				},
-				&quot;item&quot;: {
-					&quot;text&quot;: &quot;{text}&quot;,
-					&quot;key&quot;: &quot;{key}&quot;
+				"item": {
+					"text": "{text}",
+					"key": "{key}"
 				}
 			}
 		}
-		&quot;text&quot;: {
-			&quot;label&quot;: &quot;Text&quot;,
-			&quot;defaultValue&quot;: &quot;text&quot;,
-			&quot;translatable&quot;: true,
-			&quot;column&quot;: {
-				&quot;hAlign&quot;: &quot;Center&quot;,
-				&quot;width&quot;: &quot;6rem&quot;,
-				&quot;filterProperty&quot;: &quot;text&quot;,
-				&quot;defaultFilterOperator&quot;: &quot;Contains&quot;   // values are in enum sap.ui.model.FilterOperator
+		"text": {
+			"label": "Text",
+			"defaultValue": "text",
+			"translatable": true,
+			"column": {
+				"hAlign": "Center",
+				"width": "6rem",
+				"filterProperty": "text",
+				"defaultFilterOperator": "Contains"   // values are in enum sap.ui.model.FilterOperator
 			}
 		},
-		&quot;url&quot;: {
-			&quot;label&quot;: &quot;URL&quot;,
-			&quot;defaultValue&quot;: &quot;http://&quot;,
-			&quot;column&quot;: {
-				&quot;hAlign&quot;: &quot;Center&quot;,
-				&quot;width&quot;: &quot;10rem&quot;,
-				&quot;label&quot;: &quot;URL Link&quot;,
-				&quot;filterProperty&quot;: &quot;url&quot;,
-				&quot;defaultFilterOperator&quot;: &quot;StartsWith&quot;
+		"url": {
+			"label": "URL",
+			"defaultValue": "http://",
+			"column": {
+				"hAlign": "Center",
+				"width": "10rem",
+				"label": "URL Link",
+				"filterProperty": "url",
+				"defaultFilterOperator": "StartsWith"
 			},
-			&quot;cell&quot;: {
-				&quot;type&quot;: &quot;Link&quot;,
-				&quot;href&quot;: &quot;{url}&quot;
+			"cell": {
+				"type": "Link",
+				"href": "{url}"
 			}
 		},
-		&quot;editable&quot;: {
-			&quot;label&quot;: &quot;Editable&quot;,
-			&quot;defaultValue&quot;: false,
-			&quot;type&quot;: &quot;boolean&quot;
+		"editable": {
+			"label": "Editable",
+			"defaultValue": false,
+			"type": "boolean"
 		},
-		&quot;int&quot;: {
-			&quot;label&quot;: &quot;Integer&quot;,
-			&quot;defaultValue&quot;: 0,
-			&quot;type&quot;: &quot;int&quot;,
-			&quot;formatter&quot;: {
-				&quot;minIntegerDigits&quot;: 1,
-				&quot;maxIntegerDigits&quot;: 6,
-				&quot;emptyString&quot;: &quot;&quot;
+		"int": {
+			"label": "Integer",
+			"defaultValue": 0,
+			"type": "int",
+			"formatter": {
+				"minIntegerDigits": 1,
+				"maxIntegerDigits": 6,
+				"emptyString": ""
 			},
-			&quot;column&quot;: {
-				&quot;hAlign&quot;: &quot;Center&quot;,
-				&quot;width&quot;: &quot;5rem&quot;,
-				&quot;label&quot;: &quot;Integer&quot;,
-				&quot;filterProperty&quot;: &quot;int&quot;,
-				&quot;defaultFilterOperator&quot;: &quot;EQ&quot;,
-				&quot;filterType&quot;: &quot;sap.ui.model.type.Integer&quot;   //sap.ui.model.type
+			"column": {
+				"hAlign": "Center",
+				"width": "5rem",
+				"label": "Integer",
+				"filterProperty": "int",
+				"defaultFilterOperator": "EQ",
+				"filterType": "sap.ui.model.type.Integer"   //sap.ui.model.type
 			}
 		},
-		&quot;number&quot;: {
-			&quot;label&quot;: &quot;Number&quot;,
-			&quot;defaultValue&quot;: 0.5,
-			&quot;type&quot;: &quot;number&quot;,
-			&quot;formatter&quot;: {
-				&quot;decimals&quot;: 1,
-				&quot;style&quot;:&quot;short&quot;
+		"number": {
+			"label": "Number",
+			"defaultValue": 0.5,
+			"type": "number",
+			"formatter": {
+				"decimals": 1,
+				"style":"short"
 			}
 		},
-		&quot;object&quot;: {
-			&quot;label&quot;: &quot;Object&quot;,
-			&quot;type&quot;: &quot;object&quot;,
-			&quot;column&quot;: {
-				&quot;hAlign&quot;: &quot;Center&quot;,
-				&quot;width&quot;: &quot;10rem&quot;
+		"object": {
+			"label": "Object",
+			"type": "object",
+			"column": {
+				"hAlign": "Center",
+				"width": "10rem"
 			}
 		}
 	},
-	&quot;addButtonText&quot;: &quot;Add a new step&quot;</mark>
+	"addButtonText": "Add a new step"</mark>
 }</pre>
 						</td>
 					</tr>
@@ -706,109 +706,109 @@
 						<td>
 							<pre class="lang-js" style="height:350px">
 {
-	&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/objects/value&quot;,
-	&quot;type&quot;: &quot;object[]&quot;,
-	&quot;label&quot;: &quot;Object properties defined: value from Json list&quot;,<mark>
-	&quot;values&quot;: {
-		&quot;data&quot;: {
-			&quot;json&quot;: {
-				&quot;values&quot;: [
-					{ &quot;text&quot;: &quot;text01&quot;, &quot;key&quot;: &quot;key01&quot;, &quot;url&quot;: &quot;https://sap.com/06&quot;, &quot;icon&quot;: &quot;sap-icon://accept&quot;, &quot;iconcolor&quot;: &quot;#031E48&quot;, &quot;int&quot;: 1 },
-					{ &quot;text&quot;: &quot;text02&quot;, &quot;key&quot;: &quot;key02&quot;, &quot;url&quot;: &quot;http://sap.com/05&quot;, &quot;icon&quot;: &quot;sap-icon://cart&quot;, &quot;iconcolor&quot;: &quot;#64E4CE&quot;, &quot;int&quot;: 2 },
-					{ &quot;text&quot;: &quot;text03&quot;, &quot;key&quot;: &quot;key03&quot;, &quot;url&quot;: &quot;https://sap.com/04&quot;, &quot;icon&quot;: &quot;sap-icon://zoom-in&quot;, &quot;iconcolor&quot;: &quot;#E69A17&quot;, &quot;int&quot;: 3 },
-					{ &quot;text&quot;: &quot;text04&quot;, &quot;key&quot;: &quot;key04&quot;, &quot;url&quot;: &quot;https://sap.com/03&quot;, &quot;icon&quot;: &quot;sap-icon://accept&quot;, &quot;iconcolor&quot;: &quot;#1C4C98&quot;, &quot;int&quot;: 4 },
-					{ &quot;text&quot;: &quot;text05&quot;, &quot;key&quot;: &quot;key05&quot;, &quot;url&quot;: &quot;http://sap.com/02&quot;, &quot;icon&quot;: &quot;sap-icon://cart&quot;, &quot;iconcolor&quot;: &quot;#8875E7&quot;, &quot;int&quot;: 5 },
-					{ &quot;text&quot;: &quot;text06&quot;, &quot;key&quot;: &quot;key06&quot;, &quot;url&quot;: &quot;https://sap.com/01&quot;, &quot;icon&quot;: &quot;sap-icon://zoom-in&quot;, &quot;iconcolor&quot;: &quot;#E69A17&quot;, &quot;int&quot;: 6 },
-					{ &quot;text&quot;: &quot;text07&quot;, &quot;key&quot;: &quot;key07&quot;, &quot;url&quot;: &quot;http://sap.com/02&quot;, &quot;icon&quot;: &quot;sap-icon://cart&quot;, &quot;iconcolor&quot;: &quot;#1C4C98&quot;, &quot;int&quot;: 7 },
-					{ &quot;text&quot;: &quot;text08&quot;, &quot;key&quot;: &quot;key08&quot;, &quot;url&quot;: &quot;https://sap.com/01&quot;, &quot;icon&quot;: &quot;sap-icon://zoom-in&quot;, &quot;iconcolor&quot;: &quot;#8875E7&quot;, &quot;int&quot;: 8 }
+	"manifestpath": "/sap.card/configuration/parameters/objects/value",
+	"type": "object[]",
+	"label": "Object properties defined: value from Json list",<mark>
+	"values": {
+		"data": {
+			"json": {
+				"values": [
+					{ "text": "text01", "key": "key01", "url": "https://sap.com/06", "icon": "sap-icon://accept", "iconcolor": "#031E48", "int": 1 },
+					{ "text": "text02", "key": "key02", "url": "http://sap.com/05", "icon": "sap-icon://cart", "iconcolor": "#64E4CE", "int": 2 },
+					{ "text": "text03", "key": "key03", "url": "https://sap.com/04", "icon": "sap-icon://zoom-in", "iconcolor": "#E69A17", "int": 3 },
+					{ "text": "text04", "key": "key04", "url": "https://sap.com/03", "icon": "sap-icon://accept", "iconcolor": "#1C4C98", "int": 4 },
+					{ "text": "text05", "key": "key05", "url": "http://sap.com/02", "icon": "sap-icon://cart", "iconcolor": "#8875E7", "int": 5 },
+					{ "text": "text06", "key": "key06", "url": "https://sap.com/01", "icon": "sap-icon://zoom-in", "iconcolor": "#E69A17", "int": 6 },
+					{ "text": "text07", "key": "key07", "url": "http://sap.com/02", "icon": "sap-icon://cart", "iconcolor": "#1C4C98", "int": 7 },
+					{ "text": "text08", "key": "key08", "url": "https://sap.com/01", "icon": "sap-icon://zoom-in", "iconcolor": "#8875E7", "int": 8 }
 				]
 			},
-			&quot;path&quot;: &quot;/values&quot;
+			"path": "/values"
 		},
-		&quot;allowAdd&quot;: true
+		"allowAdd": true
 	},
-	&quot;properties&quot;: {
-		&quot;key&quot;: {
-			&quot;label&quot;: &quot;Key&quot;,
-			&quot;column&quot;: {
-				&quot;filterProperty&quot;: &quot;key&quot;
+	"properties": {
+		"key": {
+			"label": "Key",
+			"column": {
+				"filterProperty": "key"
 			}
 		},
-		&quot;icon&quot;: {
-			&quot;label&quot;: &quot;Icon&quot;,
-			&quot;defaultValue&quot;: &quot;sap-icon://add&quot;,
-			&quot;column&quot;: {
-				&quot;hAlign&quot;: &quot;Center&quot;,
-				&quot;width&quot;: &quot;4rem&quot;
+		"icon": {
+			"label": "Icon",
+			"defaultValue": "sap-icon://add",
+			"column": {
+				"hAlign": "Center",
+				"width": "4rem"
 			},
-			&quot;cell&quot;: {
-				&quot;type&quot;: &quot;Icon&quot;,
-				&quot;color&quot;: &quot;{iconcolor}&quot;
+			"cell": {
+				"type": "Icon",
+				"color": "{iconcolor}"
 			}
 		},
-		&quot;text&quot;: {
-			&quot;label&quot;: &quot;Text&quot;,
-			&quot;defaultValue&quot;: &quot;text&quot;,
-			&quot;column&quot;: {
-				&quot;hAlign&quot;: &quot;Center&quot;,
-				&quot;width&quot;: &quot;6rem&quot;,
-				&quot;filterProperty&quot;: &quot;text&quot;,
-				&quot;defaultFilterOperator&quot;: &quot;Contains&quot;   // values are in enum sap.ui.model.FilterOperator
+		"text": {
+			"label": "Text",
+			"defaultValue": "text",
+			"column": {
+				"hAlign": "Center",
+				"width": "6rem",
+				"filterProperty": "text",
+				"defaultFilterOperator": "Contains"   // values are in enum sap.ui.model.FilterOperator
 			}
 		},
-		&quot;url&quot;: {
-			&quot;label&quot;: &quot;URL&quot;,
-			&quot;defaultValue&quot;: &quot;http://&quot;,
-			&quot;column&quot;: {
-				&quot;hAlign&quot;: &quot;Center&quot;,
-				&quot;width&quot;: &quot;10rem&quot;,
-				&quot;label&quot;: &quot;URL Link&quot;,
-				&quot;filterProperty&quot;: &quot;url&quot;,
-				&quot;defaultFilterOperator&quot;: &quot;StartsWith&quot;
+		"url": {
+			"label": "URL",
+			"defaultValue": "http://",
+			"column": {
+				"hAlign": "Center",
+				"width": "10rem",
+				"label": "URL Link",
+				"filterProperty": "url",
+				"defaultFilterOperator": "StartsWith"
 			},
-			&quot;cell&quot;: {
-				&quot;type&quot;: &quot;Link&quot;,
-				&quot;href&quot;: &quot;{url}aa&quot;
+			"cell": {
+				"type": "Link",
+				"href": "{url}aa"
 			}
 		},
-		&quot;editable&quot;: {
-			&quot;label&quot;: &quot;Editable&quot;,
-			&quot;defaultValue&quot;: false,
-			&quot;type&quot;: &quot;boolean&quot;,
-			&quot;column&quot;: {
-				&quot;hAlign&quot;: &quot;Center&quot;
+		"editable": {
+			"label": "Editable",
+			"defaultValue": false,
+			"type": "boolean",
+			"column": {
+				"hAlign": "Center"
 			},
-			&quot;cell&quot;: {
-				&quot;type&quot;: &quot;Switch&quot;,
-				&quot;customTextOn&quot;: &quot;YES&quot;,
-				&quot;customTextOff&quot;: &quot;NO&quot;
+			"cell": {
+				"type": "Switch",
+				"customTextOn": "YES",
+				"customTextOff": "NO"
 			}
 		},
-		&quot;int&quot;: {
-			&quot;label&quot;: &quot;Integer&quot;,
-			&quot;defaultValue&quot;: 0,
-			&quot;type&quot;: &quot;int&quot;,
-			&quot;formatter&quot;: {
-				&quot;minIntegerDigits&quot;: 1,
-				&quot;maxIntegerDigits&quot;: 6,
-				&quot;emptyString&quot;: &quot;&quot;
+		"int": {
+			"label": "Integer",
+			"defaultValue": 0,
+			"type": "int",
+			"formatter": {
+				"minIntegerDigits": 1,
+				"maxIntegerDigits": 6,
+				"emptyString": ""
 			},
-			&quot;column&quot;: {
-				&quot;hAlign&quot;: &quot;Center&quot;,
-				&quot;width&quot;: &quot;5rem&quot;,
-				&quot;label&quot;: &quot;Integer&quot;,
-				&quot;filterProperty&quot;: &quot;int&quot;,
-				&quot;defaultFilterOperator&quot;: &quot;EQ&quot;,
-				&quot;filterType&quot;: &quot;sap.ui.model.type.Integer&quot;   //sap.ui.model.type
+			"column": {
+				"hAlign": "Center",
+				"width": "5rem",
+				"label": "Integer",
+				"filterProperty": "int",
+				"defaultFilterOperator": "EQ",
+				"filterType": "sap.ui.model.type.Integer"   //sap.ui.model.type
 			}
 		},
-		&quot;number&quot;: {
-			&quot;label&quot;: &quot;Number&quot;,
-			&quot;defaultValue&quot;: 0.5,
-			&quot;type&quot;: &quot;number&quot;,
-			&quot;formatter&quot;: {
-				&quot;decimals&quot;: 1,
-				&quot;style&quot;:&quot;short&quot;
+		"number": {
+			"label": "Number",
+			"defaultValue": 0.5,
+			"type": "number",
+			"formatter": {
+				"decimals": 1,
+				"style":"short"
 			}
 		}
 	}</mark>
@@ -823,54 +823,54 @@
 						<td>
 							<pre class="lang-js" style="height:350px">
 {
-	&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/objects/value&quot;,
-	&quot;type&quot;: &quot;object[]&quot;,
-	&quot;label&quot;: &quot;Object properties defined: value from requested file&quot;,
-	&quot;values&quot;: {<mark>
-		&quot;data&quot;: {
-			&quot;request&quot;: {
-				&quot;url&quot;: &quot;./objectWithRequestList.json&quot;
+	"manifestpath": "/sap.card/configuration/parameters/objects/value",
+	"type": "object[]",
+	"label": "Object properties defined: value from requested file",
+	"values": {<mark>
+		"data": {
+			"request": {
+				"url": "./objectWithRequestList.json"
 			},
-			&quot;path&quot;: &quot;/values&quot;
+			"path": "/values"
 		},</mark>
-		&quot;allowAdd&quot;: true
+		"allowAdd": true
 	},
-	&quot;properties&quot;: {
-		&quot;key&quot;: {
-			&quot;label&quot;: &quot;Key&quot;,
-			&quot;column&quot;: {
-				&quot;filterProperty&quot;: &quot;key&quot;
+	"properties": {
+		"key": {
+			"label": "Key",
+			"column": {
+				"filterProperty": "key"
 			}
 		},
-		&quot;icon&quot;: {
-			&quot;label&quot;: &quot;Icon&quot;,
-			&quot;defaultValue&quot;: &quot;sap-icon://add&quot;,
-			&quot;column&quot;: {
-				&quot;hAlign&quot;: &quot;Center&quot;,
-				&quot;width&quot;: &quot;4rem&quot;
+		"icon": {
+			"label": "Icon",
+			"defaultValue": "sap-icon://add",
+			"column": {
+				"hAlign": "Center",
+				"width": "4rem"
 			},
-			&quot;cell&quot;: {
-				&quot;type&quot;: &quot;Icon&quot;,
-				&quot;color&quot;: &quot;{iconcolor}&quot;
+			"cell": {
+				"type": "Icon",
+				"color": "{iconcolor}"
 			}
 		},
-		&quot;text&quot;: {
-			&quot;label&quot;: &quot;Text&quot;,
-			&quot;defaultValue&quot;: &quot;text&quot;,
-			&quot;column&quot;: {
-				&quot;hAlign&quot;: &quot;Center&quot;,
-				&quot;width&quot;: &quot;6rem&quot;,
-				&quot;filterProperty&quot;: &quot;text&quot;,
-				&quot;defaultFilterOperator&quot;: &quot;Contains&quot;   // values are in enum sap.ui.model.FilterOperator
+		"text": {
+			"label": "Text",
+			"defaultValue": "text",
+			"column": {
+				"hAlign": "Center",
+				"width": "6rem",
+				"filterProperty": "text",
+				"defaultFilterOperator": "Contains"   // values are in enum sap.ui.model.FilterOperator
 			}
 		},
-		&quot;additionalText&quot;: {
-			&quot;label&quot;: &quot;Additional Text&quot;,
-			&quot;column&quot;: {
-				&quot;hAlign&quot;: &quot;Center&quot;,
-				&quot;width&quot;: &quot;10rem&quot;,
-				&quot;filterProperty&quot;: &quot;text&quot;,
-				&quot;defaultFilterOperator&quot;: &quot;Contains&quot;   // values are in enum sap.ui.model.FilterOperator
+		"additionalText": {
+			"label": "Additional Text",
+			"column": {
+				"hAlign": "Center",
+				"width": "10rem",
+				"filterProperty": "text",
+				"defaultFilterOperator": "Contains"   // values are in enum sap.ui.model.FilterOperator
 			}
 		}
 	}
@@ -885,58 +885,58 @@
 						<td>
 							<pre class="lang-js" style="height:350px">
 {
-	&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/objects/value&quot;,
-	&quot;type&quot;: &quot;object[]&quot;,
-	&quot;label&quot;: &quot;Object properties defined: value from OData request&quot;,
-	&quot;values&quot;: {<mark>
-		&quot;data&quot;: {
-			&quot;request&quot;: {
-				&quot;url&quot;: &quot;{{destinations.northwind}}/Customers&quot;,
-				&quot;parameters&quot;: {
-					&quot;&#x24;select&quot;: &quot;CustomerID, CompanyName, Country, City, Address&quot;
+	"manifestpath": "/sap.card/configuration/parameters/objects/value",
+	"type": "object[]",
+	"label": "Object properties defined: value from OData request",
+	"values": {<mark>
+		"data": {
+			"request": {
+				"url": "{{destinations.northwind}}/Customers",
+				"parameters": {
+					"$select": "CustomerID, CompanyName, Country, City, Address"
 				}
 			},
-			&quot;path&quot;: &quot;/value&quot;
+			"path": "/value"
 		},</mark>
-		&quot;allowAdd&quot;: true
+		"allowAdd": true
 	},
-	&quot;properties&quot;: {
-		&quot;CustomerID&quot;: {
-			&quot;label&quot;: &quot;Customer ID&quot;,
-			&quot;column&quot;: {
-				&quot;filterProperty&quot;: &quot;CustomerID&quot;,
-				&quot;defaultFilterOperator&quot;: &quot;Contains&quot;   // values are in enum sap.ui.model.FilterOperator
+	"properties": {
+		"CustomerID": {
+			"label": "Customer ID",
+			"column": {
+				"filterProperty": "CustomerID",
+				"defaultFilterOperator": "Contains"   // values are in enum sap.ui.model.FilterOperator
 			}
 		},
-		&quot;CompanyName&quot;: {
-			&quot;label&quot;: &quot;Company Name&quot;,
-			&quot;column&quot;: {
-				&quot;width&quot;: &quot;10rem&quot;,
-				&quot;filterProperty&quot;: &quot;CompanyName&quot;,
-				&quot;defaultFilterOperator&quot;: &quot;Contains&quot;   // values are in enum sap.ui.model.FilterOperator
+		"CompanyName": {
+			"label": "Company Name",
+			"column": {
+				"width": "10rem",
+				"filterProperty": "CompanyName",
+				"defaultFilterOperator": "Contains"   // values are in enum sap.ui.model.FilterOperator
 			}
 		},
-		&quot;Country&quot;: {
-			&quot;column&quot;: {
-				&quot;hAlign&quot;: &quot;Center&quot;,
-				&quot;width&quot;: &quot;6rem&quot;,
-				&quot;filterProperty&quot;: &quot;Country&quot;,
-				&quot;defaultFilterOperator&quot;: &quot;Contains&quot;   // values are in enum sap.ui.model.FilterOperator
+		"Country": {
+			"column": {
+				"hAlign": "Center",
+				"width": "6rem",
+				"filterProperty": "Country",
+				"defaultFilterOperator": "Contains"   // values are in enum sap.ui.model.FilterOperator
 			}
 		},
-		&quot;City&quot;: {
-			&quot;column&quot;: {
-				&quot;hAlign&quot;: &quot;Center&quot;,
-				&quot;width&quot;: &quot;6rem&quot;,
-				&quot;filterProperty&quot;: &quot;City&quot;,
-				&quot;defaultFilterOperator&quot;: &quot;Contains&quot;   // values are in enum sap.ui.model.FilterOperator
+		"City": {
+			"column": {
+				"hAlign": "Center",
+				"width": "6rem",
+				"filterProperty": "City",
+				"defaultFilterOperator": "Contains"   // values are in enum sap.ui.model.FilterOperator
 			}
 		},
-		&quot;Address&quot;: {
-			&quot;column&quot;: {
-				&quot;width&quot;: &quot;10rem&quot;,
-				&quot;filterProperty&quot;: &quot;Address&quot;,
-				&quot;defaultFilterOperator&quot;: &quot;Contains&quot;   // values are in enum sap.ui.model.FilterOperator
+		"Address": {
+			"column": {
+				"width": "10rem",
+				"filterProperty": "Address",
+				"defaultFilterOperator": "Contains"   // values are in enum sap.ui.model.FilterOperator
 			}
 		}
 	}
@@ -953,17 +953,17 @@
 						</td>
 						<td>
 							<pre class="lang-json" data-sample="8">{
-	&quot;param1&quot;: {
-		&quot;manifestpath&quot;: &quot;/sap.card...param/value1&quot;,
-		&quot;label&quot;: &quot;Field 1&quot;,
-		&quot;type&quot;: &quot;string&quot;,
-		&quot;cols&quot;:1
+	"param1": {
+		"manifestpath": "/sap.card...param/value1",
+		"label": "Field 1",
+		"type": "string",
+		"cols":1
 	},
-	&quot;param2&quot;: {
-		&quot;manifestpath&quot;: &quot;/sap.card...param/value2&quot;,
-		&quot;label&quot;: &quot;Field 2&quot;,
-		&quot;type&quot;: &quot;string&quot;,
-		&quot;cols&quot;: 1
+	"param2": {
+		"manifestpath": "/sap.card...param/value2",
+		"label": "Field 2",
+		"type": "string",
+		"cols": 1
 	}
 }</pre>
 						</td>
@@ -976,14 +976,14 @@
 						</td>
 						<td>
 							<pre class="lang-json" data-sample="9">{
-	&quot;group&quot;: {
-		&quot;label&quot;: &quot;Group Header&quot;,
-		&quot;type&quot;: &quot;group&quot;
+	"group": {
+		"label": "Group Header",
+		"type": "group"
 	},
-	&quot;param1&quot;: {
-		&quot;manifestpath&quot;: &quot;/sap.card...param/value1&quot;,
-		&quot;label&quot;: &quot;Field&quot;,
-		&quot;type&quot;: &quot;string&quot;
+	"param1": {
+		"manifestpath": "/sap.card...param/value1",
+		"label": "Field",
+		"type": "string"
 	}
 }</pre>
 						</td>
@@ -997,45 +997,45 @@
 						</td>
 						<td>
 							<pre class="lang-json" data-sample="10">{
-	&quot;param1&quot;: {
-		&quot;type&quot;: &quot;separator&quot;
+	"param1": {
+		"type": "separator"
 	},
-	&quot;param2&quot;: {
-		&quot;manifestpath&quot;: &quot;/sap.card...param/value2&quot;,
-		&quot;label&quot;: &quot;Field 2&quot;,
-		&quot;type&quot;: &quot;string&quot;,
-		&quot;cols&quot;: 1
+	"param2": {
+		"manifestpath": "/sap.card...param/value2",
+		"label": "Field 2",
+		"type": "string",
+		"cols": 1
 	}
 }</pre>
 						</td>
 					</tr>
 					<tr>
-						<td>Showing a TextArea for a string field<br>Please define &quot;TextArea&quot; as type in your
+						<td>Showing a TextArea for a string field<br>Please define "TextArea" as type in your
 							designtime.js file.</td>
 						<td data-item="stringWithTextArea" data-sample>
 							Loading...
 						</td>
 						<td>
 							<pre class="lang-js" data-sample>
-sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
+sap.ui.define(["sap/ui/integration/Designtime"], function (
 	Designtime
 ) {
-	&quot;use strict&quot;;
+	"use strict";
 	return function () {
 		return new Designtime({
-			&quot;form&quot;: {
-				&quot;items&quot;: {
-					&quot;string&quot;: {
-						&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/string/value&quot;,
-						&quot;type&quot;: &quot;string&quot;,
-						&quot;visualization&quot;: {<mark>
-							&quot;type&quot;: &quot;TextArea&quot;,
-							&quot;settings&quot;: {
-								&quot;value&quot;: &quot;{currentSettings&gt;value}&quot;,
-								&quot;width&quot;: &quot;100%&quot;,
-								&quot;editable&quot;: &quot;{config/editable}&quot;,
-								&quot;placeholder&quot;: &quot;{currentSettings&gt;placeholder}&quot;,
-								&quot;rows&quot;: 7
+			"form": {
+				"items": {
+					"string": {
+						"manifestpath": "/sap.card/configuration/parameters/string/value",
+						"type": "string",
+						"visualization": {<mark>
+							"type": "TextArea",
+							"settings": {
+								"value": "{currentSettings>value}",
+								"width": "100%",
+								"editable": "{config/editable}",
+								"placeholder": "{currentSettings>placeholder}",
+								"rows": 7
 							}</mark>
 						}
 					}
@@ -1047,7 +1047,7 @@ sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
 						</td>
 					</tr>
 					<tr>
-						<td>Showing a Slider for an integer field<br>Please define &quot;Slider&quot; as type in your
+						<td>Showing a Slider for an integer field<br>Please define "Slider" as type in your
 							designtime.js file.</td>
 
 
@@ -1056,27 +1056,27 @@ sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
 						</td>
 						<td>
 							<pre class="lang-js" data-sample>
-sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
+sap.ui.define(["sap/ui/integration/Designtime"], function (
 	Designtime
 ) {
-	&quot;use strict&quot;;
+	"use strict";
 	return function () {
 		return new Designtime({
-			&quot;form&quot;: {
-				&quot;items&quot;: {
-					&quot;integer&quot;: {
-						&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/integer/value&quot;,
-						&quot;type&quot;: &quot;integer&quot;,
-						&quot;visualization&quot;: {<mark>
-							&quot;type&quot;: &quot;Slider&quot;,
-							&quot;settings&quot;: {
-								&quot;value: &quot;{currentSettings&gt;value}&quot;,
-								&quot;min&quot;: 0,
-								&quot;max&quot;: 10,
-								&quot;width&quot;: &quot;100%&quot;,
-								&quot;showAdvancedTooltip&quot;: true,
-								&quot;showHandleTooltip&quot;: false,
-								&quot;inputsAsTooltips&quot;: true
+			"form": {
+				"items": {
+					"integer": {
+						"manifestpath": "/sap.card/configuration/parameters/integer/value",
+						"type": "integer",
+						"visualization": {<mark>
+							"type": "Slider",
+							"settings": {
+								"value: "{currentSettings>value}",
+								"min": 0,
+								"max": 10,
+								"width": "100%",
+								"showAdvancedTooltip": true,
+								"showHandleTooltip": false,
+								"inputsAsTooltips": true
 							}</mark>
 						}
 					}
@@ -1088,7 +1088,7 @@ sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
 						</td>
 					</tr>
 					<tr>
-						<td>Showing a Switch for an boolean field.<br>Please define &quot;Switch&quot; as type in your
+						<td>Showing a Switch for an boolean field.<br>Please define "Switch" as type in your
 							designtime.js file.</td>
 
 
@@ -1097,23 +1097,23 @@ sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
 						</td>
 						<td>
 							<pre class="lang-js" data-sample style="height:250px">
-sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
+sap.ui.define(["sap/ui/integration/Designtime"], function (
 	Designtime
 ) {
-	&quot;use strict&quot;;
+	"use strict";
 	return function () {
 		return new Designtime({
-			&quot;form&quot;: {
-				&quot;items&quot;: {
-					&quot;boolean&quot;: {
-						&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/boolean/value&quot;,
-						&quot;type&quot;: &quot;boolean&quot;,
-						&quot;visualization&quot;: {<mark>
-							&quot;type&quot;: &quot;Switch&quot;,
-							&quot;settings&quot;: {
-								&quot;state&quot;: &quot;{currentSettings&gt;value}&quot;,
-								&quot;customTextOn&quot;: &quot;Yes&quot;,
-								&quot;customTextOff&quot;: &quot;No&quot;
+			"form": {
+				"items": {
+					"boolean": {
+						"manifestpath": "/sap.card/configuration/parameters/boolean/value",
+						"type": "boolean",
+						"visualization": {<mark>
+							"type": "Switch",
+							"settings": {
+								"state": "{currentSettings>value}",
+								"customTextOn": "Yes",
+								"customTextOff": "No"
 							}</mark>
 						}
 					}
@@ -1134,69 +1134,69 @@ sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
 						<td>
 							<pre class="lang-js" data-sample="11" style="height:250px">
 {
-	&quot;param1&quot;: {
-		&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/param1/value&quot;,
-		&quot;label&quot;: &quot;In one line&quot;,
-		&quot;type&quot;: &quot;string&quot;,
-		&quot;layout&quot;: {
-			&quot;alignment&quot;: {
-				&quot;field&quot;: &quot;end&quot;
+	"param1": {
+		"manifestpath": "/sap.card/configuration/parameters/param1/value",
+		"label": "In one line",
+		"type": "string",
+		"layout": {
+			"alignment": {
+				"field": "end"
 			}
 		}
 	},
-	&quot;param2&quot;: {
-		&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/param2/value&quot;,
-		&quot;label&quot;: &quot;Label alignment: end&quot;,
-		&quot;type&quot;: &quot;string&quot;,
-		&quot;layout&quot;: {
-			&quot;alignment&quot;: {
-				&quot;label&quot;: &quot;end&quot;
+	"param2": {
+		"manifestpath": "/sap.card/configuration/parameters/param2/value",
+		"label": "Label alignment: end",
+		"type": "string",
+		"layout": {
+			"alignment": {
+				"label": "end"
 			}
 		}
 	},
-	&quot;param3&quot;: {
-		&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/param3/value&quot;,
-		&quot;label&quot;: &quot;Field first&quot;,
-		&quot;type&quot;: &quot;string&quot;,
-		&quot;layout&quot;: {
-			&quot;position&quot;: &quot;field-label&quot;
+	"param3": {
+		"manifestpath": "/sap.card/configuration/parameters/param3/value",
+		"label": "Field first",
+		"type": "string",
+		"layout": {
+			"position": "field-label"
 		}
 	},
-	&quot;param4&quot;: {
-		&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/param4/value&quot;,
-		&quot;label&quot;: &quot;Label width: 40%&quot;,
-		&quot;type&quot;: &quot;string&quot;,
-		&quot;layout&quot;: {
-			&quot;label-width&quot;: &quot;40%&quot;
+	"param4": {
+		"manifestpath": "/sap.card/configuration/parameters/param4/value",
+		"label": "Label width: 40%",
+		"type": "string",
+		"layout": {
+			"label-width": "40%"
 		}
 	},
-	&quot;param5&quot;: {
-		&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/param5/value&quot;,
-		&quot;label&quot;: &quot;In one column&quot;,
-		&quot;type&quot;: &quot;string&quot;,
-		&quot;layout&quot;: {
-			&quot;label-width&quot;: &quot;50%&quot;
+	"param5": {
+		"manifestpath": "/sap.card/configuration/parameters/param5/value",
+		"label": "In one column",
+		"type": "string",
+		"layout": {
+			"label-width": "50%"
 		},
-		&quot;cols&quot;: 1
+		"cols": 1
 	},
-	&quot;booleanLabel1&quot;: {
-		&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/booleanLabel1/value&quot;,
-		&quot;label&quot;: &quot;boolean in one line&quot;,
-		&quot;type&quot;: &quot;boolean&quot;,
-		&quot;layout&quot;: {
-			&quot;label-width&quot;: &quot;92.4%&quot;,
-			&quot;position&quot;: &quot;field-label&quot;
+	"booleanLabel1": {
+		"manifestpath": "/sap.card/configuration/parameters/booleanLabel1/value",
+		"label": "boolean in one line",
+		"type": "boolean",
+		"layout": {
+			"label-width": "92.4%",
+			"position": "field-label"
 		}
 	},
-	&quot;booleanLabel2&quot;: {
-		&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/booleanLabel2/value&quot;,
-		&quot;label&quot;: &quot;boolean in one line and one column&quot;,
-		&quot;type&quot;: &quot;boolean&quot;,
-		&quot;layout&quot;: {
-			&quot;label-width&quot;: &quot;83%&quot;,
-			&quot;position&quot;: &quot;field-label&quot;
+	"booleanLabel2": {
+		"manifestpath": "/sap.card/configuration/parameters/booleanLabel2/value",
+		"label": "boolean in one line and one column",
+		"type": "boolean",
+		"layout": {
+			"label-width": "83%",
+			"position": "field-label"
 		},
-		&quot;cols&quot;: 1
+		"cols": 1
 	}
 }</pre>
 						</td>
@@ -1209,24 +1209,24 @@ sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
 						<td>
 							<pre class="lang-js" data-sample="12" style="height:250px">
 	{
-		&quot;param0&quot;: {
-			&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/param0/value&quot;,
-			&quot;label&quot;: &quot;Parameter 0&quot;,
-			&quot;type&quot;: &quot;string&quot;
+		"param0": {
+			"manifestpath": "/sap.card/configuration/parameters/param0/value",
+			"label": "Parameter 0",
+			"type": "string"
 		},
-		&quot;subGroup1&quot;: {
-			&quot;type&quot;: &quot;group&quot;,
-			&quot;label&quot;: &quot;Sub group 1&quot;,
-			&quot;level&quot;: &quot;1&quot;,
-			&quot;expanded&quot;: true,
-			&quot;visualization&quot;: {
-				&quot;type&quot;: &quot;Panel&quot;
+		"subGroup1": {
+			"type": "group",
+			"label": "Sub group 1",
+			"level": "1",
+			"expanded": true,
+			"visualization": {
+				"type": "Panel"
 			}
 		},
-		&quot;param1&quot;: {
-			&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/param1/value&quot;,
-			&quot;label&quot;: &quot;Parameter 1&quot;,
-			&quot;type&quot;: &quot;string&quot;
+		"param1": {
+			"manifestpath": "/sap.card/configuration/parameters/param1/value",
+			"label": "Parameter 1",
+			"type": "string"
 		}
 	}
 							</pre>
@@ -1240,24 +1240,24 @@ sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
 						<td>
 							<pre class="lang-js" data-sample="13" style="height:250px">
 	{
-		&quot;param0&quot;: {
-			&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/param0/value&quot;,
-			&quot;label&quot;: &quot;Parameter 0&quot;,
-			&quot;type&quot;: &quot;string&quot;
+		"param0": {
+			"manifestpath": "/sap.card/configuration/parameters/param0/value",
+			"label": "Parameter 0",
+			"type": "string"
 		},
-		&quot;subGroup1&quot;: {
-			&quot;type&quot;: &quot;group&quot;,
-			&quot;label&quot;: &quot;Sub group 1&quot;,
-			&quot;level&quot;: &quot;1&quot;,
-			&quot;expanded&quot;: true,
-			&quot;visualization&quot;: {
-				&quot;type&quot;: &quot;Tab&quot;
+		"subGroup1": {
+			"type": "group",
+			"label": "Sub group 1",
+			"level": "1",
+			"expanded": true,
+			"visualization": {
+				"type": "Tab"
 			}
 		},
-		&quot;param1&quot;: {
-			&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/param1/value&quot;,
-			&quot;label&quot;: &quot;Parameter 1&quot;,
-			&quot;type&quot;: &quot;string&quot;
+		"param1": {
+			"manifestpath": "/sap.card/configuration/parameters/param1/value",
+			"label": "Parameter 1",
+			"type": "string"
 		}
 	}
 							</pre>

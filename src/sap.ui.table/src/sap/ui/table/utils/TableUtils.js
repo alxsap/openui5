@@ -43,16 +43,16 @@ sap.ui.define([
 	"use strict";
 
 	// Shortcuts
-	var SelectionBehavior = library.SelectionBehavior;
-	var SelectionMode = library.SelectionMode;
-	var MessageType = coreLibrary.MessageType;
+	const SelectionBehavior = library.SelectionBehavior;
+	const SelectionMode = library.SelectionMode;
+	const MessageType = coreLibrary.MessageType;
 
 	/**
 	 * The resource bundle of the sap.ui.table library.
 	 * @type {module:sap/base/i18n/ResourceBundle}
 	 */
-	var oResourceBundle;
-	var iBaseFontSize = null;
+	let oResourceBundle;
+	let iBaseFontSize = null;
 
 	/**
 	 * Table cell type.
@@ -72,7 +72,7 @@ sap.ui.define([
 	 * @property {int} ANY - Any table cell.
 	 * @property {int} PSEUDO - Any element that imitates a table cell.
 	 */
-	var CELLTYPE = {
+	const CELLTYPE = {
 		DATACELL: 1 << 1,
 		COLUMNHEADER: 1 << 2,
 		ROWHEADER: 1 << 3,
@@ -96,7 +96,7 @@ sap.ui.define([
 	 * @property {int} sapUiSizeCozy - The default base siz in pixels in cozy content density.
 	 * @property {int} undefined - The default base siz in pixels in case no content density information is available.
 	 */
-	var mBaseSize = {
+	const mBaseSize = {
 		sapUiSizeCozy: 48,
 		sapUiSizeCompact: 32,
 		sapUiSizeCondensed: 24,
@@ -109,7 +109,7 @@ sap.ui.define([
 	 * @type {int}
 	 * @static
 	 */
-	var iBaseBorderWidth = 1;
+	let iBaseBorderWidth = 1;
 
 	/**
 	 * The horizontal frame size of a row in pixels for the current theme. The frame size includes, for example, the row border width. If no theme is
@@ -118,7 +118,7 @@ sap.ui.define([
 	 * @type {int}
 	 * @static
 	 */
-	var iRowHorizontalFrameSize = 1;
+	let iRowHorizontalFrameSize = 1;
 
 	/**
 	 * The default row heights in pixels for the different content densities for the current theme. If no theme is applied, default values are used.
@@ -131,7 +131,7 @@ sap.ui.define([
 	 * @property {int} sapUiSizeCozy - The default height of a row in pixels in cozy content density.
 	 * @property {int} undefined - The default height of a row in pixels in case no content density information is available.
 	 */
-	var mDefaultRowHeight = {
+	const mDefaultRowHeight = {
 		sapUiSizeCozy: mBaseSize.sapUiSizeCozy + iRowHorizontalFrameSize,
 		sapUiSizeCompact: mBaseSize.sapUiSizeCompact + iRowHorizontalFrameSize,
 		sapUiSizeCondensed: mBaseSize.sapUiSizeCondensed + iRowHorizontalFrameSize,
@@ -149,7 +149,7 @@ sap.ui.define([
 	 * @property {string} clearSelectionIcon - Name of the clearSelection icon.
 	 * @property {int} navIndicatorWidth - Width of the navigation indicator
 	 */
-	var mThemeParameters = {
+	const mThemeParameters = {
 		navigationIcon: "navigation-right-arrow",
 		deleteIcon: "sys-cancel",
 		clearSelectionIcon: "clear-all",
@@ -182,7 +182,7 @@ sap.ui.define([
 	 * @property {string} Zoom - The browsers zoom level has changed.
 	 * @property {string} Unknown - The reason for the update is unknown.
 	 */
-	var ROWS_UPDATE_REASON = {
+	const ROWS_UPDATE_REASON = {
 		Render: "Render",
 		VerticalScroll: "VerticalScroll",
 		FirstVisibleRowChange: "FirstVisibleRowChange",
@@ -192,7 +192,7 @@ sap.ui.define([
 		Zoom: "Zoom",
 		Unknown: "Unknown"
 	};
-	for (var sProperty in ChangeReason) {
+	for (const sProperty in ChangeReason) {
 		ROWS_UPDATE_REASON[sProperty] = ChangeReason[sProperty];
 	}
 
@@ -203,7 +203,7 @@ sap.ui.define([
 	 * @static
 	 * @constant
 	 */
-	var INTERACTIVE_ELEMENT_SELECTORS = ":sapTabbable, .sapUiTableTreeIcon:not(.sapUiTableTreeIconLeaf)";
+	const INTERACTIVE_ELEMENT_SELECTORS = ":sapTabbable, .sapUiTableTreeIcon:not(.sapUiTableTreeIconLeaf)";
 
 	/**
 	 * Static collection of utility functions related to the sap.ui.table.Table, ...
@@ -214,7 +214,7 @@ sap.ui.define([
 	 * @alias sap.ui.table.utils.TableUtils
 	 * @private
 	 */
-	var TableUtils = {
+	const TableUtils = {
 		// Make other utils available.
 		Grouping: GroupingUtils,
 		Column: ColumnUtils,
@@ -249,7 +249,7 @@ sap.ui.define([
 		 * @returns {boolean} Whether the table has a SelectAll checkbox.
 		 */
 		hasSelectAll: function(oTable) {
-			var sSelectionMode = oTable ? oTable.getSelectionMode() : SelectionMode.None;
+			const sSelectionMode = oTable ? oTable.getSelectionMode() : SelectionMode.None;
 			return sSelectionMode === SelectionMode.MultiToggle && oTable.getEnableSelectAll();
 		},
 
@@ -264,13 +264,13 @@ sap.ui.define([
 				return false;
 			}
 
-			var oRowSettingsTemplate = oTable.getRowSettingsTemplate();
+			const oRowSettingsTemplate = oTable.getRowSettingsTemplate();
 
 			if (!oRowSettingsTemplate) {
 				return false;
 			}
 
-			var sHighlight = oRowSettingsTemplate.getHighlight();
+			const sHighlight = oRowSettingsTemplate.getHighlight();
 
 			return oRowSettingsTemplate.isBound("highlight")
 				   || (sHighlight != null && sHighlight !== MessageType.None);
@@ -287,13 +287,13 @@ sap.ui.define([
 				return false;
 			}
 
-			var oRowSettingsTemplate = oTable.getRowSettingsTemplate();
+			const oRowSettingsTemplate = oTable.getRowSettingsTemplate();
 
 			if (!oRowSettingsTemplate) {
 				return false;
 			}
 
-			var bNavigated = oRowSettingsTemplate.getNavigated();
+			const bNavigated = oRowSettingsTemplate.getNavigated();
 
 			return oRowSettingsTemplate.isBound("navigated") || bNavigated;
 		},
@@ -305,7 +305,7 @@ sap.ui.define([
 		 * @returns {boolean} Whether the table has row actions.
 		 */
 		hasRowActions: function(oTable) {
-			var oRowActionTemplate = oTable ? oTable.getRowActionTemplate() : null;
+			const oRowActionTemplate = oTable ? oTable.getRowActionTemplate() : null;
 
 			return oRowActionTemplate != null
 				   && (oRowActionTemplate.isBound("visible") || oRowActionTemplate.getVisible())
@@ -394,16 +394,16 @@ sap.ui.define([
 		 * @param {function(sap.ui.table.Row)} [fnDoSelect] If defined, then instead of the default selection code, this custom callback is used.
 		 */
 		toggleRowSelection: function(oTable, vRowIndicator, bSelect, fnDoSelect) {
-			var oRow;
+			let oRow;
 
 			if (TableUtils.isA(vRowIndicator, "sap.ui.table.Row")) {
 				oRow = vRowIndicator;
 			} else if (typeof vRowIndicator === "number") {
 				oRow = oTable.getRows()[vRowIndicator];
 			} else { // vRowIndicator is a jQuery object or a DOM element.
-				var $Cell = jQuery(vRowIndicator);
-				var oCellInfo = TableUtils.getCellInfo($Cell[0]);
-				var bIsRowSelectionAllowed = TableUtils.isRowSelectionAllowed(oTable);
+				const $Cell = jQuery(vRowIndicator);
+				const oCellInfo = TableUtils.getCellInfo($Cell[0]);
+				const bIsRowSelectionAllowed = TableUtils.isRowSelectionAllowed(oTable);
 
 				if (!TableUtils.Grouping.isInGroupHeaderRow($Cell[0])
 					&& ((oCellInfo.isOfType(TableUtils.CELLTYPE.DATACELL | TableUtils.CELLTYPE.ROWACTION) && bIsRowSelectionAllowed)
@@ -422,7 +422,7 @@ sap.ui.define([
 			if (fnDoSelect) {
 				fnDoSelect(oRow);
 			} else {
-				var oSelectionPlugin = oTable._getSelectionPlugin();
+				const oSelectionPlugin = oTable._getSelectionPlugin();
 				oSelectionPlugin.setSelected(oRow, typeof bSelect === "boolean" ? bSelect : !oSelectionPlugin.isSelected(oRow));
 			}
 
@@ -470,9 +470,9 @@ sap.ui.define([
 				if (!oTable.getColumnHeaderVisible()) {
 					oTable._iHeaderRowCount = 0;
 				} else {
-					var iHeaderRows = 1;
-					var aColumns = oTable.getColumns();
-					for (var i = 0; i < aColumns.length; i++) {
+					let iHeaderRows = 1;
+					const aColumns = oTable.getColumns();
+					for (let i = 0; i < aColumns.length; i++) {
 						if (aColumns[i].shouldRender()) {
 							// only visible columns need to be considered. We don't invoke getVisibleColumns due to
 							// performance considerations. With several dozens of columns, it's quite costy to loop them twice.
@@ -492,7 +492,7 @@ sap.ui.define([
 		 * @returns {boolean} Whether variable row height support is enabled.
 		 */
 		isVariableRowHeightEnabled: function(oTable) {
-			var mRowCounts = oTable._getRowCounts();
+			const mRowCounts = oTable._getRowCounts();
 			return oTable && oTable._bVariableRowHeightEnabled && !mRowCounts.fixedTop && !mRowCounts.fixedBottom;
 		},
 
@@ -521,7 +521,7 @@ sap.ui.define([
 		 * @property {HTMLElement | undefined} domRef Reference to the focused DOM element.
 		 */
 		getFocusedItemInfo: function(oTable) {
-			var oIN = oTable._getItemNavigation();
+			const oIN = oTable._getItemNavigation();
 			if (!oIN) {
 				return null;
 			}
@@ -543,7 +543,7 @@ sap.ui.define([
 		 *
 		 */
 		getRowIndexOfFocusedCell: function(oTable) {
-			var oInfo = TableUtils.getFocusedItemInfo(oTable);
+			const oInfo = TableUtils.getFocusedItemInfo(oTable);
 			return oInfo.row - TableUtils.getHeaderRowCount(oTable);
 		},
 
@@ -577,7 +577,7 @@ sap.ui.define([
 		 * @param {Object} oEvent The event object.
 		 */
 		focusItem: function(oTable, iIndex, oEvent) {
-			var oIN = oTable._getItemNavigation();
+			const oIN = oTable._getItemNavigation();
 			if (oIN) {
 				oIN.focusItem(iIndex, oEvent);
 			}
@@ -598,13 +598,13 @@ sap.ui.define([
 				return Promise.resolve();
 			}
 
-			var iFirstVisibleRow = oTable.getFirstVisibleRow();
-			var mRowCounts = oTable._getRowCounts();
-			var iLastVisibleRow = iFirstVisibleRow + mRowCounts.scrollable - 1;
-			var bExpectRowsUpdatedEvent = false;
+			const iFirstVisibleRow = oTable.getFirstVisibleRow();
+			const mRowCounts = oTable._getRowCounts();
+			const iLastVisibleRow = iFirstVisibleRow + mRowCounts.scrollable - 1;
+			let bExpectRowsUpdatedEvent = false;
 
 			if (iIndex < iFirstVisibleRow || iIndex > iLastVisibleRow) {
-				var iNewIndex = bReverse ? iIndex - mRowCounts.fixedTop - 1 : iIndex - mRowCounts.scrollable - mRowCounts.fixedTop + 2;
+				const iNewIndex = bReverse ? iIndex - mRowCounts.fixedTop - 1 : iIndex - mRowCounts.scrollable - mRowCounts.fixedTop + 2;
 
 				bExpectRowsUpdatedEvent = oTable._setFirstVisibleRowIndex(Math.max(0, iNewIndex));
 			}
@@ -628,10 +628,10 @@ sap.ui.define([
 		 * @returns {Promise} A Promise that resolves after the notification popover has been opened
 		 */
 		showNotificationPopoverAtIndex: function(oTable, iIndex, iLimit) {
-			var oPopover = oTable._oNotificationPopover;
-			var oRow = oTable.getRows()[iIndex - oTable._getFirstRenderedRowIndex()];
-			var sTitle = TableUtils.getResourceText("TBL_SELECT_LIMIT_TITLE");
-			var sMessage = TableUtils.getResourceText("TBL_SELECT_LIMIT", [iLimit]);
+			let oPopover = oTable._oNotificationPopover;
+			const oRow = oTable.getRows()[iIndex - oTable._getFirstRenderedRowIndex()];
+			const sTitle = TableUtils.getResourceText("TBL_SELECT_LIMIT_TITLE");
+			const sMessage = TableUtils.getResourceText("TBL_SELECT_LIMIT", [iLimit]);
 
 			return new Promise(function(resolve) {
 				sap.ui.require([
@@ -668,7 +668,7 @@ sap.ui.define([
 					oTable.detachFirstVisibleRowChanged(this.onFirstVisibleRowChange, this);
 					oTable.attachFirstVisibleRowChanged(this.onFirstVisibleRowChange, this);
 
-					var oRowSelector = oRow.getDomRefs().rowSelector;
+					const oRowSelector = oRow.getDomRefs().rowSelector;
 
 					if (oRowSelector) {
 						oPopover.attachEventOnce("afterOpen", resolve);
@@ -681,7 +681,7 @@ sap.ui.define([
 		},
 
 		onFirstVisibleRowChange: function(oEvent) {
-			var oTable = oEvent.getSource();
+			const oTable = oEvent.getSource();
 			if (!oTable._oNotificationPopover) {
 				return;
 			}
@@ -701,8 +701,8 @@ sap.ui.define([
 		 * @returns {Promise<sap.ui.model.Context[]>} Promise that resolves with the row contexts once they are loaded.
 		 */
 		loadContexts: function(oBinding, iStartIndex, iLength) {
-			var aContexts = oBinding.getContexts(iStartIndex, iLength, 0, true);
-			var bContextsAvailable = aContexts.length === Math.min(iLength, oBinding.getLength()) && !aContexts.includes(undefined);
+			const aContexts = oBinding.getContexts(iStartIndex, iLength, 0, true);
+			const bContextsAvailable = aContexts.length === Math.min(iLength, oBinding.getLength()) && !aContexts.includes(undefined);
 
 			if (bContextsAvailable) {
 				return Promise.resolve(aContexts);
@@ -745,22 +745,19 @@ sap.ui.define([
 		 * @see sap.ui.table.utils.TableUtils.CellInfo
 		 */
 		getCellInfo: function(oCellRef) {
-			var oCellInfo;
-			var $Cell = jQuery(oCellRef);
-			var sColumnId;
-			var oColumn;
-			var rRowIndex;
-			var aRowIndexMatch;
-			var iRowIndex;
-
-			// Initialize cell info object with default values.
-			oCellInfo = {
+			const oCellInfo = {
 				type: 0,
 				cell: null,
 				rowIndex: null,
 				columnIndex: null,
 				columnSpan: null
 			};
+			const $Cell = jQuery(oCellRef);
+			let sColumnId;
+			let oColumn;
+			let rRowIndex;
+			let aRowIndexMatch;
+			let iRowIndex;
 
 			if ($Cell.hasClass("sapUiTableDataCell")) {
 				sColumnId = $Cell.attr("data-sap-ui-colid");
@@ -850,15 +847,15 @@ sap.ui.define([
 		 * @property {sap.ui.core.Control | null} cell Cell control of row/column.
 		 */
 		getRowColCell: function(oTable, iRowIdx, iColIdx, bIdxInColumnAgg) {
-			var oRow = oTable.getRows()[iRowIdx] || null;
-			var aColumns = bIdxInColumnAgg ? oTable.getColumns() : oTable._getVisibleColumns();
-			var oColumn = aColumns[iColIdx] || null;
-			var Column;
-			var oCell = null;
+			const oRow = oTable.getRows()[iRowIdx] || null;
+			const aColumns = bIdxInColumnAgg ? oTable.getColumns() : oTable._getVisibleColumns();
+			const oColumn = aColumns[iColIdx] || null;
+			let Column;
+			let oCell = null;
 
 			if (oRow && oColumn) {
 				if (!Column) {
-					var ColumnMetadata = oColumn.getMetadata();
+					let ColumnMetadata = oColumn.getMetadata();
 					while (ColumnMetadata.getName() !== "sap.ui.table.Column") {
 						ColumnMetadata = ColumnMetadata.getParent();
 					}
@@ -888,15 +885,15 @@ sap.ui.define([
 				return null;
 			}
 
-			var $Element = jQuery(oElement);
-			var oTableElement = oTable.getDomRef();
-			var sSelector = ".sapUiTableCell";
+			const $Element = jQuery(oElement);
+			const oTableElement = oTable.getDomRef();
+			let sSelector = ".sapUiTableCell";
 
 			if (!bIncludePseudoCells) {
 				sSelector += ":not(.sapUiTablePseudoCell)";
 			}
 
-			var $Cell = $Element.closest(sSelector, oTableElement);
+			const $Cell = $Element.closest(sSelector, oTableElement);
 
 			if ($Cell.length > 0) {
 				return $Cell;
@@ -916,8 +913,8 @@ sap.ui.define([
 		getParentCell: function(oTable, oElement, bIncludePseudoCells) {
 			bIncludePseudoCells = bIncludePseudoCells === true;
 
-			var $Element = jQuery(oElement);
-			var $Cell = TableUtils.getCell(oTable, oElement, bIncludePseudoCells);
+			const $Element = jQuery(oElement);
+			const $Cell = TableUtils.getCell(oTable, oElement, bIncludePseudoCells);
 
 			if (!$Cell || $Cell[0] === $Element[0]) {
 				return null; // The element is not inside a table cell.
@@ -950,7 +947,7 @@ sap.ui.define([
 				return undefined;
 			}
 
-			var oDomRef = oTable.getDomRef(sDOMIdSuffix);
+			let oDomRef = oTable.getDomRef(sDOMIdSuffix);
 
 			TableUtils.deregisterResizeHandler(oTable, sHandlerId);
 
@@ -978,7 +975,7 @@ sap.ui.define([
 		 *     ID of the resize handler to deregister. If not specified, all resize handlers are deregistered.
 		 */
 		deregisterResizeHandler: function(oTable, vHandlerId) {
-			var aHandlerIds = [];
+			let aHandlerIds = [];
 
 			if (!oTable._mResizeHandlerIds) {
 				// no resize handler registered so far
@@ -989,8 +986,8 @@ sap.ui.define([
 				aHandlerIds.push(vHandlerId);
 			} else if (vHandlerId === undefined) {
 				// deregister all resize handlers if no specific is named
-				for (var sKey in oTable._mResizeHandlerIds) {
-					if (typeof sKey == "string" && oTable._mResizeHandlerIds.hasOwnProperty(sKey)) {
+				for (const sKey in oTable._mResizeHandlerIds) {
+					if (typeof sKey === "string" && oTable._mResizeHandlerIds.hasOwnProperty(sKey)) {
 						aHandlerIds.push(sKey);
 					}
 				}
@@ -998,8 +995,8 @@ sap.ui.define([
 				aHandlerIds = vHandlerId;
 			}
 
-			for (var i = 0; i < aHandlerIds.length; i++) {
-				var sHandlerId = aHandlerIds[i];
+			for (let i = 0; i < aHandlerIds.length; i++) {
+				const sHandlerId = aHandlerIds[i];
 
 				if (oTable._mResizeHandlerIds[sHandlerId]) {
 					ResizeHandler.deregister(oTable._mResizeHandlerIds[sHandlerId]);
@@ -1017,10 +1014,10 @@ sap.ui.define([
 		 */
 		isFirstScrollableRow: function(oTable, row) {
 			if (isNaN(row)) {
-				var $Ref = jQuery(row);
+				const $Ref = jQuery(row);
 				row = parseInt($Ref.add($Ref.parent()).filter("[data-sap-ui-rowindex]").attr("data-sap-ui-rowindex"));
 			}
-			return row == oTable._getRowCounts().fixedTop;
+			return row === oTable._getRowCounts().fixedTop;
 		},
 
 		/**
@@ -1032,11 +1029,11 @@ sap.ui.define([
 		 */
 		isLastScrollableRow: function(oTable, row) {
 			if (isNaN(row)) {
-				var $Ref = jQuery(row);
+				const $Ref = jQuery(row);
 				row = parseInt($Ref.add($Ref.parent()).filter("[data-sap-ui-rowindex]").attr("data-sap-ui-rowindex"));
 			}
-			var mRowCounts = oTable._getRowCounts();
-			return row == mRowCounts.count - mRowCounts.fixedBottom - 1;
+			const mRowCounts = oTable._getRowCounts();
+			return row === mRowCounts.count - mRowCounts.fixedBottom - 1;
 		},
 
 		/**
@@ -1052,22 +1049,22 @@ sap.ui.define([
 		 * @returns {string | undefined} name of the content density style class or undefined if none was found.
 		 */
 		getContentDensity: function(oControl) {
-			var sContentDensity;
-			var aContentDensityStyleClasses = ["sapUiSizeCondensed", "sapUiSizeCompact", "sapUiSizeCozy"];
+			let sContentDensity;
+			const aContentDensityStyleClasses = ["sapUiSizeCondensed", "sapUiSizeCompact", "sapUiSizeCozy"];
 
-			var fnGetContentDensity = function(sFnName, oObject) {
+			const fnGetContentDensity = function(sFnName, oObject) {
 				if (!oObject[sFnName]) {
 					return;
 				}
 
-				for (var i = 0; i < aContentDensityStyleClasses.length; i++) {
+				for (let i = 0; i < aContentDensityStyleClasses.length; i++) {
 					if (oObject[sFnName](aContentDensityStyleClasses[i])) {
 						return aContentDensityStyleClasses[i];
 					}
 				}
 			};
 
-			var $DomRef = oControl.$();
+			let $DomRef = oControl.$();
 			if ($DomRef.length > 0) {
 				// table was already rendered, check by DOM and return content density class
 				sContentDensity = fnGetContentDensity("hasClass", $DomRef);
@@ -1082,8 +1079,8 @@ sap.ui.define([
 			// since the table was not yet rendered, traverse its parents:
 			//   - to find a content density defined at control level
 			//   - to find the first DOM reference and then check on DOM level
-			var oParentDomRef = null;
-			var oParent = oControl.getParent();
+			let oParentDomRef = null;
+			let oParent = oControl.getParent();
 			// the table might not have a parent at all.
 			if (oParent) {
 				// try to get the DOM Ref of the parent. It might be required to traverse the complete parent
@@ -1131,7 +1128,7 @@ sap.ui.define([
 		 * @returns {boolean} Whether the width is variable/flexible.
 		 */
 		isVariableWidth: function(sWidth) {
-			return !sWidth || sWidth == "auto" || sWidth.toString().match(/%$/);
+			return !sWidth || sWidth === "auto" || sWidth.toString().match(/%$/);
 		},
 
 		/**
@@ -1141,20 +1138,20 @@ sap.ui.define([
 		 * @returns {int} The index of the first fixed bottom row in the <code>rows</code> aggregation, or <code>-1</code>.
 		 */
 		getFirstFixedBottomRowIndex: function(oTable) {
-			var mRowCounts = oTable._getRowCounts();
+			const mRowCounts = oTable._getRowCounts();
 
 			if (!oTable.getBinding() || mRowCounts.fixedBottom === 0) {
 				return -1;
 			}
 
-			var iFirstFixedBottomIndex = -1;
-			var iFirstVisibleRow = oTable.getFirstVisibleRow();
-			var iTotalRowCount = oTable._getTotalRowCount();
+			let iFirstFixedBottomIndex = -1;
+			const iFirstVisibleRow = oTable.getFirstVisibleRow();
+			const iTotalRowCount = oTable._getTotalRowCount();
 
 			if (iTotalRowCount >= mRowCounts.count) {
 				iFirstFixedBottomIndex = mRowCounts.count - mRowCounts.fixedBottom;
 			} else {
-				var iIdx = iTotalRowCount - mRowCounts.fixedBottom - iFirstVisibleRow;
+				const iIdx = iTotalRowCount - mRowCounts.fixedBottom - iFirstVisibleRow;
 				if (iIdx >= 0 && (iFirstVisibleRow + iIdx) < iTotalRowCount) {
 					iFirstFixedBottomIndex = iIdx;
 				}
@@ -1183,7 +1180,7 @@ sap.ui.define([
 				}
 			}
 
-			var vResult = Lib.getResourceBundleFor("sap.ui.table");
+			let vResult = Lib.getResourceBundleFor("sap.ui.table");
 
 			oResourceBundle = vResult;
 
@@ -1216,7 +1213,7 @@ sap.ui.define([
 		 * @template T, U
 		 */
 		dynamicCall: function(vObject, vCall, oThis) {
-			var oObject = typeof vObject === "function" ? vObject() : vObject;
+			const oObject = typeof vObject === "function" ? vObject() : vObject;
 
 			if (!oObject || !vCall) {
 				return undefined;
@@ -1228,9 +1225,9 @@ sap.ui.define([
 				vCall.call(oThis, oObject);
 				return undefined;
 			} else {
-				var aParameters;
-				var aReturnValues = [];
-				for (var sFunctionName in vCall) {
+				let aParameters;
+				const aReturnValues = [];
+				for (const sFunctionName in vCall) {
 					if (typeof oObject[sFunctionName] === "function") {
 						aParameters = vCall[sFunctionName];
 						aReturnValues.push(oObject[sFunctionName].apply(oThis, aParameters));
@@ -1265,17 +1262,17 @@ sap.ui.define([
 				trailing: true
 			}, mOptions);
 
-			var oCancelablePromise;
-			var bIsCalling = false;
-			var mLastCallInfo = {};
-			var _fn;
-			var _fnThrottled;
+			let oCancelablePromise;
+			let bIsCalling = false;
+			let mLastCallInfo = {};
+			let _fn;
+			let _fnThrottled;
 
 			if (mOptions.leading && mOptions.asyncLeading) {
 				_fn = function() {
 					if (bIsCalling) {
 
-						var oPromise = Promise.resolve().then(function() {
+						const oPromise = Promise.resolve().then(function() {
 							if (!oPromise.canceled) {
 								fn.apply(mLastCallInfo.context, mLastCallInfo.args);
 							}
@@ -1294,13 +1291,13 @@ sap.ui.define([
 				_fn = fn;
 			}
 
-			var fnThrottled = throttle(_fn, iWait, {
+			const fnThrottled = throttle(_fn, iWait, {
 				leading: mOptions.leading,
 				trailing: mOptions.trailing
 			});
 
 			if (mOptions.leading && mOptions.asyncLeading) {
-				var fnCancel = fnThrottled.cancel;
+				const fnCancel = fnThrottled.cancel;
 
 				fnThrottled.cancel = function() {
 					if (oCancelablePromise) {
@@ -1335,8 +1332,8 @@ sap.ui.define([
 		 * @returns {Function} A wrapper function around <code>fn</code>.
 		 */
 		throttleFrameWise: function(fn) {
-			var iAnimationFrameId = null;
-			var fnThrottled = function() {
+			let iAnimationFrameId = null;
+			const fnThrottled = function() {
 				fnThrottled.cancel();
 				iAnimationFrameId = window.requestAnimationFrame(function(args) {
 					fn.apply(this, args);
@@ -1362,11 +1359,11 @@ sap.ui.define([
 				return null;
 			}
 
-			var $Cell = jQuery(oCell);
-			var oCellInfo = TableUtils.getCellInfo($Cell);
+			const $Cell = jQuery(oCell);
+			const oCellInfo = TableUtils.getCellInfo($Cell);
 
 			if (oCellInfo.isOfType(CELLTYPE.ANY | CELLTYPE.PSEUDO)) {
-				var $InteractiveElements = $Cell.find(INTERACTIVE_ELEMENT_SELECTORS);
+				const $InteractiveElements = $Cell.find(INTERACTIVE_ELEMENT_SELECTORS);
 				if ($InteractiveElements.length > 0) {
 					return $InteractiveElements;
 				}
@@ -1388,17 +1385,17 @@ sap.ui.define([
 				return null;
 			}
 
-			var oTable = oRow.getTable();
-			var aCells = oRow.getCells();
+			const oTable = oRow.getTable();
+			const aCells = oRow.getCells();
 
 			if (bRowActionCells === true && TableUtils.hasRowActions(oTable)) {
 				aCells.push(oRow.getRowAction());
 			}
 
-			for (var i = 0; i < aCells.length; i++) {
-				var oCellContent = aCells[i].getDomRef();
-				var $Cell = TableUtils.getCell(oTable, oCellContent, true);
-				var $InteractiveElements = TableUtils.getInteractiveElements($Cell);
+			for (let i = 0; i < aCells.length; i++) {
+				const oCellContent = aCells[i].getDomRef();
+				const $Cell = TableUtils.getCell(oTable, oCellContent, true);
+				const $InteractiveElements = TableUtils.getInteractiveElements($Cell);
 
 				if ($InteractiveElements) {
 					return $InteractiveElements[0];
@@ -1417,7 +1414,7 @@ sap.ui.define([
 		 *                                <code>null</code> if the CSS size could not be converted.
 		 */
 		convertCSSSizeToPixel: function(sCSSSize, bWithUnit) {
-			var fPixelValue;
+			let fPixelValue;
 
 			if (typeof sCSSSize !== "string") {
 				return null;
@@ -1446,7 +1443,7 @@ sap.ui.define([
 		 */
 		getBaseFontSize: function() {
 			if (iBaseFontSize == null) {
-				var oDocumentRootElement = document.documentElement;
+				const oDocumentRootElement = document.documentElement;
 				if (oDocumentRootElement) {
 					iBaseFontSize = parseInt(window.getComputedStyle(oDocumentRootElement).fontSize);
 				}
@@ -1462,7 +1459,7 @@ sap.ui.define([
 			// Converting the row height CSS parameters (e.g. _sap_ui_table_RowHeight) is too complex (CSS calc()).
 			// Therefore, the base sizes are used and calculation is done in JavaScript.
 
-			var mParams = ThemeParameters.get({
+			const mParams = ThemeParameters.get({
 				name: [
 					"_sap_ui_table_BaseSize",
 					"_sap_ui_table_BaseSizeCozy",
@@ -1506,8 +1503,8 @@ sap.ui.define([
 		 * @since 1.121
 		 */
 		isThemeApplied: function() {
-			var bIsApplied = false;
-			var fnOnThemeApplied = function() {
+			let bIsApplied = false;
+			const fnOnThemeApplied = function() {
 				bIsApplied = true;
 			};
 			Theming.attachApplied(fnOnThemeApplied); // Will be called immediately when theme is applied
@@ -1559,7 +1556,7 @@ sap.ui.define([
 		 * @returns {function(object):object | null} The function to access a value by key. Returns <code>null</code> if the key is not an object.
 		 */
 		createWeakMapFacade: function() {
-			var oWeakMap = new window.WeakMap();
+			const oWeakMap = new window.WeakMap();
 
 			return function(oKey) {
 				if (!oKey || !(typeof oKey === "object")) {
@@ -1582,7 +1579,7 @@ sap.ui.define([
 		 * @returns {object} Table helper
 		 */
 		_getTableTemplateHelper: function(bCallByAPI) {
-			var sMessage = "An automatic control and template generation for the sap.ui.table.Table is not supported " +
+			const sMessage = "An automatic control and template generation for the sap.ui.table.Table is not supported " +
 							"anymore for the aggragations footer and title and the aggregations label and template of " +
 							"the sap.ui.table.Columns. Use concrete controls for those aggregations instead of altType string.";
 

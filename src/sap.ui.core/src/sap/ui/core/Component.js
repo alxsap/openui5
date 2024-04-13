@@ -205,6 +205,8 @@ sap.ui.define([
 			return 2; // instance specific manifest => metadata version 2!
 		};
 
+		oMetadataProxy[Symbol("isProxy")] = true;
+
 		return oMetadataProxy;
 
 	}
@@ -1130,26 +1132,19 @@ sap.ui.define([
 	};
 
 	/**
-	 * Internal activation function for non lazy services which should be started immediately
-	 *
-	 * @param {sap.ui.core.Component} oComponent The Component instance
-	 * @param {boolean} bAsyncMode Whether or not the component is loaded in async mode
-	 * @returns {Promise[]|null} An array of promises from then loaded services
-	 * @private
-	 */
-	function activateServices(oComponent, bAsyncMode) {
+		 * Internal activation function for non lazy services which should be started immediately
+		 *
+		 * @param {sap.ui.core.Component} oComponent The Component instance
+		 * @returns {Promise[]|null} An array of promises from then loaded services
+		 * @private
+		 */
+	function activateServices(oComponent) {
 		var oServices = oComponent._getManifestEntry("/sap.ui5/services", true);
-		var aOutPromises = bAsyncMode ? [] : null;
+		var aOutPromises = [];
 		if (!oServices) {
 			return aOutPromises;
 		}
 		var aServiceKeys = Object.keys(oServices);
-		if (!bAsyncMode && aServiceKeys.some(function (sService) {
-			return oServices[sService].startup === ServiceStartupOptions.waitFor;
-		})) {
-			throw new Error("The specified component \"" + oComponent.getMetadata().getName() +
-				"\" cannot be loaded in sync mode since it has some services declared with \"startup\" set to \"waitFor\"");
-		}
 		return aServiceKeys.reduce(function (aPromises, sService) {
 			if (oServices[sService].lazy === false ||
 				oServices[sService].startup === ServiceStartupOptions.waitFor ||
@@ -1359,25 +1354,21 @@ sap.ui.define([
 
 
 	/**
-	 * Internal API to create a component with Component.create (async) or sap.ui.component (sync).
-	 * In case a <code>oOwnerComponent</code> is given, it will be created within the context
-	 * of it.
-	 *
-	 * @param {object} mConfig Configuration object that creates the component
-	 * @param {sap.ui.core.Component} [oOwnerComponent] Owner component
-	 * @return {sap.ui.core.Component|Promise} Component instance or Promise which will be resolved with the component instance
-	 *
-	 * @private
-	 * @ui5-restricted sap.ui.core.ComponentContainer
-	 */
+		 * Internal API to create a component with Component.create (async) or sap.ui.component (sync).
+		 * In case a <code>oOwnerComponent</code> is given, it will be created within the context
+		 * of it.
+		 *
+		 * @param {object} mConfig Configuration object that creates the component
+		 * @param {sap.ui.core.Component} [oOwnerComponent] Owner component
+		 * @return {sap.ui.core.Component|Promise} Component instance or Promise which will be resolved with the component instance
+		 *
+		 * @private
+		 * @ui5-restricted sap.ui.core.ComponentContainer
+		 */
 	Component._createComponent = function(mConfig, oOwnerComponent) {
 
 		function createComponent() {
-			if (mConfig.async === true) {
-				return Component.create(mConfig);
-			} else {
-				return sap.ui.component(mConfig); // legacy-relevant: use deprecated factory for sync use case only
-			}
+			return Component.create(mConfig);
 		}
 
 		if (oOwnerComponent) {
@@ -1924,7 +1915,10 @@ sap.ui.define([
 		return mModelConfigurations;
 	};
 
-	Component._loadManifestModelClasses = function(mModelConfigurations, sLogComponentName, bSync) {
+	/**
+		 * @private
+		 */
+	Component._loadManifestModelClasses = function(mModelConfigurations, sLogComponentName) {
 		const aLoadPromises = [];
 
 		function logLoadingError(sModelClassName, sModelName, oError) {
@@ -2325,59 +2319,6 @@ sap.ui.define([
 	};
 
 	/**
-	 * Collects the module names of the routing related classes from the given manifest:
-	 *   - Router (e.g. sap.m.routing.Router)
-	 *   - Targets (e.g. sap.ui.core.routing.Targets)
-	 *   - sap.ui.core.routing.Views
-	 *   - The base class of the root view (e.g. sap.ui.core.mvc.XMLView)
-	 * @param {sap.ui.core.Manifest} oManifest the manifest from which the routing config is read
-	 * @returns {string[]} an array containing the module names of all relevant routing classes
-	 */
-	function collectRoutingClasses(oManifest) {
-		const aModuleNames = [];
-
-		// lookup rootView class
-		let sRootViewType;
-		const oRootView = oManifest.getEntry("/sap.ui5/rootView");
-		if (typeof oRootView === "string") {
-			// String as rootView defaults to ViewType XML
-			// See: UIComponent#createContent and UIComponentMetadata#_convertLegacyMetadata
-			sRootViewType = "XML";
-		} else if (oRootView && typeof oRootView === "object" && oRootView.type) {
-			sRootViewType = oRootView.type;
-		}
-		if (sRootViewType && ViewType[sRootViewType]) {
-			const sViewClass = "sap/ui/core/mvc/" + ViewType[sRootViewType] + "View";
-			aModuleNames.push(sViewClass);
-		}
-
-		// lookup of the router / targets and views class
-		// ASYNC Only: prevents lazy synchronous loading in UIComponent#init (regardless of manifirst or manilast)
-		const oRouting = oManifest.getEntry("/sap.ui5/routing");
-		if (oRouting) {
-			if (oRouting.routes) {
-				// the "sap.ui5/routing/config/routerClass" entry can also contain a Router constructor
-				// See the typedef "sap.ui.core.UIComponent.RoutingMetadata" in sap/ui/core/UIComponent.js
-				const vRouterClass = oManifest.getEntry("/sap.ui5/routing/config/routerClass") || "sap.ui.core.routing.Router";
-				if (typeof vRouterClass === "string") {
-					const sRouterClassModule = vRouterClass.replace(/\./g, "/");
-					aModuleNames.push(sRouterClassModule);
-				}
-			} else if (oRouting.targets) {
-				// Same as with "routes", see comment above.
-				const vTargetClass = oManifest.getEntry("/sap.ui5/routing/config/targetsClass") || "sap.ui.core.routing.Targets";
-				if (typeof vTargetClass === "string") {
-					const sTargetClassModule = vTargetClass.replace(/\./g, "/");
-					aModuleNames.push(sTargetClassModule);
-				}
-				aModuleNames.push("sap/ui/core/routing/Views");
-			}
-		}
-
-		return aModuleNames;
-	}
-
-	/**
 	 * Loads a module and logs a potential loading error as a warning.
 	 *
 	 * @param {string} sModuleName the module to be loaded
@@ -2397,6 +2338,12 @@ sap.ui.define([
 		});
 
 		return def.promise;
+	}
+
+	function findRoutingClasses(oClassMetadata) {
+		const fnCollectRoutingClasses = oClassMetadata.getStaticProperty("collectRoutingClasses");
+		const mRoutingClasses = typeof fnCollectRoutingClasses == "function" ? fnCollectRoutingClasses.call(oClassMetadata.getClass()) : {};
+		return Object.values(mRoutingClasses);
 	}
 
 	/*
@@ -2542,7 +2489,7 @@ sap.ui.define([
 
 					// [1] after evaluating the manifest & loading the necessary dependencies,
 					//     we make sure the routing related classes are required before instantiating the Component
-					const aRoutingClassNames = collectRoutingClasses(oManifest);
+					const aRoutingClassNames = findRoutingClasses(oClassMetadata);
 					const aModuleLoadingPromises = aRoutingClassNames.map((sClassName) => {
 						return loadModuleAndLog(sClassName, sComponentName);
 					});
@@ -2865,6 +2812,13 @@ sap.ui.define([
 					return oInstance;
 
 				};
+
+				oMetadataProxy.getClass = function() {
+					return oClassProxy;
+				};
+
+				oClassProxy[Symbol("isProxy")] = true;
+
 				// overload the getMetadata function
 				oClassProxy.getMetadata = function() {
 					return oMetadataProxy;
@@ -2900,7 +2854,10 @@ sap.ui.define([
 			return vObj;
 		}
 
-		function preload(sComponentName, bAsync) {
+		/**
+				 * @private
+				 */
+		function preload(sComponentName) {
 
 			var sController = sComponentName + '.Component',
 				http2 = Library.isDepCacheEnabled(),
@@ -2920,42 +2877,35 @@ sap.ui.define([
 				};
 
 			// only load the Component-preload file if the Component module is not yet available
-			if ( bComponentPreload && sComponentName != null && !sap.ui.loader._.getModuleState(sController.replace(/\./g, "/") + ".js") ) {
+			if (bComponentPreload && sComponentName != null && !sap.ui.loader._.getModuleState(sController.replace(/\./g, "/") + ".js")) {
+				// check whether component controller is included in a library preload
+				oTransitiveDependencies = VersionInfo._getTransitiveDependencyForComponent(sComponentName);
 
-				if ( bAsync ) {
-					// check whether component controller is included in a library preload
-					oTransitiveDependencies = VersionInfo._getTransitiveDependencyForComponent(sComponentName);
+				if (oTransitiveDependencies && !oTransitiveDependencies.hasOwnPreload) {
+					aLibs = [oTransitiveDependencies.library];
+					// add all dependencies to aLibs
+					Array.prototype.push.apply(aLibs, oTransitiveDependencies.dependencies);
 
-					if (oTransitiveDependencies && !oTransitiveDependencies.hasOwnPreload) {
-						aLibs = [oTransitiveDependencies.library];
-						// add all dependencies to aLibs
-						Array.prototype.push.apply(aLibs, oTransitiveDependencies.dependencies);
-
-						// load library preload for every transitive dependency
-						return Library._load( aLibs, { preloadOnly: true } ).catch(errorLogging(oTransitiveDependencies.library, true));
-					} else {
-						sPreloadName = sController.replace(/\./g, "/") + (http2 ? '-h2-preload.js' : '-preload.js'); // URN
-						return sap.ui.loader._.loadJSResourceAsync(sPreloadName).catch(errorLogging(sPreloadName, true));
-					}
+					// load library preload for every transitive dependency
+					return Library._load( aLibs, { preloadOnly: true } ).catch(errorLogging(oTransitiveDependencies.library, true));
+				} else {
+					sPreloadName = sController.replace(/\./g, "/") + (http2 ? '-h2-preload.js' : '-preload.js'); // URN
+					return sap.ui.loader._.loadJSResourceAsync(sPreloadName).catch(errorLogging(sPreloadName, true));
 				}
-
-				try {
-					sPreloadName = sController + '-preload'; // Module name
-					sap.ui.requireSync(sPreloadName.replace(/\./g, "/")); // legacy-relevant: Sync path
-				} catch (e) {
-					errorLogging(sPreloadName, false)(e);
-				}
-			} else if (bAsync) {
+			} else {
 				return Promise.resolve();
 			}
 		}
 
-		function preloadDependencies(sComponentName, oManifest, bAsync) {
+		/**
+				 * @private
+				 */
+		function preloadDependencies(sComponentName, oManifest) {
 
 			var aPromises = [];
-			var fnCollect = bAsync ? function(oPromise) {
+			var fnCollect = function(oPromise) {
 				aPromises.push(oPromise);
-			} : function() {};
+			};
 
 			// lookup the required libraries
 			var mLibs = oManifest.getEntry("/sap.ui5/dependencies/libs");
@@ -2970,7 +2920,7 @@ sap.ui.define([
 				if (aLibs.length > 0) {
 					Log.info("Component \"" + sComponentName + "\" is loading libraries: \"" + aLibs.join(", ") + "\"");
 					fnCollect(Library._load(aLibs, {
-						sync: !bAsync
+						sync: false
 					}));
 				}
 			}
@@ -2978,7 +2928,7 @@ sap.ui.define([
 			// lookup the extended component and preload it
 			var sExtendedComponent = oManifest.getEntry("/sap.ui5/extends/component");
 			if (sExtendedComponent) {
-				fnCollect(preload(sExtendedComponent, bAsync));
+				fnCollect(preload(sExtendedComponent, true));
 			}
 
 			// lookup the non-lazy components from component dependencies
@@ -3008,11 +2958,11 @@ sap.ui.define([
 			// preload the collected components
 			if (aComponents.length > 0) {
 				aComponents.forEach(function(sComponentName) {
-					fnCollect(preload(sComponentName, bAsync));
+					fnCollect(preload(sComponentName, true));
 				});
 			}
 
-			return bAsync ? Promise.all(aPromises) : undefined;
+			return Promise.all(aPromises);
 
 		}
 
@@ -3390,7 +3340,8 @@ sap.ui.define([
 				}
 
 				// collect routing related class names for async loading
-				const aModuleNames = collectRoutingClasses(oManifest);
+				const oClassMetadata = oControllerClass.getMetadata();
+				const aModuleNames = findRoutingClasses(oClassMetadata);
 
 				// lookup model classes
 				var mManifestModels = merge({}, oManifest.getEntry("/sap.ui5/models"));

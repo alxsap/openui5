@@ -12,8 +12,8 @@ sap.ui.define([
 
 	return {
 		domRef: function(oTable) {
-			var vRowMode = oTable.getRowMode();
-			var bIsTableInAutoMode = false;
+			const vRowMode = oTable.getRowMode();
+			let bIsTableInAutoMode = false;
 
 			if (vRowMode) {
 				bIsTableInAutoMode = vRowMode === RowModeType.Auto || vRowMode.isA("sap.ui.table.rowmodes.Auto");

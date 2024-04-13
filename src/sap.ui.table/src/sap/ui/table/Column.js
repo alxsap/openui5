@@ -32,21 +32,21 @@ sap.ui.define([
 ) {
 	"use strict";
 
-	var HorizontalAlign = CoreLibrary.HorizontalAlign;
-	var SortOrder = CoreLibrary.SortOrder;
-	var ValueState = CoreLibrary.ValueState;
-	var TemplateType = {
+	const HorizontalAlign = CoreLibrary.HorizontalAlign;
+	const SortOrder = CoreLibrary.SortOrder;
+	const ValueState = CoreLibrary.ValueState;
+	const TemplateType = {
 		Standard: "Standard",
 		Creation: "Creation"
 	};
-	var _private = TableUtils.createWeakMapFacade();
+	const _private = TableUtils.createWeakMapFacade();
 
 	/**
 	 * Map from cell to column.
 	 *
 	 * @type {WeakMapConstructor}
 	 */
-	var CellMap = new window.WeakMap();
+	const CellMap = new window.WeakMap();
 
 	/**
 	 * Constructor for a new Column.
@@ -63,7 +63,7 @@ sap.ui.define([
 	 * @public
 	 * @alias sap.ui.table.Column
 	 */
-	var Column = Element.extend("sap.ui.table.Column", /** @lends sap.ui.table.Column.prototype */ {metadata: {
+	const Column = Element.extend("sap.ui.table.Column", /** @lends sap.ui.table.Column.prototype */ {metadata: {
 
 		library: "sap.ui.table",
 		properties: {
@@ -371,7 +371,7 @@ sap.ui.define([
 	};
 
 	Column.prototype.setLabel = function(vLabel) {
-		var oLabel = vLabel;
+		let oLabel = vLabel;
 
 		if (typeof vLabel === "string") {
 			if (_private(this).bHasDefaultLabel) {
@@ -388,7 +388,7 @@ sap.ui.define([
 		if (oLabel && oLabel.setIsInColumnHeaderContext) {
 			oLabel.setIsInColumnHeaderContext(true);
 		}
-		var oCurrLabel = this.getLabel();
+		const oCurrLabel = this.getLabel();
 		if (oCurrLabel && oLabel !== oCurrLabel && oCurrLabel.setIsInColumnHeaderContext) {
 			oCurrLabel.setIsInColumnHeaderContext(false);
 		}
@@ -397,10 +397,10 @@ sap.ui.define([
 	};
 
 	Column.prototype.setTemplate = function(vTemplate) {
-		var oTemplate = vTemplate;
-		var oTable = this._getTable();
-		var oOldTemplate = this.getTemplate();
-		var bNewTemplate = true;
+		let oTemplate = vTemplate;
+		const oTable = this._getTable();
+		const oOldTemplate = this.getTemplate();
+		let bNewTemplate = true;
 
 		if (typeof vTemplate === "string") {
 			if (_private(this).bHasDefaulTemplate) {
@@ -434,7 +434,7 @@ sap.ui.define([
 			}
 
 			if (!oOldTemplate || !oTemplate) {
-				var oCreationRow = oTable.getCreationRow();
+				const oCreationRow = oTable.getCreationRow();
 				if (oCreationRow) {
 					oCreationRow._update();
 				}
@@ -448,8 +448,8 @@ sap.ui.define([
 		this.destroyAggregation("template");
 		this._destroyTemplateClones("Standard");
 
-		var oTable = this._getTable();
-		var oCreationRow = oTable ? oTable.getCreationRow() : null;
+		const oTable = this._getTable();
+		const oCreationRow = oTable ? oTable.getCreationRow() : null;
 
 		if (oCreationRow) {
 			oCreationRow._update();
@@ -467,13 +467,13 @@ sap.ui.define([
 	 * @ui5-restricted sap.ui.mdc
 	 */
 	Column.prototype.setCreationTemplate = function(oCreationTemplate) {
-		var oTable = this._getTable();
+		const oTable = this._getTable();
 
 		this.setAggregation("creationTemplate", oCreationTemplate, true);
 		this._destroyTemplateClones("Creation");
 
 		if (oCreationTemplate && oTable && this.getVisible()) {
-			var oCreationRow = oTable.getCreationRow();
+			const oCreationRow = oTable.getCreationRow();
 			if (oCreationRow) {
 				oCreationRow._update();
 			}
@@ -535,7 +535,7 @@ sap.ui.define([
 	};
 
 	Column.prototype._isGroupableByMenu = function() {
-		var bIsGroupableByMenu = false;
+		const bIsGroupableByMenu = false;
 
 		return bIsGroupableByMenu;
 	};
@@ -553,7 +553,7 @@ sap.ui.define([
 	};
 
 	Column.prototype._openHeaderMenu = function(oDomRef) {
-		var oHeaderMenu = this.getHeaderMenuInstance();
+		const oHeaderMenu = this.getHeaderMenuInstance();
 		ColumnHeaderMenuAdapter.activateFor(this).then(function() {
 			if (oHeaderMenu) {
 				oHeaderMenu.openBy(oDomRef);
@@ -562,7 +562,7 @@ sap.ui.define([
 	};
 
 	Column.prototype._isHeaderMenuOpen = function() {
-		var oHeaderMenu = this.getHeaderMenuInstance();
+		const oHeaderMenu = this.getHeaderMenuInstance();
 		if (oHeaderMenu) {
 			return oHeaderMenu.isOpen();
 		}
@@ -581,13 +581,13 @@ sap.ui.define([
 	 *     has no effect if the column is unsorted.
 	 */
 	Column.prototype._sort = function(sSortOrder, bAdd) {
-		var oTable = this._getTable();
+		const oTable = this._getTable();
 
 		if (!oTable || this.getSortProperty() === "") {
 			return;
 		}
 
-		var bExecuteDefault = oTable.fireSort({
+		const bExecuteDefault = oTable.fireSort({
 			column: this,
 			sortOrder: sSortOrder,
 			columnAdded: sSortOrder !== SortOrder.None && bAdd === true
@@ -608,10 +608,10 @@ sap.ui.define([
 	};
 
 	Column.prototype._updateSorters = function() {
-		var oTable = this._getTable();
-		var aSortedColumns = oTable.getSortedColumns();
-		var aColumns = oTable.getColumns();
-		var sSortOrder = this.getSortOrder();
+		const oTable = this._getTable();
+		const aSortedColumns = oTable.getSortedColumns();
+		const aColumns = oTable.getColumns();
+		const sSortOrder = this.getSortOrder();
 
 		// Reset the sorting status of all columns which are not sorted anymore.
 		for (let i = 0, l = aColumns.length; i < l; i++) {
@@ -658,16 +658,15 @@ sap.ui.define([
 	};
 
 	Column.prototype._getFilter = function() {
-
-		var oFilter,
-			sPath = this.getFilterProperty(),
-			sValue = this.getFilterValue(),
-			sOperator = this.getFilterOperator(),
-			sParsedValue,
-			sSecondaryParsedValue,
-			oType = this.getFilterType() || Column._DEFAULT_FILTER_TYPE,
-			bIsString = oType instanceof StringType,
-			aBetween;
+		let oFilter;
+		const sPath = this.getFilterProperty();
+		const sValue = this.getFilterValue();
+		let sOperator = this.getFilterOperator();
+		let sParsedValue;
+		let sSecondaryParsedValue;
+		const oType = this.getFilterType() || Column._DEFAULT_FILTER_TYPE;
+		const bIsString = oType instanceof StringType;
+		let aBetween;
 
 		if (sValue) {
 
@@ -677,22 +676,22 @@ sap.ui.define([
 				aBetween = sValue.match(/(.*)\s*\.\.\s*(.*)/);
 
 				// determine the filter operator depending on the
-				if (sValue.indexOf("=") == 0) {
+				if (sValue.indexOf("=") === 0) {
 					sOperator = FilterOperator.EQ;
 					sParsedValue = sValue.substr(1);
-				} else if (sValue.indexOf("!=") == 0) {
+				} else if (sValue.indexOf("!=") === 0) {
 					sOperator = FilterOperator.NE;
 					sParsedValue = sValue.substr(2);
-				} else if (sValue.indexOf("<=") == 0) {
+				} else if (sValue.indexOf("<=") === 0) {
 					sOperator = FilterOperator.LE;
 					sParsedValue = sValue.substr(2);
-				} else if (sValue.indexOf("<") == 0) {
+				} else if (sValue.indexOf("<") === 0) {
 					sOperator = FilterOperator.LT;
 					sParsedValue = sValue.substr(1);
-				} else if (sValue.indexOf(">=") == 0) {
+				} else if (sValue.indexOf(">=") === 0) {
 					sOperator = FilterOperator.GE;
 					sParsedValue = sValue.substr(2);
-				} else if (sValue.indexOf(">") == 0) {
+				} else if (sValue.indexOf(">") === 0) {
 					sOperator = FilterOperator.GT;
 					sParsedValue = sValue.substr(1);
 				} else if (aBetween) {
@@ -707,13 +706,13 @@ sap.ui.define([
 						sOperator = FilterOperator.LE;
 						sParsedValue = aBetween[2];
 					}
-				} else if (bIsString && sValue.indexOf("*") == 0 && sValue.lastIndexOf("*") == sValue.length - 1) {
+				} else if (bIsString && sValue.indexOf("*") === 0 && sValue.lastIndexOf("*") === sValue.length - 1) {
 					sOperator = FilterOperator.Contains;
 					sParsedValue = sValue.substr(1, sValue.length - 2);
-				} else if (bIsString && sValue.indexOf("*") == 0) {
+				} else if (bIsString && sValue.indexOf("*") === 0) {
 					sOperator = FilterOperator.EndsWith;
 					sParsedValue = sValue.substr(1);
-				} else if (bIsString && sValue.lastIndexOf("*") == sValue.length - 1) {
+				} else if (bIsString && sValue.lastIndexOf("*") === sValue.length - 1) {
 					sOperator = FilterOperator.StartsWith;
 					sParsedValue = sValue.substr(0, sValue.length - 1);
 				} else {
@@ -743,13 +742,13 @@ sap.ui.define([
 	};
 
 	Column.prototype.filter = function(sValue) {
-		var oTable = this._getTable();
+		const oTable = this._getTable();
 
 		if (!oTable?.getBinding() || this.getFilterProperty() === "") {
 			return;
 		}
 
-		var bExecuteDefault = oTable.fireFilter({
+		const bExecuteDefault = oTable.fireFilter({
 			column: this,
 			value: sValue
 		});
@@ -758,16 +757,16 @@ sap.ui.define([
 			return;
 		}
 
-		var aFilters = [];
-		var aCols = oTable.getColumns();
+		const aFilters = [];
+		const aCols = oTable.getColumns();
 
 		this.setFiltered(!!sValue);
 		this.setFilterValue(sValue);
 
-		for (var i = 0, l = aCols.length; i < l; i++) {
-			var oCol = aCols[i],
-				oFilter,
-				sState;
+		for (let i = 0, l = aCols.length; i < l; i++) {
+			const oCol = aCols[i];
+			let oFilter;
+			let sState;
 
 			try {
 				oFilter = oCol._getFilter();
@@ -775,6 +774,7 @@ sap.ui.define([
 			} catch (e) {
 				sState = ValueState.Error;
 			}
+
 			if (oFilter) {
 				aFilters.push(oFilter);
 			}
@@ -784,7 +784,7 @@ sap.ui.define([
 	};
 
 	Column.prototype._parseFilterValue = function(sValue) {
-		var oFilterType = this.getFilterType();
+		const oFilterType = this.getFilterType();
 
 		if (oFilterType) {
 			if (typeof oFilterType === "function") {
@@ -803,22 +803,22 @@ sap.ui.define([
 	 * @protected
 	 */
 	Column.prototype.shouldRender = function() {
-		var bShouldRender = this.getVisible() && this.getTemplate() != null;
+		const bShouldRender = this.getVisible() && this.getTemplate() != null;
 
 		return bShouldRender;
 	};
 
 	Column.prototype.setProperty = function(sName, vValue) {
-		var oTable = this._getTable();
-		var bValueChanged = oTable && this.getProperty(sName) != vValue;
-		var bNeedRowsUpdate = bValueChanged && sName === "visible";
-		var bInvalidateFixedColCount = bValueChanged && (sName === "visible" || sName === "headerSpan");
-		var vReturn = Element.prototype.setProperty.apply(this, arguments);
+		const oTable = this._getTable();
+		const bValueChanged = oTable && this.getProperty(sName) !== vValue;
+		const bNeedRowsUpdate = bValueChanged && sName === "visible";
+		const bInvalidateFixedColCount = bValueChanged && (sName === "visible" || sName === "headerSpan");
+		const vReturn = Element.prototype.setProperty.apply(this, arguments);
 
 		if (bNeedRowsUpdate) {
 			oTable.invalidateRowsAggregation();
 
-			var oCreationRow = oTable.getCreationRow();
+			const oCreationRow = oTable.getCreationRow();
 			if (oCreationRow) {
 				oCreationRow._update();
 			}
@@ -859,18 +859,18 @@ sap.ui.define([
 	 * });
 	 */
 	Column.prototype.setFilterType = function(vType) {
-		var oType = vType;
+		let oType = vType;
 		if (typeof (vType) === "string") {
 			try {
 				// similar to BindingParser allow to specify formatOptions and constraints for types
-				var mConfig = JSTokenizer.parseJS(vType);
+				const mConfig = JSTokenizer.parseJS(vType);
 				if (typeof (mConfig.type) === "string") {
-					var fnType = sap.ui.require(mConfig.type.replaceAll(".", "/"));
+					const fnType = sap.ui.require(mConfig.type.replaceAll(".", "/"));
 
 					oType = fnType && new fnType(mConfig.formatOptions, mConfig.constraints);
 				}
 			} catch (ex) {
-				var fnType = sap.ui.require(vType.replaceAll(".", "/"));
+				const fnType = sap.ui.require(vType.replaceAll(".", "/"));
 
 				oType = fnType && new fnType();
 			}
@@ -890,7 +890,7 @@ sap.ui.define([
 	 * @returns {int} the column index.
 	 */
 	Column.prototype.getIndex = function() {
-		var oTable = this._getTable();
+		const oTable = this._getTable();
 		if (oTable) {
 			return oTable.indexOfColumn(this);
 		} else {
@@ -915,14 +915,14 @@ sap.ui.define([
 	 * @private
 	 */
 	Column.prototype._getFreeTemplateClone = function(sTemplateType) {
-		var aTemplateClones = this._mTemplateClones[sTemplateType];
-		var oFreeTemplateClone = null;
+		const aTemplateClones = this._mTemplateClones[sTemplateType];
+		let oFreeTemplateClone = null;
 
 		if (!aTemplateClones) {
 			return null;
 		}
 
-		for (var i = 0; i < aTemplateClones.length; i++) {
+		for (let i = 0; i < aTemplateClones.length; i++) {
 			if (!aTemplateClones[i] || aTemplateClones[i].bIsDestroyed) {
 				aTemplateClones.splice(i, 1); // Remove the reference to a destroyed clone.
 				i--;
@@ -948,13 +948,13 @@ sap.ui.define([
 			return null;
 		}
 
-		var sTemplateType = sPreferredTemplateType == null ? "Standard" : sPreferredTemplateType;
-		var oClone = this._getFreeTemplateClone(sTemplateType);
+		const sTemplateType = sPreferredTemplateType == null ? "Standard" : sPreferredTemplateType;
+		let oClone = this._getFreeTemplateClone(sTemplateType);
 
 		if (!oClone && TemplateType.hasOwnProperty(sTemplateType)) {
 			// No free template clone available, create one.
-			var fnGetTemplate = this["get" + (sTemplateType === "Standard" ? "" : sTemplateType) + "Template"];
-			var oTemplate = fnGetTemplate.call(this);
+			const fnGetTemplate = this["get" + (sTemplateType === "Standard" ? "" : sTemplateType) + "Template"];
+			const oTemplate = fnGetTemplate.call(this);
 
 			if (oTemplate) {
 				oClone = oTemplate.clone();
@@ -965,7 +965,7 @@ sap.ui.define([
 		if (oClone) {
 			CellMap.set(oClone, this);
 
-			var oTable = this._getTable();
+			const oTable = this._getTable();
 			if (oTable) {
 				oTable._getAccExtension().addColumnHeaderLabel(this, oClone);
 			}
@@ -975,7 +975,7 @@ sap.ui.define([
 	};
 
 	function destroyClones(aClones) {
-		for (var i = 0; i < aClones.length; i++) {
+		for (let i = 0; i < aClones.length; i++) {
 			if (aClones[i] != null && !aClones[i].bIsDestroyed) {
 				aClones[i].destroy();
 			}
@@ -990,7 +990,7 @@ sap.ui.define([
 	 */
 	Column.prototype._destroyTemplateClones = function(sTemplateType) {
 		if (sTemplateType == null) {
-			for (var sType in TemplateType) {
+			for (const sType in TemplateType) {
 				destroyClones(this._mTemplateClones[sType]);
 			}
 			this._initTemplateClonePool();
@@ -1007,7 +1007,7 @@ sap.ui.define([
 	 * @private
 	 */
 	Column.prototype._getTable = function() {
-		var oParent = this.getParent();
+		const oParent = this.getParent();
 		return TableUtils.isA(oParent, "sap.ui.table.Table") ? oParent : null;
 	};
 

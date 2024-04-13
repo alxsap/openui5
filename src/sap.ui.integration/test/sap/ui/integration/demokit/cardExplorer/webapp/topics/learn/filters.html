@@ -16,7 +16,7 @@
 				Filters allow end users to refine displayed data based on selected criteria.
 			</p>
 			<p>
-				Filters are defined in the &quot;configuration&quot; section of the manifest.
+				Filters are defined in the "configuration" section of the manifest.
 				The card developer choses the type of each filter, its initial value and the available options for the end user.
 				In order to make the filter functional its value has to be bound to the data requests made by the card.
 				All filters provide access to their current value through the <code>filters</code> model.
@@ -39,16 +39,16 @@
 					<tr>
 						<td>type</td>
 						<td>string</td>
-						<td>&quot;Select&quot;</td>
+						<td>"Select"</td>
 						<td>No</td>
 						<td>
 							The type of the filter. Based on this value additional properties of the filter are available.
 							Possible values are:
 							<ul>
-								<li>&quot;ComboBox&quot; - see <a href="../../index.html#/learn/filters/comboBox" target="_parent">Combo Box Filter</a></li>
-								<li>&quot;DateRange&quot; - see <a href="../../index.html#/learn/filters/dateRange" target="_parent">DateRange Filter</a></li>
-								<li>&quot;Search&quot; - see <a href="../../index.html#/learn/filters/search" target="_parent">Search Filter</a></li>
-								<li>&quot;Select&quot; - see <a href="../../index.html#/learn/filters/select" target="_parent">Select Filter</a></li>
+								<li>"ComboBox" - see <a href="../../index.html#/learn/filters/comboBox" target="_parent">Combo Box Filter</a></li>
+								<li>"DateRange" - see <a href="../../index.html#/learn/filters/dateRange" target="_parent">DateRange Filter</a></li>
+								<li>"Search" - see <a href="../../index.html#/learn/filters/search" target="_parent">Search Filter</a></li>
+								<li>"Select" - see <a href="../../index.html#/learn/filters/select" target="_parent">Select Filter</a></li>
 							</ul>
 						</td>
 						<td>1.24.0</td>
@@ -78,7 +78,7 @@
 			<h2 id="filtersModel">Filters Model</h2>
 			<p>
 				The value of each filter is stored in the <code>filters</code> model.
-				It can be referenced throughout the manifest with the following syntax: <code>{filters&gt;/keyOfTheFilter/value}</code>.
+				It can be referenced throughout the manifest with the following syntax: <code>{filters>/keyOfTheFilter/value}</code>.
 				Depending on the filter type different values are available.
 			</p>
 		</div>

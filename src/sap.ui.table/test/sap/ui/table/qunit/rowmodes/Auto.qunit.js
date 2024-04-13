@@ -25,7 +25,7 @@ sap.ui.define([
 ) {
 	"use strict";
 
-	var HeightTestControl = TableQUnitUtils.HeightTestControl;
+	const HeightTestControl = TableQUnitUtils.HeightTestControl;
 
 	TableQUnitUtils.setDefaultSettings({
 		rowMode: new AutoRowMode(),
@@ -63,7 +63,7 @@ sap.ui.define([
 	});
 
 	QUnit.test("Resize", function(assert) {
-		var that = this;
+		const that = this;
 
 		return this.oTable.qunit.resize({height: "765px"}).then(function() {
 			assert.equal(that.oTable.getRows().length, 9, "Row count after decreasing height");
@@ -73,7 +73,7 @@ sap.ui.define([
 	});
 
 	QUnit.test("Changing visibility of an extension", function(assert) {
-		var that = this;
+		const that = this;
 
 		this.oTable.getExtension()[0].setVisible(false);
 
@@ -86,7 +86,7 @@ sap.ui.define([
 	});
 
 	QUnit.test("Changing visibility of the footer", function(assert) {
-		var that = this;
+		const that = this;
 
 		this.oTable.getFooter().setVisible(false);
 
@@ -99,7 +99,7 @@ sap.ui.define([
 	});
 
 	QUnit.test("Changing visibility of the creation row", function(assert) {
-		var that = this;
+		const that = this;
 
 		this.oTable.getCreationRow().setVisible(false);
 
@@ -127,9 +127,9 @@ sap.ui.define([
 	});
 
 	QUnit.test("Initialize with hideEmptyRows=false", function(assert) {
-		var oDisableNoDataSpy = sinon.spy(AutoRowMode.prototype, "disableNoData");
-		var oEnableNoDataSpy = sinon.spy(AutoRowMode.prototype, "enableNoData");
-		var oTableInvalidateSpy = sinon.spy(this.oTable, "invalidate");
+		const oDisableNoDataSpy = sinon.spy(AutoRowMode.prototype, "disableNoData");
+		const oEnableNoDataSpy = sinon.spy(AutoRowMode.prototype, "enableNoData");
+		const oTableInvalidateSpy = sinon.spy(this.oTable, "invalidate");
 
 		this.oTable.setAggregation("rowMode", new AutoRowMode().setHideEmptyRows(false));
 
@@ -144,9 +144,9 @@ sap.ui.define([
 	});
 
 	QUnit.test("Initialize with hideEmptyRows=true", function(assert) {
-		var oDisableNoDataSpy = sinon.spy(AutoRowMode.prototype, "disableNoData");
-		var oEnableNoDataSpy = sinon.spy(AutoRowMode.prototype, "enableNoData");
-		var oTableInvalidateSpy = sinon.spy(this.oTable, "invalidate");
+		const oDisableNoDataSpy = sinon.spy(AutoRowMode.prototype, "disableNoData");
+		const oEnableNoDataSpy = sinon.spy(AutoRowMode.prototype, "enableNoData");
+		const oTableInvalidateSpy = sinon.spy(this.oTable, "invalidate");
 
 		this.oTable.setAggregation("rowMode", new AutoRowMode().setHideEmptyRows(true));
 
@@ -161,9 +161,9 @@ sap.ui.define([
 	});
 
 	QUnit.test("Change 'hideEmptyRows' property", function(assert) {
-		var oRowMode = new AutoRowMode();
-		var oDisableNoData = sinon.spy(oRowMode, "disableNoData");
-		var oEnableNoData = sinon.spy(oRowMode, "enableNoData");
+		const oRowMode = new AutoRowMode();
+		const oDisableNoData = sinon.spy(oRowMode, "disableNoData");
+		const oEnableNoData = sinon.spy(oRowMode, "enableNoData");
 
 		oRowMode.setHideEmptyRows(false);
 		assert.ok(oDisableNoData.notCalled, "Change from true to false: #disableNoData was not called");
@@ -220,9 +220,9 @@ sap.ui.define([
 	});
 
 	QUnit.test("Resize", function(assert) {
-		var oGetContextsSpy = this.oGetContextsSpy;
-		var oTable = this.createTable();
-		var iFirstVisibleRow;
+		const oGetContextsSpy = this.oGetContextsSpy;
+		const oTable = this.createTable();
+		let iFirstVisibleRow;
 
 		return oTable.qunit.whenRenderingFinished().then(function() {
 			oGetContextsSpy.resetHistory();
@@ -271,7 +271,7 @@ sap.ui.define([
 		}).then(oTable.qunit.whenRenderingFinished).then(function() {
 			oGetContextsSpy.resetHistory();
 		}).then(oTable.qunit.resetSize).then(function() {
-			var iRowCount = oTable.getRowMode().getComputedRowCounts().count;
+			const iRowCount = oTable.getRowMode().getComputedRowCounts().count;
 			assert.strictEqual(oGetContextsSpy.callCount, 1,
 				"Height increased when scrolled to bottom: Method to get contexts called once");
 			assert.ok(oGetContextsSpy.calledWithExactly(100 - iRowCount, iRowCount, 100),
@@ -320,7 +320,7 @@ sap.ui.define([
 	});
 
 	RowsUpdatedTest.test("Render when theme not applied", function(assert) {
-		var oIsThemeApplied = sinon.stub(TableUtils, "isThemeApplied").returns(false);
+		const oIsThemeApplied = sinon.stub(TableUtils, "isThemeApplied").returns(false);
 		this.createTable();
 		return this.checkRowsUpdated(assert, []).then(() => {
 			this.resetRowsUpdatedSpy();
@@ -362,7 +362,7 @@ sap.ui.define([
 	// To add a test case where the table does not need to adjust the row count to the avialable space after rendering.
 	function testWithStableRowCount(fnTest) {
 		return fnTest().then(() => {
-			var oRowMode = TableQUnitUtils.getDefaultSettings().rowMode;
+			const oRowMode = TableQUnitUtils.getDefaultSettings().rowMode;
 
 			oRowMode.minRowCount = 10;
 			oRowMode.maxRowCount = 10;

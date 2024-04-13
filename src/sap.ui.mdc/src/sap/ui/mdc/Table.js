@@ -21,7 +21,6 @@ sap.ui.define([
 	"sap/m/table/Util",
 	"sap/m/table/columnmenu/Menu",
 	"sap/m/MessageBox",
-	"sap/m/plugins/PluginBase",
 	"sap/ui/core/Element",
 	"sap/ui/core/Lib",
 	"sap/ui/core/format/NumberFormat",
@@ -29,6 +28,7 @@ sap.ui.define([
 	"sap/ui/core/library",
 	"sap/ui/events/KeyCodes",
 	"sap/ui/model/base/ManagedObjectModel",
+	"sap/ui/model/BindingMode",
 	"sap/base/strings/capitalize",
 	"sap/base/util/deepEqual",
 	"sap/base/util/Deferred",
@@ -42,7 +42,6 @@ sap.ui.define([
 	"sap/ui/mdc/actiontoolbar/ActionToolbarAction",
 	"sap/ui/mdc/table/menu/QuickActionContainer",
 	"sap/ui/mdc/table/menu/ItemContainer",
-	"sap/ui/mdc/enums/ProcessingStrategy",
 	"sap/ui/core/theming/Parameters",
 	"sap/base/Log",
 	"sap/ui/performance/trace/FESRHelper",
@@ -73,7 +72,6 @@ sap.ui.define([
 	MTableUtil,
 	ColumnMenu,
 	MessageBox,
-	PluginBase,
 	Element,
 	Library,
 	NumberFormat,
@@ -81,6 +79,7 @@ sap.ui.define([
 	coreLibrary,
 	KeyCodes,
 	ManagedObjectModel,
+	BindingMode,
 	capitalize,
 	deepEqual,
 	Deferred,
@@ -94,7 +93,6 @@ sap.ui.define([
 	ActionToolbarAction,
 	QuickActionContainer,
 	ItemContainer,
-	ProcessingStrategy,
 	ThemeParameters,
 	Log,
 	FESRHelper,
@@ -838,6 +836,7 @@ sap.ui.define([
 				 * @since 1.75
 				 */
 				beforeExport: {
+					allowPreventDefault: true,
 					parameters: {
 						/**
 						 * Contains <code>workbook.columns, dataSource</code>, and other export-related information.
@@ -985,6 +984,7 @@ sap.ui.define([
 		this._setupPropertyInfoStore("propertyInfo");
 
 		this._oManagedObjectModel = new ManagedObjectModel(this);
+		this._oManagedObjectModel.setDefaultBindingMode(BindingMode.OneWay);
 		this.setModel(this._oManagedObjectModel, "$sap.ui.mdc.Table");
 	};
 
@@ -1217,7 +1217,7 @@ sap.ui.define([
 	};
 
 	Table.prototype.setType = function(vType) {
-		if (!this.bCreated || this.getType() == vType) {
+		if (!this.bCreated ) {
 			return this.setAggregation("type", vType, true);
 		}
 
@@ -1585,11 +1585,7 @@ sap.ui.define([
 					tooltip: oRb.getText("infobar.REMOVEALLFILTERS"),
 					icon: "sap-icon://decline",
 					press: function() {
-						// Clear all filters. Makes current variant dirty.
-						PersonalizationUtils.createFilterChange(oTable, {
-							conditions: [],
-							strategy: ProcessingStrategy.FullReplace
-						});
+						PersonalizationUtils.createClearFiltersChange(oTable);
 						oTable.focus();
 					}
 				})
@@ -1902,7 +1898,7 @@ sap.ui.define([
 			this._oTable.removeAriaLabelledBy(this.getId() + "-invisibleTitle");
 		} else if (this._oTable && !this._oInvisibleTitle && this.getHideToolbar()) {
 			this._oInvisibleTitle = new InvisibleText(this.getId() + "-invisibleTitle", {
-				text: "{= ${$sap.ui.mdc.Table>/header} }"
+				text: "{$sap.ui.mdc.Table>/header}"
 			}).toStatic();
 			this._oTable.addAriaLabelledBy(this.getId() + "-invisibleTitle");
 		// When the table type changes, the aria label reference gets deleted thus needs to be recreated
@@ -2446,9 +2442,9 @@ sap.ui.define([
 
 		return new Promise((fnResolve, fnReject) => {
 			Promise.all([
-				that._loadExportLibrary(), that.getControlDelegate().fetchExportCapabilities(that)
+				that.getControlDelegate().fetchExportCapabilities(that), Library.load({name: "sap.ui.export"})
 			]).then((aResult) => {
-				const oExportCapabilities = aResult[1];
+				const [oExportCapabilities] = aResult;
 
 				sap.ui.require(["sap/ui/export/ExportHandler"], (ExportHandler) => {
 					that._oExportHandler = new ExportHandler(oExportCapabilities);
@@ -2490,25 +2486,15 @@ sap.ui.define([
 			}
 		});
 
-		this.fireBeforeExport({
+		const bExecuteDefaultAction = this.fireBeforeExport({
 			exportSettings: oEvent.getParameter("exportSettings"),
 			userExportSettings: oEvent.getParameter("userExportSettings"),
 			filterSettings: aFilters
 		});
-	};
 
-	/**
-	 * Returns promise after loading the export library. The Promise
-	 * will be resolved with a reference to the export library.
-	 *
-	 * @returns {Promise} export library promise
-	 * @private
-	 */
-	Table.prototype._loadExportLibrary = function() {
-		if (!this._oExportLibLoadPromise) {
-			this._oExportLibLoadPromise = Library.load({name: "sap.ui.export"});
+		if (!bExecuteDefaultAction) {
+			oEvent.preventDefault();
 		}
-		return this._oExportLibLoadPromise;
 	};
 
 	/**

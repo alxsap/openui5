@@ -6,10 +6,10 @@ sap.ui.define(["sap/ui/core/Lib"], function(Library) {
 	QUnit.module("Library", {});
 
 	QUnit.test("load", function(assert) {
-		var done = assert.async();
-		var oPromise = Library.load("sap.ui.table");
+		const done = assert.async();
+		const oPromise = Library.load("sap.ui.table");
 		oPromise.then(function() {
-			var tableNamespace = sap.ui.require("sap/ui/table/library");
+			const tableNamespace = sap.ui.require("sap/ui/table/library");
 			assert.ok(!!tableNamespace, "Table Lib loaded");
 			done();
 		});

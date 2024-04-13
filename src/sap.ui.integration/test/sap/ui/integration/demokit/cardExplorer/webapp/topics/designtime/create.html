@@ -27,13 +27,13 @@
 				Editor of the card.<br> Add a label that is translatable to the setting for better usability.
 			</p>
 			<pre class="lang-json">
-&quot;sap.card&quot;: {
-	&quot;configuration&quot;: {
-		&quot;destinations&quot;: {
-			&quot;destinationName&quot;: {
-				&quot;name&quot;: &quot;Northwind&quot;,
-				&quot;defaultUrl&quot;: &quot;https://testurl.test&quot;,
-				&quot;label&quot;: &quot;{{TRANSLATABLE_LABEL}}&quot;
+"sap.card": {
+	"configuration": {
+		"destinations": {
+			"destinationName": {
+				"name": "Northwind",
+				"defaultUrl": "https://testurl.test",
+				"label": "{{TRANSLATABLE_LABEL}}"
 			}
 		}
 	}
@@ -42,19 +42,19 @@
 				The label property with other ones can be set as destination parameters in Configuration Module too. <a href="../../index.html#/explore/playground/designtimeDestinations" target="_parent">Example</a>.
 			</p>
 			<pre class="lang-json">
-&quot;destinationName.destination&quot;: {
-	&quot;type&quot;: &quot;destination&quot;,
-	&quot;label&quot;: &quot;label of Northwind defined in dt&quot;,
-	&quot;editable&quot;: false,
-	&quot;visible&quot;: true,
-	&quot;sorter&quot;: [{
-		&quot;path&quot;: &quot;name&quot;,
-		&quot;descending&quot;: true
+"destinationName.destination": {
+	"type": "destination",
+	"label": "label of Northwind defined in dt",
+	"editable": false,
+	"visible": true,
+	"sorter": [{
+		"path": "name",
+		"descending": true
 	}],
-	&quot;filter&quot;: {
-		&quot;path&quot;: &quot;name&quot;,
-		&quot;operator&quot;: &quot;Contains&quot;,
-		&quot;value1&quot;: &quot;t&quot;
+	"filter": {
+		"path": "name",
+		"operator": "Contains",
+		"value1": "t"
 	}
 }</pre>
 
@@ -63,23 +63,23 @@
 				Advanced design-time configuration and implementation should happen outside the manifest of the card.
 				With that, design-time code will not harm or influence the runtime or the card instance for the end-user.
 
-				<br> Create a folder &quot;dt&quot; besides the manifest.json to store all configuration related artifacts. Create
+				<br> Create a folder "dt" besides the manifest.json to store all configuration related artifacts. Create
 				a designtime.js file in this new folder.<br> Add the following initial module setup into the js file.
 			</p>
 			<pre class="lang-js">
-sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
+sap.ui.define(["sap/ui/integration/Designtime"], function (
 	Designtime
 ) {
-	&quot;use strict&quot;;
+	"use strict";
 	return function () {
 		return new Designtime({
-			&quot;form&quot;: {
-				&quot;items&quot;: {
+			"form": {
+				"items": {
 					// here goes the configuration
 				}
 			},
-			&quot;preview&quot;: {
-				&quot;modes&quot;: &quot;Abstract&quot;
+			"preview": {
+				"modes": "Abstract"
 			}
 		});
 	};
@@ -91,10 +91,10 @@ sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
 			</p>
 
 			<pre class="lang-json">
-&quot;sap.card&quot;: {
-	&quot;configuration&quot;: {&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;
-		&quot;editor&quot;: &quot;dt/configuration&quot;
-	}&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;
+"sap.card": {
+	"configuration": {​​​​​
+		"editor": "dt/configuration"
+	}​​​​​​​​​​​​​​​​​​​
 }
 </pre>
 			<p>

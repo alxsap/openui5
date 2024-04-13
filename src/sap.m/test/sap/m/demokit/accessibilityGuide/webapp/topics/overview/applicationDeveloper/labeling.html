@@ -15,18 +15,18 @@
 
 			<h2 id="label-inputs">Providing Labels for Input Controls.</h2>
 			<pre class="lang-xml">
-<mark>&lt;Label text=&quot;First Name&quot; labelFor=&quot;name&quot; /&gt;</mark>
-&lt;Input id=&quot;name&quot; /&gt;</pre>
+<mark>&lt;Label text="First Name" labelFor="name" /></mark>
+&lt;Input id="name" /></pre>
 			<a class="try-button" href="../../../index.html#/explore/simpleForm" target="_parent">See Example</a>
 			<p>Other controls also allow labeling:</p>
 			<pre class="lang-xml">
 &lt;!-- RangeSlider --&gt;
-&lt;Label width=&quot;150px&quot; class=&quot;sapUiSmallMarginBeginEnd&quot; <mark>labelFor=&quot;rangeSlider&quot;</mark> text=&quot;RangeSlider:&quot;/&gt;
-&lt;RangeSlider width=&quot;500px&quot; <mark>id=&quot;rangeSlider&quot;</mark> value=&quot;20&quot; value2=&quot;80&quot; min=&quot;0&quot; max=&quot;100&quot; enableTickmarks=&quot;true&quot;/&gt;
+&lt;Label width="150px" class="sapUiSmallMarginBeginEnd" <mark>labelFor="rangeSlider"</mark> text="RangeSlider:"/&gt;
+&lt;RangeSlider width="500px" <mark>id="rangeSlider"</mark> value="20" value2="80" min="0" max="100" enableTickmarks="true"/&gt;
 
 &lt;!-- RatingIndicator --&gt;
-&lt;Label width=&quot;150px&quot; class=&quot;sapUiSmallMarginBeginEnd&quot; <mark>labelFor=&quot;ratingIndicator&quot;</mark> text=&quot;RatingIndicator:&quot;/&gt;
-&lt;RatingIndicator <mark>id=&quot;ratingIndicator&quot;</mark> value=&quot;5&quot; maxValue=&quot;10&quot;/&gt;
+&lt;Label width="150px" class="sapUiSmallMarginBeginEnd" <mark>labelFor="ratingIndicator"</mark> text="RatingIndicator:"/&gt;
+&lt;RatingIndicator <mark>id="ratingIndicator"</mark> value="5" maxValue="10"/&gt;
 			</pre>
 			<a class="try-button" href="../../../index.html#/explore/inputs" target="_parent">See Example</a>
 
@@ -34,44 +34,44 @@
 			<p>Other possibility to further enhance the accessibility of the element is via the <code>ariaDescribedBy</code> association.</p>
 			<pre class="lang-xml">
 &lt;Input
-	value=&quot;Notebook 17&quot;
-	<mark>ariaDescribedBy=&quot;descriptionNodeId&quot;</mark>
-	width=&quot;400px&quot;
-	fieldWidth=&quot;75%&quot;
-	class=&quot;sapUiSmallMarginBottom&quot; /&gt;
-&lt;core:InvisibleText <mark>id=&quot;descriptionNodeId&quot;</mark> text=&quot;Additional input description referenced by aria-describedby.&quot; /&gt;
+	value="Notebook 17"
+	<mark>ariaDescribedBy="descriptionNodeId"</mark>
+	width="400px"
+	fieldWidth="75%"
+	class="sapUiSmallMarginBottom" /&gt;
+&lt;core:InvisibleText <mark>id="descriptionNodeId"</mark> text="Additional input description referenced by aria-describedby." /&gt;
 			</pre>
 
-			<p>You can also use the <code>description</code> property to add additional information. For the input, the description is often used for showing the unit of measurement (for example. &quot;EUR&quot;). 
+			<p>You can also use the <code>description</code> property to add additional information. For the input, the description is often used for showing the unit of measurement (for example. "EUR"). 
 				In the example below, we provide the product category (IT Laptops).
 			</p>
 			<pre class="lang-xml">
 &lt;Input
-	value=&quot;Notebook 17&quot;
-	<mark>description=&quot;IT Laptops&quot;</mark>
-	width=&quot;400px&quot;
-	fieldWidth=&quot;75%&quot;
-	class=&quot;sapUiSmallMarginBottom&quot; /&gt;
+	value="Notebook 17"
+	<mark>description="IT Laptops"</mark>
+	width="400px"
+	fieldWidth="75%"
+	class="sapUiSmallMarginBottom" /&gt;
 			</pre>
 			<a class="try-button" href="../../../index.html#/explore/inputsDescription" target="_parent">See Example</a>
 
 			<h2 id="title-tables">Providing Titles for Tables</h2>
 			<pre class="lang-xml">
-<mark>&lt;Title id=&quot;title&quot; text=&quot;Products&quot; /&gt;
-&lt;Table ariaLabelledBy=&quot;title&quot;&gt;</mark>
+<mark>&lt;Title id="title" text="Products" /&gt;
+&lt;Table ariaLabelledBy="title"&gt;</mark>
 	&lt;columns&gt;
-		&lt;Column width=&quot;11rem&quot;&gt;
-			&lt;Text text=&quot;Product Name&quot; /&gt;
+		&lt;Column width="11rem"&gt;
+			&lt;Text text="Product Name" /&gt;
 		&lt;/Column&gt;
-		&lt;Column width=&quot;11rem&quot;&gt;
-			&lt;Text text=&quot;Product Id&quot; /&gt;
+		&lt;Column width="11rem">
+			&lt;Text text="Product Id" /&gt;
 		&lt;/Column&gt;
 	&lt;/columns&gt;
 	&lt;items&gt;
 		&lt;ColumnListItem&gt;
 			&lt;cells&gt;
-				&lt;ObjectIdentifier title=&quot;Notebook&quot; /&gt;
-				&lt;ObjectIdentifier title=&quot;00001&quot; /&gt;
+				&lt;ObjectIdentifier title="Notebook" /&gt;
+				&lt;ObjectIdentifier title="00001" /&gt;
 			&lt;/cells&gt;
 		&lt;/ColumnListItem&gt;
 	&lt;/items&gt;
@@ -80,17 +80,17 @@
 
 			<h2 id="alt-images">Providing Text Alternative for Images and Icons</h2>
 			<p>All semantic non-text content like icons, images, videos has to have a text alternative and you can provide such text using the <code>alt</code> property.
-				Only purely decorative elements don&#x2019;t require such text alternative, 
+				Only purely decorative elements don’t require such text alternative, 
 				but if a decorative image covers a considerable amount of space, specifically on touch devices, we recommend to give a crisp description.
 			</p>
 			<pre class="lang-xml">
-&lt;Image src=&quot;IMAGE_PATH&quot; <mark>alt=&quot;This is an image showing an elephant&quot;</mark> decorative=false /&gt;
+&lt;Image src="IMAGE_PATH" <mark>alt="This is an image showing an elephant"</mark> decorative=false /&gt;
 			</pre>
 
 			<h2 id="tooltip-buttons">Providing Tooltips for Icon-Only Buttons</h2>
 			<p>Icon-only sap.m.Button should have a tooltip.</p>
 			<pre class="lang-xml">
-&lt;Button icon=&quot;sap-icon://action&quot; press=&quot;.onPress&quot; <mark>tooltip=&quot;Action Name&quot;</mark> /&gt;
+&lt;Button icon="sap-icon://action" press=".onPress" <mark>tooltip="Action Name"</mark> /&gt;
 			</pre>
 
 			<h2 id="label-popups">Providing Labels for Popups</h2>
@@ -98,9 +98,9 @@
 
 			<h3>sap.m.Dialog</h3>
 			<pre class="lang-xml">
-&lt;Dialog ariaLabelledBy=&quot;title&quot; title=&quot;Product&quot;&gt;
+&lt;Dialog ariaLabelledBy="title" title="Product"&gt;
 	&lt;content&gt;
-		<mark>&lt;Text id=&quot;title&quot; text=&quot;Notebook&quot; /&gt;</mark>
+		<mark>&lt;Text id="title" text="Notebook" /&gt;</mark>
 	&lt;/content&gt;
 &lt;/Dialog&gt;</pre>
 			<a class="try-button" href="../../../index.html#/explore/dialog" target="_parent">See Example</a>
@@ -108,21 +108,21 @@
 			<h3>sap.m.Popover</h3>
 			<pre class="lang-js">
 new Popover({
-	title: &quot;Title Text&quot;,
+	title: "Title Text",
 	content: [
 		new VBox({
 			items: [
 				new Text({
-				<mark>id: &quot;popoverContentText&quot;,</mark>
-					text: &quot;This text will be read out by the screen reader,
+				<mark>id: "popoverContentText",</mark>
+					text: "This text will be read out by the screen reader,
 						as it is internally connected to the Popover
-						via the aria-labelledby attribute.&quot;
-				}).addStyleClass(&quot;sapUiSmallMarginTopBottom&quot;)
+						via the aria-labelledby attribute."
+				}).addStyleClass("sapUiSmallMarginTopBottom")
 			]
 		})
 	],
 	<mark>ariaLabelledBy: [
-		&quot;popoverContentText&quot;
+		"popoverContentText"
 	]</mark>
 });
 			</pre>
@@ -133,31 +133,31 @@ new Popover({
 
 			<h3>sap.m.Popover</h3>
 			<pre class="lang-xml">
-&lt;Popover xmlns=&quot;sap.m&quot; <mark>ariaDescribedBy=&quot;content&quot;</mark>&gt;
-	&lt;Text <mark>id=&quot;content&quot;</mark> text=&quot;Some Text&quot; /&gt;
+&lt;Popover xmlns="sap.m" <mark>ariaDescribedBy="content"</mark>&gt;
+	&lt;Text <mark>id="content"</mark> text="Some Text" /&gt;
 &lt;/Popover&gt;
 			</pre>
 			<a class="try-button" href="../../../index.html#/explore/popoverDescribedby" target="_parent">See Example</a>
 
 			<h3>sap.m.Dialog</h3>
 			<pre class="lang-xml">
-&lt;Dialog xmlns=&quot;sap.m&quot; <mark>ariaDescribedBy=&quot;content&quot;</mark>&gt;
-	&lt;Text <mark>id=&quot;content&quot;</mark> text=&quot;Some Text&quot; /&gt;
+&lt;Dialog xmlns="sap.m" <mark>ariaDescribedBy="content"</mark>&gt;
+	&lt;Text <mark>id="content"</mark> text="Some Text" /&gt;
 &lt;/Dialog&gt;
 			</pre>
 
 			<h3>Providing Accessible Name for sap.m.SegmentedButton</h3>
 <pre class="lang-js">
-new sap.ui.core.InvisibleText(&quot;geographicLocation&quot;, {
-	text: &quot;Geographic location&quot;
+new sap.ui.core.InvisibleText("geographicLocation", {
+	text: "Geographic location"
 }).toStatic();
 
 new sap.m.SegmentedButton({
-	<mark>ariaLabelledBy: &quot;geographicLocation&quot;,</mark>
+	<mark>ariaLabelledBy: "geographicLocation",</mark>
 	items: [
-		new sap.m.SegmentedButtonItem({text: &quot;Map&quot;}),
-		new sap.m.SegmentedButtonItem({text: &quot;Satellite&quot;, key: &quot;satellite&quot;}),
-		new sap.m.SegmentedButtonItem({text: &quot;Hybrid&quot;}),
+		new sap.m.SegmentedButtonItem({text: "Map"}),
+		new sap.m.SegmentedButtonItem({text: "Satellite", key: "satellite"}),
+		new sap.m.SegmentedButtonItem({text: "Hybrid"}),
 	]
 });
 </pre>

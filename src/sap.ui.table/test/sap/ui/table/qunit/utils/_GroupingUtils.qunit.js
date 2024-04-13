@@ -21,18 +21,18 @@ sap.ui.define([
 ) {
 	"use strict";
 
-	var createTables = window.createTables;
-	var destroyTables = window.destroyTables;
-	var getCell = window.getCell;
-	var getColumnHeader = window.getColumnHeader;
-	var getRowHeader = window.getRowHeader;
-	var getRowAction = window.getRowAction;
-	var getSelectAll = window.getSelectAll;
+	const createTables = window.createTables;
+	const destroyTables = window.destroyTables;
+	const getCell = window.getCell;
+	const getColumnHeader = window.getColumnHeader;
+	const getRowHeader = window.getRowHeader;
+	const getRowAction = window.getRowAction;
+	const getSelectAll = window.getSelectAll;
 	window.iNumberOfRows;
-	var initRowActions = window.initRowActions;
-	var fakeSumRow = window.fakeSumRow;
-	var fakeGroupRow = window.fakeGroupRow;
-	var Grouping = TableUtils.Grouping;
+	const initRowActions = window.initRowActions;
+	const fakeSumRow = window.fakeSumRow;
+	const fakeGroupRow = window.fakeGroupRow;
+	const Grouping = TableUtils.Grouping;
 
 	QUnit.module("Misc");
 
@@ -102,7 +102,7 @@ sap.ui.define([
 			assert.strictEqual(TableUtils.Grouping.getHierarchyMode(this.oTable), sExpectedMode, sMessage);
 		},
 		assertAccessors: function(assert, bFlat, bGroup, bTree) {
-			var sModeCSSClass = null;
+			let sModeCSSClass = null;
 
 			if (bGroup) {
 				sModeCSSClass = "sapUiTableGroupMode";
@@ -186,10 +186,10 @@ sap.ui.define([
 	});
 
 	QUnit.test("Table invalidation", function(assert) {
-		var oInvalidate = this.spy(this.oTable, "invalidate");
-		var sCurrentMode = "default flat";
-		var mGroupModeSetter = {};
-		var HierarchyMode = Grouping.HierarchyMode;
+		const oInvalidate = this.spy(this.oTable, "invalidate");
+		let sCurrentMode = "default flat";
+		const mGroupModeSetter = {};
+		const HierarchyMode = Grouping.HierarchyMode;
 
 		mGroupModeSetter["default flat"] = Grouping.setToDefaultFlatMode.bind(Grouping, this.oTable);
 		mGroupModeSetter["default group"] = Grouping.setToDefaultGroupMode.bind(Grouping, this.oTable);
@@ -240,7 +240,7 @@ sap.ui.define([
 	});
 
 	QUnit.test("showGroupMenuButton", function(assert) {
-		var bOrigDesktop = Device.system.desktop;
+		const bOrigDesktop = Device.system.desktop;
 
 		Device.system.desktop = false;
 		assert.ok(!Grouping.showGroupMenuButton(new Table()), "sap.ui.table.Table / no desktop");
@@ -256,8 +256,8 @@ sap.ui.define([
 	});
 
 	QUnit.test("calcGroupIndent", function(assert) {
-		var oRow = new Row();
-		var oRowGetLevel = sinon.stub(oRow, "getLevel");
+		const oRow = new Row();
+		const oRowGetLevel = sinon.stub(oRow, "getLevel");
 
 		oRowGetLevel.returns(1);
 		assert.strictEqual(Grouping.calcGroupIndent(oRow), 0, "Level 1");
@@ -279,8 +279,8 @@ sap.ui.define([
 	});
 
 	QUnit.test("calcTreeIndent", function(assert) {
-		var oRow = new Row();
-		var oRowGetLevel = sinon.stub(oRow, "getLevel");
+		const oRow = new Row();
+		const oRowGetLevel = sinon.stub(oRow, "getLevel");
 
 		oRowGetLevel.returns(1);
 		assert.strictEqual(Grouping.calcTreeIndent(oRow), 0, "Level 1");
@@ -427,7 +427,7 @@ sap.ui.define([
 	});
 
 	QUnit.test("GroupMenuButton", async function(assert) {
-		var oGroupMenuButton;
+		let oGroupMenuButton;
 
 		this.oTreeTable.setUseGroupMode(true);
 		await this.oTreeTable.qunit.whenRenderingFinished();

@@ -21,7 +21,7 @@
 		to the following URLs depending on your development setup.<br><br>
 		Start the Sales Orders V2 application with the English locale:
 		<ul>
-			<li><a href="http://localhost:8080/test-resources/sap/ui/core/internal/samples/odata/v2/SalesOrders/index.html?sap-language=en&amp;realOData=true">
+			<li><a href="http://localhost:8080/test-resources/sap/ui/core/internal/samples/odata/v2/SalesOrders/index.html?sap-language=en&realOData=true">
 			http://localhost:8080/test-resources/sap/ui/core/internal/samples/odata/v2/SalesOrders/index.html?sap-language=en&amp;realOData=true
 			</a></li>
 		</ul>
@@ -45,10 +45,10 @@
 			<li>If the <strong>note</strong> of the sales order is empty the service returns a
 				warning message for that sales order note to enter a note.
 			</li>
-			<li>If the <strong>note</strong> of the sales order has a prefix &quot;Error:&quot;, &quot;Warning:&quot;,
-				&quot;Info:&quot; or &quot;Success:&quot; then the service returns a message for that note with the
+			<li>If the <strong>note</strong> of the sales order has a prefix "Error:", "Warning:",
+				"Info:" or "Success:" then the service returns a message for that note with the
 				corresponding message severity and the message text as given in the note after the
-				&quot;:&quot;.
+				":".
 			</li>
 		</ul>
 		<h4>Checks for a Sales Order Item</h4>
@@ -56,10 +56,10 @@
 			<li>If the <strong>note</strong> of the sales order item is empty the service returns a
 				warning message for that sales order item note to enter a note.
 			</li>
-			<li>If the <strong>note</strong> of the sales order item has a prefix &quot;Error:&quot;,
-				&quot;Warning:&quot;, &quot;Info:&quot; or &quot;Success:&quot; then the service returns a message for that sales
+			<li>If the <strong>note</strong> of the sales order item has a prefix "Error:",
+				"Warning:", "Info:" or "Success:" then the service returns a message for that sales
 				order item note with the corresponding message severity and the message text as
-				given in the note after the &quot;:&quot;.
+				given in the note after the ":".
 			</li>
 			<li>If the <strong>quantity</strong> of the sales order item is <strong>0</strong> then
 				the service returns an error message for that quantity indicating that the quantity
@@ -72,7 +72,7 @@
 			<li>If the <strong>quantity</strong> of the sales order item is greater than
 				<strong>1</strong> for the <strong>product</strong> <strong>HT-1022</strong> then
 				the service returns a multi target warning message which points simultaneously to
-				the quantity and the note field until the note has a &quot;Reason:&quot; prefix.
+				the quantity and the note field until the note has a "Reason:" prefix.
 			</li>
 			<li>If the <strong>product</strong> of the sales order item is <strong>HT-1110</strong>
 				then the service returns a warning message for the product ID of the associated
@@ -81,7 +81,7 @@
 			</li>
 			<li>If the <strong>product</strong> of the sales order item is <strong>HT-1501</strong>,
 				the service returns an information message for the currency of that sales order item
-				indicating that the currency &apos;JPY&apos; should be avoided.
+				indicating that the currency 'JPY' should be avoided.
 			</li>
 		</ul>
 		<h3>Finding a Sales Order</h3>
@@ -107,8 +107,8 @@
 		Copy the resulting JSON and paste it into the console of the Chrome Developer Tools and
 		press enter. You can drill down into the data to find a Sales Order that is matching the
 		requirements for the test.<br>
-		If there is no matching sales order you can add <code>&amp;&#x24;skip=</code> followed
-		by a start index, e.g. <code>&amp;&#x24;skip=40</code>, to the URL to get another set of sales
+		If there is no matching sales order you can add <code>&amp;$skip=</code> followed
+		by a start index, e.g. <code>&amp;$skip=40</code>, to the URL to get another set of sales
 		orders.<br>
 		<br>
 		<h2>REALIZE and CHECK</h2>
@@ -136,19 +136,19 @@
 						to the value above and press the <code>Save</code> button in the footer.
 						<br>
 						<b>Check:</b> The number of messages has been increased by 1.<br>
-						<b>Check:</b> The border of the sales order item&apos;s note field has a border
+						<b>Check:</b> The border of the sales order item's note field has a border
 							indicating the corresponding severity of the message.<br>
-						<b>Check:</b> When clicking into the sales order item&apos;s note field, the
-							message text (i.e. the text as entered after the &quot;:&quot;) is shown.<br>
+						<b>Check:</b> When clicking into the sales order item's note field, the
+							message text (i.e. the text as entered after the ":") is shown.<br>
 						<b>Check:</b> The table row is highlighted with the same color as the border
-							of the sales order item&apos;s note input field.
+							of the sales order item's note input field.
 					</li>
 					<li>Click the <code>Show Messages</code> button.<br>
 						<b>Check:</b> A popover is displayed with the current messages.<br>
 						<b>Check:</b> The message popover contains an entry with the message text as
 							described above.
 					</li>
-					<li>Click into the modified sales order item&apos;s note input field, change the text
+					<li>Click into the modified sales order item's note input field, change the text
 						to <code>No message</code> and press the <code>Save</code> button.<br>
 						<b>Check:</b> The number of messages has been decreased by 1.<br>
 						<b>Check:</b> The message has been removed from the message popover.
@@ -326,7 +326,7 @@
 			<li>In the <code>Create a New Sales Order Item</code> dialog remove the value of the
 				<code>Product ID</code> field and press the <code>Save</code> button.<br>
 				<b>Check:</b> A message box is displayed indicating that the mandatory field
-					&apos;PRODUCT_GUID&apos; is empty.
+					'PRODUCT_GUID' is empty.
 			</li>
 			<li>Close the error message box.<br>
 				<b>Check:</b> The <code>Create a New Sales Order Item</code> dialog is still open.
@@ -352,14 +352,14 @@
 					sales order item.
 			</li>
 			<li><span class="backendOnly">Only with back end:</span> Open the developer tools,
-				navigate to the network tab, clear the requests and filter for <code>&#x24;batch</code>
+				navigate to the network tab, clear the requests and filter for <code>$batch</code>
 				requests.</li>
 			<li>In the <code>Sales Order Items</code> table click on the <code>&gt;</code> at the
 				end of the row for the newly created entity to open the product details.<br>
 				<b>Check:</b> A <code>Product Details</code> dialog is opened showing the
 					<code>Product ID</code> and the corresponding product <code>Name</code>.<br>
 				<span class="backendOnly">Only with back end:</span> <b>Check:</b> There is no
-					<code>&#x24;batch</code> request.
+					<code>$batch</code> request.
 			</li>
 			<li>Close the <code>Product Details</code> dialog.</li>
 			<li>In the <code>Sales Order Items</code> table select the newly created item and press
@@ -420,10 +420,10 @@
 				<b>Check:</b> There are no messages for the modified sales order item.<br>
 				<b>Check:</b> Remember the number of messages.
 			</li>
-			<li>Change the modified sales order item&apos;s <code>Quantity</code> value to <code>2</code>
+			<li>Change the modified sales order item's <code>Quantity</code> value to <code>2</code>
 				and save it.<br>
 				<b>Check:</b> The number of messages has been increased by 1.<br>
-				<b>Check:</b> The fields of the sales order item&apos;s <code>Quantity</code> and also
+				<b>Check:</b> The fields of the sales order item's <code>Quantity</code> and also
 					the <code>Note</code> have borders indicating the warning <code>For a quantity
 					greater than 1 you need an approval reason</code>.
 			</li>
@@ -437,8 +437,8 @@
 					contain each two different paths.
 			</li>
 			<li>Close the <code>Message Details</code> dialog and close the message popover. Change
-				the modified sales order item&apos;s <code>Note</code> value by adding the prefix
-				<code>&quot;Reason:&quot;</code> and save it.<br>
+				the modified sales order item's <code>Note</code> value by adding the prefix
+				<code>"Reason:"</code> and save it.<br>
 				<b>Check:</b> The <code>Quantity</code> and the <code>Note</code> fields do not have
 					a warning border indicator anymore.<br>
 				<b>Check:</b> The number of messages has been decreased by 1.<br>
@@ -462,7 +462,7 @@
 					2 have to be ordered.
 			</li>
 			<li>Make sure that the message popover is closed and press the <code>Fix</code> button
-				in the item&apos;s row.<br>
+				in the item's row.<br>
 				<b>Check:</b> The <code>Quantity</code> value has been changed to the value
 					<code>2</code>.<br>
 				<b>Check:</b> The number of messages has not changed.<br>
@@ -484,14 +484,14 @@
 				<b>Check:</b> The sales order and the sales order items are loaded and displayed in
 					the <code>Sales Order Details</code> section.<br>
 				<b>Check:</b> In the message popover you see an information message
-					<code>Avoid currency &apos;JPY&apos;</code>.<br>
+					<code>Avoid currency 'JPY'</code>.<br>
 				<b>Check:</b> The border of the <code>Currency</code> field of the sales order item
 					with the product <code>HT-1501</code> indicates an information message.<br>
-				<b>Check:</b> When clicking into the sales order item&apos;s <code>Currency</code> field,
-					the message text <code>Avoid currency &apos;JPY&apos;</code> is shown.<br>
+				<b>Check:</b> When clicking into the sales order item's <code>Currency</code> field,
+					the message text <code>Avoid currency 'JPY'</code> is shown.<br>
 				<b>Check:</b> There is no border around the <code>Gross Amount</code> field of that
 					sales order item.<br>
-				<b>Check:</b> When clicking into the sales order item&apos;s <code>Gross Amount</code>
+				<b>Check:</b> When clicking into the sales order item's <code>Gross Amount</code>
 					field, no info message is shown.
 			</li>
 		</ol>
@@ -520,14 +520,14 @@
 					are updated.
 			</li>
 			<li><span class="backendOnly">Only with back end:</span> Open the developer tools,
-				navigate to the network tab, clear the requests and filter for <code>&#x24;batch</code>
+				navigate to the network tab, clear the requests and filter for <code>$batch</code>
 				requests.</li>
 			<li>In the <code>Sales Order Items</code> table click on the <code>&gt;</code> at the
 				end of the row for the cloned item to open the product details.<br>
 				<b>Check:</b> A <code>Product Details</code> dialog is opened showing the
 					<code>Product ID</code> and the corresponding product <code>Name</code>.<br>
 				<span class="backendOnly">Only with back end:</span> <b>Check:</b> There is no
-					<code>&#x24;batch</code> request.
+					<code>$batch</code> request.
 			</li>
 			<li>Close the <code>Product Details</code> dialog.</li>
 		</ol>

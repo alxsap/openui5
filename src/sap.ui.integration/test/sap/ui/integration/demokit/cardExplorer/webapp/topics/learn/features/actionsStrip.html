@@ -122,15 +122,15 @@
 					<tr>
 						<td>type</td>
 						<td>string</td>
-						<td>&quot;Button&quot;</td>
+						<td>"Button"</td>
 						<td>No</td>
 						<td>
 							The type of the item. Possible values are:
 							<ul>
-								<li>&quot;Button&quot; - creates a button</li>
-								<li>&quot;ToolbarSpacer&quot; - creates a toolbar spacer</li>
-								<li>&quot;Link&quot; - creates a link with optional icon. Available since 1.107</li>
-								<li>&quot;Label&quot; - creates a label for one item or for a group of items. Available since 1.121
+								<li>"Button" - creates a button</li>
+								<li>"ToolbarSpacer" - creates a toolbar spacer</li>
+								<li>"Link" - creates a link with optional icon. Available since 1.107</li>
+								<li>"Label" - creates a label for one item or for a group of items. Available since 1.121
 									<b>Note:</b> This property is experimental and may change!</li></ul></td>
 								
 							
@@ -146,7 +146,7 @@
 						<td>
 							Actions that are triggered when the item is pressed.
 							<br>
-							<b>Note:</b> This property is not available for &quot;Label&quot; and &quot;ToolbarSpacer&quot;!
+							<b>Note:</b> This property is not available for "Label" and "ToolbarSpacer"!
 							<br>
 							<b>Note</b> If you use this to trigger a custom action which opens a popup (e.g. when using <code>showCard</code> in an extension) - you should also set the property <code>ariaHasPopup</code> to the correct value.
 						</td>
@@ -170,7 +170,7 @@
 						<td>
 							The icon of the item.
 							<br>
-							<b>Note:</b> This property is not available for &quot;Label&quot; and &quot;ToolbarSpacer&quot;!
+							<b>Note:</b> This property is not available for "Label" and "ToolbarSpacer"!
 						</td>
 						<td>1.35.0</td>
 						<td>1.93</td>
@@ -194,7 +194,7 @@
 							<br>
 							<b>Note:</b> Use this property instead of <code>text</code> if you want to show a button with icon only. The tooltip for such button will appear when the button is in the overflow area.
 							<br>
-							<b>Note:</b> This property is not available for &quot;Label&quot; and &quot;ToolbarSpacer&quot;!
+							<b>Note:</b> This property is not available for "Label" and "ToolbarSpacer"!
 						</td>
 						<td>1.35.0</td>
 						<td>1.93</td>
@@ -216,9 +216,9 @@
 						<td></td>
 						<td>No</td>
 						<td>
-							The type of the button. Only used when the type is &quot;Button&quot;.
+							The type of the button. Only used when the type is "Button".
 							<br>
-							<b>Note:</b> This property is available only for type &quot;Button&quot;.
+							<b>Note:</b> This property is available only for type "Button".
 						</td>
 						<td>1.35.0</td>
 						<td>1.93</td>
@@ -231,7 +231,7 @@
 						<td>
 							Use this property only when the item is related to a popover/popup.
 							<br>
-							<b>Note:</b> This property is not available for &quot;Label&quot; and &quot;ToolbarSpacer&quot;!
+							<b>Note:</b> This property is not available for "Label" and "ToolbarSpacer"!
 						</td>
 						<td>1.35.0</td>
 						<td>1.93</td>
@@ -250,50 +250,50 @@
 
 			<h2 id="parentModel">Parent Model (Experimental)</h2>
 			<p>
-				When actions strip items are created via item template, you can bind them to the parent context using the model called &quot;parent&quot;, like:
-				<code>&quot;{parent&gt;/parentProperty}&quot;</code>
+				When actions strip items are created via item template, you can bind them to the parent context using the model called "parent", like:
+				<code>"{parent>/parentProperty}"</code>
 			</p>
 
 			<h2 id="examples">Examples</h2>
 			<p>Actions strip with static items:</p>
 			<pre class="lang-json">{
-	&quot;sap.card&quot;: {
-		&quot;type&quot;: &quot;List&quot;,
-		&quot;data&quot;: {
+	"sap.card": {
+		"type": "List",
+		"data": {
 			...
 		},
-		&quot;header&quot;: {
-			&quot;title&quot;: &quot;Title&quot;
+		"header": {
+			"title": "Title"
 		},
-		&quot;content&quot;: {
-			&quot;item&quot;: {
-				&quot;title&quot;: &quot;{name}&quot;,
-				&quot;description&quot;: &quot;{description}&quot;,
-				<mark>&quot;actionsStrip&quot;: [
+		"content": {
+			"item": {
+				"title": "{name}",
+				"description": "{description}",
+				<mark>"actionsStrip": [
 					{
-						&quot;type&quot;: &quot;Link&quot;,
-						&quot;text&quot;: &quot;Agenda&quot;,
-						&quot;icon&quot;: &quot;sap-icon://action&quot;,
-						&quot;actions&quot;: [
+						"type": "Link",
+						"text": "Agenda",
+						"icon": "sap-icon://action",
+						"actions": [
 							{
-								&quot;type&quot;: &quot;Navigation&quot;,
-								&quot;parameters&quot;: {
-									&quot;url&quot;: &quot;{agendaUrl}&quot;
+								"type": "Navigation",
+								"parameters": {
+									"url": "{agendaUrl}"
 								}
 							}
 						]
 					},
 					{
-						&quot;type&quot;: &quot;ToolbarSpacer&quot;
+						"type": "ToolbarSpacer"
 					},
 					{
-						&quot;text&quot;: &quot;Approve&quot;,
-						&quot;overflowPriority&quot;: &quot;High&quot;,
-						&quot;actions&quot;: [
+						"text": "Approve",
+						"overflowPriority": "High",
+						"actions": [
 							{
-								&quot;type&quot;: &quot;Custom&quot;,
-								&quot;parameters&quot;: {
-									&quot;method&quot;: &quot;approve&quot;
+								"type": "Custom",
+								"parameters": {
+									"method": "approve"
 								}
 							}
 						]
@@ -306,56 +306,56 @@
 
 			<p>Actions strip with dynamic items:</p>
 			<pre class="lang-json">{
-	&quot;sap.card&quot;: {
-		&quot;type&quot;: &quot;List&quot;,
-		&quot;data&quot;: {
-			&quot;json&quot;: {
-				&quot;items&quot;: [
+	"sap.card": {
+		"type": "List",
+		"data": {
+			"json": {
+				"items": [
 					{
-						&quot;title&quot;: &quot;Item 1&quot;,
-						&quot;actionItems&quot;: [
+						"title": "Item 1",
+						"actionItems": [
 							{
-								&quot;text&quot;: &quot;Accept&quot;
+								"text": "Accept"
 							},
 							{
-								&quot;text&quot;: &quot;Reject&quot;
+								"text": "Reject"
 							}
 						]
 					},
 					{
-						&quot;title&quot;: &quot;Item 1&quot;,
-						&quot;actionItems&quot;: [
+						"title": "Item 1",
+						"actionItems": [
 							{
-								&quot;text&quot;: &quot;Accept&quot;
+								"text": "Accept"
 							},
 							{
-								&quot;text&quot;: &quot;Reject&quot;
+								"text": "Reject"
 							},
 							{
-								&quot;text&quot;: &quot;Remind Me Later&quot;
+								"text": "Remind Me Later"
 							}
 						]
 					}
 				]
 			}
 		},
-		&quot;header&quot;: {
-			&quot;title&quot;: &quot;Title&quot;
+		"header": {
+			"title": "Title"
 		},
-		&quot;content&quot;: {
-			&quot;data&quot;: {
-				&quot;path&quot;: &quot;items&quot;
+		"content": {
+			"data": {
+				"path": "items"
 			},
-			&quot;item&quot;: {
-				&quot;title&quot;: &quot;{name}&quot;,
-				&quot;description&quot;: &quot;{description}&quot;,
-				<mark>&quot;actionsStrip&quot;: {
-					&quot;item&quot;: {
-						&quot;template&quot;: {
-							&quot;text&quot;: &quot;{text}&quot;,
-							&quot;id&quot;: &quot;{parent&gt;/id}&quot;
+			"item": {
+				"title": "{name}",
+				"description": "{description}",
+				<mark>"actionsStrip": {
+					"item": {
+						"template": {
+							"text": "{text}",
+							"id": "{parent>/id}"
 						},
-						&quot;path&quot;: &quot;actionItems&quot;
+						"path": "actionItems"
 					}
 				}</mark>
 			}

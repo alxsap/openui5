@@ -105,7 +105,7 @@ sap.ui.define([
 			QUnitUtils.triggerEvent("mouseup", sId);
 			QUnitUtils.triggerEvent("click", sId);
 		},
-		beforeEach: async function() {
+		beforeEach: async function () {
 			this.oButton = new Button();
 			this.oButton.placeAt("qunit-fixture");
 

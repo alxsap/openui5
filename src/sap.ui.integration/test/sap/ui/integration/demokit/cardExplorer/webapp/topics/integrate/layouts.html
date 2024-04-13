@@ -20,8 +20,8 @@
 				Layout Requirements
 			</h2>
 			<p>
-				The layout that the cards are placed in shouldn&apos;t limit their height growth, otherwise their content might be truncated.
-				Use &quot;min-height&quot; or GridContainer&apos;s &quot;minRows&quot; options if a minimum height is needed in the layout.
+				The layout that the cards are placed in shouldn't limit their height growth, otherwise their content might be truncated.
+				Use "min-height" or GridContainer's "minRows" options if a minimum height is needed in the layout.
 			</p>
 			<h2 id="recommendendLayouts">
 				Recommended Layouts
@@ -56,22 +56,22 @@
 			<p>
 				To create a home page or a dashboard, you can place your cards into the sap.f.GridContainer.
 				You need to specify the number of columns, which the card will take.
-				The card&apos;s height (number of rows) is automatically calculated, depending on the card content.
-				An exception is the Analytical Card, where you can specify also the &quot;minRows&quot; property and
+				The card's height (number of rows) is automatically calculated, depending on the card content.
+				An exception is the Analytical Card, where you can specify also the "minRows" property and
 				the card will stretch to any given dimension.
 				The sap.f.GridContainer will arrange the cards in the best possible way.
 			</p>
 			<pre class="lang-xml">
-&lt;mvc:View xmlns:w=&quot;sap.ui.integration.widgets&quot; xmlns:f=&quot;sap.f&quot;&gt;
+&lt;mvc:View xmlns:w="sap.ui.integration.widgets" xmlns:f="sap.f"&gt;
 	&lt;f:GridContainer&gt;
-		&lt;w:Card manifest=&quot;./manifest.json&quot;&gt;
+		&lt;w:Card manifest="./manifest.json"&gt;
 			&lt;w:layoutData&gt;
-				&lt;f:GridContainerItemLayoutData columns=&quot;4&quot; /&gt;
+				&lt;f:GridContainerItemLayoutData columns="4" /&gt;
 			&lt;/w:layoutData&gt;
 		&lt;/w:Card&gt;
-		&lt;w:Card manifest=&quot;./analyticalManifest.json&quot;&gt;
+		&lt;w:Card manifest="./analyticalManifest.json"&gt;
 			&lt;w:layoutData&gt;
-				&lt;f:GridContainerItemLayoutData columns=&quot;4&quot; minRows=&quot;3&quot; /&gt;
+				&lt;f:GridContainerItemLayoutData columns="4" minRows="3" /&gt;
 			&lt;/w:layoutData&gt;
 		&lt;/w:Card&gt;
 	&lt;/f:GridContainer&gt;

@@ -11,7 +11,7 @@ sap.ui.define([
 	/**
 	 * Map from table to its hierarchy mode.
 	 */
-	var TableToHierarchyModeMap = new window.WeakMap();
+	const TableToHierarchyModeMap = new window.WeakMap();
 
 	/**
 	 * Static collection of utility functions related to grouping of sap.ui.table.Table, ...
@@ -24,7 +24,7 @@ sap.ui.define([
 	 * @alias sap.ui.table.utils._GroupingUtils
 	 * @private
 	 */
-	var GroupingUtils = {
+	const GroupingUtils = {
 		// Avoid cyclic dependency. Will be filled by TableUtils
 		TableUtils: null,
 
@@ -73,7 +73,7 @@ sap.ui.define([
 				return;
 			}
 
-			var sCurrentHierarchyMode = GroupingUtils.getHierarchyMode(oTable);
+			const sCurrentHierarchyMode = GroupingUtils.getHierarchyMode(oTable);
 
 			if (sCurrentHierarchyMode !== sMode) {
 				TableToHierarchyModeMap.set(oTable, sMode);
@@ -137,7 +137,7 @@ sap.ui.define([
 		 * @returns {boolean} Whether the table is in a group mode.
 		 */
 		isInGroupMode: function(oTable) {
-			var sHierarchyMode = GroupingUtils.getHierarchyMode(oTable);
+			const sHierarchyMode = GroupingUtils.getHierarchyMode(oTable);
 			return sHierarchyMode === GroupingUtils.HierarchyMode.Group || sHierarchyMode === GroupingUtils.HierarchyMode.GroupedTree;
 		},
 
@@ -188,7 +188,7 @@ sap.ui.define([
 		 * @returns {boolean} Whether the cell is in a group header row.
 		 */
 		isInGroupHeaderRow: function(oCellRef) {
-			var oInfo = GroupingUtils.TableUtils.getCellInfo(oCellRef);
+			const oInfo = GroupingUtils.TableUtils.getCellInfo(oCellRef);
 
 			if (oInfo.isOfType(GroupingUtils.TableUtils.CELLTYPE.ANYCONTENTCELL)) {
 				return oInfo.cell.parentElement.classList.contains("sapUiTableGroupHeaderRow");
@@ -204,7 +204,7 @@ sap.ui.define([
 		 * @returns {boolean} Whether the cell is in a summary row.
 		 */
 		isInSummaryRow: function(oCellRef) {
-			var oInfo = GroupingUtils.TableUtils.getCellInfo(oCellRef);
+			const oInfo = GroupingUtils.TableUtils.getCellInfo(oCellRef);
 
 			if (oInfo.isOfType(GroupingUtils.TableUtils.CELLTYPE.ANYCONTENTCELL)) {
 				return oInfo.cell.parentElement.classList.contains("sapUiTableSummaryRow");
@@ -221,12 +221,12 @@ sap.ui.define([
 		 * @private
 		 */
 		calcGroupIndent: function(oRow) {
-			var bTreeIndentation = GroupingUtils.getHierarchyMode(oRow.getTable()) === GroupingUtils.HierarchyMode.GroupedTree;
-			var bReduceIndentation = !bTreeIndentation && !oRow.isGroupHeader() && !oRow.isTotalSummary();
-			var iLevel = oRow.getLevel() - (bReduceIndentation ? 1 : 0);
-			var iIndent = 0;
+			const bTreeIndentation = GroupingUtils.getHierarchyMode(oRow.getTable()) === GroupingUtils.HierarchyMode.GroupedTree;
+			const bReduceIndentation = !bTreeIndentation && !oRow.isGroupHeader() && !oRow.isTotalSummary();
+			const iLevel = oRow.getLevel() - (bReduceIndentation ? 1 : 0);
+			let iIndent = 0;
 
-			for (var i = 1; i < iLevel; i++) {
+			for (let i = 1; i < iLevel; i++) {
 				if (i === 1) {
 					iIndent = 24;
 				} else if (i === 2) {
@@ -258,12 +258,12 @@ sap.ui.define([
 		 * @private
 		 */
 		setGroupIndent: function(oRow, iIndent) {
-			var oDomRefs = oRow.getDomRefs(true);
-			var $Row = oDomRefs.row;
-			var $RowHdr = oDomRefs.rowHeaderPart;
-			var bRTL = oRow.getTable()._bRtlMode;
-			var $FirstCellContentInRow = $Row.find("td.sapUiTableCellFirst > .sapUiTableCellInner");
-			var $Shield = $RowHdr.find(".sapUiTableGroupShield");
+			const oDomRefs = oRow.getDomRefs(true);
+			const $Row = oDomRefs.row;
+			const $RowHdr = oDomRefs.rowHeaderPart;
+			const bRTL = oRow.getTable()._bRtlMode;
+			const $FirstCellContentInRow = $Row.find("td.sapUiTableCellFirst > .sapUiTableCellInner");
+			const $Shield = $RowHdr.find(".sapUiTableGroupShield");
 
 			if (iIndent <= 0) {
 				// No indent -> Remove custom manipulations (see else)
@@ -289,10 +289,10 @@ sap.ui.define([
 		 * @private
 		 */
 		setTreeIndent: function(oRow, iIndent) {
-			var oDomRefs = oRow.getDomRefs(true);
-			var $Row = oDomRefs.row;
-			var bRTL = oRow.getTable()._bRtlMode;
-			var $TreeIcon = $Row.find(".sapUiTableTreeIcon");
+			const oDomRefs = oRow.getDomRefs(true);
+			const $Row = oDomRefs.row;
+			const bRTL = oRow.getTable()._bRtlMode;
+			const $TreeIcon = $Row.find(".sapUiTableTreeIcon");
 
 			$TreeIcon.css(bRTL ? "margin-right" : "margin-left", iIndent > 0 ? iIndent + "px" : "");
 		},
@@ -303,17 +303,17 @@ sap.ui.define([
 		 * @param {sap.ui.table.Row} oRow Instance of the row.
 		 */
 		updateTableRowForGrouping: function(oRow) {
-			var oTable = oRow.getTable();
-			var oDomRefs = oRow.getDomRefs(true);
-			var $Row = oDomRefs.row;
-			var bIsExpanded = oRow.isExpanded();
-			var bIsExpandable = oRow.isExpandable();
+			const oTable = oRow.getTable();
+			const oDomRefs = oRow.getDomRefs(true);
+			const $Row = oDomRefs.row;
+			const bIsExpanded = oRow.isExpanded();
+			const bIsExpandable = oRow.isExpandable();
 
 			$Row.toggleClass("sapUiTableSummaryRow", oRow.isSummary());
 
 			if (GroupingUtils.isInGroupMode(oTable)) {
-				var sTitle = oRow.getTitle();
-				var iIndent = GroupingUtils.calcGroupIndent(oRow);
+				const sTitle = oRow.getTitle();
+				const iIndent = GroupingUtils.calcGroupIndent(oRow);
 
 				oRow.$("groupHeader")
 					.toggleClass("sapUiTableGroupIconOpen", bIsExpandable && bIsExpanded)
@@ -324,17 +324,17 @@ sap.ui.define([
 					.toggleClass("sapUiTableGroupHeaderRow", oRow.isGroupHeader());
 
 				if (GroupingUtils.showGroupMenuButton(oTable)) {
-					var $Table = oTable.$();
-					var iScrollbarWidth = $Table.hasClass("sapUiTableVScr") ? $Table.find(".sapUiTableVSb").width() : 0;
-					var $GroupHeaderMenuButton = oDomRefs.rowHeaderPart.find(".sapUiTableGroupMenuButton");
-					var iMenuButtonOffset = $Table.width() - $GroupHeaderMenuButton.width() - iScrollbarWidth - 5 - iIndent;
+					const $Table = oTable.$();
+					const iScrollbarWidth = $Table.hasClass("sapUiTableVScr") ? $Table.find(".sapUiTableVSb").width() : 0;
+					const $GroupHeaderMenuButton = oDomRefs.rowHeaderPart.find(".sapUiTableGroupMenuButton");
+					const iMenuButtonOffset = $Table.width() - $GroupHeaderMenuButton.width() - iScrollbarWidth - 5 - iIndent;
 
 					$GroupHeaderMenuButton.css(oTable._bRtlMode ? "right" : "left", iMenuButtonOffset + "px");
 				}
 			}
 
 			if (GroupingUtils.isInTreeMode(oTable)) {
-				var $TreeIcon = $Row.find(".sapUiTableTreeIcon");
+				const $TreeIcon = $Row.find(".sapUiTableTreeIcon");
 
 				if (!bIsExpandable && document.activeElement === $TreeIcon[0]) {
 					GroupingUtils.TableUtils.getParentCell(oTable, $TreeIcon[0]).trigger("focus");
@@ -357,8 +357,8 @@ sap.ui.define([
 		 * @param {sap.ui.table.Row} oRow Instance of the row
 		 */
 		cleanupTableRowForGrouping: function(oRow) {
-			var oTable = oRow.getTable();
-			var oDomRefs = oRow.getDomRefs(true);
+			const oTable = oRow.getTable();
+			const oDomRefs = oRow.getDomRefs(true);
 
 			if (GroupingUtils.isInGroupMode(oTable)) {
 				oDomRefs.row.removeClass("sapUiTableGroupHeaderRow sapUiTableSummaryRow sapUiTableRowIndented");
@@ -405,8 +405,8 @@ sap.ui.define([
 		 * @param {sap.ui.table.Table} oTable Instance of the table.
 		 */
 		resetExperimentalGrouping: function(oTable) {
-			var oBinding = oTable.getBinding();
-			var Hook = GroupingUtils.TableUtils.Hook;
+			const oBinding = oTable.getBinding();
+			const Hook = GroupingUtils.TableUtils.Hook;
 
 			if (oBinding && oBinding._modified) {
 				GroupingUtils.setToDefaultFlatMode(oTable);

@@ -23,7 +23,7 @@
 			<p>
 				Card developers describe the CSRF tokens in the <code>configuration/csrfTokens</code> subsection of the manifest.
 				These tokens can be referred inside a data request using a binding syntax like
-				<code>{csrfTokens&gt;/myCSRFToken/value}</code>.
+				<code>{csrfTokens>/myCSRFToken/value}</code>.
 			</p>
 
 			<h2 id="properties">CSRF Token Properties</h2>
@@ -62,7 +62,7 @@
 					<th>Since</th>
 				</tr>
 				<tr>
-					<td>{csrfTokens&gt;/keyOfTheToken/value}</td>
+					<td>{csrfTokens>/keyOfTheToken/value}</td>
 					<td>The value of the token.</td>
 					<td>1.62.0</td>
 					<td>1.121</td>
@@ -76,58 +76,58 @@
 			<h2 id="examples">Example</h2>
 			<p>An example with a card which fetches data and uses CSRF Tokens:</p>
 			<pre class="lang-json">
-&quot;sap.card&quot;: {
-	&quot;type&quot;: &quot;List&quot;,
-	&quot;configuration&quot;: {
-		&quot;destinations&quot;: {
-			&quot;ProductsMockServerWithCSRF&quot;: {
-				&quot;name&quot;: &quot;ProductsMockServerWithCSRF&quot;,
-				&quot;label&quot;: &quot;Products Mock CSRF&quot;,
-				&quot;defaultUrl&quot;: &quot;/getDataWithCSRF&quot;
+"sap.card": {
+	"type": "List",
+	"configuration": {
+		"destinations": {
+			"ProductsMockServerWithCSRF": {
+				"name": "ProductsMockServerWithCSRF",
+				"label": "Products Mock CSRF",
+				"defaultUrl": "/getDataWithCSRF"
 			}
 		},
-		<mark>&quot;csrfTokens&quot;: {
-			&quot;token1&quot;: {
-				&quot;data&quot;: {
-					&quot;request&quot;: {
-						&quot;url&quot;: &quot;{{destinations.ProductsMockServerWithCSRF}}/Token&quot;,
-						&quot;method&quot;: &quot;HEAD&quot;,
-						&quot;headers&quot;: {
-							&quot;X-CSRF-Token&quot;: &quot;Fetch&quot;
+		<mark>"csrfTokens": {
+			"token1": {
+				"data": {
+					"request": {
+						"url": "{{destinations.ProductsMockServerWithCSRF}}/Token",
+						"method": "HEAD",
+						"headers": {
+							"X-CSRF-Token": "Fetch"
 						}
 					}
 				}
 			}
 		}</mark>
 	},
-	&quot;data&quot;: {
-		&quot;request&quot;: {
-			&quot;url&quot;: &quot;{{destinations.ProductsMockServerWithCSRF}}/Products&quot;,
-			&quot;parameters&quot;: {
-				&quot;&#x24;format&quot;: &quot;json&quot;
+	"data": {
+		"request": {
+			"url": "{{destinations.ProductsMockServerWithCSRF}}/Products",
+			"parameters": {
+				"$format": "json"
 			},
-			&quot;method&quot;: &quot;GET&quot;,
-			<mark>&quot;headers&quot;: {
-				&quot;X-CSRF-Token&quot;: &quot;{csrfTokens&gt;/token1/value}&quot;
+			"method": "GET",
+			<mark>"headers": {
+				"X-CSRF-Token": "{csrfTokens>/token1/value}"
 			}</mark>
 		},
-		&quot;path&quot;: &quot;/data&quot;
+		"path": "/data"
 	},
-	&quot;header&quot;: {
-		&quot;title&quot;: &quot;Products&quot;,
-		&quot;subTitle&quot;: &quot;Weight Information&quot;,
-		&quot;icon&quot;: {
-			&quot;src&quot;: &quot;sap-icon://product&quot;
+	"header": {
+		"title": "Products",
+		"subTitle": "Weight Information",
+		"icon": {
+			"src": "sap-icon://product"
 		}
 	},
-	&quot;content&quot;: {
-		&quot;item&quot;: {
-			&quot;title&quot;: &quot;{Name}&quot;,
-			&quot;info&quot;: {
-				&quot;value&quot;: &quot;{= format.unit(&#x24;{Weight}, &#x24;{WeightUnit})}&quot;
+	"content": {
+		"item": {
+			"title": "{Name}",
+			"info": {
+				"value": "{= format.unit(${Weight}, ${WeightUnit})}"
 			}
 		},
-		&quot;maxItems&quot;: 4
+		"maxItems": 4
 	}
 }</pre>
 			<a class="try-button" href="../../../index.html#/explore/data/csrf" target="_parent">Try it Out</a>

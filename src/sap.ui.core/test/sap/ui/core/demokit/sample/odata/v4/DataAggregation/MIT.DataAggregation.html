@@ -18,7 +18,7 @@
 		<ul>
 			<li> local:
 				<a href="http://localhost:8080/test-resources/sap/ui/core/demokit/sample/common/index.html?component=odata.v4.DataAggregation">
-					http://&lt;host&gt;:&lt;port&gt;/test-resources/sap/ui/core/demokit/sample/common/index.html?component=odata.v4.DataAggregation
+					http://&lt;host>:&lt;port>/test-resources/sap/ui/core/demokit/sample/common/index.html?component=odata.v4.DataAggregation
 				</a>
 			</li>
 		</ul>
@@ -30,7 +30,7 @@
 				<tr>
 					<th>Level</th>
 					<th>Group Level Count</th>
-					<th>(Icon&apos;s Tooltip)</th>
+					<th>(Icon's Tooltip)</th>
 					<th>Country</th>
 					<th>Region</th>
 					<th>Segment</th>
@@ -102,7 +102,7 @@
 					<td></td>
 					<td></td>
 					<td></td>
-					<td>&#xa0;</td>
+					<td>&nbsp;</td>
 				</tr>
 			</table>
 		<h3>1. Expand <code>Germany</code> (no region)</h3>
@@ -124,21 +124,21 @@
 		<h3>3. Expand the last visible node</h3>
 		<ol>
 			<li>Click on the expand button of the last visible row (with region
-				<code>Baden-W&#xfc;rttemberg</code>).
+				<code>Baden-W&uuml;rttemberg</code>).
 			</li>
 			<li><b>Check:</b> The scrollbar of the table has changed.</li>
 			<li><b>Check:</b> Group Level Count for expanded row changes to <code>3</code>.</li>
 			<li>Click on any <code>Germany</code> to move the focus to the table.</li>
 			<li>Press CTRL-END to scroll to the end of the table.</li>
 			<li><b>Check:</b> The grand total row is still displayed at the top, and the row with
-				country <code>Germany</code> and region <code>Baden-W&#xfc;rttemberg</code> is
+				country <code>Germany</code> and region <code>Baden-W&uuml;rttemberg</code> is
 				displayed next.
 			</li>
 		</ol>
 		<h3>4. Expand the last visible node</h3>
 		<ol>
 			<li>Click on the expand button of the last visible row with region
-				<code>Baden-W&#xfc;rttemberg</code> and the segment <code>Small</code>.
+				<code>Baden-W&uuml;rttemberg</code> and the segment <code>Small</code>.
 			</li>
 			<li><b>Check:</b> The scrollbar of the table has changed.</li>
 			<li><b>Check:</b> Group Level Count for expanded row changes to <code>2</code>.</li>
@@ -150,7 +150,7 @@
 					<tr>
 						<th>Level</th>
 						<th>Group Level Count</th>
-						<th>(Icon&apos;s Tooltip)</th>
+						<th>(Icon's Tooltip)</th>
 						<th>Country</th>
 						<th>Region</th>
 						<th>Segment</th>
@@ -178,7 +178,7 @@
 						<td></td>
 						<td>Expand</td>
 						<td>Germany</td>
-						<td>Baden-W&#xfc;rttemberg</td>
+						<td>Baden-W&uuml;rttemberg</td>
 						<td>Mid-size</td>
 						<td></td>
 						<td>526,122</td>
@@ -191,7 +191,7 @@
 						<td>2</td>
 						<td>Collapse</td>
 						<td>Germany</td>
-						<td>Baden-W&#xfc;rttemberg</td>
+						<td>Baden-W&uuml;rttemberg</td>
 						<td>Small</td>
 						<td></td>
 						<td>125,093</td>
@@ -204,7 +204,7 @@
 						<td></td>
 						<td>Leaf</td>
 						<td>Germany</td>
-						<td>Baden-W&#xfc;rttemberg</td>
+						<td>Baden-W&uuml;rttemberg</td>
 						<td>Small</td>
 						<td>Erwin Fischer</td>
 						<td>61,632</td>
@@ -217,7 +217,7 @@
 						<td></td>
 						<td>Leaf</td>
 						<td>Germany</td>
-						<td>Baden-W&#xfc;rttemberg</td>
+						<td>Baden-W&uuml;rttemberg</td>
 						<td>Small</td>
 						<td>Winfried Maier</td>
 						<td>63,461</td>
@@ -249,7 +249,7 @@
 
 		<h3>7. Grand Total at Bottom Only</h3>
 		<ol>
-			<li>Add the URL parameter <code>&amp;grandTotalAtBottomOnly=true</code> to the original URL
+			<li>Add the URL parameter <code>&grandTotalAtBottomOnly=true</code> to the original URL
 				and repeat the above steps 0 through 6.
 			</li>
 			<li><b>Check:</b> The grand total row (the one with level 0) is now displayed at the
@@ -259,7 +259,7 @@
 
 		<h3>8. Grand Total at Top and Bottom</h3>
 		<ol>
-			<li>Add the URL parameters <code>&amp;grandTotalAtBottomOnly=false&amp;visibleRowCount=6</code>
+			<li>Add the URL parameters <code>&grandTotalAtBottomOnly=false&visibleRowCount=6</code>
 				to the original URL and repeat the above steps 0 through 6.
 			</li>
 			<li><b>Check:</b> The grand total row (the one with level 0) is now displayed both at
@@ -270,7 +270,7 @@
 
 		<h3>9. Subtotals at Bottom Only</h3>
 		<ol>
-			<li>Add the URL parameters <code>&amp;subtotalsAtBottomOnly=true</code> to the original URL
+			<li>Add the URL parameters <code>&subtotalsAtBottomOnly=true</code> to the original URL
 				and repeat the above steps 0 through 6.
 			</li>
 			<li><b>Check:</b> Whenever a node is expanded, subtotals are not shown in the same row
@@ -281,7 +281,7 @@
 
 		<h3>10. Subtotals at Top and Bottom</h3>
 		<ol>
-			<li>Add the URL parameters <code>&amp;subtotalsAtBottomOnly=false</code> to the original URL
+			<li>Add the URL parameters <code>&subtotalsAtBottomOnly=false</code> to the original URL
 				and repeat the above steps 0 through 6.
 			</li>
 			<li><b>Check:</b> Whenever a node is expanded, subtotals are still shown in the same row
@@ -291,7 +291,7 @@
 			<li>Feel free to test any combination of grand total and subtotals placement.</li>
 		</ol>
 
-		<h3>11. &quot;Download&quot;</h3>
+		<h3>11. "Download"</h3>
 		<ol>
 			<li>Click the download button in the upper right corner.
 			</li>
@@ -302,10 +302,10 @@
 
 		<h3>12. Leaf Count</h3>
 		<ol>
-			<li>Add the URL parameter <code>&amp;leafCount=true</code> to the original URL and repeat
+			<li>Add the URL parameter <code>&leafCount=true</code> to the original URL and repeat
 				the above steps 0 through 6.
 			</li>
-			<li><b>Check:</b> The title is &quot;Sales Amount by Account Responsible (90)&quot; with a proper
+			<li><b>Check:</b> The title is "Sales Amount by Account Responsible (90)" with a proper
 				leaf count. Everything else works the same.
 			</li>
 			<li>Feel free to test any combination with other tests.</li>

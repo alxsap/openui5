@@ -12,25 +12,25 @@
 			<h1 id="overview">Improve Screen Reader Announcements</h1>
 			<h2>sap.m.Text Empty Value Indicator
 				<p>
-					An indicator should be displayed when the text value is empty. The sap.m.Text control allows developers to indicate an empty text using a dash &#x201c;&#x2013;&#x201d; character.
+					An indicator should be displayed when the text value is empty. The sap.m.Text control allows developers to indicate an empty text using a dash “–” character.
 					Note, that specific symbol used may vary depending on the language.
 				</p>
 			</h2>
 
 <pre class="lang-js">
 new sap.m.Text({
-	text: &quot;&quot;,
+	text: "",
 	emptyIndicatorMode: sap.m.EmptyIndicatorMode.On
 })
 </pre>
 
 			<h2>sap.m.Table Cell with Empty Value Indicator
 				<p>
-					You have to set <code>visible</code> property to <code>false</code> for all <code>sap.m.Link</code> and <code>sap.m.Text</code> controls&#x2019; instances
+					You have to set <code>visible</code> property to <code>false</code> for all <code>sap.m.Link</code> and <code>sap.m.Text</code> controls’ instances
 					that are used inside a <code>sap.m.Table</code> cell and have empty <code>text</code> properties.
-					Same should be done for <code>sap.m.ObjectIdentifier</code>&#x2019;s instances that have empty <code>title</code> properties.
+					Same should be done for <code>sap.m.ObjectIdentifier</code>’s instances that have empty <code>title</code> properties.
 					This will improve the screen reader announcements of <code>sap.m.Table</code> rows or <code>sap.m.List</code> items because
-					all visually empty cells or items will be announced as &quot;empty&quot;.
+					all visually empty cells or items will be announced as "empty".
 				</p>
 			</h2>
 
@@ -39,25 +39,25 @@ new sap.m.Table({
 	headerToolbar: new sap.m.OverflowToolbar({
 		content: [
 			new sap.m.Title({
-				text: &quot;Products&quot;,
-				level: &quot;H2&quot;
+				text: "Products",
+				level: "H2"
 			})
 		]
 	}),
 	columns: [
 		new sap.m.Column({
 			header: new sap.m.Text({
-				text: &quot;Product Name&quot;
+				text: "Product Name"
 			})
 		}),
 		new sap.m.Column({
 			header: new sap.m.Text({
-				text: &quot;Supplier Name&quot;
+				text: "Supplier Name"
 			})
 		}),
 		new sap.m.Column({
 			header: new sap.m.Text({
-				text: &quot;Description&quot;
+				text: "Description"
 			})
 		})
 	],
@@ -65,51 +65,51 @@ new sap.m.Table({
 		new sap.m.ColumnListItem({
 			cells: [
 				new sap.m.Link({
-					text: &quot;&quot;,
-					href: &quot;&quot;,
+					text: "",
+					href: "",
 					<mark>visible: false</mark>,
-					tooltip: &quot;Audio/Video Cable Kit - 4m&quot;
+					tooltip: "Audio/Video Cable Kit - 4m"
 				}),
 				new sap.m.ObjectIdentifier({
-					title: &quot;Titanium&quot;,
+					title: "Titanium",
 					titleActive: true
 				}),
 				new sap.m.Text({
-					text: &quot;Quality cables for notebooks and projectors&quot;
+					text: "Quality cables for notebooks and projectors"
 				})
 			]
 		}),
 		new sap.m.ColumnListItem({
 			cells: [
 				new sap.m.Link({
-					text: &quot;Blaster Extreme&quot;,
-					href: &quot;&quot;
+					text: "Blaster Extreme",
+					href: ""
 				}),
 				new sap.m.ObjectIdentifier({
-					title: &quot;&quot;,
+					title: "",
 					titleActive: true,
 					<mark>visible: false</mark>,
-					tooltip: &quot;Speaker Experts&quot;
+					tooltip: "Speaker Experts"
 				}),
 				new sap.m.Text({
-					text: &quot;PC multimedia speakers - 10 Watt (Total) - 2-way&quot;
+					text: "PC multimedia speakers - 10 Watt (Total) - 2-way"
 				})
 			]
 		}),
 		new sap.m.ColumnListItem({
 			cells: [
 				new sap.m.Link({
-					text: &quot;Copymaster&quot;,
-					href: &quot;&quot;
+					text: "Copymaster",
+					href: ""
 				}),
 				new sap.m.ObjectIdentifier({
-					title: &quot;Alpha Printers&quot;,
+					title: "Alpha Printers",
 					titleActive: true
 				}),
 				new sap.m.Text({
-					text: &quot;&quot;,
+					text: "",
 					<mark>visible: false</mark>,
-					tooltip: &quot;Copymaster&quot;
+					tooltip: "Copymaster"
 				})
 			]
 		})

@@ -16,8 +16,8 @@
 		Start the OData Types application with one of the following URLs; adjust host and port if
 		necessary:
 		<ul>
-			<li> As sample preview in the SDK: http://&lt;host&gt;:&lt;port&gt;/sapui5-sdk-dist/#/sample/sap.ui.core.sample.ViewTemplate.types/preview</li>
-			<li> Local: <a href="http://localhost:8080/test-resources/sap/ui/core/demokit/sample/common/index.html?component=ViewTemplate.types">http://&lt;host&gt;:&lt;port&gt;/test-resources/sap/ui/core/demokit/sample/common/index.html?component=ViewTemplate.types</a></li>
+			<li> As sample preview in the SDK: http://&lt;host>:&lt;port>/sapui5-sdk-dist/#/sample/sap.ui.core.sample.ViewTemplate.types/preview</li>
+			<li> Local: <a href="http://localhost:8080/test-resources/sap/ui/core/demokit/sample/common/index.html?component=ViewTemplate.types">http://&lt;host>:&lt;port>/test-resources/sap/ui/core/demokit/sample/common/index.html?component=ViewTemplate.types</a></li>
 		</ul>
 
 		<h3>Testing Against back end System</h3>
@@ -25,7 +25,7 @@
 		system.<br>
 		Start the OData Types application with the following URL; adjust host and port if necessary:
 		<ul>
-			<li>Local: <a href="http://localhost:8080/test-resources/sap/ui/core/demokit/sample/common/index.html?component=ViewTemplate.types&amp;realOData=true">http://&lt;host&gt;:&lt;port&gt;/test-resources/sap/ui/core/demokit/sample/common/index.html?component=ViewTemplate.types&amp;realOData=true</a></li>
+			<li>Local: <a href="http://localhost:8080/test-resources/sap/ui/core/demokit/sample/common/index.html?component=ViewTemplate.types&amp;realOData=true">http://&lt;host>:&lt;port>/test-resources/sap/ui/core/demokit/sample/common/index.html?component=ViewTemplate.types&amp;realOData=true</a></li>
 		</ul>
 
 		<h2>REALIZE AND CHECK</h2>
@@ -46,8 +46,8 @@
 			<li><b>Check</b>: The validation errors are gone.</li>
 			<li>Enter 100 in the field labeled <code>precision: 10, scale: 3, minimum: 100
 				(exclusive), maximum: 1000</code>.</li>
-			<li><b>Check</b>: You get an error with the message &quot;Enter a number greater than
-				100.000&quot;.</li>
+			<li><b>Check</b>: You get an error with the message "Enter a number greater than
+				100.000".</li>
 			<li>Correct the error by entering a valid value, e.g. 101</li>
 			<li><b>Check</b>: The validation error is gone.</li>
 			<li>Enter an empty value in the field labeled <code>scale: default (0), nullable=false,
@@ -59,34 +59,34 @@
 			<li><b>Check</b>: No validation error is shown.</li>
 			<li><b>Check</b>: The value of the field is set to <code>0</code>.</li>
 			<li>Enter 102 in the field labeled <code>stepInput: min: 0 max: 99 scale: 0</code>.</li>
-			<li><b>Check</b>: You get an invalid data state &quot;Enter a number with a maximum value of
-				99&quot;.</li>
+			<li><b>Check</b>: You get an invalid data state "Enter a number with a maximum value of
+				99".</li>
 			<li>Correct the error by entering a valid value, e.g. 99</li>
 			<li>Enter 1.234 in the field labeled <code>stepInput: min: 0 max: 99 scale: 0</code>.
 				</li>
-			<li><b>Check</b>: You get an invalid data state &quot;Enter a number with no decimal places&quot;.
+			<li><b>Check</b>: You get an invalid data state "Enter a number with no decimal places".
 				</li>
 			<li>Correct the error by entering a valid value, e.g. 98</li>
 			<li><b>Check</b>: The validation error is gone.</li>
 			<li>Enter any value in the field labeled <code>Duration</code>.</li>
-			<li><b>Check</b>: You get an error with the message &quot;Type
-				&apos;sap.ui.model.odata.type.Raw&apos; does not support formatting&quot;.</li>
+			<li><b>Check</b>: You get an error with the message "Type
+				'sap.ui.model.odata.type.Raw' does not support formatting".</li>
 			<li>Press <code>Reset Model</code> or <code>Reset ContextBinding</code>.</li>
 			<li><b>Check</b>: The error is gone.</li>
-			<li>Enter &quot;Apr 19, 2029&quot; in the date date picker labeled with
+			<li>Enter "Apr 19, 2029" in the date date picker labeled with
 				<code>Date, bound property dateValue</code>.</li>
 			<li><b>Check</b>: There is no error displayed.</li>
-			<li>Enter &quot;Apr 19, 2029, 8:25:21 AM&quot; in the date time picker labeled with
+			<li>Enter "Apr 19, 2029, 8:25:21 AM" in the date time picker labeled with
 				<code>DateTimeOffset, bound property dateValue</code>.</li>
 			<li><b>Check</b>: There is no error displayed.</li>
-			<li>Enter &quot;Europe/Berlin&quot; in the field labeled with <code>TimezoneID</code> in the
+			<li>Enter "Europe/Berlin" in the field labeled with <code>TimezoneID</code> in the
 				section <code>com.sap.vocabularies.UI.v1.Identification</code>.</li>
 			<li><b>Check</b>: The field labeled with <code>DateTimeOffset</code> in the same section
-				has the value &quot;Apr 19, 2029, 8:25:21 AM Europe/Berlin&quot;.</li>
+				has the value "Apr 19, 2029, 8:25:21 AM Europe/Berlin".</li>
 		</ol>
 		<h3>Real OData tests</h3>
 		<ol>
-			<li>Start the app with URL parameter &quot;realOData=true&quot;.</li>
+			<li>Start the app with URL parameter "realOData=true".</li>
 			<li>Enter valid values in the input fields.</li>
 			<li>Press <code>Save</code>.</li>
 			<li>Reload the application and <b>Check</b> whether the before saved values appear.</li>

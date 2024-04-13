@@ -24,12 +24,12 @@
 				only a subset of the data is showed on one page at a time.
 				<br>
 				<br>
-				To enable the pagination, you have to add a &quot;paginator&quot; into the footer of the card:
+				To enable the pagination, you have to add a "paginator" into the footer of the card:
 			</p><pre class="lang-json">{
-	&quot;sap.card&quot;: {
+	"sap.card": {
 		...,
-		&quot;footer&quot;: {
-			&quot;paginator&quot;: {
+		"footer": {
+			"paginator": {
 			}
 		}
 	}
@@ -101,13 +101,13 @@
 				<br>
 				<br>
 				To enable client-side pagination, you have to
-				add a &quot;paginator&quot; into the &quot;footer&quot; and specify the &quot;pageSize&quot;:
+				add a "paginator" into the "footer" and specify the "pageSize":
 			</p><pre class="lang-json">{
-	&quot;sap.card&quot;: {
+	"sap.card": {
 		...,
-		&quot;footer&quot;: {
-			&quot;paginator&quot;: {
-				&quot;pageSize&quot;: 5
+		"footer": {
+			"paginator": {
+				"pageSize": 5
 			}
 		}
 	}
@@ -128,35 +128,35 @@
 				total number of items matching the query.
 				<br>
 				<br>
-				To enable server-side pagination you have to add a &quot;paginator&quot;
-				to the &quot;footer&quot; and specify the number of items per page (&quot;pageSize&quot;) and
-				the total items count (&quot;totalCount&quot;).
-				In the data request the &quot;skip&quot; value of the &quot;paginator&quot;
+				To enable server-side pagination you have to add a "paginator"
+				to the "footer" and specify the number of items per page ("pageSize") and
+				the total items count ("totalCount").
+				In the data request the "skip" value of the "paginator"
 				is used to set how many items should be skipped by the server.
 			</p><pre class="lang-json">{
-	&quot;sap.card&quot;: {
+	"sap.card": {
 		...,
-		&quot;data&quot;: {
-			&quot;request&quot;: {
-				&quot;url&quot;: &quot;some url&quot;,
-				&quot;parameters&quot;: {
-					&quot;&#x24;format&quot;: &quot;json&quot;,
-					&quot;&#x24;count&quot;: true,
-					&quot;&#x24;skip&quot;: &quot;{paginator&gt;/skip}&quot;,
-					&quot;&#x24;top&quot;: &quot;5&quot;
+		"data": {
+			"request": {
+				"url": "some url",
+				"parameters": {
+					"$format": "json",
+					"$count": true,
+					"$skip": "{paginator>/skip}",
+					"$top": "5"
 				}
 			},
-			&quot;path&quot;: &quot;/value&quot;
+			"path": "/value"
 		},
-		&quot;footer&quot;: {
-			&quot;paginator&quot;: {
-				&quot;totalCount&quot;: &quot;{/@odata.count}&quot;,
-				&quot;pageSize&quot;: 5
+		"footer": {
+			"paginator": {
+				"totalCount": "{/@odata.count}",
+				"pageSize": 5
 			}
 		}
 	}
 }</pre>
-			The &quot;skip&quot; value, the total page count and navigation between the pages (by fetching new data)
+			The "skip" value, the total page count and navigation between the pages (by fetching new data)
 			are calculated and handled automatically by the card.
 			<br>
 			<br>
@@ -171,18 +171,18 @@
 					<th>Description</th>
 				</tr>
 				<tr>
-					<td>{paginator&gt;/skip}</td>
+					<td>{paginator>/skip}</td>
 					<td>The number of records (items) from the beginning
 						that should be skipped in the current
 						request in order to provide pagination</td>
 				</tr>
 				<tr>
-					<td>{paginator&gt;/size}</td>
+					<td>{paginator>/size}</td>
 					<td>The number of records (items)
 						that should be returned from the request</td>
 				</tr>
 				<tr>
-					<td>{paginator&gt;/pageIndex}</td>
+					<td>{paginator>/pageIndex}</td>
 					<td>The currently selected page index</td>
 				</tr>
 			</table>

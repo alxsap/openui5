@@ -12,7 +12,7 @@
 		the <code>Context#setKeepAlive</code> API method.
 		<p>
 		Additionally, it is used to test the creation of a sales order together with its items using
-		a single request (&quot;deep create&quot;) in non-draft mode.
+		a single request ("deep create") in non-draft mode.
 		</p><h2>PREPARATION</h2>
 			To check console errors open the developer tools before starting the application and
 			check with each step, that there are no errors and warnings.
@@ -21,7 +21,7 @@
 			<ul>
 				<li> local:
 					<a href="http://localhost:8080/test-resources/sap/ui/core/demokit/sample/common/index.html?component=odata.v4.FlexibleColumnLayout">
-						http://&lt;host&gt;:&lt;port&gt;/test-resources/sap/ui/core/demokit/sample/common/index.html?component=odata.v4.FlexibleColumnLayout
+						http://&lt;host>:&lt;port>/test-resources/sap/ui/core/demokit/sample/common/index.html?component=odata.v4.FlexibleColumnLayout
 					</a>
 				</li>
 			</ul>
@@ -30,7 +30,7 @@
 		<ol>
 			<li>Select the first sales order in the sales order list report.</li>
 			<li><b>Check:</b> An object page for the sales order appears.</li>
-			<li>Enter &apos;Test&apos; into the <code>Note</code> input field of the object page.</li>
+			<li>Enter 'Test' into the <code>Note</code> input field of the object page.</li>
 			<li>Press the <code>Sales Order ID</code> button in the header of the respective column
 				of the sales orders table of the list report.</li>
 			<li><b>Check:</b> The sales order list is sorted by the <code>SalesOrderID</code>
@@ -39,8 +39,8 @@
 			<li>Press the <code>Sales Order ID</code> button in the header of the respective column
 				of the sales orders table of the list report.</li>
 			<li><b>Check:</b> The sales order appears again in the list report and and its property
-				<code>Note</code> has the value &apos;Test&apos;.</li>
-			<li>Enter &apos;Test (changed)&apos; into the <code>Note</code> input field (of the object page)
+				<code>Note</code> has the value 'Test'.</li>
+			<li>Enter 'Test (changed)' into the <code>Note</code> input field (of the object page)
 				and leave the field.</li>
 			<li><b>Check:</b> Both the list report and the object page are in sync.</li>
 			<li>Press the <code>Cancel</code> button.</li>
@@ -50,32 +50,32 @@
 		<ol>
 			<li>Select the first sales order line item on the object page.</li>
 			<li><b>Check:</b> A sub-object page with item details appears.</li>
-			<li>Enter &apos;2&apos; into the <code>Quantity</code> input field of the sub-object page.</li>
+			<li>Enter '2' into the <code>Quantity</code> input field of the sub-object page.</li>
 			<li>Press the <code>Gross Amount</code> button.</li>
 			<li><b>Check:</b> The sales order item list is sorted by the <code>GrossAmount</code>
 				and the selected sales order item is no longer part	of the items list. In the
 				sub-object page it is still present.</li>
 			<li>Press <code>Reset Line Item</code> on the sub-object page.</li>
-			<li><b>Check:</b> The <code>Quantity</code> is again &apos;4.000&apos;.</li>
-			<li>Enter &apos;Test (changed)&apos; into the <code>Note</code> input field (of the object page)
+			<li><b>Check:</b> The <code>Quantity</code> is again '4.000'.</li>
+			<li>Enter 'Test (changed)' into the <code>Note</code> input field (of the object page)
 				and leave the field.</li>
 			<li>Press the <code>Create Line Item</code> button in the toolbar of the sales order
 				line items table.</li>
 			<li><b>Check:</b> A new line item occurs and the count for the sales order line item
 				table in both, the title and below the <code>More</code> button is 28.
 			</li>
-			<li>Enter &apos;&apos; into the <code>Quantity</code> input field of the sub-object page
+			<li>Enter '' into the <code>Quantity</code> input field of the sub-object page
 				and leave the field.</li>
 			<li><b>Check:</b> The <code>Quantity</code> input field of the new sales order line item
 				has a colored border indicating an error.</li>
 			<li>Press the <code>Reset Sales Order</code> button on the object page.</li>
-			<li><b>Check:</b> The <code>Quantity</code> is again &apos;4.000&apos; and the error is gone.</li>
+			<li><b>Check:</b> The <code>Quantity</code> is again '4.000' and the error is gone.</li>
 			<li><b>Check:</b> The <code>Note</code> (of the object page) is again
-				&apos;Test (original)&apos;.</li>
+				'Test (original)'.</li>
 			<li><b>Check:</b> The new line item is gone and the count for the sales order line item
 				table in both, the title and below the <code>More</code> button is 27 again.
 			</li>
-			<li>Enter &apos;2&apos; into the <code>Quantity</code> input field of the sub-object page.</li>
+			<li>Enter '2' into the <code>Quantity</code> input field of the sub-object page.</li>
 			<li>Press the <code>More</code> button on the item table of the object page.</li>
 			<li><b>Check:</b> Both the object page and the sub-object page are in sync.</li>
 			<li>Press the <code>Cancel</code> button.</li>
@@ -89,8 +89,8 @@
 			<li><b>Check:</b> The object page is updated.</li>
 			<li><b>Check:</b> The count for the sales order table in both, the title and below the
 				<code>More</code> button is 10.</li>
-			<li>Enter &apos;Test&apos; into the <code>Note</code> input field of the object page.</li>
-			<li>Enter &apos;1000&apos; in the search field of the sales order table.</li>
+			<li>Enter 'Test' into the <code>Note</code> input field of the object page.</li>
+			<li>Enter '1000' in the search field of the sales order table.</li>
 			<li><b>Check:</b> The count for the sales order table in both, the title and below the
 				<code>More</code> button is 7.</li>
 			<li><b>Check:</b> The table is filtered and the selected sales order is not visible on
@@ -149,7 +149,7 @@
 				and the selected sales order does no longer appear in the list report. It is still
 				present in the object page.</li>
 			<li><b>Check:</b> The value of the <code>Sales Order ID</code> input field is
-				&apos;0500000009&apos;</li>
+				'0500000009'</li>
 			<li>Press the <code>Refresh</code> button on the sales order object page.</li>
 			<li><b>Check:</b> The corresponding sales order is no longer existing and the object
 				page vanishes.</li>
@@ -160,7 +160,7 @@
 		<ol>
 			<li>Select the first sales order in the sales order list report.</li>
 			<li><b>Check:</b> An object page for the sales order appears.</li>
-			<li>Enter &apos;1000&apos; in the search field of the sales order table.</li>
+			<li>Enter '1000' in the search field of the sales order table.</li>
 			<li><b>Check:</b> The table is filtered but the selected sales order is still visible on
 				the sales order table.
 			</li><li>Press the <code>Refresh</code> button on the sales order object page.</li>
@@ -174,18 +174,18 @@
 			<li>Select the fifth sales order in the <code>New Sales Orders</code> list.</li>
 			<li><b>Check:</b> An object page <code>Sales Order Details</code> for the selected
 				sales order appears.</li>
-			<li>Enter &apos;1000&apos; in the search field of the <code>New Sales Orders</code> list and
+			<li>Enter '1000' in the search field of the <code>New Sales Orders</code> list and
 				press enter.</li>
-			<li><b>Check:</b> That the sales order &apos;0500000004&apos; is filtered out from the
+			<li><b>Check:</b> That the sales order '0500000004' is filtered out from the
 				<code>New Sales Orders</code> list, but still exists on the
 				<code>Sales Order Details</code> object page.
 			</li><li>Press the <code>Refresh</code> button on the <code>New Sales Orders</code>
 				list.</li>
 			<li><b>Check</b> The object page <code>Sales Order Details</code> is updated and
-				shows new data and the sales order &apos;0500000004&apos; appears again in the
+				shows new data and the sales order '0500000004' appears again in the
 				<code>New Sales Orders</code> list.</li>
 		</ol>
-		<h3>Increase sales order line items&apos; quantities</h3>
+		<h3>Increase sales order line items' quantities</h3>
 		<ol>
 			<li>Select the first sales order in the list report.</li>
 			<li><b>Check:</b> An object page <code>Sales Order Details</code> for the selected
@@ -196,7 +196,7 @@
 			<li><b>Check:</b> The sales order item list is sorted by the <code>GrossAmount</code>
 				and the selected sales order item is no longer part of the items list. In the
 				sub-object page it is still present.</li>
-			<li>Press the <code>Increase all Sales Order Items&apos; Quantities by 1</code> button.</li>
+			<li>Press the <code>Increase all Sales Order Items' Quantities by 1</code> button.</li>
 			<li><b>Check:</b> The quantity on the sub-object page and all quantities for line items
 				in the object page are increased by one.</li>
 			<li><b>Check:</b> The gross amount and the note for the selected sales order in the
@@ -208,11 +208,11 @@
 		<ol>
 			<li>Press the <code>Create</code> button.</li>
 			<li><b>Check:</b> An empty sales order is shown at the top of the list report and in
-				the object page. It contains one line item with a quantity of &quot;2.000&quot;.</li>
-			<li>Enter &apos;Deep Create&apos; in the <code>Note</code> field of the object page.</li>
+				the object page. It contains one line item with a quantity of "2.000".</li>
+			<li>Enter 'Deep Create' in the <code>Note</code> field of the object page.</li>
 			<li>Press the <code>Create Line Item</code> button in the toolbar of the sales order
 				line items table thrice.</li>
-			<li><b>Check:</b> Three new line items occur, each with a quantity of &quot;2.000&quot;. The
+			<li><b>Check:</b> Three new line items occur, each with a quantity of "2.000". The
 				count for the sales order line item table is 4.
 			</li><li>Select the second sales order line item on the object page.</li>
 			<li><b>Check:</b> A sub-object page with item details appears.</li>
@@ -221,17 +221,17 @@
 				item table in the object page.</li>
 			<li>Select the second sales order line item on the object page.</li>
 			<li><b>Check:</b> A sub-object page with item details appears.</li>
-			<li>Enter &apos;4&apos; in the Quantity field of the item details.</li>
+			<li>Enter '4' in the Quantity field of the item details.</li>
 			<li>Press the <code>Save</code> button.</li>
-			<li><b>Check:</b> The sales order now has ID &apos;0500000005&apos;.</li>
-			<li><b>Check:</b> The Gross Amount of the sales order now is &apos;14,176.90&apos;.</li>
+			<li><b>Check:</b> The sales order now has ID '0500000005'.</li>
+			<li><b>Check:</b> The Gross Amount of the sales order now is '14,176.90'.</li>
 			<li><b>Check:</b> The sales order line items now have item positions.</li>
 			<li><b>Check:</b> The sub-object page has been closed.</li>
 			<li>Select the second sales order line item on the object page.</li>
 			<li><b>Check:</b> A sub-object page with item details appears.</li>
-			<li>Enter &apos;3&apos; in the Quantity field of the item details.</li>
+			<li>Enter '3' in the Quantity field of the item details.</li>
 			<li>Press the <code>Save</code> button.</li>
-			<li><b>Check:</b> The gross amount in the object page changed to &quot;12,404.77&quot;.</li>
+			<li><b>Check:</b> The gross amount in the object page changed to "12,404.77".</li>
 		</ol>
 	</body>
 </html>

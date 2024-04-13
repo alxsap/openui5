@@ -37,24 +37,24 @@
 var oHost = new sap.ui.integration.Host({
 	resolveDestination: function(sDestinationName, oCard) {
 		switch (sDestinationName) {
-			case &quot;Northwind&quot;:
-				return &quot;https://services.odata.org/V3/Northwind/Northwind.svc&quot;;
+			case "Northwind":
+				return "https://services.odata.org/V3/Northwind/Northwind.svc";
 				// or with a promise
-				return Promise.resolve(&quot;https://services.odata.org/V3/Northwind/Northwind.svc&quot;);
+				return Promise.resolve("https://services.odata.org/V3/Northwind/Northwind.svc");
 			break;
 			default:
-				console.error(&quot;Unknown destination.&quot;);
+				console.error("Unknown destination.");
 			break;
 		}
 	}
 });
 
-this.getView().byId(&apos;card1&apos;).setHost(oHost);</pre>
+this.getView().byId('card1').setHost(oHost);</pre>
 
 			XML View
 			<pre class="lang-xml">
-&lt;mvc:View xmlns:w=&quot;sap.ui.integration.widgets&quot;&gt;
-	&lt;w:Card id=&quot;card1&quot; manifest=&quot;./manifest.json&quot; /&gt;
+&lt;mvc:View xmlns:w="sap.ui.integration.widgets"&gt;
+	&lt;w:Card id="card1" manifest="./manifest.json" /&gt;
 &lt;/mvc:View&gt;</pre>
 			<a class="try-button" href="../../index.html#/explore/destinations" target="_parent">Try it Out</a>
 		</div>

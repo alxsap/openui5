@@ -100,48 +100,48 @@
 
 			<p>An example with a card which fetches data from Northwind service:</p>
 			<pre class="lang-json">
-&quot;sap.card&quot;: {
-	&quot;type&quot;: &quot;Table&quot;,
-	&quot;data&quot;: {
-		&quot;request&quot;: {
-			&quot;url&quot;: &quot;{{destinations.myDestination}}/Orders&quot;,
-			&quot;parameters&quot;: {
-				&quot;&#x24;format&quot;: &quot;json&quot;,
-				&quot;&#x24;top&quot;: &quot;{parameters&gt;/maxItems/value}&quot;,
-				&quot;&#x24;orderby&quot;: &quot;Freight desc&quot;
+"sap.card": {
+	"type": "Table",
+	"data": {
+		"request": {
+			"url": "{{destinations.myDestination}}/Orders",
+			"parameters": {
+				"$format": "json",
+				"$top": "{parameters>/maxItems/value}",
+				"$orderby": "Freight desc"
 			}
 		}
 	},
-	&quot;configuration&quot;: {
-		&quot;destinations&quot;: {
-			&quot;myDestination&quot;: {
-				&quot;name&quot;: &quot;Northwind&quot;
+	"configuration": {
+		"destinations": {
+			"myDestination": {
+				"name": "Northwind"
 			}
 		},
-		&quot;parameters&quot;: {
-			&quot;maxItems&quot;: {
-				&quot;value&quot;: 7,
-				&quot;type&quot;: &quot;integer&quot;
+		"parameters": {
+			"maxItems": {
+				"value": 7,
+				"type": "integer"
 			}
 		}
 	},
-	&quot;content&quot;: {
-		&quot;data&quot;: {
-			&quot;path&quot;: &quot;/value/&quot;
+	"content": {
+		"data": {
+			"path": "/value/"
 		},
-		&quot;maxItems&quot;: &quot;{parameters&gt;/maxItems/value}&quot;,
-		&quot;row&quot;: {
-			&quot;columns&quot;: [{
-					&quot;title&quot;: &quot;Customer&quot;,
-					&quot;value&quot;: &quot;{ShipName}&quot;
+		"maxItems": "{parameters>/maxItems/value}",
+		"row": {
+			"columns": [{
+					"title": "Customer",
+					"value": "{ShipName}"
 				},
 				{
-					&quot;title&quot;: &quot;Country&quot;,
-					&quot;value&quot;: &quot;{ShipCountry}&quot;
+					"title": "Country",
+					"value": "{ShipCountry}"
 				},
 				{
-					&quot;title&quot;: &quot;Freight&quot;,
-					&quot;value&quot;: &quot;{Freight}&quot;
+					"title": "Freight",
+					"value": "{Freight}"
 				}
 			]
 		}

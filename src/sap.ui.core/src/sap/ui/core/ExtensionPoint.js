@@ -15,20 +15,18 @@ sap.ui.define(["sap/base/future", "sap/base/Log", "sap/ui/core/mvc/View", "sap/u
 		const ExtensionPoint = {};
 
 		/**
-		 * API documentation see ExtensionPoint.load() (v2 API) and sap.ui.extensionpoint() (v1 API).
-		 *
-		 * Used only internally by this module, as well as the XMLTemplateProcessor.
-		 *
-		 * @param {sap.ui.core.mvc.View|sap.ui.core.Fragment} oContainer the containing UI5 element, either a View or a Fragment instance
-		 * @param {string} sExtName the name of the extension-point
-		 * @param {function} fnCreateDefaultContent a function which creates the default content of an extension-point. Either given via public API or statically defined in {@link sap.ui.core.XMLTemplateProcessor}.
-		 * @param {sap.ui.core.Control} oTargetControl the target control into which the extension-point's content will be inserted
-		 * @param {string} sAggregationName the aggregation name inside the target control. The content controls of the extension-point will be inserted into this aggregation.
-		 * @param {boolean} [bAsync=false] whether the ExtensionPoint content should be loaded asynchronously, defaults to sync
-		 *
-		 * @private
-		 */
-		ExtensionPoint._factory = function(oContainer, sExtName, fnCreateDefaultContent, oTargetControl, sAggregationName, bAsync) {
+			 * API documentation see ExtensionPoint.load() (v2 API) and sap.ui.extensionpoint() (v1 API).
+			 *
+			 * Used only internally by this module, as well as the XMLTemplateProcessor.
+			 *
+			 * @param {sap.ui.core.mvc.View|sap.ui.core.Fragment} oContainer the containing UI5 element, either a View or a Fragment instance
+			 * @param {string} sExtName the name of the extension-point
+			 * @param {function} fnCreateDefaultContent a function which creates the default content of an extension-point. Either given via public API or statically defined in {@link sap.ui.core.XMLTemplateProcessor}.
+			 * @param {sap.ui.core.Control} oTargetControl the target control into which the extension-point's content will be inserted
+			 * @param {string} sAggregationName the aggregation name inside the target control. The content controls of the extension-point will be inserted into this aggregation.
+			 * @private
+			 */
+		ExtensionPoint._factory = function(oContainer, sExtName, fnCreateDefaultContent, oTargetControl, sAggregationName) {
 			var oExtensionConfig, oView, vResult, sViewOrFragmentName;
 
 			// do we have a view to check or do we need to check for configuration for a fragment?
@@ -58,13 +56,13 @@ sap.ui.define(["sap/base/future", "sap/base/Log", "sap/ui/core/mvc/View", "sap/u
 					// create factory configuration
 					var sId = oView && oExtensionConfig.id ? oView.createId(oExtensionConfig.id) : oExtensionConfig.id;
 					var oFactoryConfig = {
-						async: bAsync,
+						async: true,
 						id: sId,
 						type: oExtensionConfig.type
 					};
 
 					// processingMode must not be set for sync path
-					if (bAsync && oView._sProcessingMode) {
+					if (oView._sProcessingMode) {
 						oFactoryConfig.processingMode = oView._sProcessingMode;
 					}
 
@@ -77,22 +75,15 @@ sap.ui.define(["sap/base/future", "sap/base/Log", "sap/ui/core/mvc/View", "sap/u
 						oFactoryConfig.fragmentName = oExtensionConfig.fragmentName;
 						oFactoryConfig.containingView = oView;
 
-						if (bAsync) {
-							// Require Fragment factory if needed
-							if (Fragment) {
-								vResult = Fragment.load(oFactoryConfig);
-							} else {
-								vResult = new Promise(function(fnResolve, fnReject){
-									sap.ui.require(["sap/ui/core/Fragment"], function(Fragment) {
-										fnResolve(Fragment.load(oFactoryConfig));
-									}, fnReject);
-								});
-							}
+						// Require Fragment factory if needed
+						if (Fragment) {
+							vResult = Fragment.load(oFactoryConfig);
 						} else {
-							Fragment = Fragment || sap.ui.requireSync("sap/ui/core/Fragment"); // legacy-relevant: Sync path
-							var oFragment = new Fragment(oFactoryConfig);
-							// make sure vResult is at least an empty array, if a Fragment is configured, the default content is not added
-							vResult = (Array.isArray(oFragment) ? oFragment : [oFragment]);
+							vResult = new Promise(function(fnResolve, fnReject){
+								sap.ui.require(["sap/ui/core/Fragment"], function(Fragment) {
+									fnResolve(Fragment.load(oFactoryConfig));
+								}, fnReject);
+							});
 						}
 
 					} else if (oExtensionConfig.className === "sap.ui.core.mvc.View") {
@@ -102,12 +93,7 @@ sap.ui.define(["sap/base/future", "sap/base/Log", "sap/ui/core/mvc/View", "sap/u
 						// View.create always overrides the processingMode to 'Sequential'
 						var oExtensionView = View._create(oFactoryConfig);
 
-						if (bAsync) {
-							vResult = oExtensionView.loaded();
-						} else {
-							// sync view creation
-							vResult = [oExtensionView]; // vResult is now an array, even if empty - so if a Fragment is configured, the default content below is not added anymore
-						}
+						vResult = oExtensionView.loaded();
 					} else {
 						// unknown extension class
 						future.warningThrows("Customizing: Unknown extension className configured (and ignored) in Component.js for extension point '" + sExtName
@@ -274,25 +260,24 @@ sap.ui.define(["sap/base/future", "sap/base/Log", "sap/ui/core/mvc/View", "sap/u
 		};
 
 		/**
-		 * Creates 0..n UI5 controls from an <code>ExtensionPoint</code>.
-		 *
-		 * One control if the <code>ExtensionPoint</code> is e.g. filled with a <code>View</code>, zero for extension points without configured extension and
-		 * n controls for multi-root <code>Fragments</code> as extension.
-		 *
-		 * @param {object} mOptions an object map (see below)
-		 * @param {sap.ui.core.mvc.View|sap.ui.core.Fragment} mOptions.container The view or fragment containing the extension point
-		 * @param {string} mOptions.name The <code>mOptions.name</code> is used to identify the extension point in the customizing
-		 * @param {function} [mOptions.createDefaultContent] Optional callback function creating default content, returning an array of controls. It is executed
-		 *        when there's no customizing, if not provided, no default content will be rendered.
-		 *        <code>mOptions.createDefaultContent</code> might also return a Promise, which resolves with an array of controls.
-		 *
-		 * @param {boolean} [mOptions.async=false] Whether the ExtensionPoint content should be loaded asynchronously
-		 * @returns {Promise<sap.ui.core.Control[]>} a Promise, which resolves with an array of 0..n controls created from an <code>ExtensionPoint</code>.
-		 *        If <code>mOptions.createDefaultContent</code> is called and returns a Promise, that Promise is returned by <code>ExtensionPoint.load</code>.
-		 * @since 1.56.0
-		 * @public
-		 * @static
-		 */
+			 * Creates 0..n UI5 controls from an <code>ExtensionPoint</code>.
+			 *
+			 * One control if the <code>ExtensionPoint</code> is e.g. filled with a <code>View</code>, zero for extension points without configured extension and
+			 * n controls for multi-root <code>Fragments</code> as extension.
+			 *
+			 * @param {object} mOptions an object map (see below)
+			 * @param {sap.ui.core.mvc.View|sap.ui.core.Fragment} mOptions.container The view or fragment containing the extension point
+			 * @param {string} mOptions.name The <code>mOptions.name</code> is used to identify the extension point in the customizing
+			 * @param {function} [mOptions.createDefaultContent] Optional callback function creating default content, returning an array of controls. It is executed
+			 *        when there's no customizing, if not provided, no default content will be rendered.
+			 *        <code>mOptions.createDefaultContent</code> might also return a Promise, which resolves with an array of controls.
+			 *
+			 * @returns {Promise<sap.ui.core.Control[]>} a Promise, which resolves with an array of 0..n controls created from an <code>ExtensionPoint</code>.
+			 *        If <code>mOptions.createDefaultContent</code> is called and returns a Promise, that Promise is returned by <code>ExtensionPoint.load</code>.
+			 * @since 1.56.0
+			 * @public
+			 * @static
+			 */
 		ExtensionPoint.load = function(mOptions) {
 			return Promise.resolve(
 				ExtensionPoint._factory(
@@ -301,7 +286,7 @@ sap.ui.define(["sap/base/future", "sap/base/Log", "sap/ui/core/mvc/View", "sap/u
 					mOptions.createDefaultContent,
 					null,
 					null,
-					!!mOptions.async
+					true
 				)
 			);
 		};

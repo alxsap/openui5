@@ -41,7 +41,7 @@
 						<td></td>
 						<td>Yes</td>
 						<td>The URL of the request. Relative paths like
-							&quot;data.json&quot;, &quot;./data.json&quot; and &quot;../data.json&quot;
+							"data.json", "./data.json" and "../data.json"
 							are going to be resolved relatively to the manifest base path.
 						</td>
 						<td>1.21.0</td>
@@ -50,9 +50,9 @@
 					<tr>
 						<td>mode</td>
 						<td>string</td>
-						<td>&quot;cors&quot;</td>
+						<td>"cors"</td>
 						<td>No</td>
-						<td>The mode of the request. Possible values are &quot;cors&quot;, &quot;no-cors&quot;, &quot;same-origin&quot;.
+						<td>The mode of the request. Possible values are "cors", "no-cors", "same-origin".
 						</td>
 						<td>1.21.0</td>
 						<td>1.77</td>
@@ -60,9 +60,9 @@
 					<tr>
 						<td>method</td>
 						<td>string</td>
-						<td>&quot;GET&quot;</td>
+						<td>"GET"</td>
 						<td>No</td>
-						<td>The HTTP method. Possible values are &quot;GET&quot;, &quot;POST&quot;, &quot;PUT&quot;, &quot;PATCH&quot;, &quot;DELETE&quot;, &quot;OPTIONS&quot;, and &quot;HEAD&quot;.</td>
+						<td>The HTTP method. Possible values are "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", and "HEAD".</td>
 						<td>1.21.0</td>
 						<td>1.77</td>
 					</tr>
@@ -73,20 +73,20 @@
 						<td>No</td>
 						<td>
 							The request parameters to be sent to the server.
-							If the HTTP method is &quot;POST&quot;, &quot;PUT&quot;, &quot;PATCH&quot;, or &quot;DELETE&quot; the parameters will be put as key/value pairs into the body of
+							If the HTTP method is "POST", "PUT", "PATCH", or "DELETE" the parameters will be put as key/value pairs into the body of
 							the request.
-							If the method doesn&apos;t have an entity body, such as the &quot;GET&quot; or &quot;HEAD&quot; methods, the data is appended to
+							If the method doesn't have an entity body, such as the "GET" or "HEAD" methods, the data is appended to
 							the URL.
 							<br><br>
 							Default encoding is <code>application/x-www-form-urlencoded</code>.
 							Also JSON is supported for the body encoding. If you need
-							it add a header <code>Content-Type: application/json</code>&quot;
+							it add a header <code>Content-Type: application/json</code>"
 							<br><br>
 							By default this property is a plain object that contains the form values of the card.
 							The keys of the object are the IDs of all form fields, the values are the fields values.
 							<br>
 							Set this property if custom structure, keys, or values are needed.
-							In this case the values of the form fields can be accessed by their IDs via the &quot;form&quot; model.
+							In this case the values of the form fields can be accessed by their IDs via the "form" model.
 							This model contains all form fields.
 							For more information see the <a target="_parent" href="../../../index.html#/explore/adaptive/adaptive-action-submit-custom-payload">Submit Action with Custom Payload</a> sample.
 						</td>
@@ -121,27 +121,27 @@
 			<p>An example with a card which submits the form data to Northwind service:</p>
 			<pre class="lang-json">
 {
-	&quot;sap.card&quot;: {
-		&quot;configuration&quot;: {
-			&quot;actionHandlers&quot;: {
-				&quot;submit&quot;: {
-					&quot;url&quot;: &quot;./NorthwindSvc/formData&quot;,
-					&quot;method&quot;: &quot;POST&quot;
+	"sap.card": {
+		"configuration": {
+			"actionHandlers": {
+				"submit": {
+					"url": "./NorthwindSvc/formData",
+					"method": "POST"
 				}
 			}
 		},
-		&quot;type&quot;: &quot;AdaptiveCard&quot;,
-		&quot;content&quot;: {
-			&quot;&#x24;schema&quot;: &quot;http://adaptivecards.io/schemas/adaptive-card.json&quot;,
-			&quot;type&quot;: &quot;AdaptiveCard&quot;,
-			&quot;version&quot;: &quot;1.0&quot;,
-			&quot;body&quot;: [
+		"type": "AdaptiveCard",
+		"content": {
+			"$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+			"type": "AdaptiveCard",
+			"version": "1.0",
+			"body": [
 				....
 			],
-			&quot;actions&quot;: [
+			"actions": [
 				{
-					&quot;type&quot;: &quot;Action.Submit&quot;,
-					&quot;title&quot;: &quot;Send to backend&quot;
+					"type": "Action.Submit",
+					"title": "Send to backend"
 				}
 			]
 		}

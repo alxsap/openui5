@@ -23,7 +23,7 @@ sap.ui.define([
 ) {
 	"use strict";
 
-	var SelectionMode = library.SelectionMode;
+	const SelectionMode = library.SelectionMode;
 
 	function getData() {
 		return {
@@ -70,10 +70,10 @@ sap.ui.define([
 	}
 
 	function createTable() {
-		var oModel = new JSONModel();
+		const oModel = new JSONModel();
 		oModel.setData(getData());
 
-		var oTable = new TreeTable({
+		const oTable = new TreeTable({
 			columns: [
 				new Column({label: "Name", template: "name", filterProperty: "name"}),
 				new Column({label: "Description", template: "description"})
@@ -119,9 +119,9 @@ sap.ui.define([
 	});
 
 	QUnit.test("Insert and remove a row", function(assert) {
-		var done = assert.async();
-		var that = this;
-		var oData = that.table.getModel().getData();
+		const done = assert.async();
+		const that = this;
+		const oData = that.table.getModel().getData();
 
 		this.testAsync({
 			act: function() {
@@ -149,9 +149,9 @@ sap.ui.define([
 	});
 
 	QUnit.test("Insert a child row", function(assert) {
-		var done = assert.async();
-		var that = this;
-		var oData = this.table.getModel().getData();
+		const done = assert.async();
+		const that = this;
+		const oData = this.table.getModel().getData();
 
 		this.testAsync({
 			act: function() {
@@ -173,8 +173,8 @@ sap.ui.define([
 	});
 
 	QUnit.test("Add and remove a filter", function(assert) {
-		var done = assert.async();
-		var that = this;
+		const done = assert.async();
+		const that = this;
 
 		this.testAsync({
 			act: function() {
@@ -227,7 +227,7 @@ sap.ui.define([
 	});
 
 	QUnit.test("Bind rows", function(assert) {
-		var oInnerBindRows = this.spy(TreeTable.prototype, "_bindRows");
+		const oInnerBindRows = this.spy(TreeTable.prototype, "_bindRows");
 
 		/*eslint-disable no-new */
 		new TreeTable({
@@ -242,9 +242,9 @@ sap.ui.define([
 	});
 
 	QUnit.test("Binding events", function(assert) {
-		var oChangeSpy = this.spy();
-		var oDataRequestedSpy = this.spy();
-		var oDataReceivedSpy = this.spy();
+		const oChangeSpy = this.spy();
+		const oDataRequestedSpy = this.spy();
+		const oDataReceivedSpy = this.spy();
 
 		this.table.bindRows({
 			path: "/root",
@@ -255,7 +255,7 @@ sap.ui.define([
 			}
 		});
 
-		var oBinding = this.table.getBinding();
+		const oBinding = this.table.getBinding();
 		oBinding.fireEvent("dataRequested");
 		oBinding.fireEvent("dataReceived");
 
@@ -302,9 +302,9 @@ sap.ui.define([
 
 	QUnit.test("RowSelectionChange", function(assert) {
 		assert.expect(42);
-		var oTable = this.table;
-		var sTestCase = "";
-		var fnHandler = function(oEvent) {
+		const oTable = this.table;
+		let sTestCase = "";
+		const fnHandler = function(oEvent) {
 			switch (sTestCase) {
 				case "userSelectAll":
 					assert.equal(oEvent.getParameter("selectAll"), true, sTestCase + ": Parameter selectAll correct");
@@ -393,9 +393,9 @@ sap.ui.define([
 
 	QUnit.test("Select All on Binding Change", function(assert) {
 		assert.expect(4);
-		var done = assert.async();
-		var oModel;
-		var oTable = this.table;
+		const done = assert.async();
+		let oModel;
+		const oTable = this.table;
 
 		oTable.attachRowSelectionChange(function() {
 			assert.ok(!oTable.$("selall").hasClass("sapUiTableSelAll"), "Select all icon is checked.");
@@ -424,7 +424,7 @@ sap.ui.define([
 	});
 
 	QUnit.test("TreeTable + JSONModel: Select entries synchronously", function(assert) {
-		var oTable = this.table;
+		const oTable = this.table;
 
 		oTable.setModel(new JSONModel(getData()));
 		oTable.bindRows("/root");
@@ -438,14 +438,14 @@ sap.ui.define([
 		oTable.addSelectionInterval(3, 3);
 
 		assert.deepEqual(oTable.getSelectedIndices(), [0, 1, 3], "Selected indices array is correct");
-		var oBinding = oTable.getBinding();
-		assert.ok(oBinding.getSelectedNodesCount() == 3, "# of selected nodes is correct");
+		const oBinding = oTable.getBinding();
+		assert.ok(oBinding.getSelectedNodesCount() === 3, "# of selected nodes is correct");
 
 		// test clear selection
 		oTable.clearSelection();
 
 		assert.deepEqual(oTable.getSelectedIndices(), [], "Selected indices array is correct");
-		assert.ok(oBinding.getSelectedNodesCount() == 0, "# of selected nodes is correct");
+		assert.ok(oBinding.getSelectedNodesCount() === 0, "# of selected nodes is correct");
 	});
 
 	QUnit.test("Selection Plugin", function(assert) {
@@ -490,9 +490,9 @@ sap.ui.define([
 	});
 
 	QUnit.test("_rowsUpdated - Expand", function(assert) {
-		var aFiredReasons = [];
-		var that = this;
-		var oTable = this.createTable();
+		const aFiredReasons = [];
+		const that = this;
+		const oTable = this.createTable();
 
 		return oTable.qunit.whenRenderingFinished().then(function() {
 			oTable.attachEvent("_rowsUpdated", function(oEvent) {
@@ -507,9 +507,9 @@ sap.ui.define([
 	});
 
 	QUnit.test("_rowsUpdated - Collapse", function(assert) {
-		var aFiredReasons = [];
-		var that = this;
-		var oTable = this.createTable();
+		const aFiredReasons = [];
+		const that = this;
+		const oTable = this.createTable();
 
 		return oTable.qunit.whenRenderingFinished().then(function() {
 			oTable.getRows()[0].expand();
@@ -596,7 +596,7 @@ sap.ui.define([
 	});
 
 	QUnit.test("SelectionMode = Single (collapseRecursive=false)", function(assert) {
-		var bBindingInfo = this.table.getBindingInfo("rows");
+		const bBindingInfo = this.table.getBindingInfo("rows");
 
 		bBindingInfo.parameters.collapseRecursive = false;
 		this.table.bindRows(bBindingInfo);
@@ -681,7 +681,7 @@ sap.ui.define([
 				models: new TableQUnitUtils.createJSONModel(8),
 				rowMode: new FixedRowMode({rowCount: 5})
 			});
-			var oBinding = this.oTable.getBinding();
+			const oBinding = this.oTable.getBinding();
 
 			this.oBindingExpandSpy = sinon.spy(oBinding, "expand");
 			this.oBindingCollapseSpy = sinon.spy(oBinding, "collapse");
@@ -694,7 +694,7 @@ sap.ui.define([
 			this.oTable.destroy();
 		},
 		test: function(sMessage, oTestConfig, assert) {
-			var mOperations = [];
+			const mOperations = [];
 
 			if (oTestConfig.prepare != null) {
 				oTestConfig.prepare();
@@ -728,7 +728,7 @@ sap.ui.define([
 	});
 
 	QUnit.test("#expand", function(assert) {
-		var that = this;
+		const that = this;
 
 		[0, [0]].forEach(function(vIndexParameter) {
 			that.test("Expand a collapsed row", {
@@ -780,7 +780,7 @@ sap.ui.define([
 	});
 
 	QUnit.test("#collapse", function(assert) {
-		var that = this;
+		const that = this;
 
 		[0, [0]].forEach(function(vIndexParameter) {
 			that.test("Collapse an expanded row", {
@@ -835,7 +835,7 @@ sap.ui.define([
 	});
 
 	QUnit.test("#expand/#collapse with invalid parameters", function(assert) {
-		var that = this;
+		const that = this;
 
 		[-1, [-1]].forEach(function(vIndexParameter) {
 			that.test("Expand index < 0", {
@@ -848,7 +848,7 @@ sap.ui.define([
 			}, assert);
 		});
 
-		var iTotalRowCount = this.oTable._getTotalRowCount();
+		const iTotalRowCount = this.oTable._getTotalRowCount();
 		[iTotalRowCount, [iTotalRowCount]].forEach(function(vIndexParameter) {
 			that.test("Expand index > maximum row index", {
 				indices: vIndexParameter,
@@ -871,7 +871,7 @@ sap.ui.define([
 	});
 
 	QUnit.test("Row#collapse", function(assert) {
-		var that = this;
+		const that = this;
 
 		this.oTable.getRows()[0].expand();
 
@@ -884,7 +884,7 @@ sap.ui.define([
 	});
 
 	QUnit.test("Row#toggleExpandedState", function(assert) {
-		var that = this;
+		const that = this;
 
 		this.oTable.getRows()[0].toggleExpandedState();
 
@@ -899,7 +899,7 @@ sap.ui.define([
 	});
 
 	QUnit.test("Result of expand/collapse a single row", function(assert) {
-		var that = this;
+		const that = this;
 
 		this.oTable.expand(0);
 
@@ -914,7 +914,7 @@ sap.ui.define([
 	});
 
 	QUnit.test("Result of expand/collapse a single row synchronously after bind", function(assert) {
-		var that = this;
+		const that = this;
 
 		this.oTable.bindRows(this.oTable.getBindingInfo("rows"));
 		this.oTable.expand(0);
@@ -937,7 +937,7 @@ sap.ui.define([
 	});
 
 	QUnit.test("Result of expand/collapse multiple rows", function(assert) {
-		var that = this;
+		const that = this;
 
 		this.oTable.expand([0, 1]);
 
@@ -965,7 +965,7 @@ sap.ui.define([
 	});
 
 	QUnit.test("Proxy Initialisation", function(assert) {
-		var oTable = new TreeTable();
+		const oTable = new TreeTable();
 		assert.ok(oTable._oProxy, "TreeTable has a proxy object");
 		assert.equal(oTable._oProxy._sAggregation, "rows", "Proxy has correct aggregation");
 		assert.equal(oTable._oProxy._oControl, oTable, "Proxy has correct control associated");
@@ -973,9 +973,9 @@ sap.ui.define([
 	});
 
 	QUnit.test("#isTreeBinding", function(assert) {
-		var fnBindingInfoStub = sinon.stub(this.oTable, "getBindingInfo");
-		var fnGetModelStub = sinon.stub(this.oTable, "getModel");
-		var fnIsTreeBindingSpy = sinon.spy(this.oProxy, "isTreeBinding");
+		const fnBindingInfoStub = sinon.stub(this.oTable, "getBindingInfo");
+		const fnGetModelStub = sinon.stub(this.oTable, "getModel");
+		const fnIsTreeBindingSpy = sinon.spy(this.oProxy, "isTreeBinding");
 
 		fnBindingInfoStub.returns({model: "undefined"});
 		fnGetModelStub.returns({
@@ -1003,16 +1003,16 @@ sap.ui.define([
 
 	QUnit.test("Correct Proxy Calls", function(assert) {
 		// Initialise spies
-		var fnGetContextsSpy = sinon.spy(this.oProxy, "getContexts");
-		var fnExpandSpy = sinon.spy(this.oProxy, "expand");
-		var fnCollapseSpy = sinon.spy(this.oProxy, "collapse");
-		var fnExpandToLevelSpy = sinon.spy(this.oProxy, "expandToLevel");
-		var fnCollapseAllSpy = sinon.spy(this.oProxy, "collapseAll");
-		var fnIsExpandedSpy = sinon.spy(this.oProxy, "isExpanded");
-		var fnGetContextByIndexSpy = sinon.spy(this.oProxy, "getContextByIndex");
+		const fnGetContextsSpy = sinon.spy(this.oProxy, "getContexts");
+		const fnExpandSpy = sinon.spy(this.oProxy, "expand");
+		const fnCollapseSpy = sinon.spy(this.oProxy, "collapse");
+		const fnExpandToLevelSpy = sinon.spy(this.oProxy, "expandToLevel");
+		const fnCollapseAllSpy = sinon.spy(this.oProxy, "collapseAll");
+		const fnIsExpandedSpy = sinon.spy(this.oProxy, "isExpanded");
+		const fnGetContextByIndexSpy = sinon.spy(this.oProxy, "getContextByIndex");
 
 		// Stub oTable.getBinding
-		var fnGetBinding = sinon.stub(this.oTable, "getBinding");
+		const fnGetBinding = sinon.stub(this.oTable, "getBinding");
 		fnGetBinding.returns({
 			getMetadata: function() {
 				return {

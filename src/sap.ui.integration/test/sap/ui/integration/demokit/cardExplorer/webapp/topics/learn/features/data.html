@@ -29,11 +29,11 @@
 				There are a few possible configurations for a data section:
 			</p>
 			<ol>
-				<li>Using static data by providing the &quot;json&quot; property.</li>
-				<li>Requesting data by providing the &quot;request&quot; property.</li>
+				<li>Using static data by providing the "json" property.</li>
+				<li>Requesting data by providing the "request" property.</li>
 				<li>Use the <a href="../../../index.html#/learn/features/extension" target="_parent">Extension</a> to
-					get data by providing the &quot;extension&quot; property.</li>
-				<li>Provide &quot;path&quot; only to specify the context path of the current level.</li>
+					get data by providing the "extension" property.</li>
+				<li>Provide "path" only to specify the context path of the current level.</li>
 			</ol>
 
 			<h2 id="dataProperties">Data Properties</h2>
@@ -83,7 +83,7 @@
 							If this name is given, a model with the same name is assigned to the card and can be used inside the manifest and inside
 							an <a href="../../../index.html#/learn/features/extension" target="_parent">extension</a> or a <a href="../../../index.html#/learn/typesOther/component" target="_parent">Component card</a>.
 							<br>
-							A unique name must be used for each individual data section. The names &quot;parameters&quot;, &quot;filters&quot;, &quot;context&quot; and &quot;i18n&quot; are reserved for cards and must not be used.
+							A unique name must be used for each individual data section. The names "parameters", "filters", "context" and "i18n" are reserved for cards and must not be used.
 							<br>
 							See this <a href="../../../index.html#/explore/extension/namedDataSection" target="_parent">sample</a>.
 							<br>
@@ -96,7 +96,7 @@
 						<td>path</td>
 						<td>string</td>
 						<td>No</td>
-						<td>The context path. Default value is &quot;/&quot;.</td>
+						<td>The context path. Default value is "/".</td>
 						<td>1.14.0</td>
 						<td>1.65</td>
 					</tr>
@@ -114,8 +114,8 @@
 						<td><a href="#mockDataProperties">MockData</a></td>
 						<td>No</td>
 						<td>
-							Mock data configuration. It is used when the card preview mode is set to &quot;MockData&quot; by the hosting environment.
-							For more information see <a data-demokit-href="#/api/sap.ui.integration.widgets.Card/controlProperties" target="_blank">Card&apos;s previewMode property</a>.<br>
+							Mock data configuration. It is used when the card preview mode is set to "MockData" by the hosting environment.
+							For more information see <a data-demokit-href="#/api/sap.ui.integration.widgets.Card/controlProperties" target="_blank">Card's previewMode property</a>.<br>
 							<b>Note:</b> This property is experimental.
 						</td>
 						<td>1.52.0</td>
@@ -139,8 +139,8 @@
 						<td>mode</td>
 						<td>string</td>
 						<td>No</td>
-						<td>The mode of the request. Possible values are &quot;cors&quot;, &quot;no-cors&quot;, &quot;same-origin&quot;. Default value
-							is &quot;cors&quot;.
+						<td>The mode of the request. Possible values are "cors", "no-cors", "same-origin". Default value
+							is "cors".
 						</td>
 						<td>1.14.0</td>
 						<td>1.65</td>
@@ -150,7 +150,7 @@
 						<td>string</td>
 						<td>Yes</td>
 						<td>The URL of the request. Relative paths like
-							&quot;data.json&quot;, &quot;./data.json&quot; and &quot;../data.json&quot;
+							"data.json", "./data.json" and "../data.json"
 							are going to be resolved relatively to the manifest base path.
 						</td>
 						<td>1.14.0</td>
@@ -160,7 +160,7 @@
 						<td>method</td>
 						<td>string</td>
 						<td>No</td>
-						<td>The HTTP method. Possible values are &quot;GET&quot;, &quot;POST&quot;, &quot;PUT&quot;, &quot;PATCH&quot;, &quot;DELETE&quot;, &quot;OPTIONS&quot;, and &quot;HEAD&quot;. Default value is &quot;GET&quot;.</td>
+						<td>The HTTP method. Possible values are "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", and "HEAD". Default value is "GET".</td>
 						<td>1.14.0</td>
 						<td>1.65</td>
 					</tr>
@@ -170,13 +170,13 @@
 						<td>No</td>
 						<td>
 							The request parameters to be sent to the server.
-							If the HTTP method is &quot;POST&quot;, &quot;PUT&quot;, &quot;PATCH&quot;, or &quot;DELETE&quot; the parameters will be put as key/value pairs into the body of
+							If the HTTP method is "POST", "PUT", "PATCH", or "DELETE" the parameters will be put as key/value pairs into the body of
 							the request.
-							If the method doesn&apos;t have an entity body, such as the &quot;GET&quot; or &quot;HEAD&quot; methods, the data is appended to
+							If the method doesn't have an entity body, such as the "GET" or "HEAD" methods, the data is appended to
 							the URL.<br><br>
 							Default encoding is <code>application/x-www-form-urlencoded</code>.
 							Also JSON is supported for the body encoding (see <a target="_parent" href="../../../index.html#/explore/data/graphql">sample with GraphQL</a>). If you need
-							it add a header <code>Content-Type: application/json</code>&quot;
+							it add a header <code>Content-Type: application/json</code>"
 						</td>
 						<td>1.14.0</td>
 						<td>1.65</td>
@@ -196,8 +196,8 @@
 						<td>
 							Number of seconds before the request is retried if it failed the previous time.<br>
 							Request will be retried only if it failed with status code 429 or 503.<br>
-							If the server response contains &quot;Retry-After&quot; header - it will be used instead of this property.<br>
-							Only number of seconds is supported for both this property and the &quot;Retry-After&quot; header. Other values will be ignored.
+							If the server response contains "Retry-After" header - it will be used instead of this property.<br>
+							Only number of seconds is supported for both this property and the "Retry-After" header. Other values will be ignored.
 						</td>
 						<td>1.34.0</td>
 						<td>1.92</td>
@@ -274,7 +274,7 @@
 						<td>method</td>
 						<td>string</td>
 						<td>Yes</td>
-						<td>The HTTP method. Only &quot;GET&quot;, &quot;POST&quot;, &quot;PUT&quot;, &quot;PATCH&quot;, and &quot;DELETE&quot; are allowed. Use capital letters only.</td>
+						<td>The HTTP method. Only "GET", "POST", "PUT", "PATCH", and "DELETE" are allowed. Use capital letters only.</td>
 						<td>1.33.0</td>
 						<td>1.90</td>
 					</tr>
@@ -290,7 +290,7 @@
 						<td>body</td>
 						<td>Object</td>
 						<td>No</td>
-						<td>Request body. If specified, oRequest.headers map must contain &quot;Content-Type&quot; header either without &quot;charset&quot; parameter or with &quot;charset&quot; parameter having value &quot;UTF-8&quot;.</td>
+						<td>Request body. If specified, oRequest.headers map must contain "Content-Type" header either without "charset" parameter or with "charset" parameter having value "UTF-8".</td>
 						<td>1.33.0</td>
 						<td>1.90</td>
 					</tr>
@@ -299,15 +299,15 @@
 
 			<div id="cacheProperties" class="boldBlock">Cache Properties (Experimental)</div>
 			<p>
-				<b>Note:</b> This feature is dependent on the host environment and if it&#x2019;s not prepared, the card data requests will work without caching. If you are developing a host environment - see the instructions in the Integrate section.
+				<b>Note:</b> This feature is dependent on the host environment and if it’s not prepared, the card data requests will work without caching. If you are developing a host environment - see the instructions in the Integrate section.
 			</p>
 
 			<p>
-				Caching reflects how data requests are performed. In the card&#x2019;s configuration it is enabled by default and would work, given that there is caching enablement in the host environment.
+				Caching reflects how data requests are performed. In the card’s configuration it is enabled by default and would work, given that there is caching enablement in the host environment.
 			</p>
 
 			<p>
-				With the &#x201c;cache&#x201d; property you can specify how your card will behave about caching. You can control how long does the cached data is considered fresh and therefore shown to the user. You can also set whether a stale cache (one which is not fresh) can be shown to the user while fresh data is fetched.
+				With the “cache” property you can specify how your card will behave about caching. You can control how long does the cached data is considered fresh and therefore shown to the user. You can also set whether a stale cache (one which is not fresh) can be shown to the user while fresh data is fetched.
 			</p>
 
 			<p>
@@ -338,7 +338,7 @@
 						<td>boolean</td>
 						<td>No</td>
 						<td>true</td>
-						<td>If set to false the cache is disabled and it will not be stored in the browser&apos;s cache.</td>
+						<td>If set to false the cache is disabled and it will not be stored in the browser's cache.</td>
 						<td>1.35.0</td>
 						<td>1.94</td>
 					</tr>
@@ -440,42 +440,42 @@
 
 			<p>Card level data section with static JSON where the header and content sets their own context path:</p>
 			<pre class="lang-json">{
-	&quot;sap.card&quot;: {
-		&quot;type&quot;: &quot;List&quot;,
-		&quot;data&quot;: {
-			&quot;json&quot;: {
-				&quot;info&quot;: {
-					&quot;header&quot;: &quot;Some title&quot;
+	"sap.card": {
+		"type": "List",
+		"data": {
+			"json": {
+				"info": {
+					"header": "Some title"
 				},
-				&quot;items&quot;: [
+				"items": [
 					{
-						&quot;name&quot;: &quot;Item 1&quot;,
-						&quot;description&quot;: &quot;Item 1 description&quot;
+						"name": "Item 1",
+						"description": "Item 1 description"
 					},
 					{
-						&quot;name&quot;: &quot;Item 2&quot;,
-						&quot;description&quot;: &quot;Item 2 description&quot;
+						"name": "Item 2",
+						"description": "Item 2 description"
 					},
 					{
-						&quot;name&quot;: &quot;Item 3&quot;,
-						&quot;description&quot;: &quot;Item 3 description&quot;
+						"name": "Item 3",
+						"description": "Item 3 description"
 					}
 				]
 			}
 		},
-		&quot;header&quot;: {
-			&quot;data&quot;: {
-				&quot;path&quot;: &quot;/info&quot;
+		"header": {
+			"data": {
+				"path": "/info"
 			},
-			&quot;title&quot;: &quot;{header}&quot;
+			"title": "{header}"
 		},
-		&quot;content&quot;: {
-			&quot;data&quot;: {
-				&quot;path&quot;: &quot;/items&quot;
+		"content": {
+			"data": {
+				"path": "/items"
 			},
-			&quot;item&quot;: {
-				&quot;title&quot;: &quot;{name}&quot;,
-				&quot;description&quot;: &quot;{description}&quot;
+			"item": {
+				"title": "{name}",
+				"description": "{description}"
 			}
 		}
 	}
@@ -485,40 +485,40 @@
 
 			<p>The structure of the /api/items API response:</p>
 			<pre class="lang-json">{
-	&quot;items&quot;: [
+	"items": [
 		{
-			&quot;name&quot;: &quot;Item 1&quot;,
-			&quot;description&quot;: &quot;Item 1 description&quot;
+			"name": "Item 1",
+			"description": "Item 1 description"
 		},
 		{
-			&quot;name&quot;: &quot;Item 2&quot;,
-			&quot;description&quot;: &quot;Item 2 description&quot;
+			"name": "Item 2",
+			"description": "Item 2 description"
 		},
 		{
-			&quot;name&quot;: &quot;Item 3&quot;,
-			&quot;description&quot;: &quot;Item 3 description&quot;
+			"name": "Item 3",
+			"description": "Item 3 description"
 		}
 	]
 }</pre>
 
 			<p>The manifest:</p>
 			<pre class="lang-json">{
-	&quot;sap.card&quot;: {
-		&quot;type&quot;: &quot;List&quot;,
-		&quot;header&quot;: {
-			&quot;title&quot;: &quot;Some title&quot;
+	"sap.card": {
+		"type": "List",
+		"header": {
+			"title": "Some title"
 		},
-		&quot;content&quot;: {
-			&quot;data&quot;: {
-				&quot;request&quot;: {
-					&quot;url&quot;: &quot;../api/items&quot;
+		"content": {
+			"data": {
+				"request": {
+					"url": "../api/items"
 				},
-				&quot;updateInterval&quot;: 300,
-				&quot;path&quot;: &quot;/items&quot;
+				"updateInterval": 300,
+				"path": "/items"
 			},
-			&quot;item&quot;: {
-				&quot;title&quot;: &quot;{name}&quot;,
-				&quot;description&quot;: &quot;{description}&quot;
+			"item": {
+				"title": "{name}",
+				"description": "{description}"
 			}
 		}
 	}

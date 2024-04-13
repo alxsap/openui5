@@ -27,10 +27,9 @@ sap.ui.define([
 	"sap/m/MenuButton",
 	"sap/m/MenuItem",
 	"sap/m/Menu",
-	"sap/ui/mdc/table/DragDropConfig",
 	"sap/ui/model/BindingMode",
 	"sap/ui/core/CustomData"
-], function(PluginBase, Element, Log, Library1, FileUploader, UploaderHttpRequestMethod, UploadItem, deepEqual, Library, IllustratedMessageType, IllustratedMessage, IllustratedMessageSize, Uploader, DragDropInfo, DropInfo, FilePreviewDialog, EventBase, Dialog, Label, Input, MessageBox, Button, MenuButton, MenuItem, Menu, MDCDropConfig, BindingMode, CustomData) {
+], function(PluginBase, Element, Log, Library1, FileUploader, UploaderHttpRequestMethod, UploadItem, deepEqual, Library, IllustratedMessageType, IllustratedMessage, IllustratedMessageSize, Uploader, DragDropInfo, DropInfo, FilePreviewDialog, EventBase, Dialog, Label, Input, MessageBox, Button, MenuButton, MenuItem, Menu, BindingMode, CustomData) {
 	"use strict";
 
 	/**
@@ -348,34 +347,6 @@ sap.ui.define([
 						 */
 						item: {type: "sap.m.upload.UploadItem"}
 					}
-				},
-				/**
-				 * This event is fired when the user starts dragging an uploaded item.
-				 * @event
-				 * @param {sap.ui.base.Event} oControlEvent
-				 * @param {sap.ui.base.EventProvider} oControlEvent.getSource
-				 * @param {object} oControlEvent.getParameters
-				 * @param {sap.ui.core.Element} oControlEvent.getParameters.target The target element that is dragged
-				 * @param {sap.ui.core.dnd.DragSession} oControlEvent.getParameters.dragSession The UI5 <code>dragSession</code> object that exists only during drag and drop
-				 * @param {Event} oControlEvent.getParameters.browserEvent The underlying browser event
-				 * @public
-				 */
-				itemDragStart: {
-				},
-				/**
-				 * This event is fired when an uploaded item is dropped on the new table row position.
-				 * @event
-				 * @param {sap.ui.base.Event} oControlEvent
-				 * @param {sap.ui.base.EventProvider} oControlEvent.getSource
-				 * @param {object} oControlEvent.getParameters
-				 * @param {sap.ui.core.dnd.DragSession} oControlEvent.getParameters.dragSession The UI5 <code>dragSession</code> object that exists only during drag and drop
-				 * @param {sap.ui.core.Element} oControlEvent.getParameters.draggedControl The element being dragged
-				 * @param {sap.ui.core.Element} oControlEvent.getParameters.droppedControl The element being dropped
-				 * @param {sap.ui.core.dnd.RelativeDropPosition} oControlEvent.getParameters.dropPosition The calculated position of the drop action relative to the <code>droppedControl</code>.
-				 * @param {Event} oControlEvent.getParameters.browserEvent The underlying browser event
-				 * @public
-				 */
-				itemDrop: {
 				},
 				/**
 				 * This event is fired when plugin is activated.
@@ -1148,14 +1119,6 @@ sap.ui.define([
 		}
 	};
 
-	UploadSetwithTable.prototype._onDragStartItem = function (oEvent) {
-		this.fireItemDragStart(oEvent);
-	};
-
-	UploadSetwithTable.prototype._onDropItem = function (oEvent) {
-		this.fireItemDrop(oEvent);
-	};
-
 	UploadSetwithTable.prototype._onDragEnterFile = function (oEvent) {
 		var oDragSession = oEvent.getParameter("dragSession");
 		var oDraggedControl = oDragSession.getDragControl();
@@ -1527,14 +1490,21 @@ sap.ui.define([
 		},
 		// Set Drag and Drop configuration for the table when upload plugin is activated.
 		setDragDropConfig: function () {
-			const oPlugin = this.getPluginInstance();
-			const oControl = this.getControlInstance();
-			const oDragDropConfig = oPlugin._oDragDropConfig = new MDCDropConfig({
-				droppable: true
-			});
+			// Loading MDC library's Drag and Drop configuration for the table.
+			sap.ui.require(["sap/ui/mdc/table/DragDropConfig"], (MDCDragDropConfig) => {
 
-			oDragDropConfig.attachDrop(oPlugin._onDropFile.bind(oPlugin));
-			oControl.addDragDropConfig(oDragDropConfig);
+				const oPlugin = this.getPluginInstance();
+				const oControl = this.getControlInstance();
+				const oDragDropConfig = oPlugin._oDragDropConfig = new MDCDragDropConfig({
+					droppable: true
+				});
+
+				oDragDropConfig.attachDrop(oPlugin._onDropFile.bind(oPlugin));
+				oControl.addDragDropConfig(oDragDropConfig);
+
+			}, () => {
+				Log.error("Failed to load MDC library for Drag and Drop configuration.");
+			});
 		},
 		// Set default illustrations for the table when no data is available. set only when upload plugin is activated.
 		setDefaultIllustrations: function() {

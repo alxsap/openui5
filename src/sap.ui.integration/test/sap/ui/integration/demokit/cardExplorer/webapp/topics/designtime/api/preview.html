@@ -14,7 +14,7 @@
 		<div class="content">
 
 			<h1 id="overview">Preview</h1>
-			<h2 id="configure">Configure the Editor&apos;s Preview</h2>
+			<h2 id="configure">Configure the Editor's Preview</h2>
 			<p>An additional section in the configuration allows to influence the preview shown in the Configuration Editor
 			</p>
 			<div class="tableWrapper">
@@ -22,18 +22,18 @@
 					<tr>
 						<td style="vertical-align: top;background-color: transparent; border:none; padding-left: 0;">
 							<pre class="lang-js">
-sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
+sap.ui.define(["sap/ui/integration/Designtime"], function (
 	Designtime
 ) {
-	&quot;use strict&quot;;
+	"use strict";
 	return function () {
 		return new Designtime({
-			&quot;form&quot;: {
-				&quot;items&quot;: {
+			"form": {
+				"items": {
 
 				}
 			},<mark>
-			&quot;preview&quot;: {
+			"preview": {
 
 			}</mark>
 		});
@@ -61,21 +61,21 @@ sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
 						<td>modes</td>
 						<td>string</td>
 						<td>No</td>
-						<td>&quot;Abstract&quot;</td>
+						<td>"Abstract"</td>
 						<td>Possible values are : <br>
-							<code>&quot;None&quot;</code> : No preview is shown.<br>
-							<code>&quot;Abstract&quot;</code> : An abstract preview is shown with placeholders for the possible result.<br>
-							<code>&quot;Live&quot;</code> : A small scaled preview of the real Card is shown.<br>
-							<code>&quot;AbstractLive&quot;</code> : The user will be able to toggle between abstract and live preview, starting with the abstract
+							<code>"None"</code> : No preview is shown.<br>
+							<code>"Abstract"</code> : An abstract preview is shown with placeholders for the possible result.<br>
+							<code>"Live"</code> : A small scaled preview of the real Card is shown.<br>
+							<code>"AbstractLive"</code> : The user will be able to toggle between abstract and live preview, starting with the abstract
 							preview.<br>
-							<code>&quot;LiveAbstract&quot;</code> : The user will be able to toggle between live and abstract
+							<code>"LiveAbstract"</code> : The user will be able to toggle between live and abstract
 							preview, starting with the live preview.<br>
-							<code>&quot;MockData&quot;</code> <span>(Component Card)</span>: A small scaled preview of the real Card with mock data is shown.<br>
-							<code>&quot;AbstractMockData&quot;</code> <span>(Component Card)</span>: The user will be able to toggle between abstract and mockdata preview, starting with the abstract
+							<code>"MockData"</code> <span>(Component Card)</span>: A small scaled preview of the real Card with mock data is shown.<br>
+							<code>"AbstractMockData"</code> <span>(Component Card)</span>: The user will be able to toggle between abstract and mockdata preview, starting with the abstract
 							preview.<br>
-							<code>&quot;MockDataAbstract&quot;</code> <span>(Component Card)</span>: The user will be able to toggle between mockdata and abstract
+							<code>"MockDataAbstract"</code> <span>(Component Card)</span>: The user will be able to toggle between mockdata and abstract
 							preview, starting with the mockdata preview.<br>
-							<pre class="lang-js">modes : &quot;AbstractLive&quot;</pre>
+							<pre class="lang-js">modes : "AbstractLive"</pre>
 						</td>
 						<td>1.83</td>
 					</tr>
@@ -83,7 +83,7 @@ sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
 						<td>src</td>
 						<td>string</td>
 						<td>No</td>
-						<td>&quot;&quot;</td>
+						<td>""</td>
 						<td>Relative path to an image (png, gif, jpeg) within the card bundle. Is image will be used as
 							the abstract view and can replace the card internal preview. If omitted the abstract preview
 							is created based on the card type and settings in the card manifest. The path to the image
@@ -91,7 +91,7 @@ sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
 							theming options on the customer side, the image should use transparency settings and gray
 							shades explained
 							<a href="#previewimage">here</a>.<br>
-							<pre class="lang-js">src : &quot;dt/preview.png&quot;</pre>
+							<pre class="lang-js">src : "dt/preview.png"</pre>
 						</td>
 						<td>1.83</td>
 					</tr>
@@ -100,8 +100,8 @@ sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
 						<td>boolean</td>
 						<td>No</td>
 						<td>false</td>
-						<td>If it&apos;s set to true, the card in preview is interactive.
-							If it&apos;s not set or set to false, the card in preview is not interactive.<br>
+						<td>If it's set to true, the card in preview is interactive.
+							If it's not set or set to false, the card in preview is not interactive.<br>
 							<pre class="lang-js">interactive : true</pre>
 						</td>
 						<td>1.109</td>
@@ -158,22 +158,22 @@ sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
 
 			<p>
 				After creation of the image save it with the card sources, ideally in the configuration folder, and refer to
-				the image in the preview section&apos;s src property.
+				the image in the preview section's src property.
 			</p>
 			<pre class="lang-js collapsed" data-caption="Custom image within preview section designtime.js">
-sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
+sap.ui.define(["sap/ui/integration/Designtime"], function (
 	Designtime
 ) {
-	&quot;use strict&quot;;
+	"use strict";
 	return function () {
 		return new Designtime({
-			&quot;form&quot;: {
-				&quot;items&quot;: {
+			"form": {
+				"items": {
 
 				}
 			},<mark>
-			&quot;preview&quot;: {
-				&quot;src&quot;: &quot;dt/preview.png&quot;
+			"preview": {
+				"src": "dt/preview.png"
 			}</mark>
 		});
 	};
@@ -181,7 +181,7 @@ sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
 
 			<h3 id="previewPosition">Preview Position</h3>
 			<p>
-				When creating the Card Editor, we can set the preview position via parameter &quot;previewPosition&quot;.
+				When creating the Card Editor, we can set the preview position via parameter "previewPosition".
 			</p>
 			<ul>
 				<li>left: Align the preview at the left of Card Editor.
@@ -200,9 +200,9 @@ sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
 
 			<pre class="lang-js collapsed" data-caption="Define the preview position">
 var oEditor = new CardEditor({<mark>
-	previewPosition: &quot;right&quot;,</mark>
-	card: document.getElementById(&quot;card&quot;)._getControl(),
-	mode: &quot;admin&quot;
+	previewPosition: "right",</mark>
+	card: document.getElementById("card")._getControl(),
+	mode: "admin"
 });</pre>
 			<br><br>
 			<a class="try-button" href="../../../index.html#/explore/designtimePreview" target="_parent">Try it Out</a>

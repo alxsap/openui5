@@ -42,7 +42,7 @@
 					<tr>
 						<td>placeholder</td>
 						<td>string</td>
-						<td>The word &quot;Search&quot; in the current local language (if supported) or in English</td>
+						<td>The word "Search" in the current local language (if supported) or in English</td>
 						<td>No</td>
 						<td>Text shown when the filter value is empty.</td>
 						<td>1.38.0</td>
@@ -52,14 +52,14 @@
 			</div>
 
 			<h2 id="filtersModel">Filters Model</h2>
-			<p>The following values are available for filter of type &quot;Search&quot;:</p>
+			<p>The following values are available for filter of type "Search":</p>
 			<table>
 				<tr>
 					<th>Path</th>
 					<th>Description</th>
 				</tr>
 				<tr>
-					<td>{filters&gt;/keyOfTheFilter/value}</td>
+					<td>{filters>/keyOfTheFilter/value}</td>
 					<td>The current value of the filter.</td>
 				</tr>
 			</table>
@@ -67,38 +67,38 @@
 			<h2 id="examples">Examples</h2>
 			<p>A filter for product category is defined and later used inside a data request.</p>
 			<pre class="lang-json">{
-	&quot;sap.card&quot;: {
-		&quot;configuration&quot;: {
-			&quot;filters&quot;: {
-				<mark>&quot;searchQuery&quot;: {
-					&quot;type&quot;: &quot;Search&quot;,
-					&quot;label&quot;: &quot;City&quot;,
-					&quot;placeholder&quot;: &quot;Enter a city&quot;
+	"sap.card": {
+		"configuration": {
+			"filters": {
+				<mark>"searchQuery": {
+					"type": "Search",
+					"label": "City",
+					"placeholder": "Enter a city"
 				}</mark>
 			},
-			&quot;destinations&quot;: {
-				&quot;Northwind_V4&quot;: {
-					&quot;name&quot;: &quot;Northwind_V4&quot;,
-					&quot;label&quot;: &quot;Northwind V4 Service URL&quot;,
-					&quot;defaultUrl&quot;: &quot;https://services.odata.org/V4/Northwind/Northwind.svc&quot;
+			"destinations": {
+				"Northwind_V4": {
+					"name": "Northwind_V4",
+					"label": "Northwind V4 Service URL",
+					"defaultUrl": "https://services.odata.org/V4/Northwind/Northwind.svc"
 				}
 			}
 		},
-		&quot;data&quot;: {
-			&quot;request&quot;: {
-				&quot;url&quot;: &quot;{{destinations.Northwind_V4}}/Customer_and_Suppliers_by_Cities&quot;,
-				&quot;parameters&quot;: {
-					<mark>&quot;&#x24;filter&quot;: &quot;contains(City, &apos;{filters&gt;/searchQuery/value}&apos;)&quot;,</mark>
-					&quot;&#x24;count&quot;: true
+		"data": {
+			"request": {
+				"url": "{{destinations.Northwind_V4}}/Customer_and_Suppliers_by_Cities",
+				"parameters": {
+					<mark>"$filter": "contains(City, '{filters>/searchQuery/value}')",</mark>
+					"$count": true
 				}
 			}
 		},
-		&quot;type&quot;: &quot;List&quot;,
-		&quot;header&quot;: {
-			&quot;title&quot;: &quot;Customers and Suppliers&quot;,
+		"type": "List",
+		"header": {
+			"title": "Customers and Suppliers",
 			...
 		},
-		&quot;content&quot;: {
+		"content": {
 			...
 		}
 	}

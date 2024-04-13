@@ -33,26 +33,26 @@
 	<div id="editor" style="width: 800px;">
 		<h2>Admin Mode (only)</h2>
 		<div class="buttons">
-			<button onclick="showSeparatePreview(&apos;cardEditorAdmin&apos;, this)">
+			<button onclick="showSeparatePreview('cardEditorAdmin', this)">
 				Show Separate Preview in Popup
 			</button>
-			<button onclick="showSeparatePreview(&apos;cardEditorAdmin&apos;, this, &apos;Dialog&apos;)">
+			<button onclick="showSeparatePreview('cardEditorAdmin', this, 'Dialog')">
 				Show Separate Preview in Dialog
 			</button>
 		</div>
 		<ui-integration-card-editor id="cardEditorAdmin" preview-position="separate" mode="admin" allow-dynamic-values="true" allow-settings="true">
 		</ui-integration-card-editor>
 		<div class="buttons">
-			<button onclick="showCurrentValues(&apos;cardEditorAdmin&apos;)">
+			<button onclick="showCurrentValues('cardEditorAdmin')">
 				Show Current Values (Admin Mode)
 			</button>
-			<button onclick="saveCurrentValues(&apos;cardEditorAdmin&apos;)">
+			<button onclick="saveCurrentValues('cardEditorAdmin')">
 				Save Current Values (Admin Mode)
 			</button>
-			<button onclick="loadCurrentValues(&apos;cardEditorAdmin&apos;)">
+			<button onclick="loadCurrentValues('cardEditorAdmin')">
 				Load Values (Admin Mode)
 			</button>
-			<button onclick="deleteCurrentValues(&apos;cardEditorAdmin&apos;)">
+			<button onclick="deleteCurrentValues('cardEditorAdmin')">
 				Delete Values (Admin Mode)
 			</button>
 		</div>
@@ -60,16 +60,16 @@
 		<ui-integration-card-editor id="cardEditorContent" preview-position="right" mode="content" allow-dynamic-values="true" allow-settings="true">
 		</ui-integration-card-editor>
 		<div class="buttons">
-			<button onclick="showCurrentValues(&apos;cardEditorContent&apos;)">
+			<button onclick="showCurrentValues('cardEditorContent')">
 				Show Current Values (Content Mode)
 			</button>
-			<button onclick="saveCurrentValues(&apos;cardEditorContent&apos;)">
+			<button onclick="saveCurrentValues('cardEditorContent')">
 				Save Current Values (Content Mode)
 			</button>
-			<button onclick="loadCurrentValues(&apos;cardEditorContent&apos;)">
+			<button onclick="loadCurrentValues('cardEditorContent')">
 				Load Values (Content Mode)
 			</button>
-			<button onclick="deleteCurrentValues(&apos;cardEditorContent&apos;)">
+			<button onclick="deleteCurrentValues('cardEditorContent')">
 				Delete Values (Content Mode)
 			</button>
 		</div>

@@ -15,7 +15,7 @@
 			<h1 id="caching">Caching</h1>
 
 			<p>
-				Card&apos;s caching is the process of storing copy of the card&apos;s data in the browser&apos;s cache, so that it can be accessed by the card more quickly. This process is handled mainly by the host environment.
+				Card's caching is the process of storing copy of the card's data in the browser's cache, so that it can be accessed by the card more quickly. This process is handled mainly by the host environment.
 			</p>
 
 			<h2 id="overview">
@@ -27,7 +27,7 @@
 
 			<p>
 				The cards will send cache headers in the data request based on their configuration.
-				To enable caching, you should also develop a service worker (script), which is executed by the user&#x2019;s browser.
+				To enable caching, you should also develop a service worker (script), which is executed by the user’s browser.
 			</p>
 
 			<p>
@@ -113,10 +113,10 @@ oHost.useExperimentalCaching();</pre>
 			<p>
 				When fresh data is fetched after revalidation, this should be broadcasted to the cards so that they can repeat the request.
 				<br>
-				This happens with &quot;postMessage&quot; with the following payload:
+				This happens with "postMessage" with the following payload:
 				</p><pre class="lang-json">
 {
-	type: &quot;ui-integration-card-update&quot;,
+	type: "ui-integration-card-update",
 	url: request.url
 }</pre>
 			<p></p>

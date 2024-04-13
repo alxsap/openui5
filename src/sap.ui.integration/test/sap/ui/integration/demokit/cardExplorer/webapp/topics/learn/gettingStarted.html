@@ -26,21 +26,21 @@
 			</h2>
 
 			<p>
-				Add sap.app namespace, set the type to &quot;card&quot; and set an id. Add the sap.card namespace where all card
+				Add sap.app namespace, set the type to "card" and set an id. Add the sap.card namespace where all card
 				configurations will be added.
-				Set the type of the card to &quot;List&quot;.
+				Set the type of the card to "List".
 			</p>
 
 			<pre class="lang-json">{
-	&quot;sap.app&quot;: {
-		&quot;id&quot;: &quot;my.new.card&quot;,
-		&quot;type&quot;: &quot;card&quot;,
-		&quot;applicationVersion&quot;: {
-		  &quot;version&quot;: &quot;1.0.0&quot;
+	"sap.app": {
+		"id": "my.new.card",
+		"type": "card",
+		"applicationVersion": {
+		  "version": "1.0.0"
 		}
 	},
-	&quot;sap.card&quot;: {
-		&quot;type&quot;: &quot;List&quot;
+	"sap.card": {
+		"type": "List"
 	}
 }</pre>
 
@@ -53,20 +53,20 @@
 			</p>
 
 			<pre class="lang-json">{
-	&quot;sap.app&quot;: {
-		&quot;id&quot;: &quot;my.new.card&quot;,
-		&quot;type&quot;: &quot;card&quot;,
-		&quot;applicationVersion&quot;: {
-			&quot;version&quot;: &quot;1.0.0&quot;
+	"sap.app": {
+		"id": "my.new.card",
+		"type": "card",
+		"applicationVersion": {
+			"version": "1.0.0"
 		}
 	},
-	&quot;sap.card&quot;: {
-		&quot;type&quot;: &quot;List&quot;,<mark>
-		&quot;header&quot;: {
-			&quot;title&quot;: &quot;My Sales Orders&quot;,
-			&quot;subTitle&quot;: &quot;New sales orders&quot;,
-			&quot;icon&quot;: {
-				&quot;src&quot;: &quot;sap-icon://sales-order&quot;
+	"sap.card": {
+		"type": "List",<mark>
+		"header": {
+			"title": "My Sales Orders",
+			"subTitle": "New sales orders",
+			"icon": {
+				"src": "sap-icon://sales-order"
 			}
 		}</mark>
 	}
@@ -77,30 +77,30 @@
 			</h2>
 
 			<p>
-				Add an actions property with an action of type &quot;Navigation&quot;. Set a URL to navigate to, when the header
+				Add an actions property with an action of type "Navigation". Set a URL to navigate to, when the header
 				is clicked.
 			</p>
 
 			<pre class="lang-json">{
-	&quot;sap.app&quot;: {
-		&quot;id&quot;: &quot;my.new.card&quot;,
-		&quot;type&quot;: &quot;card&quot;,
-		&quot;applicationVersion&quot;: {
-		  &quot;version&quot;: &quot;1.0.0&quot;
+	"sap.app": {
+		"id": "my.new.card",
+		"type": "card",
+		"applicationVersion": {
+		  "version": "1.0.0"
 		}
 	},
-	&quot;sap.card&quot;: {
-		&quot;type&quot;: &quot;List&quot;,
-		&quot;header&quot;: {
-			&quot;title&quot;: &quot;My Sales Orders&quot;,
-			&quot;subTitle&quot;: &quot;New sales orders&quot;,
-			&quot;icon&quot;: {
-				&quot;src&quot;: &quot;sap-icon://sales-order&quot;
+	"sap.card": {
+		"type": "List",
+		"header": {
+			"title": "My Sales Orders",
+			"subTitle": "New sales orders",
+			"icon": {
+				"src": "sap-icon://sales-order"
 			},<mark>
-			&quot;actions&quot;: [
+			"actions": [
 				{
-					&quot;type&quot;: &quot;Navigation&quot;,
-					&quot;url&quot;: &quot;http://www.sap.com&quot;
+					"type": "Navigation",
+					"url": "http://www.sap.com"
 				}
 			]</mark>
 		}
@@ -115,56 +115,56 @@
 				Add a content property to the card. Inside it add a data section with static JSON with an array of 3
 				sales orders.
 				After that add an item template that will be used for all items in the data section.
-				To bind the item title and description you can use UI5&apos;s binding syntax.
+				To bind the item title and description you can use UI5's binding syntax.
 				The binding also allows <a data-demokit-href="#/topic/daf6852a04b44d118963968a1239d2c0" target="_blank">expression binding</a>.
 			</p>
 
 			<pre class="lang-json">{
-	&quot;sap.app&quot;: {
-		&quot;id&quot;: &quot;my.new.card&quot;,
-		&quot;type&quot;: &quot;card&quot;,
-		&quot;applicationVersion&quot;: {
-		  &quot;version&quot;: &quot;1.0.0&quot;
+	"sap.app": {
+		"id": "my.new.card",
+		"type": "card",
+		"applicationVersion": {
+		  "version": "1.0.0"
 		}
 	},
-	&quot;sap.card&quot;: {
-		&quot;type&quot;: &quot;List&quot;,
-		&quot;header&quot;: {
-			&quot;title&quot;: &quot;My Sales Orders&quot;,
-			&quot;subTitle&quot;: &quot;New sales orders&quot;,
-			&quot;icon&quot;: {
-				&quot;src&quot;: &quot;sap-icon://sales-order&quot;
+	"sap.card": {
+		"type": "List",
+		"header": {
+			"title": "My Sales Orders",
+			"subTitle": "New sales orders",
+			"icon": {
+				"src": "sap-icon://sales-order"
 			},
-			&quot;actions&quot;: [
+			"actions": [
 				{
-					&quot;type&quot;: &quot;Navigation&quot;,
-					&quot;url&quot;: &quot;http://www.sap.com&quot;
+					"type": "Navigation",
+					"url": "http://www.sap.com"
 				}
 			]
 		},<mark>
-		&quot;content&quot;: {
-			&quot;data&quot;: {
-				&quot;json&quot;: [
+		"content": {
+			"data": {
+				"json": [
 					{
-						&quot;Name&quot;: &quot;Sales order 1&quot;,
-						&quot;Description&quot;: &quot;The description of sales order 1&quot;
+						"Name": "Sales order 1",
+						"Description": "The description of sales order 1"
 					},
 					{
-						&quot;Name&quot;: &quot;Sales order 2&quot;,
-						&quot;Description&quot;: &quot;The description of sales order 2&quot;
+						"Name": "Sales order 2",
+						"Description": "The description of sales order 2"
 					},
 					{
-						&quot;Name&quot;: &quot;Sales order 3&quot;,
-						&quot;Description&quot;: &quot;The description of sales order 3&quot;
+						"Name": "Sales order 3",
+						"Description": "The description of sales order 3"
 					}
 				]
 			},
-			&quot;item&quot;: {
-				&quot;title&quot;: {
-					&quot;value&quot;: &quot;{Name}&quot;
+			"item": {
+				"title": {
+					"value": "{Name}"
 				},
-				&quot;description&quot;: {
-					&quot;value&quot;: &quot;{Description}&quot;
+				"description": {
+					"value": "{Description}"
 				}
 			}
 		}
@@ -184,13 +184,13 @@
 &lt;html&gt;
 	&lt;head&gt;<mark>
 		&lt;script
-			id=&quot;sap-ui-bootstrap&quot;
-			src=&quot;https://ui5.sap.com/resources/sap-ui-integration.js&quot;
-			data-sap-ui-compatVersion=&quot;edge&quot;&gt;
+			id="sap-ui-bootstrap"
+			src="https://ui5.sap.com/resources/sap-ui-integration.js"
+			data-sap-ui-compatVersion="edge"&gt;
 		&lt;/script&gt;</mark>
 	&lt;/head&gt;
 	&lt;body&gt;<mark>
-		&lt;ui-integration-card manifest=&quot;./manifest.json&quot;&gt;&lt;/ui-integration-card&gt;</mark>
+		&lt;ui-integration-card manifest="./manifest.json"&gt;&lt;/ui-integration-card&gt;</mark>
 	&lt;/body&gt;
 &lt;/html&gt;
 </pre>
@@ -201,8 +201,8 @@
 			<p>Create a UI Integration Card inside an XML View that points to the created manifest:</p>
 
 			<pre class="lang-xml">
-&lt;mvc:View xmlns:ui-integration=&quot;sap.ui.integration.widgets&quot;&gt;
-	&lt;ui-integration:Card manifest=&quot;./manifest.json&quot; width=&quot;400px&quot; height=&quot;auto&quot;/&gt;
+&lt;mvc:View xmlns:ui-integration="sap.ui.integration.widgets"&gt;
+	&lt;ui-integration:Card manifest="./manifest.json" width="400px" height="auto"/&gt;
 &lt;/mvc:View&gt;
 </pre>
 

@@ -31,7 +31,7 @@
 
 			<h2 id="handlingEvents">Handling Events</h2>
 
-			<h3 id="handlingActions">&quot;action&quot; Event</h3>
+			<h3 id="handlingActions">"action" Event</h3>
 			<p>
 				Each card can trigger <code>action</code> event. This event should be handled by the host
 				environment to make the card interactions fully functional.
@@ -48,8 +48,8 @@
 				Adding handler for <code>action</code> event in the XML View
 			</p>
 			<pre class="lang-xml">
-&lt;mvc:View xmlns:w=&quot;sap.ui.integration.widgets&quot;&gt;
-	&lt;w:Card manifest=&quot;./manifest.json&quot; action=&quot;.onCardAction&quot; /&gt;
+&lt;mvc:View xmlns:w="sap.ui.integration.widgets"&gt;
+	&lt;w:Card manifest="./manifest.json" action=".onCardAction" /&gt;
 &lt;/mvc:View&gt;
 </pre>
 			<p>
@@ -57,23 +57,23 @@
 			</p>
 			<pre class="lang-js">
 onCardAction: function (oEvent) {
-	console.log(oEvent.getParameter(&quot;type&quot;)  + &quot; action triggered for card with ID &apos;cardWithActions&apos;&quot;);
+	console.log(oEvent.getParameter("type")  + " action triggered for card with ID 'cardWithActions'");
 }
 </pre>
 
 			<b>When using &lt;ui-integration-card&gt; custom HTML element</b>
 			<pre class="language-html">
 &lt;body&gt;
-	&lt;ui-integration-card id=&quot;cardWithActions&quot; manifest=&quot;./some/location/my/card/manifest.json&quot;&gt;&lt;/ui-integration-card&gt;
+	&lt;ui-integration-card id="cardWithActions" manifest="./some/location/my/card/manifest.json"&gt;&lt;/ui-integration-card&gt;
 	&lt;script&gt;
-		document.getElementById(&quot;cardWithActions&quot;).addEventListener(&quot;action&quot;, function (event) {
-			console.log(event.detail.getParameter(&quot;type&quot;) + &quot; action triggered for card with ID &apos;cardWithActions&apos;&quot;);
+		document.getElementById("cardWithActions").addEventListener("action", function (event) {
+			console.log(event.detail.getParameter("type") + " action triggered for card with ID 'cardWithActions'");
 		});
 	&lt;/script&gt;
 &lt;/body&gt;
 </pre>
 
-			<h3 id="handlingConfigurationChange">&quot;configurationChange&quot; Event</h3>
+			<h3 id="handlingConfigurationChange">"configurationChange" Event</h3>
 			<p>
 				When some configuration settings are changed as a result of user interaction
 				(for example - filter value is changed) the card instance
@@ -90,8 +90,8 @@ onCardAction: function (oEvent) {
 				Adding handler for <code>configurationChange</code> event in the XML View
 			</p>
 			<pre class="lang-xml">
-&lt;mvc:View xmlns:w=&quot;sap.ui.integration.widgets&quot;&gt;
-	&lt;w:Card manifest=&quot;./manifest.json&quot; configurationChange=&quot;.onConfigurationChangeLog&quot; /&gt;
+&lt;mvc:View xmlns:w="sap.ui.integration.widgets"&gt;
+	&lt;w:Card manifest="./manifest.json" configurationChange=".onConfigurationChangeLog" /&gt;
 &lt;/mvc:View&gt;
 </pre>
 			<p>
@@ -100,7 +100,7 @@ onCardAction: function (oEvent) {
 			<pre class="lang-js">
 ...
 onConfigurationChangeLog: function (oEvent) {
-	console.log(oEvent.getParameter(&quot;changes&quot;));
+	console.log(oEvent.getParameter("changes"));
 }
 ...
 </pre>
@@ -108,10 +108,10 @@ onConfigurationChangeLog: function (oEvent) {
 			<b>When using &lt;ui-integration-card&gt; custom HTML element</b>
 			<pre class="language-html">
 &lt;body&gt;
-	&lt;ui-integration-card id=&quot;card&quot; manifest=&quot;./some/location/my/card/manifest.json&quot;&gt;&lt;/ui-integration-card&gt;
+	&lt;ui-integration-card id="card" manifest="./some/location/my/card/manifest.json"&gt;&lt;/ui-integration-card&gt;
 	&lt;script&gt;
-		document.getElementById(&quot;card&quot;).addEventListener(&quot;configurationChange&quot;, function (event) {
-			console.log(event.detail.getParameter(&quot;changes&quot;));
+		document.getElementById("card").addEventListener("configurationChange", function (event) {
+			console.log(event.detail.getParameter("changes"));
 		});
 	&lt;/script&gt;
 &lt;/body&gt;
@@ -130,9 +130,9 @@ onConfigurationChangeLog: function (oEvent) {
 					<pre class="lang-js">
 var oCard = new Card();
 // This manifest expects a city parameter to render a card with information for that city.
-oCard.setManifest(&quot;./manifest.json&quot;);
+oCard.setManifest("./manifest.json");
 var oParameters = {
-	&quot;city&quot;: &quot;Walldorf, DE&quot;
+	"city": "Walldorf, DE"
 };
 oCard.setParameters(oParameters);
 </pre>
@@ -140,12 +140,12 @@ oCard.setParameters(oParameters);
 					<b>When using &lt;ui-integration-card&gt; custom element</b>
 					<pre class="lang-js">
 var parameters = {
-	&quot;city&quot;: &quot;Walldorf, DE&quot;
+	"city": "Walldorf, DE"
 };
-var card = document.createElement(&quot;ui-integration-card&quot;);
-card.setAttribute(&quot;id&quot;, &quot;myCard&quot;);
-card.setAttribute(&quot;manifest&quot;, &quot;./some/location/my/card/manifest.json&quot;);
-card.setAttribute(&quot;parameters&quot;, JSON.stringify(parameters));
+var card = document.createElement("ui-integration-card");
+card.setAttribute("id", "myCard");
+card.setAttribute("manifest", "./some/location/my/card/manifest.json");
+card.setAttribute("parameters", JSON.stringify(parameters));
 document.body.appendChild(card);
 </pre>
 
@@ -171,20 +171,20 @@ document.body.appendChild(card);
 					<b>When using UI5</b>
 					<pre class="lang-js">
 // Make card inactive for 10 seconds
-var oCard = Element.getElementById(&quot;myCard&quot;);
-oCard.setDataMode(&quot;Inactive&quot;);
+var oCard = Element.getElementById("myCard");
+oCard.setDataMode("Inactive");
 setTimeout(function () {
-	oCard.setDataMode(&quot;Active&quot;);
+	oCard.setDataMode("Active");
 }, 10000);
 </pre>
 
 					<b>When using &lt;ui-integration-card&gt; custom element</b>
 					<pre class="lang-js">
 // Make card inactive for 10 seconds
-var card = document.getElementById(&quot;myCard&quot;);
-card.dataset.mode = &quot;Inactive&quot;;
+var card = document.getElementById("myCard");
+card.dataset.mode = "Inactive";
 setTimeout(function () {
-	card.dataset.mode = &quot;Inactive&quot;;
+	card.dataset.mode = "Inactive";
 }, 10000);
 </pre>
 
@@ -208,8 +208,8 @@ oCard.refresh();
 
 					<b>When using &lt;ui-integration-card&gt; custom element</b>
 					<pre class="lang-js">
-customElements.whenDefined(&quot;ui-integration-card&quot;).then(function () {
-	var oCard = document.getElementById(&quot;myCard&quot;);
+customElements.whenDefined("ui-integration-card").then(function () {
+	var oCard = document.getElementById("myCard");
 	oCard.refresh();
 });
 </pre>
@@ -231,8 +231,8 @@ oCard.refreshData();
 
 			<b>When using &lt;ui-integration-card&gt; custom element</b>
 			<pre class="lang-js">
-customElements.whenDefined(&quot;ui-integration-card&quot;).then(function () {
-	var oCard = document.getElementById(&quot;myCard&quot;);
+customElements.whenDefined("ui-integration-card").then(function () {
+	var oCard = document.getElementById("myCard");
 	oCard.refreshData();
 });
 </pre>
@@ -248,8 +248,8 @@ customElements.whenDefined(&quot;ui-integration-card&quot;).then(function () {
 						and <code>width</code>.
 					</p>
 					<pre class="lang-xml">
-&lt;mvc:View xmlns:w=&quot;sap.ui.integration.widgets&quot;&gt;
-	&lt;w:Card manifest=&quot;./manifest.json&quot; width=&quot;360px&quot; height=&quot;auto&quot;/&gt;
+&lt;mvc:View xmlns:w="sap.ui.integration.widgets"&gt;
+	&lt;w:Card manifest="./manifest.json" width="360px" height="auto"/&gt;
 &lt;/mvc:View&gt;
 </pre>
 					<b>When using &lt;ui-integration-card&gt; custom element</b>
@@ -268,7 +268,7 @@ customElements.whenDefined(&quot;ui-integration-card&quot;).then(function () {
 	height: 16rem;
 }
 ...
-&lt;ui-integration-card class=&quot;myCard&quot; manifest=&quot;./manifest.json&quot;&gt;&lt;/ui-integration-card&gt;
+&lt;ui-integration-card class="myCard" manifest="./manifest.json"&gt;&lt;/ui-integration-card&gt;
 </pre>
 		</div>
 	</div>

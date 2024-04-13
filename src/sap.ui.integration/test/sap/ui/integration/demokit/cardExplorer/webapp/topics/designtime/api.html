@@ -26,24 +26,24 @@
 					Advanced design-time configuration and implementation should happen outside the manifest of the card.
 					With that, design-time code will not harm or influence the runtime or the card instance for the end-user.
 					<br>
-					Create a folder &quot;dt&quot; besides the manifest.json to store all configuration related artifacts.
+					Create a folder "dt" besides the manifest.json to store all configuration related artifacts.
 					Create a designtime.js file in this new folder.<br>
 					Add the following initial module setup into the js file.
 				</p>
 				<pre class="lang-js">
-sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
+sap.ui.define(["sap/ui/integration/Designtime"], function (
 	Designtime
 ) {
-	&quot;use strict&quot;;
+	"use strict";
 	return function () {
 		return new Designtime({
-			&quot;form&quot;: {
-				&quot;items&quot;: {
+			"form": {
+				"items": {
 					// here goes the configuration
 				}
 			},
-			&quot;preview&quot;: {
-				&quot;modes&quot;: &quot;Abstract&quot;
+			"preview": {
+				"modes": "Abstract"
 			}
 		});
 	};
@@ -54,12 +54,12 @@ sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
 				</p>
 
 				<pre class="lang-json">
-&quot;sap.card&quot;: {
-	&quot;configuration&quot;: {&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;
-		&quot;editor&quot;: &quot;dt/configuration&quot;
-	}&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;
+"sap.card": {
+	"configuration": {​​​​​
+		"editor": "dt/configuration"
+	}​​​​​​​​​​​​​​​​​​​
 }</pre>
-				<h3 id="form">Configure the Editor&apos;s Form</h3>
+				<h3 id="form">Configure the Editor's Form</h3>
 				<p style="margin-bottom: auto;">
 					Within the configuration the form section will contain the items that are shown in the editor
 				</p>
@@ -68,19 +68,19 @@ sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
 						<tr>
 							<td style="vertical-align: top;background-color: transparent; border:none; padding-left: 0;">
 								<pre class="lang-js" style="font-weight:normal">
-sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
+sap.ui.define(["sap/ui/integration/Designtime"], function (
 	Designtime
 ) {
-	&quot;use strict&quot;;
+	"use strict";
 	return function () {
 		return new Designtime({<mark>
-			&quot;form&quot;: {
-				&quot;items&quot;: {
+			"form": {
+				"items": {
 					...
 				}
 			},</mark>
-			&quot;preview&quot;: {
-				&quot;modes&quot;: &quot;Abstract&quot;
+			"preview": {
+				"modes": "Abstract"
 			}
 		});
 	};
@@ -119,8 +119,8 @@ sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
 							<td><strong>Yes</strong></td>
 							<td></td>
 							<td>Path to the manifest value that should be edited.
-								In case a the type of the item is &quot;group&quot; the path can be omited.
-								<pre class="lang-js">manifestpath : &quot;sap.card/configuration/parameters/title/value&quot;</pre>
+								In case a the type of the item is "group" the path can be omited.
+								<pre class="lang-js">manifestpath : "sap.card/configuration/parameters/title/value"</pre>
 							</td>
 							<td>1.83</td>
 						</tr>
@@ -128,14 +128,14 @@ sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
 							<td>type</td>
 							<td>string</td>
 							<td><strong>Yes</strong></td>
-							<td>&quot;string&quot;</td>
-							<td>Type of the value in the manifest that is edited. Currently &quot;string&quot;, &quot;string[]&quot;, &quot;integer&quot;, &quot;number&quot;,
-								&quot;date&quot;, &quot;datetime&quot;, &quot;boolean&quot;, &quot;object&quot;, &quot;object[]&quot;, &quot;group&quot;, &quot;separator&quot; are supported.<br>
-								type=&quot;group&quot; in an item will allow to set an expandable panel within the form.
-								It will contains all the parameters behind it and before the next item which type is &quot;group&quot; too.
+							<td>"string"</td>
+							<td>Type of the value in the manifest that is edited. Currently "string", "string[]", "integer", "number",
+								"date", "datetime", "boolean", "object", "object[]", "group", "separator" are supported.<br>
+								type="group" in an item will allow to set an expandable panel within the form.
+								It will contains all the parameters behind it and before the next item which type is "group" too.
 								For a group typed item the manifestpath setting can be omitted. A label should be provided.<br>
-								type=&quot;separator&quot; in an item will allow to set a separator (empty row) within the form.
-								<pre class="lang-js">type : &quot;string&quot;</pre>
+								type="separator" in an item will allow to set a separator (empty row) within the form.
+								<pre class="lang-js">type : "string"</pre>
 							</td>
 							<td>1.83</td>
 						</tr>
@@ -146,7 +146,7 @@ sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
 							<td>Name of the item in the form/items collection</td>
 							<td>Defines the label string. This value can be bound to values in the i18n file used in the
 								connected card.
-								<pre class="lang-js">label : &quot;fixedString&quot;<br>label : &quot;{i18n&gt;translatedStringKey}&quot;</pre>
+								<pre class="lang-js">label : "fixedString"<br>label : "{i18n>translatedStringKey}"</pre>
 							</td>
 							<td>1.83</td>
 						</tr>
@@ -155,7 +155,7 @@ sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
 							<td>boolean</td>
 							<td>No</td>
 							<td>false</td>
-							<td>Defines whether the value is required or not. The editor&apos;s label for the field will get a &quot;*&quot;
+							<td>Defines whether the value is required or not. The editor's label for the field will get a "*"
 								to indicate this state.
 								<pre class="lang-js">required : true</pre>
 							</td>
@@ -207,7 +207,7 @@ sap.ui.define([&quot;sap/ui/integration/Designtime&quot;], function (
 							<td>No</td>
 							<td></td>
 							<td>Defines the description of current field.
-								<pre class="lang-js">description : &quot;Description of current field&quot;</pre>
+								<pre class="lang-js">description : "Description of current field"</pre>
 							</td>
 							<td>1.83</td>
 						</tr>
@@ -269,7 +269,7 @@ visualization : {
 							<td>No</td>
 							<td>none</td>
 							<td>Defines a placeholder string that appears within a default input for string parameters.
-								<pre class="lang-js">placeholder : &quot;My Placeholder&quot;</pre>
+								<pre class="lang-js">placeholder : "My Placeholder"</pre>
 							</td>
 							<td>1.84</td>
 						</tr>
@@ -290,7 +290,7 @@ visualization : {
 							<td>No</td>
 							<td>none</td>
 							<td>Defines a hint string that appears below a group or an item with the formatted text.
-								<pre class="lang-js">hint : &quot;Hint Message&quot;</pre>
+								<pre class="lang-js">hint : "Hint Message"</pre>
 							</td>
 							<td>1.86</td>
 						</tr>
@@ -360,13 +360,13 @@ formatter : {
 							<td>none</td>
 							<td>Defines the layout of the current label and field. If has such propety, the label and field will be renderred in 1 line.
 								<pre class="lang-js">
-&quot;layout&quot;: {
-	&#x200b;&#x200b;&#x200b;&#x200b;&#x200b;&quot;position&quot;: &quot;field-label&quot;,  //default: &quot;label-field&quot;
-	&quot;alignment&quot;: {
-			&quot;field&quot;: &quot;end&quot;,     //will align the field or label to end if the value is &quot;end&quot;, or will align them to start
-			&quot;label&quot;: &quot;end&quot;
+"layout": {
+	​​​​​"position": "field-label",  //default: "label-field"
+	"alignment": {
+			"field": "end",     //will align the field or label to end if the value is "end", or will align them to start
+			"label": "end"
 	},
-	&quot;label-width&quot;: &quot;80%&quot;        //default: &quot;50%&quot;
+	"label-width": "80%"        //default: "50%"
 }</pre>
 							</td>
 							<td>1.94</td>
@@ -376,7 +376,7 @@ formatter : {
 							<td>integer</td>
 							<td>No</td>
 							<td>0</td>
-							<td>Maximum number of characters. Value &apos;0&apos; means the feature is switched off.
+							<td>Maximum number of characters. Value '0' means the feature is switched off.
 								This setting should be used for fields of type string only.
 								<pre class="lang-js">maxLength : 6</pre>
 							</td>
@@ -388,30 +388,30 @@ formatter : {
 			<div>
 				<h3 id="lists">Providing Lists for String</h3>
 				<p>
-					To allow a selection of values for fields of type &quot;string&quot;, you can add a values section.
+					To allow a selection of values for fields of type "string", you can add a values section.
 					Similar to the card data section, the list can be filled with a static JSON or a request.
-					The item section in the values definition links the data. The &quot;key&quot; property of the item is used as
-					the value for the setting referred by the &quot;manifestPath&quot;.</p>
+					The item section in the values definition links the data. The "key" property of the item is used as
+					the value for the setting referred by the "manifestPath".</p>
 				<strong>Static Data List</strong>
 
 				<pre class="lang-js collapsed" data-caption="Static Values">
-&quot;stringWithStaticList&quot;: {
-	&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/stringWithStaticList/value&quot;,
-	&quot;type&quot;: &quot;string&quot;,<mark>
-	&quot;values&quot;: {
-		&quot;data&quot;: {
-			&quot;json&quot;: {
-				&quot;values&quot;: [
-					{ &quot;text&quot;: &quot;From JSON 1&quot;, &quot;key&quot;: &quot;key1&quot; },
-					{ &quot;text&quot;: &quot;From JSON 2&quot;, &quot;key&quot;: &quot;key2&quot; },
-					{ &quot;text&quot;: &quot;From JSON 3&quot;, &quot;key&quot;: &quot;key3&quot; }
+"stringWithStaticList": {
+	"manifestpath": "/sap.card/configuration/parameters/stringWithStaticList/value",
+	"type": "string",<mark>
+	"values": {
+		"data": {
+			"json": {
+				"values": [
+					{ "text": "From JSON 1", "key": "key1" },
+					{ "text": "From JSON 2", "key": "key2" },
+					{ "text": "From JSON 3", "key": "key3" }
 				]
 			},
-			&quot;path&quot;: &quot;/values&quot;
+			"path": "/values"
 		},
-		&quot;item&quot;: {
-			&quot;text&quot;: &quot;{text}&quot;,
-			&quot;key&quot;: &quot;{key}&quot;
+		"item": {
+			"text": "{text}",
+			"key": "{key}"
 		}
 	}</mark>
 }</pre>
@@ -419,59 +419,59 @@ formatter : {
 				<p>The referred URL will deliver the data asynchronously. Also an extension could be used as a data
 					propvider.</p>
 				<pre class="lang-js collapsed" data-caption="Request Values">
-&quot;stringWithRequestList&quot;: {
-	&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/stringWithRequestList/value&quot;,
-	&quot;type&quot;: &quot;string&quot;,
-	&quot;values&quot;: {
-		&quot;data&quot;: {<mark>
-			&quot;request&quot;: {
-				&quot;url&quot;: &quot;./dt/listdata.json&quot;
+"stringWithRequestList": {
+	"manifestpath": "/sap.card/configuration/parameters/stringWithRequestList/value",
+	"type": "string",
+	"values": {
+		"data": {<mark>
+			"request": {
+				"url": "./dt/listdata.json"
 			},
-			&quot;path&quot;: &quot;/values&quot;</mark>
+			"path": "/values"</mark>
 		},
-		&quot;item&quot;: {
-			&quot;text&quot;: &quot;{text}&quot;,
-			&quot;key&quot;: &quot;{key}&quot;
+		"item": {
+			"text": "{text}",
+			"key": "{key}"
 		}
 	}
 }</pre>
 				<pre class="lang-js collapsed" data-caption="Data of dt/listdata.json">
 {
-	&quot;values&quot;: [
-		{ &quot;text&quot;: &quot;From JSON 1&quot;, &quot;key&quot;: &quot;key1&quot; },
-		{ &quot;text&quot;: &quot;From JSON 2&quot;, &quot;key&quot;: &quot;key2&quot; },
-		{ &quot;text&quot;: &quot;From JSON 3&quot;, &quot;key&quot;: &quot;key3&quot; }
+	"values": [
+		{ "text": "From JSON 1", "key": "key1" },
+		{ "text": "From JSON 2", "key": "key2" },
+		{ "text": "From JSON 3", "key": "key3" }
 	]
 }</pre>
 			</div>
 			<div>
 				<h3 id="listsArrays">Providing Lists for String Array</h3>
 				<p>
-					To allow a selection of values for fields of type &quot;string[]&quot;, you can add the same values sections as
+					To allow a selection of values for fields of type "string[]", you can add the same values sections as
 					above.
 					Similar to the card data section, the list can be filled with a static JSON or a request.
-					The item section in the values definition links the data. The &quot;key&quot; property of the item is used as
-					the value for the setting referred by the &quot;manifestPath&quot;.
+					The item section in the values definition links the data. The "key" property of the item is used as
+					the value for the setting referred by the "manifestPath".
 				</p>
 				<strong>Static Data List</strong>
 				<pre class="lang-js collapsed" data-caption="Static Values">
-&quot;stringArrayWithStaticList&quot;: {
-	&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/stringArrayWithStaticList/value&quot;,
-	&quot;type&quot;: &quot;string[]&quot;,<mark>
-	&quot;values&quot;: {
-		&quot;data&quot;: {
-			&quot;json&quot;: {
-				&quot;values&quot;: [
-					{ &quot;text&quot;: &quot;From JSON 1&quot;, &quot;key&quot;: &quot;key1&quot; },
-					{ &quot;text&quot;: &quot;From JSON 2&quot;, &quot;key&quot;: &quot;key2&quot; },
-					{ &quot;text&quot;: &quot;From JSON 3&quot;, &quot;key&quot;: &quot;key3&quot; }
+"stringArrayWithStaticList": {
+	"manifestpath": "/sap.card/configuration/parameters/stringArrayWithStaticList/value",
+	"type": "string[]",<mark>
+	"values": {
+		"data": {
+			"json": {
+				"values": [
+					{ "text": "From JSON 1", "key": "key1" },
+					{ "text": "From JSON 2", "key": "key2" },
+					{ "text": "From JSON 3", "key": "key3" }
 				]
 			},
-			&quot;path&quot;: &quot;/values&quot;
+			"path": "/values"
 		},
-		&quot;item&quot;: {
-			&quot;text&quot;: &quot;{text}&quot;,
-			&quot;key&quot;: &quot;{key}&quot;
+		"item": {
+			"text": "{text}",
+			"key": "{key}"
 		}
 	}</mark>
 }</pre>
@@ -479,131 +479,131 @@ formatter : {
 				<p>The referred URL will deliver the data asynchronously. Also an extension could be used as a data
 					propvider.</p>
 				<pre class="lang-js collapsed" data-caption="Request Values">
-&quot;stringArrayWithRequestList&quot;: {
-	&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/stringArrayWithRequestList/value&quot;,
-	&quot;type&quot;: &quot;string[]&quot;,
-	&quot;values&quot;: {
-		&quot;data&quot;: {<mark>
-			&quot;request&quot;: {
-				&quot;url&quot;: &quot;./dt/listdata.json&quot;
+"stringArrayWithRequestList": {
+	"manifestpath": "/sap.card/configuration/parameters/stringArrayWithRequestList/value",
+	"type": "string[]",
+	"values": {
+		"data": {<mark>
+			"request": {
+				"url": "./dt/listdata.json"
 			},
-			&quot;path&quot;: &quot;/values&quot;</mark>
+			"path": "/values"</mark>
 		},
-		&quot;item&quot;: {
-			&quot;text&quot;: &quot;{text}&quot;,
-			&quot;key&quot;: &quot;{key}&quot;
+		"item": {
+			"text": "{text}",
+			"key": "{key}"
 		}
 	}
 }</pre>
 				<pre class="lang-js collapsed" data-caption="Data of dt/listdata.json">
 {
-	&quot;values&quot;: [
-		{ &quot;text&quot;: &quot;From JSON 1&quot;, &quot;key&quot;: &quot;key1&quot; },
-		{ &quot;text&quot;: &quot;From JSON 2&quot;, &quot;key&quot;: &quot;key2&quot; },
-		{ &quot;text&quot;: &quot;From JSON 3&quot;, &quot;key&quot;: &quot;key3&quot; }
+	"values": [
+		{ "text": "From JSON 1", "key": "key1" },
+		{ "text": "From JSON 2", "key": "key2" },
+		{ "text": "From JSON 3", "key": "key3" }
 	]
 }</pre>
 			</div>
 			<div>
 				<h3 id="lists">Providing Lists for Object</h3>
 				<p>
-					To allow a selection of values for fields of type &quot;object&quot;, you can add a values section.
+					To allow a selection of values for fields of type "object", you can add a values section.
 					Similar to the card data section, the list can be filled with a static JSON or a request.
 					The properties section defines the object properties.
 					The column section of each property defines a column for it in the values table. If no such section, will use the default settings to define a column.</p>
 				<strong>Static Data List</strong>
 
 				<pre class="lang-js collapsed" data-caption="Static Values">
-&quot;objectWithStaticList&quot;: {
-	&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/objectWithStaticList/value&quot;,
-	&quot;type&quot;: &quot;object&quot;,<mark>
-	&quot;values&quot;: {
-		&quot;data&quot;: {
-			&quot;json&quot;: {
-				&quot;values&quot;: [
-					{ &quot;text&quot;: &quot;text01&quot;, &quot;key&quot;: &quot;key01&quot;, &quot;url&quot;: &quot;https://sap.com/06&quot;, &quot;icon&quot;: &quot;sap-icon://accept&quot;, &quot;iconcolor&quot;: &quot;#031E48&quot;, &quot;int&quot;: 1 },
-					{ &quot;text&quot;: &quot;text02&quot;, &quot;key&quot;: &quot;key02&quot;, &quot;url&quot;: &quot;http://sap.com/05&quot;, &quot;icon&quot;: &quot;sap-icon://cart&quot;, &quot;iconcolor&quot;: &quot;#64E4CE&quot;, &quot;int&quot;: 2 },
-					{ &quot;text&quot;: &quot;text03&quot;, &quot;key&quot;: &quot;key03&quot;, &quot;url&quot;: &quot;https://sap.com/04&quot;, &quot;icon&quot;: &quot;sap-icon://zoom-in&quot;, &quot;iconcolor&quot;: &quot;#E69A17&quot;, &quot;int&quot;: 3 },
+"objectWithStaticList": {
+	"manifestpath": "/sap.card/configuration/parameters/objectWithStaticList/value",
+	"type": "object",<mark>
+	"values": {
+		"data": {
+			"json": {
+				"values": [
+					{ "text": "text01", "key": "key01", "url": "https://sap.com/06", "icon": "sap-icon://accept", "iconcolor": "#031E48", "int": 1 },
+					{ "text": "text02", "key": "key02", "url": "http://sap.com/05", "icon": "sap-icon://cart", "iconcolor": "#64E4CE", "int": 2 },
+					{ "text": "text03", "key": "key03", "url": "https://sap.com/04", "icon": "sap-icon://zoom-in", "iconcolor": "#E69A17", "int": 3 },
 				]
 			},
-			&quot;path&quot;: &quot;/values&quot;
+			"path": "/values"
 		},
-		&quot;allowAdd&quot;: true
+		"allowAdd": true
 	},
-	&quot;properties&quot;: {
-		&quot;key&quot;: {
-			&quot;label&quot;: &quot;Key&quot;
+	"properties": {
+		"key": {
+			"label": "Key"
 		},
-		&quot;icon&quot;: {
-			&quot;label&quot;: &quot;Icon&quot;,
-			&quot;defaultValue&quot;: &quot;sap-icon://add&quot;,
-			&quot;column&quot;: {
-				&quot;settings&quot;: {
-					&quot;hAlign&quot;: &quot;Center&quot;,
-					&quot;width&quot;: &quot;4rem&quot;
+		"icon": {
+			"label": "Icon",
+			"defaultValue": "sap-icon://add",
+			"column": {
+				"settings": {
+					"hAlign": "Center",
+					"width": "4rem"
 				},
-				&quot;cell&quot;: {
-					&quot;type&quot;: &quot;Icon&quot;,
-					&quot;color&quot;: &quot;{iconcolor}&quot;
+				"cell": {
+					"type": "Icon",
+					"color": "{iconcolor}"
 				}
 			}
 		},
-		&quot;text&quot;: {
-			&quot;label&quot;: &quot;Text&quot;,
-			&quot;defaultValue&quot;: &quot;text&quot;,
-			&quot;column&quot;: {
-				&quot;settings&quot;: {
-					&quot;hAlign&quot;: &quot;Center&quot;,
-					&quot;width&quot;: &quot;6rem&quot;,
-					&quot;filterProperty&quot;: &quot;text&quot;,
-					&quot;defaultFilterOperator&quot;: &quot;Contains&quot;   // values are in enum sap.ui.model.FilterOperator
+		"text": {
+			"label": "Text",
+			"defaultValue": "text",
+			"column": {
+				"settings": {
+					"hAlign": "Center",
+					"width": "6rem",
+					"filterProperty": "text",
+					"defaultFilterOperator": "Contains"   // values are in enum sap.ui.model.FilterOperator
 				}
 			}
 		},
-		&quot;url&quot;: {
-			&quot;label&quot;: &quot;URL&quot;,
-			&quot;defaultValue&quot;: &quot;http://&quot;,
-			&quot;column&quot;: {
-				&quot;settings&quot;: {
-					&quot;hAlign&quot;: &quot;Center&quot;,
-					&quot;width&quot;: &quot;10rem&quot;,
-					&quot;label&quot;: &quot;URL Link&quot;,
-					&quot;filterProperty&quot;: &quot;url&quot;,
-					&quot;defaultFilterOperator&quot;: &quot;StartsWith&quot;
+		"url": {
+			"label": "URL",
+			"defaultValue": "http://",
+			"column": {
+				"settings": {
+					"hAlign": "Center",
+					"width": "10rem",
+					"label": "URL Link",
+					"filterProperty": "url",
+					"defaultFilterOperator": "StartsWith"
 				},
-				&quot;cell&quot;: {
-					&quot;type&quot;: &quot;Link&quot;,
-					&quot;href&quot;: &quot;{url}&quot;
+				"cell": {
+					"type": "Link",
+					"href": "{url}"
 				}
 			}
 		},
-		&quot;editable&quot;: {
-			&quot;label&quot;: &quot;Editable&quot;,
-			&quot;defaultValue&quot;: false,
-			&quot;type&quot;: &quot;boolean&quot;,
-			&quot;column&quot;: {
-				&quot;cell&quot;: {
-					&quot;type&quot;: &quot;CheckBox&quot;
+		"editable": {
+			"label": "Editable",
+			"defaultValue": false,
+			"type": "boolean",
+			"column": {
+				"cell": {
+					"type": "CheckBox"
 				}
 			}
 		},
-		&quot;int&quot;: {
-			&quot;label&quot;: &quot;Integer&quot;,
-			&quot;defaultValue&quot;: 0,
-			&quot;type&quot;: &quot;int&quot;,
-			&quot;formatter&quot;: {
-				&quot;minIntegerDigits&quot;: 1,
-				&quot;maxIntegerDigits&quot;: 6,
-				&quot;emptyString&quot;: &quot;&quot;
+		"int": {
+			"label": "Integer",
+			"defaultValue": 0,
+			"type": "int",
+			"formatter": {
+				"minIntegerDigits": 1,
+				"maxIntegerDigits": 6,
+				"emptyString": ""
 			},
-			&quot;column&quot;: {
-				&quot;settings&quot;: {
-					&quot;hAlign&quot;: &quot;Center&quot;,
-					&quot;width&quot;: &quot;5rem&quot;,
-					&quot;label&quot;: &quot;Integer&quot;,
-					&quot;filterProperty&quot;: &quot;int&quot;,
-					&quot;defaultFilterOperator&quot;: &quot;EQ&quot;,
-					&quot;filterType&quot;: &quot;sap.ui.model.type.Integer&quot;   //sap.ui.model.type
+			"column": {
+				"settings": {
+					"hAlign": "Center",
+					"width": "5rem",
+					"label": "Integer",
+					"filterProperty": "int",
+					"defaultFilterOperator": "EQ",
+					"filterType": "sap.ui.model.type.Integer"   //sap.ui.model.type
 				}
 			}
 		}
@@ -613,61 +613,61 @@ formatter : {
 				<p>The referred URL will deliver the data asynchronously. Also an extension could be used as a data
 					propvider.</p>
 				<pre class="lang-js collapsed" data-caption="Request Values">
-&quot;objectWithRequestList&quot;: {
-	&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/objectWithRequestList/value&quot;,
-	&quot;type&quot;: &quot;object&quot;,
-	&quot;values&quot;: {
-		&quot;data&quot;: {<mark>
-			&quot;request&quot;: {
-				&quot;url&quot;: &quot;./dt/listdata.json&quot;
+"objectWithRequestList": {
+	"manifestpath": "/sap.card/configuration/parameters/objectWithRequestList/value",
+	"type": "object",
+	"values": {
+		"data": {<mark>
+			"request": {
+				"url": "./dt/listdata.json"
 			},
-			&quot;path&quot;: &quot;/values&quot;</mark>
+			"path": "/values"</mark>
 		}
 	},
-	&quot;properties&quot;: {
-		&quot;key&quot;: {
-			&quot;label&quot;: &quot;Key&quot;
+	"properties": {
+		"key": {
+			"label": "Key"
 		},
-		&quot;icon&quot;: {
-			&quot;label&quot;: &quot;Icon&quot;,
-			&quot;defaultValue&quot;: &quot;sap-icon://add&quot;,
-			&quot;column&quot;: {
-				&quot;settings&quot;: {
-					&quot;hAlign&quot;: &quot;Center&quot;,
-					&quot;width&quot;: &quot;4rem&quot;
+		"icon": {
+			"label": "Icon",
+			"defaultValue": "sap-icon://add",
+			"column": {
+				"settings": {
+					"hAlign": "Center",
+					"width": "4rem"
 				},
-				&quot;cell&quot;: {
-					&quot;type&quot;: &quot;Icon&quot;,
-					&quot;color&quot;: &quot;{iconcolor}&quot;
+				"cell": {
+					"type": "Icon",
+					"color": "{iconcolor}"
 				}
 			}
 		},
-		&quot;text&quot;: {
-			&quot;label&quot;: &quot;Text&quot;,
-			&quot;defaultValue&quot;: &quot;text&quot;,
-			&quot;column&quot;: {
-				&quot;settings&quot;: {
-					&quot;hAlign&quot;: &quot;Center&quot;,
-					&quot;width&quot;: &quot;6rem&quot;,
-					&quot;filterProperty&quot;: &quot;text&quot;,
-					&quot;defaultFilterOperator&quot;: &quot;Contains&quot;   // values are in enum sap.ui.model.FilterOperator
+		"text": {
+			"label": "Text",
+			"defaultValue": "text",
+			"column": {
+				"settings": {
+					"hAlign": "Center",
+					"width": "6rem",
+					"filterProperty": "text",
+					"defaultFilterOperator": "Contains"   // values are in enum sap.ui.model.FilterOperator
 				}
 			}
 		},
-		&quot;url&quot;: {
-			&quot;label&quot;: &quot;URL&quot;,
-			&quot;defaultValue&quot;: &quot;http://&quot;,
-			&quot;column&quot;: {
-				&quot;settings&quot;: {
-					&quot;hAlign&quot;: &quot;Center&quot;,
-					&quot;width&quot;: &quot;10rem&quot;,
-					&quot;label&quot;: &quot;URL Link&quot;,
-					&quot;filterProperty&quot;: &quot;url&quot;,
-					&quot;defaultFilterOperator&quot;: &quot;StartsWith&quot;
+		"url": {
+			"label": "URL",
+			"defaultValue": "http://",
+			"column": {
+				"settings": {
+					"hAlign": "Center",
+					"width": "10rem",
+					"label": "URL Link",
+					"filterProperty": "url",
+					"defaultFilterOperator": "StartsWith"
 				},
-				&quot;cell&quot;: {
-					&quot;type&quot;: &quot;Link&quot;,
-					&quot;href&quot;: &quot;{url}&quot;
+				"cell": {
+					"type": "Link",
+					"href": "{url}"
 				}
 			}
 		}
@@ -675,114 +675,114 @@ formatter : {
 }</pre>
 				<pre class="lang-js collapsed" data-caption="Data of dt/listdata.json">
 {
-	&quot;values&quot;: [
-		{ &quot;text&quot;: &quot;text1req&quot;, &quot;key&quot;: &quot;key1&quot;, &quot;additionalText&quot;: &quot;addtext1&quot;, &quot;icon&quot;: &quot;sap-icon://accept&quot; },
-		{ &quot;text&quot;: &quot;text2req&quot;, &quot;key&quot;: &quot;key2&quot;, &quot;additionalText&quot;: &quot;addtext2&quot;, &quot;icon&quot;: &quot;sap-icon://cart&quot; },
-		{ &quot;text&quot;: &quot;text3req&quot;, &quot;key&quot;: &quot;key3&quot;, &quot;additionalText&quot;: &quot;addtext3&quot;, &quot;icon&quot;: &quot;sap-icon://zoom-in&quot; },
-		{ &quot;text&quot;: &quot;text4req&quot;, &quot;key&quot;: &quot;key4&quot;, &quot;additionalText&quot;: &quot;addtext4&quot;, &quot;icon&quot;: &quot;sap-icon://zoom-out&quot; }
+	"values": [
+		{ "text": "text1req", "key": "key1", "additionalText": "addtext1", "icon": "sap-icon://accept" },
+		{ "text": "text2req", "key": "key2", "additionalText": "addtext2", "icon": "sap-icon://cart" },
+		{ "text": "text3req", "key": "key3", "additionalText": "addtext3", "icon": "sap-icon://zoom-in" },
+		{ "text": "text4req", "key": "key4", "additionalText": "addtext4", "icon": "sap-icon://zoom-out" }
 	]
 }</pre>
 			</div>
 			<div>
 				<h3 id="lists">Providing Lists for Object Array</h3>
 				<p>
-					To allow a selection of values for fields of type &quot;object[]&quot;, you can add a values section.
+					To allow a selection of values for fields of type "object[]", you can add a values section.
 					Similar to the card data section, the list can be filled with a static JSON or a request.
 					The properties section defines the object properties.
 					The column section of each property defines a column for it in the values table. If no such section, will use the default settings to define a column.</p>
 				<strong>Static Data List</strong>
 
 				<pre class="lang-js collapsed" data-caption="Static Values">
-&quot;objectArrayWithStaticList&quot;: {
-	&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/objectArrayWithStaticList/value&quot;,
-	&quot;type&quot;: &quot;object[]&quot;,<mark>
-	&quot;values&quot;: {
-		&quot;data&quot;: {
-			&quot;json&quot;: {
-				&quot;values&quot;: [
-					{ &quot;text&quot;: &quot;text01&quot;, &quot;key&quot;: &quot;key01&quot;, &quot;url&quot;: &quot;https://sap.com/06&quot;, &quot;icon&quot;: &quot;sap-icon://accept&quot;, &quot;iconcolor&quot;: &quot;#031E48&quot;, &quot;int&quot;: 1 },
-					{ &quot;text&quot;: &quot;text02&quot;, &quot;key&quot;: &quot;key02&quot;, &quot;url&quot;: &quot;http://sap.com/05&quot;, &quot;icon&quot;: &quot;sap-icon://cart&quot;, &quot;iconcolor&quot;: &quot;#64E4CE&quot;, &quot;int&quot;: 2 },
-					{ &quot;text&quot;: &quot;text03&quot;, &quot;key&quot;: &quot;key03&quot;, &quot;url&quot;: &quot;https://sap.com/04&quot;, &quot;icon&quot;: &quot;sap-icon://zoom-in&quot;, &quot;iconcolor&quot;: &quot;#E69A17&quot;, &quot;int&quot;: 3 },
+"objectArrayWithStaticList": {
+	"manifestpath": "/sap.card/configuration/parameters/objectArrayWithStaticList/value",
+	"type": "object[]",<mark>
+	"values": {
+		"data": {
+			"json": {
+				"values": [
+					{ "text": "text01", "key": "key01", "url": "https://sap.com/06", "icon": "sap-icon://accept", "iconcolor": "#031E48", "int": 1 },
+					{ "text": "text02", "key": "key02", "url": "http://sap.com/05", "icon": "sap-icon://cart", "iconcolor": "#64E4CE", "int": 2 },
+					{ "text": "text03", "key": "key03", "url": "https://sap.com/04", "icon": "sap-icon://zoom-in", "iconcolor": "#E69A17", "int": 3 },
 				]
 			},
-			&quot;path&quot;: &quot;/values&quot;
+			"path": "/values"
 		},
-		&quot;allowAdd&quot;: true
+		"allowAdd": true
 	},
-	&quot;properties&quot;: {
-		&quot;key&quot;: {
-			&quot;label&quot;: &quot;Key&quot;
+	"properties": {
+		"key": {
+			"label": "Key"
 		},
-		&quot;icon&quot;: {
-			&quot;label&quot;: &quot;Icon&quot;,
-			&quot;defaultValue&quot;: &quot;sap-icon://add&quot;,
-			&quot;column&quot;: {
-				&quot;settings&quot;: {
-					&quot;hAlign&quot;: &quot;Center&quot;,
-					&quot;width&quot;: &quot;4rem&quot;
+		"icon": {
+			"label": "Icon",
+			"defaultValue": "sap-icon://add",
+			"column": {
+				"settings": {
+					"hAlign": "Center",
+					"width": "4rem"
 				},
-				&quot;cell&quot;: {
-					&quot;type&quot;: &quot;Icon&quot;,
-					&quot;color&quot;: &quot;{iconcolor}&quot;
+				"cell": {
+					"type": "Icon",
+					"color": "{iconcolor}"
 				}
 			}
 		},
-		&quot;text&quot;: {
-			&quot;label&quot;: &quot;Text&quot;,
-			&quot;defaultValue&quot;: &quot;text&quot;,
-			&quot;column&quot;: {
-				&quot;settings&quot;: {
-					&quot;hAlign&quot;: &quot;Center&quot;,
-					&quot;width&quot;: &quot;6rem&quot;,
-					&quot;filterProperty&quot;: &quot;text&quot;,
-					&quot;defaultFilterOperator&quot;: &quot;Contains&quot;   // values are in enum sap.ui.model.FilterOperator
+		"text": {
+			"label": "Text",
+			"defaultValue": "text",
+			"column": {
+				"settings": {
+					"hAlign": "Center",
+					"width": "6rem",
+					"filterProperty": "text",
+					"defaultFilterOperator": "Contains"   // values are in enum sap.ui.model.FilterOperator
 				}
 			}
 		},
-		&quot;url&quot;: {
-			&quot;label&quot;: &quot;URL&quot;,
-			&quot;defaultValue&quot;: &quot;http://&quot;,
-			&quot;column&quot;: {
-				&quot;settings&quot;: {
-					&quot;hAlign&quot;: &quot;Center&quot;,
-					&quot;width&quot;: &quot;10rem&quot;,
-					&quot;label&quot;: &quot;URL Link&quot;,
-					&quot;filterProperty&quot;: &quot;url&quot;,
-					&quot;defaultFilterOperator&quot;: &quot;StartsWith&quot;
+		"url": {
+			"label": "URL",
+			"defaultValue": "http://",
+			"column": {
+				"settings": {
+					"hAlign": "Center",
+					"width": "10rem",
+					"label": "URL Link",
+					"filterProperty": "url",
+					"defaultFilterOperator": "StartsWith"
 				},
-				&quot;cell&quot;: {
-					&quot;type&quot;: &quot;Link&quot;,
-					&quot;href&quot;: &quot;{url}&quot;
+				"cell": {
+					"type": "Link",
+					"href": "{url}"
 				}
 			}
 		},
-		&quot;editable&quot;: {
-			&quot;label&quot;: &quot;Editable&quot;,
-			&quot;defaultValue&quot;: false,
-			&quot;type&quot;: &quot;boolean&quot;,
-			&quot;column&quot;: {
-				&quot;cell&quot;: {
-					&quot;type&quot;: &quot;CheckBox&quot;
+		"editable": {
+			"label": "Editable",
+			"defaultValue": false,
+			"type": "boolean",
+			"column": {
+				"cell": {
+					"type": "CheckBox"
 				}
 			}
 		},
-		&quot;int&quot;: {
-			&quot;label&quot;: &quot;Integer&quot;,
-			&quot;defaultValue&quot;: 0,
-			&quot;type&quot;: &quot;int&quot;,
-			&quot;formatter&quot;: {
-				&quot;minIntegerDigits&quot;: 1,
-				&quot;maxIntegerDigits&quot;: 6,
-				&quot;emptyString&quot;: &quot;&quot;
+		"int": {
+			"label": "Integer",
+			"defaultValue": 0,
+			"type": "int",
+			"formatter": {
+				"minIntegerDigits": 1,
+				"maxIntegerDigits": 6,
+				"emptyString": ""
 			},
-			&quot;column&quot;: {
-				&quot;settings&quot;: {
-					&quot;hAlign&quot;: &quot;Center&quot;,
-					&quot;width&quot;: &quot;5rem&quot;,
-					&quot;label&quot;: &quot;Integer&quot;,
-					&quot;filterProperty&quot;: &quot;int&quot;,
-					&quot;defaultFilterOperator&quot;: &quot;EQ&quot;,
-					&quot;filterType&quot;: &quot;sap.ui.model.type.Integer&quot;   //sap.ui.model.type
+			"column": {
+				"settings": {
+					"hAlign": "Center",
+					"width": "5rem",
+					"label": "Integer",
+					"filterProperty": "int",
+					"defaultFilterOperator": "EQ",
+					"filterType": "sap.ui.model.type.Integer"   //sap.ui.model.type
 				}
 			}
 		}
@@ -792,61 +792,61 @@ formatter : {
 				<p>The referred URL will deliver the data asynchronously. Also an extension could be used as a data
 					propvider.</p>
 				<pre class="lang-js collapsed" data-caption="Request Values">
-&quot;objectArrayWithRequestList&quot;: {
-	&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/objectArrayWithRequestList/value&quot;,
-	&quot;type&quot;: &quot;object[]&quot;,
-	&quot;values&quot;: {
-		&quot;data&quot;: {<mark>
-			&quot;request&quot;: {
-				&quot;url&quot;: &quot;./dt/listdata.json&quot;
+"objectArrayWithRequestList": {
+	"manifestpath": "/sap.card/configuration/parameters/objectArrayWithRequestList/value",
+	"type": "object[]",
+	"values": {
+		"data": {<mark>
+			"request": {
+				"url": "./dt/listdata.json"
 			},
-			&quot;path&quot;: &quot;/values&quot;</mark>
+			"path": "/values"</mark>
 		}
 	},
-	&quot;properties&quot;: {
-		&quot;key&quot;: {
-			&quot;label&quot;: &quot;Key&quot;
+	"properties": {
+		"key": {
+			"label": "Key"
 		},
-		&quot;icon&quot;: {
-			&quot;label&quot;: &quot;Icon&quot;,
-			&quot;defaultValue&quot;: &quot;sap-icon://add&quot;,
-			&quot;column&quot;: {
-				&quot;settings&quot;: {
-					&quot;hAlign&quot;: &quot;Center&quot;,
-					&quot;width&quot;: &quot;4rem&quot;
+		"icon": {
+			"label": "Icon",
+			"defaultValue": "sap-icon://add",
+			"column": {
+				"settings": {
+					"hAlign": "Center",
+					"width": "4rem"
 				},
-				&quot;cell&quot;: {
-					&quot;type&quot;: &quot;Icon&quot;,
-					&quot;color&quot;: &quot;{iconcolor}&quot;
+				"cell": {
+					"type": "Icon",
+					"color": "{iconcolor}"
 				}
 			}
 		},
-		&quot;text&quot;: {
-			&quot;label&quot;: &quot;Text&quot;,
-			&quot;defaultValue&quot;: &quot;text&quot;,
-			&quot;column&quot;: {
-				&quot;settings&quot;: {
-					&quot;hAlign&quot;: &quot;Center&quot;,
-					&quot;width&quot;: &quot;6rem&quot;,
-					&quot;filterProperty&quot;: &quot;text&quot;,
-					&quot;defaultFilterOperator&quot;: &quot;Contains&quot;   // values are in enum sap.ui.model.FilterOperator
+		"text": {
+			"label": "Text",
+			"defaultValue": "text",
+			"column": {
+				"settings": {
+					"hAlign": "Center",
+					"width": "6rem",
+					"filterProperty": "text",
+					"defaultFilterOperator": "Contains"   // values are in enum sap.ui.model.FilterOperator
 				}
 			}
 		},
-		&quot;url&quot;: {
-			&quot;label&quot;: &quot;URL&quot;,
-			&quot;defaultValue&quot;: &quot;http://&quot;,
-			&quot;column&quot;: {
-				&quot;settings&quot;: {
-					&quot;hAlign&quot;: &quot;Center&quot;,
-					&quot;width&quot;: &quot;10rem&quot;,
-					&quot;label&quot;: &quot;URL Link&quot;,
-					&quot;filterProperty&quot;: &quot;url&quot;,
-					&quot;defaultFilterOperator&quot;: &quot;StartsWith&quot;
+		"url": {
+			"label": "URL",
+			"defaultValue": "http://",
+			"column": {
+				"settings": {
+					"hAlign": "Center",
+					"width": "10rem",
+					"label": "URL Link",
+					"filterProperty": "url",
+					"defaultFilterOperator": "StartsWith"
 				},
-				&quot;cell&quot;: {
-					&quot;type&quot;: &quot;Link&quot;,
-					&quot;href&quot;: &quot;{url}&quot;
+				"cell": {
+					"type": "Link",
+					"href": "{url}"
 				}
 			}
 		}
@@ -854,11 +854,11 @@ formatter : {
 }</pre>
 				<pre class="lang-js collapsed" data-caption="Data of dt/listdata.json">
 {
-	&quot;values&quot;: [
-		{ &quot;text&quot;: &quot;text1req&quot;, &quot;key&quot;: &quot;key1&quot;, &quot;additionalText&quot;: &quot;addtext1&quot;, &quot;icon&quot;: &quot;sap-icon://accept&quot; },
-		{ &quot;text&quot;: &quot;text2req&quot;, &quot;key&quot;: &quot;key2&quot;, &quot;additionalText&quot;: &quot;addtext2&quot;, &quot;icon&quot;: &quot;sap-icon://cart&quot; },
-		{ &quot;text&quot;: &quot;text3req&quot;, &quot;key&quot;: &quot;key3&quot;, &quot;additionalText&quot;: &quot;addtext3&quot;, &quot;icon&quot;: &quot;sap-icon://zoom-in&quot; },
-		{ &quot;text&quot;: &quot;text4req&quot;, &quot;key&quot;: &quot;key4&quot;, &quot;additionalText&quot;: &quot;addtext4&quot;, &quot;icon&quot;: &quot;sap-icon://zoom-out&quot; }
+	"values": [
+		{ "text": "text1req", "key": "key1", "additionalText": "addtext1", "icon": "sap-icon://accept" },
+		{ "text": "text2req", "key": "key2", "additionalText": "addtext2", "icon": "sap-icon://cart" },
+		{ "text": "text3req", "key": "key3", "additionalText": "addtext3", "icon": "sap-icon://zoom-in" },
+		{ "text": "text4req", "key": "key4", "additionalText": "addtext4", "icon": "sap-icon://zoom-out" }
 	]
 }</pre>
 			</div>
@@ -870,50 +870,50 @@ formatter : {
 					Please ensure that users are not overwhelmed with error and warning messages. Use validation wisely.
 				</p>
 				<pre class="lang-js collapsed" data-caption="String/Integer fields with validations">
-&quot;string1&quot;: {
-	&quot;type&quot;: &quot;string&quot;,
-	&quot;required&quot;: true,  // this is a validation rule, it will automatically check for empty value, no need to define a validation for it.
-	&quot;validation&quot;: {
-		&quot;type&quot;: &quot;error&quot;,
-		&quot;maxLength&quot;: 20
+"string1": {
+	"type": "string",
+	"required": true,  // this is a validation rule, it will automatically check for empty value, no need to define a validation for it.
+	"validation": {
+		"type": "error",
+		"maxLength": 20
 	}
 },
-&quot;int1&quot;: {
-	&quot;type&quot;: &quot;integer&quot;,
-	&quot;required&quot;: true, // this is a validation rule, it will automatically check for empty value, no need to define a validation
+"int1": {
+	"type": "integer",
+	"required": true, // this is a validation rule, it will automatically check for empty value, no need to define a validation
 	for it.
-	&quot;validation&quot;: {
-		&quot;type&quot;: &quot;error&quot;,
-		&quot;maximum&quot;: 20,
-		&quot;minimum&quot;: 10,
-		&quot;exclusiveMinimum&quot;: true,
-		&quot;message&quot;: &quot;Your message&quot; // optional
+	"validation": {
+		"type": "error",
+		"maximum": 20,
+		"minimum": 10,
+		"exclusiveMinimum": true,
+		"message": "Your message" // optional
 	}
 },
-&quot;string2&quot;: {
-	&quot;type&quot;: &quot;string&quot;,
-	&quot;validations&quot;: [
+"string2": {
+	"type": "string",
+	"validations": [
 		{
-			&quot;type&quot;: &quot;error&quot;,
-			&quot;maxLength&quot;: 20,
-			&quot;message&quot;: &quot;Your message&quot; // optional
+			"type": "error",
+			"maxLength": 20,
+			"message": "Your message" // optional
 		},
 		{
-			&quot;type&quot;: &quot;error&quot;,
-			&quot;minLength&quot;: 1,
-			&quot;message&quot;: &quot;Your message&quot; // optional
+			"type": "error",
+			"minLength": 1,
+			"message": "Your message" // optional
 		},
 		{
-			&quot;type&quot;: &quot;warning&quot;,
-			&quot;pattern&quot;: &quot;^(\\([0-9]{3}\\))?[0-9]{3}-[0-9]{4}&#x24;&quot;, // American phone number
-			&quot;message&quot;: &quot;Your message&quot; // optional
+			"type": "warning",
+			"pattern": "^(\\([0-9]{3}\\))?[0-9]{3}-[0-9]{4}$", // American phone number
+			"message": "Your message" // optional
 		},
 		{
-			&quot;type&quot;: &quot;warning&quot;,
-			&quot;validate&quot;: function (value) {
+			"type": "warning",
+			"validate": function (value) {
 				// do your own checks here
 			},
-			&quot;message&quot;: &quot;Your message&quot; // optional
+			"message": "Your message" // optional
 		}
 	]
 }</pre>
@@ -921,150 +921,150 @@ formatter : {
 					Now users can also validate the value via request result.
 				</p>
 				<pre class="lang-js collapsed" data-caption="Validations via request result">
-&quot;boolean1&quot;: {
-	&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/boolean1/value&quot;,
-	&quot;type&quot;: &quot;boolean&quot;,
-	&quot;visualization&quot;: {
-		&quot;type&quot;: &quot;sap/m/Switch&quot;,
-		&quot;settings&quot;: {
-			&quot;busy&quot;: &quot;{currentSettings&gt;_loading}&quot;,
-			&quot;state&quot;: &quot;{currentSettings&gt;value}&quot;,
-			&quot;customTextOn&quot;: &quot;Yes&quot;,
-			&quot;customTextOff&quot;: &quot;No&quot;,
-			&quot;enabled&quot;: &quot;{currentSettings&gt;editable}&quot;
+"boolean1": {
+	"manifestpath": "/sap.card/configuration/parameters/boolean1/value",
+	"type": "boolean",
+	"visualization": {
+		"type": "sap/m/Switch",
+		"settings": {
+			"busy": "{currentSettings>_loading}",
+			"state": "{currentSettings>value}",
+			"customTextOn": "Yes",
+			"customTextOff": "No",
+			"enabled": "{currentSettings>editable}"
 		}
 	},
-	&quot;validations&quot;: [{
-		&quot;type&quot;: &quot;error&quot;,
-		&quot;validate&quot;: function (value, config, context) {
-			return context[&quot;requestData&quot;]({
-				&quot;data&quot;: {
-					&quot;extension&quot;: {
-						&quot;method&quot;: &quot;checkCanSeeCourses&quot;
+	"validations": [{
+		"type": "error",
+		"validate": function (value, config, context) {
+			return context["requestData"]({
+				"data": {
+					"extension": {
+						"method": "checkCanSeeCourses"
 					},
-					&quot;path&quot;: &quot;/values/canSeeCourses&quot;
+					"path": "/values/canSeeCourses"
 				}
 			}).then(function (oData){
-				if (oData === false &amp;&amp; value === true) {
+				if (oData === false && value === true) {
 					//to hide the whole parameter :
 					config.visible = false;
 					//just change the Switch :
-					//context[&quot;control&quot;].setState(false);
+					//context["control"].setState(false);
 					return false;
 				}
 				return true;
 			});
 		},
-		&quot;message&quot;: &quot;Do not have right to request data, disable it&quot;
+		"message": "Do not have right to request data, disable it"
 	}]
 },
-&quot;boolean2&quot;: {
-	&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/boolean2/value&quot;,
-	&quot;type&quot;: &quot;boolean&quot;,
-	&quot;validations&quot;: [{
-		&quot;type&quot;: &quot;error&quot;,
-		&quot;validate&quot;: function (value, config, context) {
-			return context[&quot;requestData&quot;]({
-				&quot;data&quot;: {
-					&quot;extension&quot;: {
-						&quot;method&quot;: &quot;checkCanSeeCourses&quot;
+"boolean2": {
+	"manifestpath": "/sap.card/configuration/parameters/boolean2/value",
+	"type": "boolean",
+	"validations": [{
+		"type": "error",
+		"validate": function (value, config, context) {
+			return context["requestData"]({
+				"data": {
+					"extension": {
+						"method": "checkCanSeeCourses"
 					},
-					&quot;path&quot;: &quot;/values/canSeeCourses&quot;
+					"path": "/values/canSeeCourses"
 				}
 			}).then(function (oData){
-				if (oData === false &amp;&amp; value === true) {
+				if (oData === false && value === true) {
 					//to hide the whole parameter :
 					//config.visible = false;
 					//just change the checkbox :
-					context[&quot;control&quot;].setSelected(false);
+					context["control"].setSelected(false);
 					return false;
 				}
 				return true;
 			});
 		},
-		&quot;message&quot;: &quot;Do not have right to request data, disable it&quot;
+		"message": "Do not have right to request data, disable it"
 	}]
 },
-&quot;Customers1&quot;: {
-	&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/Customers1/value&quot;,
-	&quot;type&quot;: &quot;string[]&quot;,
-	&quot;required&quot;: true,
-	&quot;values&quot;: {
-		&quot;data&quot;: {
-			&quot;request&quot;: {
-				&quot;url&quot;: &quot;{{destinations.northwind}}/Customers&quot;,
-				&quot;parameters&quot;: {
-					&quot;&#x24;select&quot;: &quot;CustomerID, CompanyName, Country, City, Address&quot;
+"Customers1": {
+	"manifestpath": "/sap.card/configuration/parameters/Customers1/value",
+	"type": "string[]",
+	"required": true,
+	"values": {
+		"data": {
+			"request": {
+				"url": "{{destinations.northwind}}/Customers",
+				"parameters": {
+					"$select": "CustomerID, CompanyName, Country, City, Address"
 				}
 			},
-			&quot;path&quot;: &quot;/value&quot;
+			"path": "/value"
 		},
-		&quot;item&quot;: {
-			&quot;text&quot;: &quot;{CompanyName}&quot;,
-			&quot;key&quot;: &quot;{CustomerID}&quot;,
-			&quot;additionalText&quot;: &quot;{= &#x24;{CustomerID} !== undefined ? &#x24;{Country} + &apos;, &apos; +  &#x24;{City} + &apos;, &apos; + &#x24;{Address} : &apos;&apos;}&quot;
+		"item": {
+			"text": "{CompanyName}",
+			"key": "{CustomerID}",
+			"additionalText": "{= ${CustomerID} !== undefined ? ${Country} + ', ' +  ${City} + ', ' + ${Address} : ''}"
 		}
 	},
-	&quot;validations&quot;: [{
-		&quot;type&quot;: &quot;error&quot;,
-		&quot;validate&quot;: function (value, config, context) {
-			return context[&quot;requestData&quot;]({
-				&quot;data&quot;: {
-					&quot;extension&quot;: {
-						&quot;method&quot;: &quot;getMinLength&quot;
+	"validations": [{
+		"type": "error",
+		"validate": function (value, config, context) {
+			return context["requestData"]({
+				"data": {
+					"extension": {
+						"method": "getMinLength"
 					},
-					&quot;path&quot;: &quot;/values/minLength&quot;
+					"path": "/values/minLength"
 				}
 			}).then(function (oData){
 				if (value.length &lt; oData) {
-					context[&quot;control&quot;].setEditable(false);
+					context["control"].setEditable(false);
 					return false;
 				}
 				return true;
 			});
 		},
-		&quot;message&quot;: &quot;Please select more items!&quot;
+		"message": "Please select more items!"
 	}]
 },
-&quot;Customers2&quot;: {
-	&quot;manifestpath&quot;: &quot;/sap.card/configuration/parameters/Customers2/value&quot;,
-	&quot;type&quot;: &quot;string[]&quot;,
-	&quot;required&quot;: true,
-	&quot;values&quot;: {
-		&quot;data&quot;: {
-			&quot;request&quot;: {
-				&quot;url&quot;: &quot;{{destinations.northwind}}/Customers&quot;,
-				&quot;parameters&quot;: {
-					&quot;&#x24;select&quot;: &quot;CustomerID, CompanyName, Country, City, Address&quot;
+"Customers2": {
+	"manifestpath": "/sap.card/configuration/parameters/Customers2/value",
+	"type": "string[]",
+	"required": true,
+	"values": {
+		"data": {
+			"request": {
+				"url": "{{destinations.northwind}}/Customers",
+				"parameters": {
+					"$select": "CustomerID, CompanyName, Country, City, Address"
 				}
 			},
-			&quot;path&quot;: &quot;/value&quot;
+			"path": "/value"
 		},
-		&quot;item&quot;: {
-			&quot;text&quot;: &quot;{CompanyName}&quot;,
-			&quot;key&quot;: &quot;{CustomerID}&quot;,
-			&quot;additionalText&quot;: &quot;{= &#x24;{CustomerID} !== undefined ? &#x24;{Country} + &apos;, &apos; +  &#x24;{City} + &apos;, &apos; + &#x24;{Address} : &apos;&apos;}&quot;
+		"item": {
+			"text": "{CompanyName}",
+			"key": "{CustomerID}",
+			"additionalText": "{= ${CustomerID} !== undefined ? ${Country} + ', ' +  ${City} + ', ' + ${Address} : ''}"
 		}
 	},
-	&quot;validations&quot;: [{
-		&quot;type&quot;: &quot;error&quot;,
-		&quot;validate&quot;: function (value, config, context) {
-			return context[&quot;requestData&quot;]({
-				&quot;data&quot;: {
-					&quot;request&quot;: {
-						&quot;url&quot;: &quot;{{destinations.northwind}}/getMaxLength&quot;
+	"validations": [{
+		"type": "error",
+		"validate": function (value, config, context) {
+			return context["requestData"]({
+				"data": {
+					"request": {
+						"url": "{{destinations.northwind}}/getMaxLength"
 					},
-					&quot;path&quot;: &quot;/values/maxLength&quot;
+					"path": "/values/maxLength"
 				}
 			}).then(function (oData){
-				if (value.length &gt; oData) {
-					context[&quot;control&quot;].setEditable(false);
+				if (value.length > oData) {
+					context["control"].setEditable(false);
 					return false;
 				}
 				return true;
 			});
 		},
-		&quot;message&quot;: &quot;Please remove some items!&quot;
+		"message": "Please remove some items!"
 	}]
 }</pre>
 				<div class="tableWrapper">
@@ -1081,12 +1081,12 @@ formatter : {
 						</tr>
 						<tr>
 							<td>type</td>
-							<td>[&quot;error&quot;,&quot;warning&quot;]</td>
+							<td>["error","warning"]</td>
 							<td>No</td>
 							<td>error</td>
 							<td>all</td>
 							<td>Defines the type of the message (error or warning) that should appear on the field.
-								<pre class="lang-js">type: &quot;error&quot;</pre>
+								<pre class="lang-js">type: "error"</pre>
 							</td>
 							<td>1.86</td>
 						</tr>
@@ -1097,7 +1097,7 @@ formatter : {
 							<td>none</td>
 							<td>all</td>
 							<td>Defines the error message that should appear. If not given a default message will appear.
-								<pre class="lang-js">message: &quot;{i18n&gt;TRANSLATABLE_ERROR_MESSAGE}&quot;</pre>
+								<pre class="lang-js">message: "{i18n>TRANSLATABLE_ERROR_MESSAGE}"</pre>
 							</td>
 							<td>1.86</td>
 						</tr>
@@ -1130,7 +1130,7 @@ formatter : {
 							<td>none</td>
 							<td>string</td>
 							<td>String values are only valid if text matches the given Regular Expression.
-								<pre class="lang-js">pattern : &quot;^(\\([0-9]{3}\\))?[0-9]{3}-[0-9]{4}&#x24;&quot;</pre>
+								<pre class="lang-js">pattern : "^(\\([0-9]{3}\\))?[0-9]{3}-[0-9]{4}$"</pre>
 							</td>
 							<td>1.86</td>
 						</tr>
@@ -1143,16 +1143,16 @@ formatter : {
 							<td>Own implementation function to check value.
 								<pre class="lang-js">
 validate : function(value, config, context) {
-	return context[&quot;requestData&quot;]({
-		&quot;data&quot;: {
-			&quot;request&quot;: {
-				&quot;url&quot;: &quot;{{destinations.northwind}}/getMaxLength&quot;
+	return context["requestData"]({
+		"data": {
+			"request": {
+				"url": "{{destinations.northwind}}/getMaxLength"
 			},
-			&quot;path&quot;: &quot;/values/maxLength&quot;
+			"path": "/values/maxLength"
 		}
 	}).then(function (oData){
-		if (value.length &gt; oData) {
-			context[&quot;control&quot;].setEditable(false);
+		if (value.length > oData) {
+			context["control"].setEditable(false);
 			return false;
 		}
 		return true;
@@ -1161,12 +1161,12 @@ validate : function(value, config, context) {
 								or
 								<pre class="lang-js">
 validate: function (value, config, context) {
-	return context[&quot;requestData&quot;]({
-		&quot;data&quot;: {
-			&quot;request&quot;: {
-				&quot;url&quot;: &quot;{{destinations.mock_request}}/checkValidation&quot;
+	return context["requestData"]({
+		"data": {
+			"request": {
+				"url": "{{destinations.mock_request}}/checkValidation"
 			},
-			&quot;path&quot;: &quot;/values/valueRange&quot;
+			"path": "/values/valueRange"
 		}
 	}).then(function (valueRange){
 		var oResult = true;
@@ -1181,8 +1181,8 @@ validate: function (value, config, context) {
 			}
 		}
 		return {
-			&quot;isValid&quot;: oResult,
-			&quot;data&quot;: valueRange
+			"isValid": oResult,
+			"data": valueRange
 		};
 	});
 }</pre>

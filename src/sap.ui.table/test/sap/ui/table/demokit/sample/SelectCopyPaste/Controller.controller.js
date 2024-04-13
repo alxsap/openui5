@@ -12,7 +12,7 @@ sap.ui.define([
 	"use strict";
 
 	const sServiceUrl = "http://my.test.service.com/";
-	var oCellSelector, oCopyProvider;
+	let oCellSelector; let oCopyProvider;
 
 	return Controller.extend("sap.ui.table.sample.SelectCopyPaste.Controller", {
 
@@ -54,7 +54,7 @@ sap.ui.define([
 		},
 
 		onExit: function() {
-			var oModel = this.getView().getModel();
+			const oModel = this.getView().getModel();
 			this.getView().setModel();
 			oModel.destroy();
 
@@ -73,7 +73,8 @@ sap.ui.define([
 		},
 
 		onSelectChange: function(oEvent) {
-			const aParams = oEvent.getParameters(), oTable = this.byId("table");
+			const aParams = oEvent.getParameters(); const
+oTable = this.byId("table");
 			MultiSelectionPlugin.findOn(oTable).setSelectionMode(aParams.selectedItem.getKey());
 		},
 
@@ -87,7 +88,7 @@ sap.ui.define([
 
 			if (oRange) {
 				MessageBox.confirm("Do you want to paste at position " + (oRange.from.rowIndex + "/" + oRange.from.colIndex) + "?", {onClose: function(sAction) {
-					handlePaste(aData, sAction == "OK" ? oRange : null);
+					handlePaste(aData, sAction === "OK" ? oRange : null);
 				}});
 			} else {
 				handlePaste(aData, null);

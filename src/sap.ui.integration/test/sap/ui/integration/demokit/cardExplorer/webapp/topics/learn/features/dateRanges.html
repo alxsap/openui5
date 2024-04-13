@@ -32,8 +32,8 @@
 			<p>
 				Inside the card manifest you can use the global functions <code>dateRange.start</code> and
 				<code>dateRange.end</code> to create the start or the end date of a date range.
-				For example, a date range like &apos;last 5 years&apos; can be used inside an expression binding like this:
-				<code>{= dateRange.start(&quot;lastYears&quot;, 5)}</code>.
+				For example, a date range like 'last 5 years' can be used inside an expression binding like this:
+				<code>{= dateRange.start("lastYears", 5)}</code>.
 			</p>
 
 			<div class="messageStripWarning">
@@ -57,13 +57,13 @@
 						<tr>
 							<td>type</td>
 							<td>string</td>
-							<td>A valid date range type like &apos;lastYears&apos;. For full list see the table below.</td>
+							<td>A valid date range type like 'lastYears'. For full list see the table below.</td>
 							<td>1.73</td>
 						</tr>
 						<tr>
 							<td>value</td>
 							<td>int</td>
-							<td>How many years, days, months, etc. to be the range. If range is &apos;lastYears&apos; this
+							<td>How many years, days, months, etc. to be the range. If range is 'lastYears' this
 								parameter describes how many years.</td>
 							<td>1.73</td>
 						</tr>
@@ -105,12 +105,12 @@
 					</tr>
 					<tr>
 						<td>yesterday</td>
-						<td>Start and end of yesterday&apos;s date</td>
+						<td>Start and end of yesterday's date</td>
 						<td></td>
 					</tr>
 					<tr>
 						<td>today</td>
-						<td>Start and end of today&apos;s date</td>
+						<td>Start and end of today's date</td>
 						<td></td>
 					</tr>
 					<tr>
@@ -137,7 +137,7 @@
 					</tr>
 					<tr>
 						<td>nextWeek</td>
-						<td>Start and end of next week&apos;s</td>
+						<td>Start and end of next week's</td>
 						<td></td>
 					</tr>
 					<tr>
@@ -250,19 +250,19 @@
 						<th>Result if today is 2019-11-01</th>
 					</tr>
 					<tr>
-						<td><code>{= dateRange.start(&apos;lastYears&apos;, 5)}</code></td>
+						<td><code>{= dateRange.start('lastYears', 5)}</code></td>
 						<td>2014-01-01T00:00:00</td>
 					</tr>
 					<tr>
-						<td><code>{= dateRange.end(&apos;lastYears&apos;, 5)}</code></td>
+						<td><code>{= dateRange.end('lastYears', 5)}</code></td>
 						<td>2018-12-31T23:59:59</td>
 					</tr>
 					<tr>
-						<td><code>{= dateRange.start(&apos;yesterday&apos;)}</code></td>
+						<td><code>{= dateRange.start('yesterday')}</code></td>
 						<td>2019-10-31T00:00:00</td>
 					</tr>
 					<tr>
-						<td><code>{= dateRange.end(&apos;nextQuarter&apos;)}</code></td>
+						<td><code>{= dateRange.end('nextQuarter')}</code></td>
 						<td>2020-03-31T23:59:59</td>
 					</tr>
 				</table>
@@ -270,25 +270,25 @@
 
 			<p>Date range in title:</p>
 			<pre class="lang-json">{
-	&quot;header&quot;: {
-		&quot;title&quot;: &quot;Expectations for next 6 months&quot;,
-		&quot;subTitle&quot;: &quot;Until {= format.dateTime(dateRange.end(&apos;nextMonths&apos;, 6), {pattern: &apos;MMMM, y&apos;})}&quot;
+	"header": {
+		"title": "Expectations for next 6 months",
+		"subTitle": "Until {= format.dateTime(dateRange.end('nextMonths', 6), {pattern: 'MMMM, y'})}"
 	}
 }</pre>
 
 			<p>Date range used in odata request:</p>
 			<pre class="lang-json">{
-	&quot;data&quot;: {
-		&quot;request&quot;: {
-			&quot;url&quot;: &quot;https/services.odata.org/V3/Northwind/Northwind.svc/Orders&quot;,
-			&quot;parameters&quot;: {
-				&quot;&#x24;format&quot;: &quot;json&quot;,
-				&quot;&#x24;top&quot;: 5,
-				&quot;&#x24;orderby&quot;: &quot;Freight desc&quot;,
-				&quot;&#x24;filter&quot;: &quot;OrderDate ge datetime&apos;{= format.dateTime(dateRange.start(&apos;lastYears&apos;, 30), {pattern: &apos;yyyy-MM-ddTHH:mm:ss&apos;})}&apos;&quot;
+	"data": {
+		"request": {
+			"url": "https/services.odata.org/V3/Northwind/Northwind.svc/Orders",
+			"parameters": {
+				"$format": "json",
+				"$top": 5,
+				"$orderby": "Freight desc",
+				"$filter": "OrderDate ge datetime'{= format.dateTime(dateRange.start('lastYears', 30), {pattern: 'yyyy-MM-ddTHH:mm:ss'})}'"
 			}
 		},
-		&quot;path&quot;: &quot;/value/&quot;
+		"path": "/value/"
 	}
 }</pre>
 			<a class="try-button" href="../../../index.html#/explore/dateRange" target="_parent">Try it Out</a>

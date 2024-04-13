@@ -19,7 +19,7 @@
 			<p>
 				The <code>unit</code> formatter takes as a first parameter the unit of measurement value as a string or
 				number.
-				The second parameter is a string that represents the unit of measurement&apos;s type according to CLDR, and
+				The second parameter is a string that represents the unit of measurement's type according to CLDR, and
 				the third parameter is an object which defines the format options.
 				The fourth optional parameter is a string representing a custom locale code. If no locale is given the
 				current user locale is used.
@@ -99,15 +99,15 @@
 				Examples
 			</h2>
 
-			<p>A card with a <code>unit</code> formatter using expression binding for &apos;length-kilometer&apos; with
-				<code> {decimals:2, style:&apos;short&apos;}</code> as format options</p>
+			<p>A card with a <code>unit</code> formatter using expression binding for 'length-kilometer' with
+				<code> {decimals:2, style:'short'}</code> as format options</p>
 
 			<pre class="lang-json">
-&quot;sap.card&quot;: {
-	&quot;type&quot;: &quot;List&quot;,
-	&quot;header&quot;: {
-		&quot;title&quot;: &quot;Order status&quot;,
-		&quot;subTitle&quot;: &quot;Orders exceeding {= format.unit(123.456, &apos;length-kilometer&apos;, {decimals:2, style:&apos;short&apos;})} are highlighted&quot;
+"sap.card": {
+	"type": "List",
+	"header": {
+		"title": "Order status",
+		"subTitle": "Orders exceeding {= format.unit(123.456, 'length-kilometer', {decimals:2, style:'short'})} are highlighted"
 	}
 }
 </pre>

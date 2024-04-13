@@ -48,9 +48,9 @@
 					<tr>
 						<td>target</td>
 						<td>string</td>
-						<td>&quot;_blank&quot;</td>
+						<td>"_blank"</td>
 						<td>No</td>
-						<td>If the given <code>url</code> should be opened in a new or the same window. Possible values are &quot;_blank&quot; and &quot;_self&quot;.</td>
+						<td>If the given <code>url</code> should be opened in a new or the same window. Possible values are "_blank" and "_self".</td>
 						<td>1.15.0</td>
 						<td>1.65</td>
 					</tr>
@@ -98,7 +98,7 @@
 						<td>
 							Map of parameters for intent-based navigation that define an instance of the semantic object. The parameter value can be a string or an array of strings.
 							<br>
-							For example <code>{ &quot;employeeID&quot;: &quot;4&quot; }</code>
+							For example <code>{ "employeeID": "4" }</code>
 						</td>
 						<td>1.41.0</td>
 						<td>1.102</td>
@@ -122,7 +122,7 @@
 						<td>string</td>
 						<td></td>
 						<td>Yes</td>
-						<td>Defines the business entity, which will be the target of the action. For example &quot;Employee&quot;.</td>
+						<td>Defines the business entity, which will be the target of the action. For example "Employee".</td>
 						<td>1.41.0</td>
 						<td>1.102</td>
 					</tr>
@@ -131,7 +131,7 @@
 						<td>string</td>
 						<td></td>
 						<td>No</td>
-						<td>Defines what operation to be performed on the semantic object. For example &quot;display&quot;.</td>
+						<td>Defines what operation to be performed on the semantic object. For example "display".</td>
 						<td>1.41.0</td>
 						<td>1.102</td>
 					</tr>
@@ -156,15 +156,15 @@
 			<p>Header level navigation action with static URL:</p>
 			<pre class="lang-json">
 {
-	&quot;sap.card&quot;: {
-		&quot;header&quot;: {
-			&quot;title&quot;: &quot;Some title&quot;,
-			&quot;actions&quot;: [
+	"sap.card": {
+		"header": {
+			"title": "Some title",
+			"actions": [
 				{
-					&quot;type&quot;: &quot;Navigation&quot;,
-					&quot;parameters&quot;: {
-						&quot;url&quot;: &quot;/some/url&quot;,
-						&quot;target&quot;: &quot;_self&quot;
+					"type": "Navigation",
+					"parameters": {
+						"url": "/some/url",
+						"target": "_self"
 					}
 				}
 			]
@@ -175,22 +175,22 @@
 			<p>Intent-based navigation:</p>
 			<pre class="lang-json">
 {
-	&quot;sap.card&quot;: {
-		&quot;type&quot;: &quot;List&quot;,
-		&quot;content&quot;: {
+	"sap.card": {
+		"type": "List",
+		"content": {
 			...
-			&quot;item&quot;: {
-				&quot;title&quot;: &quot;{Name}&quot;,
-				&quot;actions&quot;: [
+			"item": {
+				"title": "{Name}",
+				"actions": [
 					{
-						&quot;type&quot;: &quot;Navigation&quot;,
-						&quot;parameters&quot;: {
-							&quot;ibnTarget&quot;: {
-								&quot;semanticObject&quot;: &quot;Application&quot;,
-								&quot;action&quot;: &quot;display&quot;
+						"type": "Navigation",
+						"parameters": {
+							"ibnTarget": {
+								"semanticObject": "Application",
+								"action": "display"
 							},
-							&quot;ibnParams&quot;: {
-								&quot;applicationName&quot;: &quot;{Name}&quot;
+							"ibnParams": {
+								"applicationName": "{Name}"
 							}
 						}
 					}

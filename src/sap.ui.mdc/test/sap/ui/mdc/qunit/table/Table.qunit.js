@@ -61,7 +61,6 @@ sap.ui.define([
 	"sap/ui/mdc/enums/OperatorName",
 	"sap/m/Menu",
 	"sap/m/MenuItem",
-	"sap/m/plugins/ContextMenuSetting",
 	"sap/ui/qunit/utils/nextUIUpdate"
 ], function(
 	TableQUnitUtils,
@@ -122,7 +121,6 @@ sap.ui.define([
 	OperatorName,
 	Menu,
 	MenuItem,
-	ContextMenuSetting,
 	nextUIUpdate
 ) {
 	"use strict";
@@ -658,13 +656,13 @@ sap.ui.define([
 			fInnerTableDestroySpy = sinon.spy(this.oTable._oTable, "destroy");
 			fInnerTemplateDestroySpy = sinon.spy(this.oTable._oRowTemplate, "destroy");
 
-			// Setting same table type does nothing
+			// Setting same table type re-initialises table
 			this.oTable.setType("ResponsiveTable");
 			this.oTable.setSelectionMode("Multi");
 
-			assert.ok(fInnerTableDestroySpy.notCalled);
-			assert.ok(fInnerTemplateDestroySpy.notCalled);
-			assert.equal(this.oTable._oTable.getGrowingScrollToLoad(), false);
+			assert.ok(fInnerTableDestroySpy.called);
+			assert.ok(fInnerTemplateDestroySpy.called);
+			assert.notOk(this.oTable._oTable);
 
 			this.oTable.setType(new ResponsiveTableType({
 				growingMode: "Scroll"
@@ -725,11 +723,11 @@ sap.ui.define([
 			fInnerTableDestroySpy = sinon.spy(this.oTable._oTable, "destroy");
 			fInnerTemplateDestroySpy = sinon.spy(this.oTable._oRowTemplate, "destroy");
 
-			// Setting same table type does nothing
+			// Setting same table type re-initialises table
 			this.oTable.setType("ResponsiveTable");
-			assert.ok(this.oTable._oTable.isA("sap.m.Table"));
-			assert.ok(fInnerTableDestroySpy.notCalled);
-			assert.ok(fInnerTemplateDestroySpy.notCalled);
+			assert.notOk(this.oTable._oTable);
+			assert.ok(fInnerTableDestroySpy.called);
+			assert.ok(fInnerTemplateDestroySpy.called);
 
 			this.oTable.setType("Table");
 			assert.ok(fInnerTableDestroySpy.calledOnce);
@@ -2860,12 +2858,12 @@ sap.ui.define([
 		}.bind(this));
 	});
 
-	QUnit.test("test attachBeforeExport", function(assert) {
-		const done = assert.async();
+	QUnit.test("test attachBeforeExport and preventDefault", async function(assert) {
 		const oTable = this.oTable;
 		const fnSetLabel = sinon.stub();
 		const fnSetType = sinon.stub();
 		const oFakeExportHandlerEvent = sinon.createStubInstance(UI5Event);
+
 		oFakeExportHandlerEvent.getParameter.withArgs("exportSettings").returns({});
 		oFakeExportHandlerEvent.getParameter.withArgs("userExportSettings").returns({
 			splitCells: false,
@@ -2877,7 +2875,7 @@ sap.ui.define([
 			setType: fnSetType
 		}]);
 
-		oTable.attachBeforeExport(function(oEvent) {
+		oTable.attachBeforeExport((oEvent) => {
 			const mExportSettings = oEvent.getParameter("exportSettings");
 			const mUserSettings = oEvent.getParameter("userExportSettings");
 			const aFilterSettings = oEvent.getParameter("filterSettings");
@@ -2892,39 +2890,41 @@ sap.ui.define([
 			assert.ok(fnSetType.called, "Filter#setType was called");
 			assert.ok(fnSetType.calledWith(oTable.getPropertyHelper().getProperty("SampleField").typeConfig.typeInstance), "Filter#setType was called with the expected type instance");
 
-			done();
+			oEvent.preventDefault();
 		});
 
-		oTable.initialized().then(function() {
-			TableQUnitUtils.stubPropertyInfos(oTable, [
-				{
-					name: "SampleField",
-					path: "SampleField",
-					label: "SampleLabel",
-					dataType: "Edm.String"
-				}
-			], ODataTypeMap);
+		await oTable.initialized();
 
-			assert.ok(fnSetLabel.notCalled, "setLabel function not called");
-			assert.ok(fnSetType.notCalled, "setType function not called");
+		TableQUnitUtils.stubPropertyInfos(oTable, [
+			{
+				name: "SampleField",
+				path: "SampleField",
+				label: "SampleLabel",
+				dataType: "Edm.String"
+			}
+		], ODataTypeMap);
 
-			return oTable._fullyInitialized();
-		}).then(function() {
-			oTable._onBeforeExport(oFakeExportHandlerEvent);
-		});
+		assert.ok(fnSetLabel.notCalled, "setLabel function not called");
+		assert.ok(fnSetType.notCalled, "setType function not called");
+		await oTable._fullyInitialized();
+
+		assert.ok(oFakeExportHandlerEvent.preventDefault.notCalled, "Default action was not prevented yet");
+		oTable._onBeforeExport(oFakeExportHandlerEvent);
+
+		assert.ok(oFakeExportHandlerEvent.preventDefault.calledOnce, "Prevent default has been forwarded to the ExportHandler event");
 	});
 
-	QUnit.test("test _getExportHandler", function(assert) {
-		let fnCapabilities;
-
+	QUnit.test("test _getExportHandler", async function(assert) {
 		const oTable = this.oTable;
 		const fnRequire = sap.ui.require;
+		const fnCapabilities = sinon.spy(oTable.getControlDelegate(), "fetchExportCapabilities");
 
 		/* Create fake ExportHandler class because dependency to sapui5.runtime is not possible */
 		const FakeExportHandler = function() {};
 		FakeExportHandler.prototype.isA = function(sClass) { return sClass === "sap.ui.export.ExportHandler"; };
 		FakeExportHandler.prototype.attachBeforeExport = sinon.stub();
 
+		sinon.stub(Library, "load").withArgs({name: "sap.ui.export"}).resolves();
 		sinon.stub(sap.ui, "require").callsFake(function(aDependencies, fnCallback) {
 			if (Array.isArray(aDependencies) && aDependencies.length === 1 && aDependencies[0] === "sap/ui/export/ExportHandler") {
 				fnCallback(FakeExportHandler);
@@ -2933,62 +2933,55 @@ sap.ui.define([
 			}
 		});
 
-		return oTable.initialized().then(function() {
-			fnCapabilities = sinon.spy(oTable.getControlDelegate(), "fetchExportCapabilities");
-			sinon.stub(oTable, "_loadExportLibrary").resolves();
+		await oTable.initialized();
 
-			assert.ok(oTable._loadExportLibrary.notCalled, "Not called yet");
-			assert.ok(fnCapabilities.notCalled, "Not called yet");
-			assert.notOk(oTable._oExportHandler, "No cached instance");
-		}).then(function() {
-			return oTable._getExportHandler();
-		}).then(function(oHandler) {
-			assert.equal(oTable._loadExportLibrary.callCount, 1, "_loadExportLibrary has been called once");
-			assert.equal(fnCapabilities.callCount, 1, "fetchExportCapabilities has been called once");
-			assert.ok(oHandler, "Variable is defined");
-			assert.ok(oTable._oExportHandler, "Cached instance available");
-			assert.ok(oHandler.attachBeforeExport.calledOnce, "ExportHandler#attachBeforeExport has been called once");
-			assert.ok(oHandler.attachBeforeExport.calledWith(oTable._onBeforeExport, oTable), "Table._onBeforeExport has been attached as event handler");
-		}).then(function() {
+		assert.ok(Library.load.notCalled, "Not called yet");
+		assert.ok(fnCapabilities.notCalled, "Not called yet");
+		assert.notOk(oTable._oExportHandler, "No cached instance");
 
-			/* Reset spies */
-			oTable._loadExportLibrary.reset();
-			fnCapabilities.reset();
-			assert.ok(oTable._loadExportLibrary.notCalled, "Not called yet");
-			assert.ok(fnCapabilities.notCalled, "Not called yet");
+		let oHandler = await oTable._getExportHandler();
 
-			return oTable._getExportHandler();
-		}).then(function(oHandler) {
-			assert.ok(oTable._loadExportLibrary.notCalled, "Not called again");
-			assert.ok(fnCapabilities.notCalled, "Not called again");
-			assert.ok(oHandler, "Variable is defined");
-			assert.ok(oHandler.isA("sap.ui.export.ExportHandler"), "Parameter is a sap.ui.export.ExportHandler");
-			assert.equal(oHandler, oTable._oExportHandler, "Cached instance has been returned");
-		}).finally(function() {
-			oTable._loadExportLibrary.restore();
-			fnCapabilities.restore();
-			sap.ui.require.restore();
-		});
+		assert.equal(Library.load.callCount, 1, "Library.load has been called once");
+		assert.equal(fnCapabilities.callCount, 1, "fetchExportCapabilities has been called once");
+		assert.ok(oHandler, "Variable is defined");
+		assert.ok(oTable._oExportHandler, "Cached instance available");
+		assert.ok(oHandler.attachBeforeExport.calledOnce, "ExportHandler#attachBeforeExport has been called once");
+		assert.ok(oHandler.attachBeforeExport.calledWith(oTable._onBeforeExport, oTable), "Table._onBeforeExport has been attached as event handler");
+
+		/* Reset spies */
+		Library.load.reset();
+		fnCapabilities.reset();
+		assert.ok(Library.load.notCalled, "Not called yet");
+		assert.ok(fnCapabilities.notCalled, "Not called yet");
+
+		oHandler = await oTable._getExportHandler();
+
+		assert.ok(Library.load.notCalled, "Not called again");
+		assert.ok(fnCapabilities.notCalled, "Not called again");
+		assert.ok(oHandler, "Variable is defined");
+		assert.ok(oHandler.isA("sap.ui.export.ExportHandler"), "Parameter is a sap.ui.export.ExportHandler");
+		assert.equal(oHandler, oTable._oExportHandler, "Cached instance has been returned");
+
+		Library.load.restore();
+		fnCapabilities.restore();
+		sap.ui.require.restore();
 	});
 
-	QUnit.test("test _getExportHandler when sap.ui.export is missing", function(assert) {
+	QUnit.test("test _getExportHandler when sap.ui.export is missing", async function(assert) {
 		const oTable = this.oTable;
 		assert.expect(2);
 
-		sinon.stub(oTable, "_loadExportLibrary").returns(Promise.reject());
+		sinon.stub(Library, "load").returns(Promise.reject());
 		sinon.stub(MessageBox, "error");
 
-		return oTable.initialized().then(function() {
-			const oExportHandler = oTable._getExportHandler();
+		await oTable.initialized();
+		await oTable._getExportHandler().catch(() => {
+			assert.ok(MessageBox.error.calledOnce, "MessageBox was called");
+			assert.ok(MessageBox.error.calledWith(Library.getResourceBundleFor("sap.ui.mdc").getText("ERROR_MISSING_EXPORT_LIBRARY")), "Called with proper error message");
+		});
 
-			return oExportHandler.catch(function() {
-				assert.ok(MessageBox.error.calledOnce, "MessageBox was called");
-				assert.ok(MessageBox.error.calledWith(Library.getResourceBundleFor("sap.ui.mdc").getText("ERROR_MISSING_EXPORT_LIBRARY")), "Called with proper error message");
-
-				oTable._loadExportLibrary().restore();
-				MessageBox.error.restore();
-			});
-		}).catch(function() {});
+		Library.load.restore();
+		MessageBox.error.restore();
 	});
 
 	QUnit.test("test _createExportColumnConfiguration", function(assert) {
@@ -5116,17 +5109,12 @@ sap.ui.define([
 			oFilterInfoBar.focus();
 			oFilterInfoBar.firePress(); // Opens the filter dialog
 
-			return TableQUnitUtils.waitForSettingsDialog(that.oTable);
-		}).then(function(oP13nDialog) {
-			return new Promise(function(resolve) {
-				oP13nDialog.attachEventOnce("afterClose", function() {
-					that.oTable.setFilterConditions({name: []}); // Hides the filter info bar
-					nextUIUpdate.runSync()/*fake timer is used in module*/;
-					resolve();
-				});
-				oP13nDialog.getButtons()[0].firePress(); // Trigger press on the OK button in the sap.m.Dialog
-			});
+			return TableQUnitUtils.waitForP13nPopup(that.oTable);
 		}).then(function() {
+			return TableQUnitUtils.closeP13nPopup(that.oTable);
+		}).then(function() {
+			that.oTable.setFilterConditions({name: []}); // Hides the filter info bar
+			nextUIUpdate.runSync()/*fake timer is used in module*/;
 			assert.ok(that.oTable.getDomRef().contains(document.activeElement),
 				"After removing all filters in the dialog and closing it, the focus is in the table");
 		});

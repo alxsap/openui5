@@ -1,31 +1,10 @@
 /*global QUnit, sinon, testlibs */
 sap.ui.define([
 	'sap/base/i18n/Localization',
-	'sap/base/util/ObjectPath',
 	'sap/ui/Device',
-	'sap/ui/core/Lib',
 	"sap/ui/qunit/utils/nextUIUpdate"
-], function(Localization, ObjectPath, Device, Library, nextUIUpdate) {
+], function(Localization, Device, nextUIUpdate) {
 	"use strict";
-
-	sap.ui.loader._;
-
-	// custom assertion
-	QUnit.assert.equalControls = function(actual, expected, message) {
-		this.ok(actual === expected, message);
-	};
-
-	QUnit.assert.isLibLoaded = function(libName) {
-		this.ok(ObjectPath.get(libName), "namespace for " + libName + " should exist");
-		this.ok(Library.all()[libName], "Core should know and list " + libName + " as 'loaded'");
-	};
-
-	// used to get access to the non-public core parts
-	var oRealCore;
-	var TestCorePlugin = function() {};
-	TestCorePlugin.prototype.startPlugin = function(oCore, bOnInit) {
-		oRealCore = oCore;
-	};
 
 
 	// ---------------------------------------------------------------------------

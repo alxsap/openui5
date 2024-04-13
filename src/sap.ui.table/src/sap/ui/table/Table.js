@@ -65,11 +65,11 @@ sap.ui.define([
 ) {
 	"use strict";
 
-	var SelectionMode = library.SelectionMode;
-	var SelectionBehavior = library.SelectionBehavior;
-	var SortOrder = CoreLibrary.SortOrder;
-	var Hook = TableUtils.Hook.Keys.Table;
-	var _private = TableUtils.createWeakMapFacade();
+	const SelectionMode = library.SelectionMode;
+	const SelectionBehavior = library.SelectionBehavior;
+	const SortOrder = CoreLibrary.SortOrder;
+	const Hook = TableUtils.Hook.Keys.Table;
+	const _private = TableUtils.createWeakMapFacade();
 
 	/**
 	 * Constructor for a new Table.
@@ -104,7 +104,7 @@ sap.ui.define([
 	 * @see {@link topic:148892ff9aea4a18b912829791e38f3e Tables: Which One Should I Choose?}
 	 * @see {@link fiori:/grid-table/ Grid Table}
 	 */
-	var Table = Control.extend("sap.ui.table.Table", /** @lends sap.ui.table.Table.prototype */ {metadata: {
+	const Table = Control.extend("sap.ui.table.Table", /** @lends sap.ui.table.Table.prototype */ {metadata: {
 		library: "sap.ui.table",
 		dnd: true,
 		properties: {
@@ -789,11 +789,11 @@ sap.ui.define([
 		// already loaded, a getContexts call may be triggered immediately with the default values instead of the one in the settings.
 		// Some settings might rely on the existence of a row mode.
 		if (mSettings) {
-			var aEarlySettings = ["threshold", "firstVisibleRow", "rowMode"];
-			var mEarlySettings = {};
+			const aEarlySettings = ["threshold", "firstVisibleRow", "rowMode"];
+			const mEarlySettings = {};
 
-			for (var i = 0; i < aEarlySettings.length; i++) {
-				var sSetting = aEarlySettings[i];
+			for (let i = 0; i < aEarlySettings.length; i++) {
+				const sSetting = aEarlySettings[i];
 
 				if (sSetting in mSettings) {
 					mEarlySettings[sSetting] = mSettings[sSetting];
@@ -872,7 +872,7 @@ sap.ui.define([
 		}
 
 		// Get the data from the PasteHelper utility in format of 2D Array
-		var aData = PasteHelper.getPastedDataAs2DArray(oEvent.originalEvent);
+		const aData = PasteHelper.getPastedDataAs2DArray(oEvent.originalEvent);
 
 		if (aData.length === 0 /* no rows pasted */ || aData[0].length === 0 /* no columns pasted */) {
 			return; // no pasted data
@@ -897,9 +897,9 @@ sap.ui.define([
 	 * @private
 	 */
 	Table.prototype.onLocalizationChanged = function(oEvent) {
-		var oChanges = oEvent.changes || {};
-		var bRtlChanged = oChanges.hasOwnProperty("rtl");
-		var bLangChanged = oChanges.hasOwnProperty("language");
+		const oChanges = oEvent.changes || {};
+		const bRtlChanged = oChanges.hasOwnProperty("rtl");
+		const bLangChanged = oChanges.hasOwnProperty("language");
 		this._adaptLocalization(bRtlChanged, bLangChanged).then(function() {
 			this.invalidate();
 		}.bind(this)).catch(function() {});
@@ -919,7 +919,7 @@ sap.ui.define([
 			return Promise.reject();
 		}
 
-		var pUpdateLocalizationInfo = Promise.resolve();
+		let pUpdateLocalizationInfo = Promise.resolve();
 
 		if (bRtlChanged) {
 			this._bRtlMode = Localization.getRTL();
@@ -946,18 +946,18 @@ sap.ui.define([
 	 * @private
 	 */
 	Table.prototype._collectRowHeights = function(bHeader) {
-		var oDomRef = this.getDomRef();
+		const oDomRef = this.getDomRef();
 		if (!oDomRef) {
 			return [];
 		}
 
-		var iBaseRowHeight = this._getBaseRowHeight();
-		var sRowCSSClass = bHeader ? ".sapUiTableColHdrTr" : ".sapUiTableTr";
-		var aRowsInFixedColumnsArea = oDomRef.querySelectorAll(".sapUiTableCtrlFixed > tbody > tr" + sRowCSSClass);
-		var aRowsInScrollableColumnsArea = oDomRef.querySelectorAll(".sapUiTableCtrlScroll > tbody > tr" + sRowCSSClass);
-		var iRowCount = bHeader ? TableUtils.getHeaderRowCount(this) : this.getRows().length;
-		var aRowHeights = [];
-		var bIsZoomedInChrome = Device.browser.chrome && window.devicePixelRatio != 1;
+		let iBaseRowHeight = this._getBaseRowHeight();
+		const sRowCSSClass = bHeader ? ".sapUiTableColHdrTr" : ".sapUiTableTr";
+		const aRowsInFixedColumnsArea = oDomRef.querySelectorAll(".sapUiTableCtrlFixed > tbody > tr" + sRowCSSClass);
+		const aRowsInScrollableColumnsArea = oDomRef.querySelectorAll(".sapUiTableCtrlScroll > tbody > tr" + sRowCSSClass);
+		const iRowCount = bHeader ? TableUtils.getHeaderRowCount(this) : this.getRows().length;
+		let aRowHeights = [];
+		const bIsZoomedInChrome = Device.browser.chrome && window.devicePixelRatio !== 1;
 
 		if (bHeader) {
 			if (this.getColumnHeaderHeight() > 0) {
@@ -967,13 +967,13 @@ sap.ui.define([
 			}
 		}
 
-		for (var i = 0; i < iRowCount; i++) {
-			var nFixedColumnsAreaRowHeight = aRowsInFixedColumnsArea[i] ? aRowsInFixedColumnsArea[i].getBoundingClientRect().height : 0;
-			var nScrollableColumnsAreaRowHeight = aRowsInScrollableColumnsArea[i] ? aRowsInScrollableColumnsArea[i].getBoundingClientRect().height : 0;
-			var nRowHeight = Math.max(nFixedColumnsAreaRowHeight, nScrollableColumnsAreaRowHeight);
+		for (let i = 0; i < iRowCount; i++) {
+			const nFixedColumnsAreaRowHeight = aRowsInFixedColumnsArea[i] ? aRowsInFixedColumnsArea[i].getBoundingClientRect().height : 0;
+			const nScrollableColumnsAreaRowHeight = aRowsInScrollableColumnsArea[i] ? aRowsInScrollableColumnsArea[i].getBoundingClientRect().height : 0;
+			const nRowHeight = Math.max(nFixedColumnsAreaRowHeight, nScrollableColumnsAreaRowHeight);
 
 			if (bIsZoomedInChrome) {
-				var nHeightDeviation = iBaseRowHeight - nRowHeight;
+				const nHeightDeviation = iBaseRowHeight - nRowHeight;
 
 				// In Chrome with zoom != 100% the height of table rows can slightly differ from the height of divs (row selectors).
 				// See https://bugs.chromium.org/p/chromium/issues/detail?id=661991
@@ -990,7 +990,7 @@ sap.ui.define([
 
 		if (aRowHeights.length > 0 && !bHeader) {
 			TableUtils.dynamicCall(this._getSyncExtension, function(oSyncExtension) {
-				var aModifiedHeights = oSyncExtension.syncRowHeights(aRowHeights.slice());
+				const aModifiedHeights = oSyncExtension.syncRowHeights(aRowHeights.slice());
 				if (aModifiedHeights && aModifiedHeights.length === aRowHeights.length) {
 					aRowHeights = aModifiedHeights.slice();
 				}
@@ -1005,17 +1005,17 @@ sap.ui.define([
 	 * @private
 	 */
 	Table.prototype._resetRowHeights = function() {
-		var iRowHeight = this._getBaseRowHeight();
+		const iRowHeight = this._getBaseRowHeight();
 
-		var sRowHeight = "";
+		let sRowHeight = "";
 		if (iRowHeight) {
 			sRowHeight = iRowHeight + "px";
 		}
 
-		var oDomRef = this.getDomRef("tableCCnt");
+		const oDomRef = this.getDomRef("tableCCnt");
 		if (oDomRef) {
-			var aRowItems = oDomRef.querySelectorAll(".sapUiTableTr");
-			for (var i = 0; i < aRowItems.length; i++) {
+			const aRowItems = oDomRef.querySelectorAll(".sapUiTableTr");
+			for (let i = 0; i < aRowItems.length; i++) {
 				aRowItems[i].style.height = sRowHeight;
 			}
 		}
@@ -1026,10 +1026,10 @@ sap.ui.define([
 	 * @private
 	 */
 	Table.prototype._resetColumnHeaderHeights = function() {
-		var oDomRef = this.getDomRef();
+		const oDomRef = this.getDomRef();
 		if (oDomRef) {
-			var aRowItems = oDomRef.querySelectorAll(".sapUiTableColHdrTr");
-			for (var i = 0; i < aRowItems.length; i++) {
+			const aRowItems = oDomRef.querySelectorAll(".sapUiTableColHdrTr");
+			for (let i = 0; i < aRowItems.length; i++) {
 				aRowItems[i].style.height = null;
 			}
 		}
@@ -1041,7 +1041,7 @@ sap.ui.define([
 	 * @private
 	 */
 	Table.prototype._collectTableSizes = function() {
-		var oSizes = {
+		const oSizes = {
 			tableCtrlScrollWidth: 0,
 			tableRowHdrScrWidth: 0,
 			tableCtrlScrWidth: 0,
@@ -1050,50 +1050,50 @@ sap.ui.define([
 			tableCntWidth: 0
 		};
 
-		var oDomRef = this.getDomRef();
+		const oDomRef = this.getDomRef();
 		if (!oDomRef) {
 			return oSizes;
 		}
 
-		var oSapUiTableCnt = oDomRef.querySelector(".sapUiTableCnt");
+		const oSapUiTableCnt = oDomRef.querySelector(".sapUiTableCnt");
 		if (oSapUiTableCnt) {
 			oSizes.tableCntHeight = oSapUiTableCnt.clientHeight;
 			oSizes.tableCntWidth = oSapUiTableCnt.clientWidth;
 		}
 
-		var oSapUiTableCtrlScroll = oDomRef.querySelector(".sapUiTableCtrlScroll:not(.sapUiTableCHT)");
+		const oSapUiTableCtrlScroll = oDomRef.querySelector(".sapUiTableCtrlScroll:not(.sapUiTableCHT)");
 		if (oSapUiTableCtrlScroll) {
 			oSizes.tableCtrlScrollWidth = oSapUiTableCtrlScroll.getBoundingClientRect().width;
 		}
 
-		var oSapUiTableRowHdrScr = oDomRef.querySelector(".sapUiTableRowHdrScr");
+		const oSapUiTableRowHdrScr = oDomRef.querySelector(".sapUiTableRowHdrScr");
 		if (oSapUiTableRowHdrScr) {
 			oSizes.tableRowHdrScrWidth = oSapUiTableRowHdrScr.clientWidth;
 		}
 
-		var oCtrlScrDomRef = oDomRef.querySelector(".sapUiTableCtrlScr:not(.sapUiTableCHA)");
+		const oCtrlScrDomRef = oDomRef.querySelector(".sapUiTableCtrlScr:not(.sapUiTableCHA)");
 		if (oCtrlScrDomRef) {
 			oSizes.tableCtrlScrWidth = oCtrlScrDomRef.getBoundingClientRect().width;
 		}
 
-		var oCtrlFixed = oDomRef.querySelector(".sapUiTableCtrlScrFixed:not(.sapUiTableCHA) > .sapUiTableCtrlFixed");
+		const oCtrlFixed = oDomRef.querySelector(".sapUiTableCtrlScrFixed:not(.sapUiTableCHA) > .sapUiTableCtrlFixed");
 		if (oCtrlFixed) {
 			oSizes.tableCtrlFixedWidth = oCtrlFixed.clientWidth;
 		}
 
-		var iFixedColumnCount = this._getSpanBasedComputedFixedColumnCount();
-		var iFixedHeaderWidthSum = 0;
+		const iFixedColumnCount = this._getSpanBasedComputedFixedColumnCount();
+		let iFixedHeaderWidthSum = 0;
 
 		if (iFixedColumnCount) {
-			var aColumns = this.getColumns();
-			var aHeaderElements = oDomRef.querySelectorAll(".sapUiTableCtrlFirstCol:not(.sapUiTableCHTHR) > th");
+			const aColumns = this.getColumns();
+			const aHeaderElements = oDomRef.querySelectorAll(".sapUiTableCtrlFirstCol:not(.sapUiTableCHTHR) > th");
 
-			for (var i = 0; i < aHeaderElements.length; i++) {
-				var iColIndex = parseInt(aHeaderElements[i].getAttribute("data-sap-ui-headcolindex"));
+			for (let i = 0; i < aHeaderElements.length; i++) {
+				const iColIndex = parseInt(aHeaderElements[i].getAttribute("data-sap-ui-headcolindex"));
 
 				if (!isNaN(iColIndex) && (iColIndex < iFixedColumnCount)) {
-					var oColumn = aColumns[iColIndex];
-					var iWidth;
+					const oColumn = aColumns[iColIndex];
+					let iWidth;
 
 					if (oColumn._iFixWidth != null) {
 						iWidth = oColumn._iFixWidth;
@@ -1107,16 +1107,16 @@ sap.ui.define([
 		}
 
 		if (iFixedHeaderWidthSum > 0) {
-			var oScrollExtension = this._getScrollExtension();
-			var iUsedHorizontalTableSpace = oSizes.tableRowHdrScrWidth;
+			const oScrollExtension = this._getScrollExtension();
+			let iUsedHorizontalTableSpace = oSizes.tableRowHdrScrWidth;
 
-			var oVSb = oScrollExtension.getVerticalScrollbar();
+			const oVSb = oScrollExtension.getVerticalScrollbar();
 			if (oVSb && !oScrollExtension.isVerticalScrollbarExternal()) {
 				iUsedHorizontalTableSpace += oVSb.offsetWidth;
 			}
 
 			if (TableUtils.hasRowActions(this)) {
-				var oRowActions = this.getDomRef("sapUiTableRowActionScr");
+				const oRowActions = this.getDomRef("sapUiTableRowActionScr");
 				if (oRowActions) {
 					iUsedHorizontalTableSpace += oRowActions.offsetWidth;
 				}
@@ -1124,9 +1124,9 @@ sap.ui.define([
 
 			iUsedHorizontalTableSpace += TableUtils.Column.getMinColumnWidth();
 
-			var iAvailableSpace = oSizes.tableCntWidth - iUsedHorizontalTableSpace;
-			var bFixedColumnsFitIntoTable = iAvailableSpace > iFixedHeaderWidthSum;
-			var bIgnoreFixedColumnCountCandidate = !bFixedColumnsFitIntoTable;
+			const iAvailableSpace = oSizes.tableCntWidth - iUsedHorizontalTableSpace;
+			const bFixedColumnsFitIntoTable = iAvailableSpace > iFixedHeaderWidthSum;
+			const bIgnoreFixedColumnCountCandidate = !bFixedColumnsFitIntoTable;
 
 			if (this._bIgnoreFixedColumnCount !== bIgnoreFixedColumnCountCandidate) {
 				this._bIgnoreFixedColumnCount = bIgnoreFixedColumnCountCandidate;
@@ -1144,24 +1144,24 @@ sap.ui.define([
 	 * @private
 	 */
 	Table.prototype._updateRowHeights = function(aRowItemHeights, bHeader) {
-		var oDomRef = this.getDomRef();
+		const oDomRef = this.getDomRef();
 		if (!oDomRef) {
 			return;
 		}
 
 		function updateRow(row, index) {
-			var rowHeight = aRowItemHeights[index];
+			const rowHeight = aRowItemHeights[index];
 			if (rowHeight) {
 				row.style.height = rowHeight + "px";
 			}
 		}
 
 		// select rows
-		var cssClass = bHeader ? ".sapUiTableColHdrTr" : ".sapUiTableTr";
-		var aRowHeaderItems = bHeader ? [] : oDomRef.querySelectorAll(".sapUiTableRowSelectionCell");
-		var aRowActionItems = bHeader ? [] : oDomRef.querySelectorAll(".sapUiTableRowActionCell");
-		var aFixedRowItems = oDomRef.querySelectorAll(".sapUiTableCtrlFixed > tbody > tr" + cssClass);
-		var aScrollRowItems = oDomRef.querySelectorAll(".sapUiTableCtrlScroll > tbody > tr" + cssClass);
+		const cssClass = bHeader ? ".sapUiTableColHdrTr" : ".sapUiTableTr";
+		const aRowHeaderItems = bHeader ? [] : oDomRef.querySelectorAll(".sapUiTableRowSelectionCell");
+		const aRowActionItems = bHeader ? [] : oDomRef.querySelectorAll(".sapUiTableRowActionCell");
+		const aFixedRowItems = oDomRef.querySelectorAll(".sapUiTableCtrlFixed > tbody > tr" + cssClass);
+		const aScrollRowItems = oDomRef.querySelectorAll(".sapUiTableCtrlScroll > tbody > tr" + cssClass);
 
 		Array.prototype.forEach.call(aRowHeaderItems, updateRow);
 		Array.prototype.forEach.call(aRowActionItems, updateRow);
@@ -1184,7 +1184,7 @@ sap.ui.define([
 	};
 
 	Table.prototype.onAfterRendering = function(oEvent) {
-		var bRenderedRows = oEvent && oEvent.isMarked("renderRows");
+		const bRenderedRows = oEvent && oEvent.isMarked("renderRows");
 
 		this._bInvalid = false;
 
@@ -1221,8 +1221,8 @@ sap.ui.define([
 	};
 
 	Table.prototype._initRowDomRefs = function() {
-		var aRows = this.getRows();
-		for (var i = 0; i < aRows.length; i++) {
+		const aRows = this.getRows();
+		for (let i = 0; i < aRows.length; i++) {
 			aRows[i].initDomRefs();
 		}
 	};
@@ -1234,7 +1234,7 @@ sap.ui.define([
 	Table.prototype._updateTableSizes = function(sReason, bSkipResetRowHeights) {
 		bSkipResetRowHeights = bSkipResetRowHeights === true;
 
-		var oDomRef = this.getDomRef();
+		const oDomRef = this.getDomRef();
 
 		if (this._bInvalid || !oDomRef || !TableUtils.isThemeApplied() || oDomRef.offsetWidth === 0) {
 			return;
@@ -1246,14 +1246,14 @@ sap.ui.define([
 		}
 
 		this._aRowHeights = this._collectRowHeights(false);
-		var aColumnHeaderRowHeights = this._collectRowHeights(true);
+		const aColumnHeaderRowHeights = this._collectRowHeights(true);
 
 		// the only place to fix the minimum column width
 		function setMinColWidths(oTable) {
-			var oTableRef = oTable.getDomRef();
-			var iAbsoluteMinWidth = TableUtils.Column.getMinColumnWidth();
-			var aNotFixedVariableColumns = [];
-			var bColumnHeaderVisible = oTable.getColumnHeaderVisible();
+			const oTableRef = oTable.getDomRef();
+			const iAbsoluteMinWidth = TableUtils.Column.getMinColumnWidth();
+			const aNotFixedVariableColumns = [];
+			const bColumnHeaderVisible = oTable.getColumnHeaderVisible();
 
 			function calcNewWidth(iDomWidth, iMinWidth) {
 				if (iDomWidth <= iMinWidth) {
@@ -1264,11 +1264,11 @@ sap.ui.define([
 			}
 
 			function isFixNeeded(col) {
-				var minWidth = Math.max(col._minWidth || 0, iAbsoluteMinWidth, col.getMinWidth());
-				var colWidth = col.getWidth();
-				var aColHeaders;
-				var colHeader;
-				var domWidth;
+				const minWidth = Math.max(col._minWidth || 0, iAbsoluteMinWidth, col.getMinWidth());
+				const colWidth = col.getWidth();
+				let aColHeaders;
+				let colHeader;
+				let domWidth;
 				// if a column has variable width, check if its current width of the
 				// first corresponding <th> element in less than minimum and store it;
 				// do not change freezed columns
@@ -1279,7 +1279,7 @@ sap.ui.define([
 					if (domWidth !== null) {
 						if (domWidth <= minWidth) {
 							return {headers: aColHeaders, newWidth: calcNewWidth(domWidth, minWidth)};
-						} else if (colHeader && colHeader.style.width != colWidth) {
+						} else if (colHeader && colHeader.style.width !== colWidth) {
 							aNotFixedVariableColumns.push({col: col, header: colHeader, minWidth: minWidth, headers: aColHeaders});
 							// reset the minimum style width that was set previously
 							return {headers: aColHeaders, newWidth: colWidth};
@@ -1304,8 +1304,8 @@ sap.ui.define([
 			//Check the rest of the flexible non-adapted columns
 			//Due to adaptations they could be smaller now.
 			if (aNotFixedVariableColumns.length) {
-				var iDomWidth;
-				for (var i = 0; i < aNotFixedVariableColumns.length; i++) {
+				let iDomWidth;
+				for (let i = 0; i < aNotFixedVariableColumns.length; i++) {
 					iDomWidth = aNotFixedVariableColumns[i].header && aNotFixedVariableColumns[i].header.offsetWidth;
 					aNotFixedVariableColumns[i].newWidth = calcNewWidth(iDomWidth, aNotFixedVariableColumns[i].minWidth);
 					if (parseInt(aNotFixedVariableColumns[i].newWidth) >= 0) {
@@ -1316,7 +1316,7 @@ sap.ui.define([
 		}
 		setMinColWidths(this);
 
-		var oTableSizes = this._collectTableSizes();
+		const oTableSizes = this._collectTableSizes();
 
 		// Manipulation of UI Sizes
 		this._updateRowHeights(this._aRowHeights, false);
@@ -1330,25 +1330,25 @@ sap.ui.define([
 			});
 		}, this);
 
-		var $this = this.$();
+		const $this = this.$();
 
 		if (TableUtils.hasRowActions(this) || TableUtils.hasRowNavigationIndicators(this)) {
-			var bHasFlexibleRowActions = $this.hasClass("sapUiTableRActFlexible");
-			var oDummyColumn = this.getDomRef("dummycolhdr");
+			const bHasFlexibleRowActions = $this.hasClass("sapUiTableRActFlexible");
+			const oDummyColumn = this.getDomRef("dummycolhdr");
 
 			if (oDummyColumn) {
-				var bDummyColumnHasWidth = oDummyColumn.clientWidth > 2;
+				const bDummyColumnHasWidth = oDummyColumn.clientWidth > 2;
 
 				if (!bHasFlexibleRowActions && bDummyColumnHasWidth) {
-					var iColumnsWidth = this.getColumns().reduce(function(iColumnsWidth, oColumn) {
-						var oDomRef = oColumn.getDomRef();
+					const iColumnsWidth = this.getColumns().reduce(function(iColumnsWidth, oColumn) {
+						const oDomRef = oColumn.getDomRef();
 						if (oDomRef && oColumn.getIndex() >= this.getComputedFixedColumnCount()) {
 							iColumnsWidth += oDomRef.offsetWidth;
 						}
 						return iColumnsWidth;
 					}.bind(this), 0);
-					var iRowActionPos = iColumnsWidth + oTableSizes.tableRowHdrScrWidth + oTableSizes.tableCtrlFixedWidth;
-					var oRowActionStyles = {};
+					let iRowActionPos = iColumnsWidth + oTableSizes.tableRowHdrScrWidth + oTableSizes.tableCtrlFixedWidth;
+					const oRowActionStyles = {};
 					if (!TableUtils.hasRowActions(this)) {
 						iRowActionPos = iRowActionPos - TableUtils.ThemeParameters.navIndicatorWidth + TableUtils.BaseBorderWidth;
 					}
@@ -1382,15 +1382,15 @@ sap.ui.define([
 	};
 
 	Table.prototype._updateFixedBottomRows = function() {
-		var oDomRef = this.getDomRef();
+		const oDomRef = this.getDomRef();
 
 		if (!oDomRef || this._getRowCounts().fixedBottom === 0) {
 			return;
 		}
 
-		var iFirstFixedButtomRowIndex = TableUtils.getFirstFixedBottomRowIndex(this);
-		var aRows = this.getRows();
-		var $rowDomRefs;
+		const iFirstFixedButtomRowIndex = TableUtils.getFirstFixedBottomRowIndex(this);
+		const aRows = this.getRows();
+		let $rowDomRefs;
 
 		jQuery(oDomRef).find(".sapUiTableRowLastScrollable").removeClass("sapUiTableRowLastScrollable");
 		jQuery(oDomRef).find(".sapUiTableRowFirstFixedBottom").removeClass("sapUiTableRowFirstFixedBottom");
@@ -1429,7 +1429,7 @@ sap.ui.define([
 	};
 
 	Table.prototype.getFocusInfo = function() {
-		var sId = this.$().find(":focus").attr("id");
+		const sId = this.$().find(":focus").attr("id");
 		if (sId) {
 			return {customId: sId};
 		} else {
@@ -1452,7 +1452,7 @@ sap.ui.define([
 	};
 
 	Table.prototype.setFooter = function(vFooter) {
-		var oFooter = vFooter;
+		let oFooter = vFooter;
 		if (typeof (vFooter) === "string" || vFooter instanceof String) {
 			oFooter = TableUtils._getTableTemplateHelper().createTextView({
 				text: vFooter
@@ -1490,7 +1490,7 @@ sap.ui.define([
 			Log.error("The index of the first visible row must be greater than or equal to 0. The value has been set to 0.", this);
 			iRowIndex = 0;
 		} else if (this._bContextsAvailable) {
-			var iMaxRowIndex = this._getMaxFirstVisibleRowIndex();
+			const iMaxRowIndex = this._getMaxFirstVisibleRowIndex();
 
 			if (iMaxRowIndex < iRowIndex) {
 				Log.warning("The index of the first visible row is too high. The value has been set to " + iMaxRowIndex + ".", this);
@@ -1543,10 +1543,10 @@ sap.ui.define([
 		}
 		iRowIndex = Math.max(0, iRowIndex);
 
-		var bFirstVisibleRowChanged = this.getFirstVisibleRow() !== iRowIndex;
-		var iOldFirstRenderedRowIndex = this._getFirstRenderedRowIndex();
-		var iNewFirstRenderedRowIndex = this._bContextsAvailable ? Math.min(iRowIndex, this._getMaxFirstRenderedRowIndex()) : iRowIndex;
-		var oScrollExtension = this._getScrollExtension();
+		const bFirstVisibleRowChanged = this.getFirstVisibleRow() !== iRowIndex;
+		const iOldFirstRenderedRowIndex = this._getFirstRenderedRowIndex();
+		const iNewFirstRenderedRowIndex = this._bContextsAvailable ? Math.min(iRowIndex, this._getMaxFirstRenderedRowIndex()) : iRowIndex;
+		const oScrollExtension = this._getScrollExtension();
 
 		this.setProperty("firstVisibleRow", iRowIndex, true);
 
@@ -1569,8 +1569,8 @@ sap.ui.define([
 			return false;
 		}
 
-		var bExpectRowsUpdatedEvent = false;
-		var bRowsUpdateRequired = this.getBinding() != null && iNewFirstRenderedRowIndex !== iOldFirstRenderedRowIndex;
+		let bExpectRowsUpdatedEvent = false;
+		const bRowsUpdateRequired = this.getBinding() != null && iNewFirstRenderedRowIndex !== iOldFirstRenderedRowIndex;
 
 		if (bRowsUpdateRequired) {
 			if (!mOptions.suppressRendering) {
@@ -1618,8 +1618,8 @@ sap.ui.define([
 				iIndex = 0;
 			}
 
-			var iFirstVisibleRow = this.getFirstVisibleRow();
-			var iRowCount = this._getRowCounts().count;
+			const iFirstVisibleRow = this.getFirstVisibleRow();
+			const iRowCount = this._getRowCounts().count;
 
 			if (iIndex > iFirstVisibleRow && iIndex < iFirstVisibleRow + iRowCount) {
 				this.getRows()[iIndex - iFirstVisibleRow]._setFocus(bFirstInteractiveElement);
@@ -1639,8 +1639,8 @@ sap.ui.define([
 	};
 
 	function setFocus(oTable, iIndex, bFirstInteractiveElement) {
-		var iTotalRowCount = oTable._getTotalRowCount();
-		var iFirstRenderedRowIndex = oTable._getFirstRenderedRowIndex();
+		const iTotalRowCount = oTable._getTotalRowCount();
+		const iFirstRenderedRowIndex = oTable._getFirstRenderedRowIndex();
 		oTable.getRows()[Math.min(iIndex, iTotalRowCount - 1) - iFirstRenderedRowIndex]._setFocus(bFirstInteractiveElement);
 	}
 
@@ -1703,8 +1703,8 @@ sap.ui.define([
 		Control.prototype._bindAggregation.call(this, sName, oBindingInfo);
 
 		if (sName === "rows") {
-			var oBinding = this.getBinding();
-			var oModel = oBinding ? oBinding.getModel() : null;
+			const oBinding = this.getBinding();
+			const oModel = oBinding ? oBinding.getModel() : null;
 
 			this._bRowsBeingBound = false;
 			TableUtils.Hook.call(this, Hook.RowsBound, oBinding);
@@ -1732,7 +1732,7 @@ sap.ui.define([
 	};
 
 	Table.prototype._unbindRows = function() {
-		var oBindingInfo = this.getBindingInfo("rows");
+		const oBindingInfo = this.getBindingInfo("rows");
 
 		if (oBindingInfo) {
 			TableUtils.Hook.call(this, Hook.UnbindRows, oBindingInfo);
@@ -1771,7 +1771,7 @@ sap.ui.define([
 	 * @private
 	 */
 	function getSanitizedBindingInfo(args) {
-		var oBindingInfo;
+		let oBindingInfo;
 
 		if (args == null || args[0] == null) {
 			oBindingInfo = {};
@@ -1779,10 +1779,10 @@ sap.ui.define([
 			/* Old API compatibility */
 
 			// (sPath, vTemplate, oSorter, aFilters)
-			var sPath = args[0];
-			var oTemplate = args[1];
-			var oSorter = args[2];
-			var aFilters = args[3];
+			const sPath = args[0];
+			let oTemplate = args[1];
+			let oSorter = args[2];
+			let aFilters = args[3];
 
 			// (sPath, [oSorter], [aFilters])
 			if (oTemplate instanceof Sorter || Array.isArray(oSorter) && oSorter[0] instanceof Filter) {
@@ -1811,7 +1811,7 @@ sap.ui.define([
 		}
 
 		// Wrap the event handler of the other party to add our handler.
-		var fOriginalHandler = oBindingInfo.events[sEventName];
+		const fOriginalHandler = oBindingInfo.events[sEventName];
 
 		oBindingInfo.events[sEventName] = function() {
 			fHandler.apply(oThis, arguments);
@@ -1853,7 +1853,7 @@ sap.ui.define([
 	 * @returns {sap.ui.table.rowmodes.RowMode | undefined} The row mode of the table.
 	 */
 	function getRowMode(oTable) {
-		var vRowMode = oTable.getRowMode();
+		const vRowMode = oTable.getRowMode();
 
 		return TableUtils.isA(vRowMode, "sap.ui.table.rowmodes.RowMode") ? vRowMode : _private(oTable).oDefaultRowMode;
 	}
@@ -1908,11 +1908,11 @@ sap.ui.define([
 	 * @private
 	 */
 	Table.prototype._getRowCounts = function() {
-		var mRowCounts = getRowMode(this).getComputedRowCounts();
+		const mRowCounts = getRowMode(this).getComputedRowCounts();
 
 		// TODO: Enhance the RowMode interface and move these calculations to the row modes that support variable row heights.
 		// TableUtils.isVariableRowHeightEnabled can't be used because it calls this method, which causes infinite recursion.
-		var bVariableRowHeightEnabled = this._bVariableRowHeightEnabled && !mRowCounts.fixedTop && !mRowCounts.fixedBottom;
+		const bVariableRowHeightEnabled = this._bVariableRowHeightEnabled && !mRowCounts.fixedTop && !mRowCounts.fixedBottom;
 		mRowCounts._fullsize = mRowCounts.count;
 		mRowCounts._scrollSize = mRowCounts.scrollable;
 		if (mRowCounts.count > 0 && bVariableRowHeightEnabled) {
@@ -1963,9 +1963,9 @@ sap.ui.define([
 	 * @private
 	 */
 	Table.prototype._getRowContexts = function(iRequestLength) {
-		var oBinding = this.getBinding();
-		var mRowCounts = this._getRowCounts();
-		var iThreshold = this.getThreshold();
+		const oBinding = this.getBinding();
+		const mRowCounts = this._getRowCounts();
+		let iThreshold = this.getThreshold();
 
 		iRequestLength = iRequestLength == null ? mRowCounts.count : iRequestLength;
 
@@ -1983,8 +1983,8 @@ sap.ui.define([
 		// Data can be requested with a single getContexts call if the fixed and the scrollable rows overlap.
 		// Because of the AnalyticalTable, the fixed bottom rows can only be requested separately.
 
-		var iFirstRenderedRowIndex = this._getFirstRenderedRowIndex();
-		var aContexts = [];
+		const iFirstRenderedRowIndex = this._getFirstRenderedRowIndex();
+		const aContexts = [];
 
 		if (mRowCounts.fixedTop > 0 && iFirstRenderedRowIndex > 0) {
 			// If there is a gap between the first visible row and fixed top rows, the fixed top rows need to be requested separately.
@@ -2004,7 +2004,7 @@ sap.ui.define([
 	};
 
 	function mergeContextArrays(aTarget, aSource, iStartIndex) {
-		for (var i = 0; i < aSource.length; i++) {
+		for (let i = 0; i < aSource.length; i++) {
 			aTarget[iStartIndex + i] = aSource[i];
 		}
 	}
@@ -2016,7 +2016,7 @@ sap.ui.define([
 	 * @private
 	 */
 	Table.prototype._getFixedTopRowContexts = function() {
-		var mRowCounts = this._getRowCounts();
+		const mRowCounts = this._getRowCounts();
 		return mRowCounts.fixedTop > 0 ? this._getContexts(0, mRowCounts.fixedTop, 0, true) : [];
 	};
 
@@ -2027,8 +2027,8 @@ sap.ui.define([
 	 * @private
 	 */
 	Table.prototype._getFixedBottomRowContexts = function() {
-		var mRowCounts = this._getRowCounts();
-		var iTotalRowCount = getTotalRowCount(this, true);
+		const mRowCounts = this._getRowCounts();
+		const iTotalRowCount = getTotalRowCount(this, true);
 
 		if (mRowCounts.fixedBottom > 0 && mRowCounts.count - mRowCounts.fixedBottom < iTotalRowCount) {
 			return this._getContexts(iTotalRowCount - mRowCounts.fixedBottom, mRowCounts.fixedBottom, 0, true);
@@ -2049,7 +2049,7 @@ sap.ui.define([
 	 * @see sap.ui.model.ListBinding#getContexts
 	 */
 	Table.prototype._getContexts = function(iStartIndex, iLength, iThreshold, bKeepCurrent) {
-		var oBinding = this.getBinding();
+		const oBinding = this.getBinding();
 		return oBinding ? oBinding.getContexts(iStartIndex, iLength, iThreshold, bKeepCurrent) : [];
 	};
 
@@ -2059,7 +2059,7 @@ sap.ui.define([
 	 * @private
 	 */
 	Table.prototype._adjustToTotalRowCount = function() {
-		var iTotalRowCount = this._getTotalRowCount();
+		const iTotalRowCount = this._getTotalRowCount();
 
 		if (this._iBindingLength !== iTotalRowCount) {
 			this._iBindingLength = iTotalRowCount;
@@ -2070,8 +2070,8 @@ sap.ui.define([
 	};
 
 	Table.prototype._adjustFirstVisibleRowToTotalRowCount = function() {
-		var iCurrentIndex = this.getFirstVisibleRow();
-		var iMaxIndex = this._getMaxFirstVisibleRowIndex();
+		const iCurrentIndex = this.getFirstVisibleRow();
+		const iMaxIndex = this._getMaxFirstVisibleRowIndex();
 
 		if (iMaxIndex < iCurrentIndex && this._bContextsAvailable) {
 			this._setFirstVisibleRowIndex(iMaxIndex, {onlySetProperty: true});
@@ -2133,7 +2133,7 @@ sap.ui.define([
 	};
 
 	function createVirtualRow(oTable) {
-		var oVirtualContext = oTable._getRowContexts()[0];
+		const oVirtualContext = oTable._getRowContexts()[0];
 
 		destroyVirtualRow(oTable);
 		oTable._oVirtualRow = oTable._getRowClone("virtual");
@@ -2236,8 +2236,8 @@ sap.ui.define([
 	 * @private
 	 */
 	Table.prototype._attachEvents = function() {
-		var $this = this.$();
-		var sTableId = this.getId();
+		const $this = this.$();
+		const sTableId = this.getId();
 
 		if (ControlBehavior.getAnimationMode() !== AnimationMode.none) {
 			jQuery(document.body).on("webkitTransitionEnd." + sTableId + " transitionend." + sTableId,
@@ -2258,7 +2258,7 @@ sap.ui.define([
 	 * @private
 	 */
 	Table.prototype._detachEvents = function() {
-		var sTableId = this.getId();
+		const sTableId = this.getId();
 		jQuery(document.body).off('webkitTransitionEnd.' + sTableId + ' transitionend.' + sTableId);
 		TableUtils.deregisterResizeHandler(this, "Table");
 		Device.resize.detachHandler(this._onWindowResize, this);
@@ -2270,7 +2270,7 @@ sap.ui.define([
 	 * @private
 	 */
 	Table.prototype._cleanUpTimers = function() {
-		var sKey;
+		let sKey;
 
 		for (sKey in this._mTimeouts) {
 			if (this._mTimeouts[sKey]) {
@@ -2298,7 +2298,7 @@ sap.ui.define([
 	 * @private
 	 */
 	function updateNoData(oTable) {
-		var oDomRef = oTable.getDomRef();
+		const oDomRef = oTable.getDomRef();
 
 		if (oDomRef) {
 			oTable.getDomRef().classList.toggle("sapUiTableEmpty", TableUtils.isNoDataVisible(oTable));
@@ -2324,14 +2324,14 @@ sap.ui.define([
 	};
 
 	Table.prototype.removeAllColumns = function() {
-		var oResult = this.removeAllAggregation("columns");
+		const oResult = this.removeAllAggregation("columns");
 		this._aSortedColumns = [];
 		onColumnsAggregationChange(this);
 		return oResult;
 	};
 
 	Table.prototype.destroyColumns = function() {
-		var oResult = this.destroyAggregation("columns");
+		const oResult = this.destroyAggregation("columns");
 		this._aSortedColumns = [];
 		onColumnsAggregationChange(this);
 		return oResult;
@@ -2353,7 +2353,7 @@ sap.ui.define([
 		oTable.invalidateRowsAggregation();
 		oTable._invalidateComputedFixedColumnCount();
 
-		var oCreationRow = oTable.getCreationRow();
+		const oCreationRow = oTable.getCreationRow();
 		if (oCreationRow) {
 			oCreationRow._update();
 		}
@@ -2380,8 +2380,8 @@ sap.ui.define([
 	 * @private
 	 */
 	function getTotalRowCount(oTable, bIgnoreCache) {
-		var oBinding = oTable.getBinding();
-		var oBindingInfo = oTable.getBindingInfo("rows");
+		const oBinding = oTable.getBinding();
+		const oBindingInfo = oTable.getBindingInfo("rows");
 
 		if (!oBinding) {
 			return 0;
@@ -2411,7 +2411,7 @@ sap.ui.define([
 	 * @private
 	 */
 	Table.prototype._getMaxFirstVisibleRowIndex = function() {
-		var iMaxRowIndex;
+		let iMaxRowIndex;
 
 		if (TableUtils.isVariableRowHeightEnabled(this)) {
 			iMaxRowIndex = this._getTotalRowCount() - 1;
@@ -2429,7 +2429,7 @@ sap.ui.define([
 	 * @private
 	 */
 	Table.prototype._getMaxFirstRenderedRowIndex = function() {
-		var iMaxRowIndex = this._getTotalRowCount() - this._getRowCounts().count;
+		const iMaxRowIndex = this._getTotalRowCount() - this._getRowCounts().count;
 		return Math.max(0, iMaxRowIndex);
 	};
 
@@ -2449,9 +2449,9 @@ sap.ui.define([
 	 * @private
 	 */
 	Table.prototype._getVisibleColumns = function() {
-		var aColumns = [];
-		var aCols = this.getColumns();
-		for (var i = 0, l = aCols.length; i < l; i++) {
+		const aColumns = [];
+		const aCols = this.getColumns();
+		for (let i = 0, l = aCols.length; i < l; i++) {
 			if (aCols[i].shouldRender()) {
 				aColumns.push(aCols[i]);
 			}
@@ -2468,8 +2468,8 @@ sap.ui.define([
 	 */
 	Table.prototype._getColumnsWidth = function(iStartColumn, iEndColumn) {
 		// first calculate the min width of the table for all columns
-		var aCols = this.getColumns();
-		var iColsWidth = 0;
+		const aCols = this.getColumns();
+		let iColsWidth = 0;
 
 		if (iStartColumn !== 0 && !iStartColumn) {
 			iStartColumn = 0;
@@ -2478,9 +2478,9 @@ sap.ui.define([
 			iEndColumn = aCols.length;
 		}
 
-		for (var i = iStartColumn, l = iEndColumn; i < l; i++) {
+		for (let i = iStartColumn, l = iEndColumn; i < l; i++) {
 			if (aCols[i] && aCols[i].shouldRender()) {
-				var iColumnWidth = TableUtils.convertCSSSizeToPixel(aCols[i].getWidth());
+				let iColumnWidth = TableUtils.convertCSSSizeToPixel(aCols[i].getWidth());
 
 				if (iColumnWidth == null) {
 					iColumnWidth = TableUtils.Column.getMinColumnWidth();
@@ -2499,8 +2499,8 @@ sap.ui.define([
 	 * @private
 	 */
 	Table.prototype._onTableResize = function(oEvent) {
-		var iOldWidth = oEvent.oldSize.width;
-		var iNewWidth = oEvent.size.width;
+		const iOldWidth = oEvent.oldSize.width;
+		const iNewWidth = oEvent.size.width;
 
 		if (this._bInvalid || !this.getDomRef() || iOldWidth === iNewWidth) {
 			return;
@@ -2577,23 +2577,23 @@ sap.ui.define([
 	 * @private
 	 */
 	Table.prototype._findAndfireCellEvent = function(fnFire, oEvent, fnContextMenu) {
-		var $target = jQuery(oEvent.target);
+		const $target = jQuery(oEvent.target);
 		// find out which cell has been clicked
-		var $cell = $target.closest(".sapUiTableDataCell");
-		var sId = $cell.attr("id");
-		var aMatches = /.*-row(\d*)-col(\d*)/i.exec(sId);
-		var bCancel = false;
+		const $cell = $target.closest(".sapUiTableDataCell");
+		const sId = $cell.attr("id");
+		const aMatches = /.*-row(\d*)-col(\d*)/i.exec(sId);
+		let bCancel = false;
 		// TBD: cellClick event is currently not fired on row action cells.
 		// If this should be enabled in future we need to consider a different set of event parameters.
 		if (aMatches) {
-			var iRow = aMatches[1];
-			var iCol = aMatches[2];
-			var oRow = this.getRows()[iRow];
-			var oCell = oRow && oRow.getCells()[iCol];
-			var iRealRowIndex = oRow && oRow.getIndex();
-			var sColId = Column.ofCell(oCell).getId();
-			var oRowBindingContext = oRow.getRowBindingContext();
-			var mParams = {
+			const iRow = aMatches[1];
+			const iCol = aMatches[2];
+			const oRow = this.getRows()[iRow];
+			const oCell = oRow && oRow.getCells()[iCol];
+			const iRealRowIndex = oRow && oRow.getIndex();
+			const sColId = Column.ofCell(oCell).getId();
+			const oRowBindingContext = oRow.getRowBindingContext();
+			const mParams = {
 				rowIndex: iRealRowIndex,
 				columnIndex: iCol,
 				columnId: sColId,
@@ -2624,16 +2624,16 @@ sap.ui.define([
 			return this.getDomRef("noDataCnt");
 		}
 
-		var bHasMessage = this._oFocusInfo && this._oFocusInfo.targetInfo && TableUtils.isA(this._oFocusInfo.targetInfo, "sap.ui.core.message.Message");
+		const bHasMessage = this._oFocusInfo && this._oFocusInfo.targetInfo && TableUtils.isA(this._oFocusInfo.targetInfo, "sap.ui.core.message.Message");
 		if (bHasMessage && this.getColumnHeaderVisible()) {
-			var oFirstVisibleColumn = this._getVisibleColumns()[0];
+			const oFirstVisibleColumn = this._getVisibleColumns()[0];
 
 			if (oFirstVisibleColumn) {
 				return oFirstVisibleColumn.getDomRef();
 			}
 		}
 
-		var oFocusedItemInfo = TableUtils.getFocusedItemInfo(this);
+		const oFocusedItemInfo = TableUtils.getFocusedItemInfo(this);
 		if (oFocusedItemInfo && oFocusedItemInfo.domRef) {
 			return oFocusedItemInfo.domRef;
 		}
@@ -2662,7 +2662,7 @@ sap.ui.define([
 	};
 
 	Table.prototype._removeSortedColumn = function(oColumn) {
-		var iIndex = this._aSortedColumns.indexOf(oColumn);
+		const iIndex = this._aSortedColumns.indexOf(oColumn);
 
 		if (iIndex > -1) {
 			this._aSortedColumns.splice(iIndex, 1);
@@ -2738,23 +2738,23 @@ sap.ui.define([
 	 * @private
 	 */
 	Table.prototype._updateSelection = function() {
-		var oSelMode = this.getSelectionMode();
+		const oSelMode = this.getSelectionMode();
 		if (oSelMode === SelectionMode.None) {
 			// there is no selection which needs to be updated. With the switch of the
 			// selection mode the selection was cleared (and updated within that step)
 			return;
 		}
 
-		var mRenderConfig = this._getSelectionPlugin().getRenderConfig();
-		var sSelectAllResourceTextID;
-		var sSelectAllText;
-		var $SelectAll = this.$("selall");
+		const mRenderConfig = this._getSelectionPlugin().getRenderConfig();
+		let sSelectAllResourceTextID;
+		let sSelectAllText;
+		const $SelectAll = this.$("selall");
 
 		// trigger the rows to update their selection
-		var aRows = this.getRows();
+		const aRows = this.getRows();
 
-		for (var i = 0; i < aRows.length; i++) {
-			var oRow = aRows[i];
+		for (let i = 0; i < aRows.length; i++) {
+			const oRow = aRows[i];
 			oRow._updateSelection();
 		}
 
@@ -2763,7 +2763,7 @@ sap.ui.define([
 		}
 
 		if (mRenderConfig.headerSelector.type === "toggle") {
-			var bAllRowsSelected = mRenderConfig.headerSelector.selected;
+			const bAllRowsSelected = mRenderConfig.headerSelector.selected;
 
 			$SelectAll.toggleClass("sapUiTableSelAll", !bAllRowsSelected);
 			this._getAccExtension().setSelectAllState(bAllRowsSelected);
@@ -2798,10 +2798,10 @@ sap.ui.define([
 			return;
 		}
 
-		var oSelectionPlugin = this._getSelectionPlugin();
-		var aRowIndices = oEvent.getParameter("rowIndices");
-		var bSelectAll = oEvent.getParameter("selectAll");
-		var iRowIndex = this._iSourceRowIndex !== undefined ? this._iSourceRowIndex : oSelectionPlugin.getSelectedIndex();
+		const oSelectionPlugin = this._getSelectionPlugin();
+		const aRowIndices = oEvent.getParameter("rowIndices");
+		const bSelectAll = oEvent.getParameter("selectAll");
+		const iRowIndex = this._iSourceRowIndex !== undefined ? this._iSourceRowIndex : oSelectionPlugin.getSelectedIndex();
 
 		this.fireRowSelectionChange({
 			rowIndex: iRowIndex,
@@ -2826,8 +2826,8 @@ sap.ui.define([
 	 * @public
 	 */
 	Table.prototype.getContextByIndex = function(iIndex) {
-		var oBinding = this.getBinding();
-		var oContext = null;
+		const oBinding = this.getBinding();
+		let oContext = null;
 
 		if (!oBinding || iIndex < 0) {
 			return oContext;
@@ -3042,11 +3042,11 @@ sap.ui.define([
 	 */
 	Table.prototype._getSpanBasedComputedFixedColumnCount = function() {
 		if (_private(this).iComputedFixedColumnCount === null) {
-			var aCols = this.getColumns();
-			var oColumn;
-			var iFixedColumnCount = this.getFixedColumnCount();
+			const aCols = this.getColumns();
+			let oColumn;
+			let iFixedColumnCount = this.getFixedColumnCount();
 
-			for (var i = iFixedColumnCount - 1; i >= 0; i--) {
+			for (let i = iFixedColumnCount - 1; i >= 0; i--) {
 				oColumn = aCols[i];
 				if (oColumn) {
 					iFixedColumnCount = Math.max(iFixedColumnCount, oColumn.getIndex() + TableUtils.Column.getHeaderSpan(oColumn));
@@ -3063,12 +3063,12 @@ sap.ui.define([
 		this.setProperty("fixedColumnCount", iFixedColumnCount);
 		this._invalidateComputedFixedColumnCount();
 
-		var aCols = this.getColumns();
-		var oColumn;
+		const aCols = this.getColumns();
+		let oColumn;
 		//Set current width as fixed width for cols
-		var $ths = this.$().find(".sapUiTableCtrlFirstCol > th");
+		const $ths = this.$().find(".sapUiTableCtrlFirstCol > th");
 
-		for (var i = this._getSpanBasedComputedFixedColumnCount() - 1; i >= 0; i--) {
+		for (let i = this._getSpanBasedComputedFixedColumnCount() - 1; i >= 0; i--) {
 			oColumn = aCols[i];
 			if (oColumn && TableUtils.isVariableWidth(oColumn.getWidth())) {
 				// remember the current column width for the next rendering
@@ -3105,9 +3105,9 @@ sap.ui.define([
 	};
 
 	Table.prototype._getRowClone = function(vIndex) {
-		var bIndexIsNumber = typeof vIndex === "number";
-		var bRowIsPoolable = bIndexIsNumber;
-		var oRowClone = bRowIsPoolable ? this._aRowClones[vIndex] : null;
+		const bIndexIsNumber = typeof vIndex === "number";
+		const bRowIsPoolable = bIndexIsNumber;
+		let oRowClone = bRowIsPoolable ? this._aRowClones[vIndex] : null;
 
 		if (oRowClone && !oRowClone.bIsDestroyed) {
 			return oRowClone;
@@ -3121,10 +3121,10 @@ sap.ui.define([
 		}
 
 		// Add cells to the row clone.
-		var aColumns = this.getColumns();
-		for (var i = 0, l = aColumns.length; i < l; i++) {
+		const aColumns = this.getColumns();
+		for (let i = 0, l = aColumns.length; i < l; i++) {
 			if (aColumns[i].getVisible()) {
-				var oColumnTemplateClone = aColumns[i].getTemplateClone(i);
+				const oColumnTemplateClone = aColumns[i].getTemplateClone(i);
 				if (oColumnTemplateClone) {
 					oRowClone.addCell(oColumnTemplateClone);
 				}
@@ -3133,14 +3133,14 @@ sap.ui.define([
 
 		// Add the row actions to the row clone.
 		if (TableUtils.hasRowActions(this)) {
-			var oRowAction = this.getRowActionTemplate().clone();
+			const oRowAction = this.getRowActionTemplate().clone();
 			oRowClone.setAggregation("_rowAction", oRowAction, true);
 		}
 
 		// Add the row settings to the row clone.
-		var oRowSettingsTemplate = this.getRowSettingsTemplate();
+		const oRowSettingsTemplate = this.getRowSettingsTemplate();
 		if (oRowSettingsTemplate) {
-			var oRowSettings = oRowSettingsTemplate.clone();
+			const oRowSettings = oRowSettingsTemplate.clone();
 			oRowClone.setAggregation("_settings", oRowSettings, true);
 		}
 
@@ -3172,7 +3172,7 @@ sap.ui.define([
 	 * @private
 	 */
 	Table.prototype._getBaseRowHeight = function() {
-		var iBaseRowContentHeight = getRowMode(this).getBaseRowContentHeight();
+		const iBaseRowContentHeight = getRowMode(this).getBaseRowContentHeight();
 
 		if (iBaseRowContentHeight > 0) {
 			return iBaseRowContentHeight + TableUtils.RowHorizontalFrameSize;
@@ -3188,7 +3188,7 @@ sap.ui.define([
 	 * @private
 	 */
 	Table.prototype._getDefaultRowHeight = function() {
-		var sContentDensity = TableUtils.getContentDensity(this);
+		const sContentDensity = TableUtils.getContentDensity(this);
 		return TableUtils.DefaultRowHeight[sContentDensity];
 	};
 
@@ -3199,14 +3199,14 @@ sap.ui.define([
 	 * @private
 	 */
 	Table.prototype._getDefaultRowContentHeight = function() {
-		var sContentDensity = TableUtils.getContentDensity(this);
+		const sContentDensity = TableUtils.getContentDensity(this);
 		return TableUtils.BaseSize[sContentDensity];
 	};
 
 	Table.prototype.setNoData = function(vNoData) {
-		var vOldNoContentMessage = TableUtils.getNoContentMessage(this);
+		const vOldNoContentMessage = TableUtils.getNoContentMessage(this);
 		this.setAggregation("noData", vNoData, true);
-		var vNewNoContentMessage = TableUtils.getNoContentMessage(this);
+		const vNewNoContentMessage = TableUtils.getNoContentMessage(this);
 
 		if (TableUtils.isA(vNoData, "sap.m.IllustratedMessage")) {
 			insertNoColumnsIllustratedMessage(this);
@@ -3238,7 +3238,7 @@ sap.ui.define([
 				return;
 			}
 
-			var oNoColumnsMessage = MTableUtil.getNoColumnsIllustratedMessage();
+			const oNoColumnsMessage = MTableUtil.getNoColumnsIllustratedMessage();
 			oNoColumnsMessage.setEnableVerticalResponsiveness(true);
 			oTable.setAggregation("_noColumnsMessage", oNoColumnsMessage, TableUtils.getVisibleColumnCount(oTable) > 0);
 			delete _private(oTable).bIsLoadingNoColumnsMessage;
@@ -3246,9 +3246,9 @@ sap.ui.define([
 	}
 
 	Table.prototype.setBusy = function(bBusy) {
-		var bOldBusyState = this.getBusy();
-		var vReturn = Control.prototype.setBusy.call(this, bBusy, "sapUiTableGridCnt");
-		var bNewBusyState = this.getBusy();
+		const bOldBusyState = this.getBusy();
+		const vReturn = Control.prototype.setBusy.call(this, bBusy, "sapUiTableGridCnt");
+		const bNewBusyState = this.getBusy();
 
 		if (bOldBusyState !== bNewBusyState) {
 			this.fireBusyStateChanged({busy: bNewBusyState});
@@ -3356,7 +3356,7 @@ sap.ui.define([
 	 * @private
 	 */
 	Table.prototype._getSelectionPlugin = function() {
-		var oSelectionPlugin = this._oSelectionPlugin || this._oLegacySelectionPlugin;
+		const oSelectionPlugin = this._oSelectionPlugin || this._oLegacySelectionPlugin;
 
 		// Temporary fix for the Support Assistant hacks. Support Assistant should implement a selection plugin.
 		// TODO: Before we recommend to implement a selection plugin -> Complete BLI CPOUIFTEAMB-1464
@@ -3383,7 +3383,7 @@ sap.ui.define([
 	};
 
 	function getMainSelectionPlugin(oTable) {
-		var aSelectionPlugins = oTable.getDependents().filter((oPlugin) => oPlugin.isA("sap.ui.table.plugins.SelectionPlugin"));
+		const aSelectionPlugins = oTable.getDependents().filter((oPlugin) => oPlugin.isA("sap.ui.table.plugins.SelectionPlugin"));
 
 		return aSelectionPlugins[0];
 	}
@@ -3396,7 +3396,7 @@ sap.ui.define([
 	 * @private
 	 */
 	Table.prototype._initSelectionPlugin = function() {
-		var oSelectionPlugin = getMainSelectionPlugin(this);
+		const oSelectionPlugin = getMainSelectionPlugin(this);
 
 		if (this.isDestroyed() || this.isDestroyStarted()) {
 			return;
@@ -3531,7 +3531,7 @@ sap.ui.define([
 	 * @ui5-restricted
 	 */
 	Table.prototype.getCellControl = function(iRowIndex, iColumnIndex, bVisibleColumnIndex) {
-		var oInfo = TableUtils.getRowColCell(this, iRowIndex, iColumnIndex, !bVisibleColumnIndex);
+		const oInfo = TableUtils.getRowColCell(this, iRowIndex, iColumnIndex, !bVisibleColumnIndex);
 		return oInfo.cell;
 	};
 
@@ -3544,7 +3544,7 @@ sap.ui.define([
 	 * @private
 	 */
 	Table.prototype._fireRowsUpdated = function(sReason) {
-		var mParameters = {
+		const mParameters = {
 			reason: sReason || TableUtils.RowsUpdateReason.Unknown
 		};
 
@@ -3579,10 +3579,10 @@ sap.ui.define([
 		// TODO: Move somewhere else. Row or GroupingUtils
 		this.getRows().forEach(function(oRow) {
 			oRow.getCells().forEach(function(oCell) {
-				var oColumn = Column.ofCell(oCell);
-				var oCellContentVisibilitySettings = oColumn._getCellContentVisibilitySettings();
-				var $Cell = oRow.getDomRefs(true).row.find("td[data-sap-ui-colid=\"" + oColumn.getId() + "\"]");
-				var bShowCellContent = true;
+				const oColumn = Column.ofCell(oCell);
+				const oCellContentVisibilitySettings = oColumn._getCellContentVisibilitySettings();
+				const $Cell = oRow.getDomRefs(true).row.find("td[data-sap-ui-colid=\"" + oColumn.getId() + "\"]");
+				let bShowCellContent = true;
 
 				if (!$Cell) {
 					return;
@@ -3628,7 +3628,7 @@ sap.ui.define([
 	 * @ui5-restricted sap.gantt
 	 */
 	Table.prototype._enableSynchronization = function() {
-		var that = this;
+		const that = this;
 		return new Promise(function(resolve, reject) {
 			sap.ui.require(["sap/ui/table/extensions/Synchronization"], function(SyncExtension) {
 				resolve(ExtensionBase.enrich(that, SyncExtension).getInterface());

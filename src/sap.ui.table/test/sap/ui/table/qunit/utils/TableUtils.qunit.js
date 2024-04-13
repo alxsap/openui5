@@ -39,18 +39,18 @@ sap.ui.define([
 ) {
 	"use strict";
 
-	var SelectionMode = TableLibrary.SelectionMode;
-	var createTables = window.createTables;
-	var destroyTables = window.destroyTables;
-	var getCell = window.getCell;
-	var getColumnHeader = window.getColumnHeader;
-	var getRowHeader = window.getRowHeader;
-	var getRowAction = window.getRowAction;
-	var getSelectAll = window.getSelectAll;
-	var iNumberOfRows = window.iNumberOfRows;
-	var initRowActions = window.initRowActions;
-	var TestControl = TableQUnitUtils.TestControl;
-	var TestInputControl = TableQUnitUtils.TestInputControl;
+	const SelectionMode = TableLibrary.SelectionMode;
+	const createTables = window.createTables;
+	const destroyTables = window.destroyTables;
+	const getCell = window.getCell;
+	const getColumnHeader = window.getColumnHeader;
+	const getRowHeader = window.getRowHeader;
+	const getRowAction = window.getRowAction;
+	const getSelectAll = window.getSelectAll;
+	const iNumberOfRows = window.iNumberOfRows;
+	const initRowActions = window.initRowActions;
+	const TestControl = TableQUnitUtils.TestControl;
+	const TestInputControl = TableQUnitUtils.TestInputControl;
 
 	QUnit.module("TableUtils", {
 		beforeEach: function() {
@@ -87,7 +87,7 @@ sap.ui.define([
 			oTreeTable.setSelectionMode(sSelectionMode);
 			oTreeTable.setUseGroupMode(bGroup);
 			nextUIUpdate.runSync()/*fake timer is used in module*/;
-			var bRes = TableUtils.isRowSelectionAllowed(oTreeTable);
+			const bRes = TableUtils.isRowSelectionAllowed(oTreeTable);
 			assert.ok(bRes && bExpected || !bRes && !bExpected,
 				"isRowSelectionAllowed: " + sSelectionBehavior + ", " + sSelectionMode + ", Group: " + bGroup);
 		}
@@ -118,7 +118,7 @@ sap.ui.define([
 			oTreeTable.setSelectionMode(sSelectionMode);
 			oTreeTable.setUseGroupMode(bGroup);
 			nextUIUpdate.runSync()/*fake timer is used in module*/;
-			var bRes = TableUtils.isRowSelectorSelectionAllowed(oTreeTable);
+			const bRes = TableUtils.isRowSelectorSelectionAllowed(oTreeTable);
 			assert.ok(bRes && bExpected || !bRes && !bExpected,
 				"isRowSelectorSelectionAllowed: " + sSelectionBehavior + ", " + sSelectionMode + ", Group: " + bGroup);
 		}
@@ -188,8 +188,8 @@ sap.ui.define([
 
 		/* Data Cells */
 
-		var oCell = getCell(0, 0);
-		var oInfo = TableUtils.getCellInfo(oCell);
+		let oCell = getCell(0, 0);
+		let oInfo = TableUtils.getCellInfo(oCell);
 		assert.strictEqual(oInfo.cell, oCell.get(0), "Data Cell: Correct cell object returned");
 		assert.strictEqual(oInfo.isOfType(), false, "No parameter was passed to isOfType() -> Returned false");
 		assert.ok(oInfo.isOfType(TableUtils.CELLTYPE.DATACELL), "Is DATACELL");
@@ -321,7 +321,7 @@ sap.ui.define([
 
 		/* Not a table cell */
 
-		var oDefaultInfo = {
+		const oDefaultInfo = {
 			type: 0,
 			cell: null,
 			rowIndex: null,
@@ -464,7 +464,7 @@ sap.ui.define([
 	});
 
 	QUnit.test("getNonEmptyRowCount", function(assert) {
-		var oTableDummy1 = {
+		const oTableDummy1 = {
 			_getRowCounts: function() {
 				return {
 					count: 10
@@ -474,7 +474,7 @@ sap.ui.define([
 				return 5;
 			}
 		};
-		var oTableDummy2 = {
+		const oTableDummy2 = {
 			_getRowCounts: function() {
 				return {
 					count: 10
@@ -484,7 +484,7 @@ sap.ui.define([
 				return 15;
 			}
 		};
-		var oTableDummy3 = {
+		const oTableDummy3 = {
 			_getRowCounts: function() {
 				return {
 					count: 10
@@ -503,13 +503,13 @@ sap.ui.define([
 	});
 
 	QUnit.test("toggleRowSelection", async function(assert) {
-		var iCallbackIndex = -1;
-		var fnSelectionCallback = function(oRow) {
+		let iCallbackIndex = -1;
+		const fnSelectionCallback = function(oRow) {
 			iCallbackIndex = oRow.getIndex();
 		};
 
 		function testLocal(vRowIndicator) {
-			var iRowIndex = 0;
+			let iRowIndex = 0;
 
 			oTable.clearSelection();
 			oTable.setSelectionBehavior(TableLibrary.SelectionBehavior.Row);
@@ -549,7 +549,7 @@ sap.ui.define([
 		oTable.setSelectionBehavior(TableLibrary.SelectionBehavior.RowSelector);
 		await nextUIUpdate();
 
-		var oElem = getCell(0, 0);
+		const oElem = getCell(0, 0);
 		TableUtils.toggleRowSelection(oTable, oElem); // Toggle
 		assert.ok(!oTable.isIndexSelected(0), "Row not selected");
 		TableUtils.toggleRowSelection(oTable, oElem, true); // Select
@@ -585,7 +585,7 @@ sap.ui.define([
 		oTable.getColumns()[2].setVisible(false);
 		await nextUIUpdate();
 
-		var oInfo = TableUtils.getRowColCell(oTable, 0, 0, false);
+		let oInfo = TableUtils.getRowColCell(oTable, 0, 0, false);
 		assert.strictEqual(oInfo.row, oTable.getRows()[0], "Row 1");
 		assert.strictEqual(oInfo.column, oTable.getColumns()[0], "Column 1");
 		assert.strictEqual(oInfo.cell, oInfo.row.getCells()[0], "Cell 1,1");
@@ -653,9 +653,10 @@ sap.ui.define([
 		initTest(0, iNumberOfRows - 3);
 		assert.equal(TableUtils.getFirstFixedBottomRowIndex(oTable), -1, "No fixed buttom rows");
 
-		var iVisibleRows,
-			iFixedBottomRows = 2;
-		for (var i = 0; i < 10; i++) {
+		let iVisibleRows;
+		const iFixedBottomRows = 2;
+
+		for (let i = 0; i < 10; i++) {
 			iVisibleRows = iNumberOfRows - 3 + i;
 			initTest(iFixedBottomRows, iVisibleRows);
 
@@ -693,9 +694,9 @@ sap.ui.define([
 	});
 
 	QUnit.test("focusItem", function(assert) {
-		var oCell = getCell(1, 1);
+		let oCell = getCell(1, 1);
 		TableUtils.focusItem(oTable, 14 /*SelectAll + 5 Headers + 1st Row (Rowselector + 5 cells) + 2nd row (Rowselector + 2 cells)*/);
-		assert.ok(oCell.get(0) != document.activeElement, "Focus not set becuase item navigation not yet initialized");
+		assert.ok(oCell.get(0) !== document.activeElement, "Focus not set becuase item navigation not yet initialized");
 		getCell(0, 0, true);
 		TableUtils.focusItem(oTable, 14 /*SelectAll + 5 Headers + 1st Row (Rowselector + 5 cells) + 2nd row (Rowselector + 2 cells)*/);
 		oCell = getCell(1, 1);
@@ -703,7 +704,7 @@ sap.ui.define([
 	});
 
 	QUnit.test("scrollTableToIndex", function(assert) {
-		var oRowsUpdatedSpy = sinon.spy();
+		const oRowsUpdatedSpy = sinon.spy();
 		oTable.attachRowsUpdated(oRowsUpdatedSpy);
 
 		return TableUtils.scrollTableToIndex(oTable, 5, false).then(function() {
@@ -732,8 +733,8 @@ sap.ui.define([
 	});
 
 	QUnit.test("showNotificationPopoverAtIndex", function(assert) {
-		var oAfterOpenSpy = sinon.spy();
-		var oOpenSpy, oCloseSpy;
+		const oAfterOpenSpy = sinon.spy();
+		let oOpenSpy; let oCloseSpy;
 
 		assert.notOk(oTable._oNotificationPopover, "the notification popover is not initialized");
 
@@ -771,7 +772,7 @@ sap.ui.define([
 	});
 
 	QUnit.test("loadContexts", function(assert) {
-		var oFakeBinding = {
+		const oFakeBinding = {
 			limit: 2,
 			length: 8,
 			loadedContexts: [],
@@ -782,8 +783,8 @@ sap.ui.define([
 				this.loadedContexts = this.loadedContexts.filter(function(item) {
 					return Boolean(item);
 				});
-				var iLoadedContextsCount = this.loadedContexts.length;
-				for (var j = Math.max(iLoadedContextsCount, iStartIndex); j < Math.min(this.length, iLength); j++) {
+				const iLoadedContextsCount = this.loadedContexts.length;
+				for (let j = Math.max(iLoadedContextsCount, iStartIndex); j < Math.min(this.length, iLength); j++) {
 					if (j < iLoadedContextsCount + this.limit) {
 						this.loadedContexts.push({});
 					} else {
@@ -797,8 +798,8 @@ sap.ui.define([
 			}
 		};
 
-		var oGetContextsSpy = sinon.spy(oFakeBinding, "getContexts");
-		var oAttachEventSpy = sinon.spy(oFakeBinding, "attachEventOnce");
+		const oGetContextsSpy = sinon.spy(oFakeBinding, "getContexts");
+		const oAttachEventSpy = sinon.spy(oFakeBinding, "attachEventOnce");
 
 		return TableUtils.loadContexts(oFakeBinding, 0, 2).then(function(aContexts) {
 			assert.ok(oGetContextsSpy.calledOnceWithExactly(0, 2, 0, true), "Binding#getContexts is called once with the correct parameters");
@@ -815,8 +816,8 @@ sap.ui.define([
 	});
 
 	QUnit.test("getFocusedItemInfo", function(assert) {
-		var oCell = getCell(1, 1, true);
-		var oInfo = TableUtils.getFocusedItemInfo(oTable);
+		let oCell = getCell(1, 1, true);
+		let oInfo = TableUtils.getFocusedItemInfo(oTable);
 		assert.strictEqual(oInfo.cell, 14, "cell");
 		assert.strictEqual(oInfo.row, 2, "row");
 		assert.strictEqual(oInfo.columnCount, oTable.columnCount + 1 /*row header*/, "columnCount");
@@ -833,7 +834,7 @@ sap.ui.define([
 		assert.strictEqual(oInfo.cellCount, (oTable.columnCount + 1) * (3 /*visible rows*/ + 1), "cellCount");
 		assert.strictEqual(oInfo.domRef, oCell.get(0), "domRef");
 
-		var oTableDummy = {
+		const oTableDummy = {
 			_getItemNavigation: function() {
 			}
 		};
@@ -939,7 +940,7 @@ sap.ui.define([
 	});
 
 	QUnit.test("isA", function(assert) {
-		var oBaseObjectIsA = this.spy(BaseObject, "isObjectA");
+		const oBaseObjectIsA = this.spy(BaseObject, "isObjectA");
 
 		// TableUtils.isA is just a wrapper for sap.ui.base.Object.isA. Therefore, we only check whether TableUtils.isA correctly calls the base
 		// method and returns the same value.
@@ -964,9 +965,9 @@ sap.ui.define([
 	});
 
 	QUnit.test("isFirstScrollableRow / isLastScrollableRow", async function(assert) {
-		var iVisibleRowCount = 6;
-		var iFixedTop = 2;
-		var iFixedBottom = 2;
+		const iVisibleRowCount = 6;
+		const iFixedTop = 2;
+		const iFixedBottom = 2;
 
 		oTable.setRowMode(new FixedRowMode({
 			rowCount: iVisibleRowCount,
@@ -975,10 +976,10 @@ sap.ui.define([
 		}));
 		await nextUIUpdate();
 
-		for (var j = 0; j < 2; j++) {
-			for (var i = 0; i < iVisibleRowCount; i++) {
-				assert.equal(TableUtils.isFirstScrollableRow(oTable, getCell(i, 0)), i == iFixedTop, "isFirstScrollableRow (" + i + ")");
-				assert.equal(TableUtils.isLastScrollableRow(oTable, getCell(i, 0)), i == iVisibleRowCount - iFixedBottom - 1,
+		for (let j = 0; j < 2; j++) {
+			for (let i = 0; i < iVisibleRowCount; i++) {
+				assert.equal(TableUtils.isFirstScrollableRow(oTable, getCell(i, 0)), i === iFixedTop, "isFirstScrollableRow (" + i + ")");
+				assert.equal(TableUtils.isLastScrollableRow(oTable, getCell(i, 0)), i === iVisibleRowCount - iFixedBottom - 1,
 					"isLastScrollableRow (" + i + ")");
 			}
 			oTable._getScrollExtension().scrollVertically(true);
@@ -996,7 +997,7 @@ sap.ui.define([
 		assert.strictEqual(TableUtils.getCell(oTable), null, "Returned null: Invalid input");
 		assert.strictEqual(TableUtils.getCell(oTable, oTable.getDomRef()), null, "Returned null: Passed element is not a cell or inside a cell");
 
-		var oElement = getSelectAll();
+		let oElement = getSelectAll();
 		assert.ok(TableUtils.getCell(oTable, oElement).is(oElement), "Returned SelectAll");
 		assert.ok(TableUtils.getCell(oTable, oElement.find(":first")).is(oElement), "Returned SelectAll");
 
@@ -1024,14 +1025,14 @@ sap.ui.define([
 	});
 
 	QUnit.test("getResourceBundle", function(assert) {
-		var pPromise;
-		var oBundle;
-		var oPreviousBundle;
-		var sOriginalLanguage = Localization.getLanguage();
-		var sTestLanguageA = sOriginalLanguage === "en-US" ? "de-DE" : "en-US";
-		var sTestLanguageB = sOriginalLanguage === "en-US" ? "fr-FR" : "en-US";
-		var fnOnLocalizationChanged = Table.prototype.onLocalizationChanged;
-		var done = assert.async();
+		let pPromise;
+		let oBundle;
+		let oPreviousBundle;
+		const sOriginalLanguage = Localization.getLanguage();
+		const sTestLanguageA = sOriginalLanguage === "en-US" ? "de-DE" : "en-US";
+		const sTestLanguageB = sOriginalLanguage === "en-US" ? "fr-FR" : "en-US";
+		const fnOnLocalizationChanged = Table.prototype.onLocalizationChanged;
+		const done = assert.async();
 
 		Table.prototype.onLocalizationChanged = function() {};
 
@@ -1088,10 +1089,10 @@ sap.ui.define([
 	});
 
 	QUnit.test("dynamicCall", function(assert) {
-		var bCallbackCalled = false;
-		var oTestObject = {prop: "value", funcA: sinon.spy(), funcB: sinon.spy()};
-		var oTestObjectWithReturn = {returnString: function() { return "string"; }, returnNumber: function() { return 1; }};
-		var oTestContext = {};
+		let bCallbackCalled = false;
+		const oTestObject = {prop: "value", funcA: sinon.spy(), funcB: sinon.spy()};
+		const oTestObjectWithReturn = {returnString: function() { return "string"; }, returnNumber: function() { return 1; }};
+		const oTestContext = {};
 
 		function reset() {
 			bCallbackCalled = false;
@@ -1162,7 +1163,7 @@ sap.ui.define([
 
 		/* Data cells */
 
-		var $InteractiveElements = TableUtils.getInteractiveElements(getCell(0, oTable.columnCount - 1));
+		let $InteractiveElements = TableUtils.getInteractiveElements(getCell(0, oTable.columnCount - 1));
 		assert.strictEqual($InteractiveElements.length, 1, "(JQuery) Data cell with focusable element: One element was returned");
 		assert.strictEqual($InteractiveElements[0].value, "Focus&NoTabInput1",
 			"(JQuery) Data cell with focusable element: The correct element was returned");
@@ -1187,8 +1188,8 @@ sap.ui.define([
 
 		/* Row action cells */
 
-		var $RowActionCell = getRowAction(0);
-		var $RowActionIcons = $RowActionCell.find(".sapUiTableActionIcon:visible");
+		let $RowActionCell = getRowAction(0);
+		let $RowActionIcons = $RowActionCell.find(".sapUiTableActionIcon:visible");
 		$InteractiveElements = TableUtils.getInteractiveElements($RowActionCell);
 		assert.strictEqual($InteractiveElements.length, 2, "(jQuery) Row Action cell with 2 action items: Two elements have been returned");
 		assert.strictEqual($InteractiveElements[0], $RowActionIcons[0], "(jQuery) The first returned element is the correct row action icon");
@@ -1242,13 +1243,13 @@ sap.ui.define([
 	});
 
 	QUnit.test("getInteractiveElements - TreeTable Icon Cell", function(assert) {
-		var $TreeIconCell = getCell(0, 0, null, null, oTreeTable);
-		var sTreeIconOpenClass = "sapUiTableTreeIconNodeOpen";
-		var sTreeIconClosedClass = "sapUiTableTreeIconNodeClosed";
-		var sTreeIconLeafClass = "sapUiTableTreeIconLeaf";
+		const $TreeIconCell = getCell(0, 0, null, null, oTreeTable);
+		const sTreeIconOpenClass = "sapUiTableTreeIconNodeOpen";
+		const sTreeIconClosedClass = "sapUiTableTreeIconNodeClosed";
+		const sTreeIconLeafClass = "sapUiTableTreeIconLeaf";
 
 		// Closed node
-		var $InteractiveElements = TableUtils.getInteractiveElements($TreeIconCell);
+		let $InteractiveElements = TableUtils.getInteractiveElements($TreeIconCell);
 		assert.strictEqual($InteractiveElements.length, 1, "(JQuery) Tree icon cell of closed node: One element was returned");
 		assert.ok($InteractiveElements[0].classList.contains(sTreeIconClosedClass),
 			"(JQuery) Tree icon cell of closed node: The correct closed node element was returned");
@@ -1284,7 +1285,7 @@ sap.ui.define([
 	});
 
 	QUnit.test("getFirstInteractiveElement", function(assert) {
-		var oRow = oTable.getRows()[0];
+		let oRow = oTable.getRows()[0];
 		assert.equal(TableUtils.getFirstInteractiveElement(undefined), null, "The row instance is undefined: returns null");
 		assert.equal(TableUtils.getFirstInteractiveElement(null), null, "The row instance is equal to null: returns null");
 		assert.equal(TableUtils.getFirstInteractiveElement(oRow), null, "There are no interactive elements: returns null");
@@ -1292,8 +1293,8 @@ sap.ui.define([
 		initRowActions(oTable, 2, 2);
 
 		assert.equal(TableUtils.getFirstInteractiveElement(oRow, false), null, "");
-		var $RowActionCell = getRowAction(0);
-		var $RowActionIcons = $RowActionCell.find(".sapUiTableActionIcon:visible");
+		const $RowActionCell = getRowAction(0);
+		const $RowActionIcons = $RowActionCell.find(".sapUiTableActionIcon:visible");
 		oRow = oTable.getRows()[0];
 		assert.equal(TableUtils.getFirstInteractiveElement(oRow, false), null, "ActionCells are not taken in consideration");
 		assert.equal(TableUtils.getFirstInteractiveElement(oRow, true), $RowActionIcons[0], "ActionCells are taken in consideration");
@@ -1323,9 +1324,9 @@ sap.ui.define([
 	});
 
 	QUnit.test("addDelegate", function(assert) {
-		var oDelegateSpy = sinon.spy(oTable, "addDelegate");
-		var oDelegateDummy = {prop: 1};
-		var oThisDummy = {otherProp: 1};
+		const oDelegateSpy = sinon.spy(oTable, "addDelegate");
+		const oDelegateDummy = {prop: 1};
+		const oThisDummy = {otherProp: 1};
 
 		TableUtils.addDelegate();
 		assert.ok(oDelegateSpy.notCalled, "No parameters passed: Element#addDelegate was not called");
@@ -1348,8 +1349,8 @@ sap.ui.define([
 	});
 
 	QUnit.test("removeDelegate", function(assert) {
-		var oDelegateSpy = sinon.spy(oTable, "removeDelegate");
-		var oDelegateDummy = {prop: 1};
+		const oDelegateSpy = sinon.spy(oTable, "removeDelegate");
+		const oDelegateDummy = {prop: 1};
 
 		TableUtils.removeDelegate();
 		assert.ok(oDelegateSpy.notCalled, "No parameters passed: Element#removeDelegate was not called");
@@ -1365,9 +1366,9 @@ sap.ui.define([
 	});
 
 	QUnit.test("createWeakMapFacade", function(assert) {
-		var oWeakMapFacade = TableUtils.createWeakMapFacade();
-		var oKeyA = {};
-		var oKeyB = {};
+		const oWeakMapFacade = TableUtils.createWeakMapFacade();
+		const oKeyA = {};
+		const oKeyB = {};
 
 		assert.strictEqual(oWeakMapFacade(undefined), null, "WeakMap is not accessible if the key is undefined");
 		assert.strictEqual(oWeakMapFacade(null), null, "WeakMap is not accessible if the key is null");
@@ -1384,14 +1385,14 @@ sap.ui.define([
 	});
 
 	QUnit.test("isThemeApplied", function(assert) {
-		var done = assert.async();
-		var sCurrentTheme;
-		var iPass = 0;
+		const done = assert.async();
+		let sCurrentTheme;
+		let iPass = 0;
 
-		var fnThemeChanged = (oEvent) => {
-			var sTheme = oEvent.theme;
+		const fnThemeChanged = (oEvent) => {
+			const sTheme = oEvent.theme;
 
-			if (iPass == 0) {
+			if (iPass === 0) {
 				sCurrentTheme = Theming.getTheme();
 				iPass++;
 				assert.strictEqual(sTheme, sCurrentTheme, "Initial: Correct current Theme: " + sTheme);
@@ -1400,7 +1401,7 @@ sap.ui.define([
 				// (next check would fail depending on the scenario).
 				Theming.setTheme("my_dummy_theme");
 				assert.notOk(TableUtils.isThemeApplied(), "sap_horizon_hcb is not applied after setTheme");
-			} else if (iPass == 1) {
+			} else if (iPass === 1) {
 				iPass++;
 				assert.strictEqual(sTheme, "my_dummy_theme", "After Change: Correct current Theme: " + sTheme);
 				assert.ok(TableUtils.isThemeApplied(), sTheme + " is applied");
@@ -1439,8 +1440,8 @@ sap.ui.define([
 					return document.getElementById(this.getId(sSuffix));
 				},
 				getResizeHandlerIdKeys: function() {
-					var aKeys = [];
-					for (var sKey in this._mResizeHandlerIds) {
+					const aKeys = [];
+					for (const sKey in this._mResizeHandlerIds) {
 						if (this._mResizeHandlerIds[sKey] !== undefined && this._mResizeHandlerIds.hasOwnProperty(sKey)) {
 							aKeys.push(sKey);
 						}
@@ -1452,15 +1453,15 @@ sap.ui.define([
 	});
 
 	QUnit.test("Register/Deregister", function(assert) {
-		var done = assert.async();
-		var sResizeHandlerId;
+		const done = assert.async();
+		let sResizeHandlerId;
 
-		var fnTestOuter = function(oEvent) {
+		const fnTestOuter = function(oEvent) {
 			assert.equal(oEvent.currentTarget.getAttribute("id"), this.oTable.getId("outer"), "ResizeHandler triggered for 'outer' element");
 			jQuery("#" + this.oTable.getId("inner")).height("250px");
 		}.bind(this);
 
-		var fnTestCenterParent = function(oEvent) {
+		const fnTestCenterParent = function(oEvent) {
 			assert.equal(oEvent.currentTarget.getAttribute("id"), this.oTable.getId("inner"),
 				"ResizeHandler triggered for parent of 'center', 'inner'");
 			// size change of center div should have no impact, as there is not ResizeHandler defined for it.
@@ -1542,8 +1543,8 @@ sap.ui.define([
 					apiVersion: 2,
 					render: function(rm, oControl) {
 						rm.openStart("div", oControl).openEnd();
-						var aContent = oControl.getContent();
-						for (var i = 0; i < aContent.length; i++) {
+						const aContent = oControl.getContent();
+						for (let i = 0; i < aContent.length; i++) {
 							rm.renderControl(aContent[i]);
 						}
 						rm.close("div");
@@ -1557,9 +1558,9 @@ sap.ui.define([
 	});
 
 	QUnit.test("getContentDensity", async function(assert) {
-		var oSecondLevel = new this.TableUtilsDummyControl({content: [this.oTable]});
-		var oFirstLevel = new this.TableUtilsDummyControl({content: [oSecondLevel]});
-		var $Body = jQuery(document.body);
+		const oSecondLevel = new this.TableUtilsDummyControl({content: [this.oTable]});
+		const oFirstLevel = new this.TableUtilsDummyControl({content: [oSecondLevel]});
+		const $Body = jQuery(document.body);
 		$Body.toggleClass("sapUiSizeCozy", false);
 
 		oFirstLevel.placeAt("__table-outer", 0);
@@ -1606,9 +1607,9 @@ sap.ui.define([
 	});
 
 	QUnit.test("getContentDensity without DOM", function(assert) {
-		var oSecondLevel = new this.TableUtilsDummyControl({content: [this.oTable]});
-		var oFirstLevel = new this.TableUtilsDummyControl({content: [oSecondLevel]});
-		var $Body = jQuery(document.body);
+		const oSecondLevel = new this.TableUtilsDummyControl({content: [this.oTable]});
+		const oFirstLevel = new this.TableUtilsDummyControl({content: [oSecondLevel]});
+		const $Body = jQuery(document.body);
 		$Body.toggleClass("sapUiSizeCozy", false);
 
 		assert.strictEqual(TableUtils.getContentDensity(this.oTable), undefined, "No content density set to far");
@@ -1639,7 +1640,7 @@ sap.ui.define([
 	QUnit.test("getContentDensity table in UI Area", async function(assert) {
 		this.oTable.placeAt("__table-outer", 0);
 		await nextUIUpdate();
-		var $Body = jQuery(document.body);
+		const $Body = jQuery(document.body);
 		$Body.toggleClass("sapUiSizeCozy", false);
 
 		assert.strictEqual(TableUtils.getContentDensity(this.oTable), undefined, "No content density set to far");
@@ -1666,8 +1667,8 @@ sap.ui.define([
 	});
 
 	function _getFirstInteractiveElement(cell) {
-		var $Cell = jQuery(cell);
-		var $InteractiveElements = $Cell.find(":sapTabbable, input:sapFocusable, .sapUiTableTreeIcon");
+		const $Cell = jQuery(cell);
+		const $InteractiveElements = $Cell.find(":sapTabbable, input:sapFocusable, .sapUiTableTreeIcon");
 		return $InteractiveElements[0];
 	}
 
@@ -1678,8 +1679,8 @@ sap.ui.define([
 
 		/* Data Cell */
 
-		var oCell = getCell(0, oTable.columnCount - 1);
-		var $ParentCell = TableUtils.getParentCell(oTable, _getFirstInteractiveElement(oCell));
+		let oCell = getCell(0, oTable.columnCount - 1);
+		let $ParentCell = TableUtils.getParentCell(oTable, _getFirstInteractiveElement(oCell));
 		assert.strictEqual($ParentCell.length, 1, "A data cell was returned");
 		assert.strictEqual($ParentCell[0], oCell[0], "jQuery object passed: The correct data cell was returned");
 
@@ -1769,12 +1770,12 @@ sap.ui.define([
 	});
 
 	QUnit.test("Asynchronous leading invocation", function(assert) {
-		var fnThrottled = TableUtils.throttle(this.fnTestFunction, 50, {
+		let fnThrottled = TableUtils.throttle(this.fnTestFunction, 50, {
 			leading: false,
 			asyncLeading: true
 		});
-		var oContext = {iAmThis: true};
-		var that = this;
+		const oContext = {iAmThis: true};
+		const that = this;
 
 		fnThrottled();
 
@@ -1812,11 +1813,11 @@ sap.ui.define([
 	});
 
 	QUnit.test("Cancellation of asynchronous leading invocation", function(assert) {
-		var fnThrottled = TableUtils.throttle(this.fnTestFunction, 50, {
+		const fnThrottled = TableUtils.throttle(this.fnTestFunction, 50, {
 			leading: true,
 			asyncLeading: true
 		});
-		var that = this;
+		const that = this;
 
 		fnThrottled();
 		fnThrottled.cancel();
@@ -1834,8 +1835,8 @@ sap.ui.define([
 	});
 
 	QUnit.test("Frame-wise - One call", function(assert) {
-		var fnThrottled = TableUtils.throttleFrameWise(this.fnTestFunction);
-		var oContext = {iAmThis: true};
+		const fnThrottled = TableUtils.throttleFrameWise(this.fnTestFunction);
+		const oContext = {iAmThis: true};
 
 		fnThrottled.call(oContext, "animation frame");
 		this.oClock.runToFrame();
@@ -1854,8 +1855,8 @@ sap.ui.define([
 	});
 
 	QUnit.test("Frame-wise - Multiple calls", function(assert) {
-		var fnThrottled = TableUtils.throttleFrameWise(this.fnTestFunction);
-		var oContext = {iAmThis: true};
+		const fnThrottled = TableUtils.throttleFrameWise(this.fnTestFunction);
+		const oContext = {iAmThis: true};
 
 		fnThrottled.call();
 		fnThrottled.call(oContext, "something");
@@ -1881,8 +1882,8 @@ sap.ui.define([
 	});
 
 	QUnit.test("Frame-wise - Cancellation", function(assert) {
-		var fnThrottled = TableUtils.throttleFrameWise(this.fnTestFunction);
-		var oContext = {iAmThis: true};
+		const fnThrottled = TableUtils.throttleFrameWise(this.fnTestFunction);
+		const oContext = {iAmThis: true};
 
 		fnThrottled();
 		fnThrottled.cancel();

@@ -27,21 +27,21 @@
 		<div id="content"></div>
 		<pre>
    // code used to set the data:
-   ctrl<span class="highlight">.data(</span>&quot;myData&quot;, &quot;Hello, I was born at &quot; + new Date());</pre>
+   ctrl<span class="highlight">.data(</span>"myData", "Hello, I was born at " + new Date());</pre>
 
 		<h2>Quiz with ListBox, custom data, and list binding</h2>
 		<div id="content2"></div>
 		<pre>
    // list is bound to data like:
    var aData = {questions:[
-      { question : &quot;In which year was SAP founded?&quot;, <span class="highlight">answer : &quot;1972&quot;</span> },
+      { question : "In which year was SAP founded?", <span class="highlight">answer : "1972"</span> },
       ...
    ]};
-   // text is bound to &quot;question&quot;, CustomData aggregation is bound to &quot;answer&quot;</pre>
+   // text is bound to "question", CustomData aggregation is bound to "answer"</pre>
 
 		<h2>XMLView with bound custom data</h2>
 		<div id="content3"></div>
 		<pre>
-   &lt;Button id=&quot;myBtn&quot; text=&quot;Click to show stored coordinates data&quot; <span class="highlight">app:coords=&quot;{data}&quot;</span> press=&quot;alertCoordinates&quot;&gt;&lt;/Button&gt;</pre>
+   &lt;Button id="myBtn" text="Click to show stored coordinates data" <span class="highlight">app:coords="{data}"</span> press="alertCoordinates"&gt;&lt;/Button&gt;</pre>
 	</body>
 </html>

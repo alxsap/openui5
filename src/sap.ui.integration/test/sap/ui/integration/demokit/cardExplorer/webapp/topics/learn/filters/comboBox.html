@@ -71,7 +71,7 @@
 						<td><a href="#comboBoxFilterItemBindingInfoProperties">ComboBoxFilterItemBindingInfo</a></td>
 						<td></td>
 						<td>No</td>
-						<td>Binding info object used to bind data to items of a filter. Cannot be used together with &apos;items&apos;.</td>
+						<td>Binding info object used to bind data to items of a filter. Cannot be used together with 'items'.</td>
 						<td>1.61.0</td>
 						<td>1.121</td>
 					</tr>
@@ -163,27 +163,27 @@
 			</div>
 
 			<h2 id="filtersModel">Filters Model</h2>
-			<p>The following values are available for filter of type &quot;ComboBox&quot;:</p>
+			<p>The following values are available for filter of type "ComboBox":</p>
 			<table>
 				<tr>
 					<th>Path</th>
 					<th>Description</th>
 				</tr>
 				<tr>
-					<td>{filters&gt;/keyOfTheFilter/value}</td>
+					<td>{filters>/keyOfTheFilter/value}</td>
 					<td>The current value of the filter. If the user enters free text it will be this text. If the user selects one of the options, this
-					will be the title of the option. For selected key use {filters&gt;/keyOfTheFilter/selectedItem/key}.</td>
+					will be the title of the option. For selected key use {filters>/keyOfTheFilter/selectedItem/key}.</td>
 				</tr>
 				<tr>
-					<td>{filters&gt;/keyOfTheFilter/selectedItem/title}</td>
+					<td>{filters>/keyOfTheFilter/selectedItem/title}</td>
 					<td>The title of the selected item.</td>
 				</tr>
 				<tr>
-					<td>{filters&gt;/keyOfTheFilter/selectedItem/key}</td>
+					<td>{filters>/keyOfTheFilter/selectedItem/key}</td>
 					<td>The key of the selected item.</td>
 				</tr>
 				<tr>
-					<td>{filters&gt;/keyOfTheFilter/selectedItem/additionalText}</td>
+					<td>{filters>/keyOfTheFilter/selectedItem/additionalText}</td>
 					<td>The secondary value of the selected item.</td>
 				</tr>
 			</table>
@@ -191,87 +191,87 @@
 			<h2 id="examples">Examples</h2>
 			<p>A filter for product category is defined and later used inside a data request.</p>
 			<pre class="lang-json">{
-	&quot;sap.app&quot;: {
-		&quot;id&quot;: &quot;card.explorer.filters.combobox.multiple&quot;,
-		&quot;type&quot;: &quot;card&quot;,
-		&quot;title&quot;: &quot;Sample of a Card with filters&quot;
+	"sap.app": {
+		"id": "card.explorer.filters.combobox.multiple",
+		"type": "card",
+		"title": "Sample of a Card with filters"
 	},
-	&quot;sap.card&quot;: {
-		&quot;configuration&quot;: {
-			&quot;filters&quot;: {
-				&quot;country&quot;: {
-					&quot;selectedKey&quot;: &quot;FR&quot;,
-					&quot;type&quot;: &quot;ComboBox&quot;,
-					&quot;label&quot;: &quot;Country&quot;,
-					&quot;item&quot;: {
-						&quot;path&quot;: &quot;/&quot;,
-						&quot;template&quot;: {
-							&quot;key&quot;: &quot;{key}&quot;,
-							&quot;title&quot;: &quot;{text}&quot;,
-							&quot;additionalText&quot;: &quot;{key}&quot;
+	"sap.card": {
+		"configuration": {
+			"filters": {
+				"country": {
+					"selectedKey": "FR",
+					"type": "ComboBox",
+					"label": "Country",
+					"item": {
+						"path": "/",
+						"template": {
+							"key": "{key}",
+							"title": "{text}",
+							"additionalText": "{key}"
 						}
 					},
-					&quot;data&quot;: {
-						&quot;json&quot;: [
+					"data": {
+						"json": [
 							{
-								&quot;text&quot;: &quot;Austria&quot;,
-								&quot;key&quot;: &quot;AT&quot;
+								"text": "Austria",
+								"key": "AT"
 							},
 							{
-								&quot;text&quot;: &quot;Belgium&quot;,
-								&quot;key&quot;: &quot;BE&quot;
+								"text": "Belgium",
+								"key": "BE"
 							},
 							{
-								&quot;text&quot;: &quot;France&quot;,
-								&quot;key&quot;: &quot;FR&quot;
+								"text": "France",
+								"key": "FR"
 							},
 							{
-								&quot;text&quot;: &quot;Germany&quot;,
-								&quot;key&quot;: &quot;DE&quot;
+								"text": "Germany",
+								"key": "DE"
 							},
 							{
-								&quot;text&quot;: &quot;United Kingdom&quot;,
-								&quot;key&quot;: &quot;GB&quot;
+								"text": "United Kingdom",
+								"key": "GB"
 							}
 						]
 					}
 				}
 			},
-			&quot;destinations&quot;: {
-				&quot;Northwind_V4&quot;: {
-					&quot;name&quot;: &quot;Northwind_V4&quot;,
-					&quot;label&quot;: &quot;Northwind V4 Service URL&quot;,
-					&quot;defaultUrl&quot;: &quot;https://services.odata.org/V4/Northwind/Northwind.svc&quot;
+			"destinations": {
+				"Northwind_V4": {
+					"name": "Northwind_V4",
+					"label": "Northwind V4 Service URL",
+					"defaultUrl": "https://services.odata.org/V4/Northwind/Northwind.svc"
 				}
 			},
-			&quot;parameters&quot;: {
-				&quot;maxOrdersShown&quot;: {
-					&quot;value&quot;: 6,
-					&quot;type&quot;: &quot;integer&quot;,
-					&quot;label&quot;: &quot;Number of orders&quot;,
-					&quot;description&quot;: &quot;How many orders to show in the list.&quot;
+			"parameters": {
+				"maxOrdersShown": {
+					"value": 6,
+					"type": "integer",
+					"label": "Number of orders",
+					"description": "How many orders to show in the list."
 				}
 			}
 		},
-		&quot;data&quot;: {
-			&quot;request&quot;: {
-				&quot;url&quot;: &quot;{{destinations.Northwind_V4}}/Orders&quot;,
-				&quot;parameters&quot;: {
-					&quot;&#x24;top&quot;: &quot;{parameters&gt;/maxOrdersShown/value}&quot;,
-					&quot;&#x24;filter&quot;: &quot;ShipCountry eq &apos;{filters&gt;/country/value}&apos;&quot;
+		"data": {
+			"request": {
+				"url": "{{destinations.Northwind_V4}}/Orders",
+				"parameters": {
+					"$top": "{parameters>/maxOrdersShown/value}",
+					"$filter": "ShipCountry eq '{filters>/country/value}'"
 				}
 			},
-			&quot;path&quot;: &quot;/value&quot;
+			"path": "/value"
 		},
-		&quot;type&quot;: &quot;List&quot;,
-		&quot;header&quot;: {
-			&quot;title&quot;: &quot;Orders from {filters&gt;/country/value}&quot;,
-			&quot;subTitle&quot; : &quot;{filters&gt;/country/selectedItem/title} {filters&gt;/country/selectedItem/key}&quot;,
-			&quot;icon&quot;: {
-				&quot;src&quot;: &quot;sap-icon://product&quot;
+		"type": "List",
+		"header": {
+			"title": "Orders from {filters>/country/value}",
+			"subTitle" : "{filters>/country/selectedItem/title} {filters>/country/selectedItem/key}",
+			"icon": {
+				"src": "sap-icon://product"
 			}
 		},
-		&quot;content&quot;: {
+		"content": {
 			...
 		}
 	}

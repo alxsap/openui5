@@ -125,7 +125,7 @@ sap.ui.define([
 			this.oTable.getContextMenu().openAsContextMenu.resetHistory();
 		},
 		test: function(assert, mSettings) {
-			var oEvent = createFakeEventObject(mSettings.element);
+			const oEvent = createFakeEventObject(mSettings.element);
 
 			TableUtils.Menu.openContextMenu(this.oTable, oEvent);
 
@@ -239,7 +239,7 @@ sap.ui.define([
 	QUnit.test("Elements that do not support a custom context menu", function(assert) {
 		const oOpenMenuHook = sinon.stub();
 		const test = (oElement, sElementName, bDefaultMenuExists = false) => {
-			var oEvent = createFakeEventObject(oElement);
+			const oEvent = createFakeEventObject(oElement);
 
 			TableUtils.Menu.cleanupDefaultContentCellContextMenu(this.oTable); // Delete the default context menu to be table to test the creation.
 			TableUtils.Menu.openContextMenu(this.oTable, oEvent);

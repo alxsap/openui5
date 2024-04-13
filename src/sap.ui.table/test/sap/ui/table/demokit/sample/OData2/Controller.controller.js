@@ -10,7 +10,7 @@ sap.ui.define([
 ], function(Controller, MockServer, ODataModel, Column, Currency, Label, Text, StringType) {
 	"use strict";
 
-	var sServiceUrl = "http://my.test.service.com/";
+	const sServiceUrl = "http://my.test.service.com/";
 
 	return Controller.extend("sap.ui.table.sample.OData2.Controller", {
 
@@ -28,17 +28,17 @@ sap.ui.define([
 
 			this.oMockServer.start();
 
-			var oView = this.getView();
-			var oDataModel = new ODataModel(sServiceUrl);
+			const oView = this.getView();
+			const oDataModel = new ODataModel(sServiceUrl);
 
 			oDataModel.getMetaModel().loaded().then(function() {
 				oView.setModel(oDataModel.getMetaModel(), "meta");
 			});
 			oView.setModel(oDataModel);
 
-			var oTable = oView.byId("table");
-			var oBinding = oTable.getBinding();
-			var oBusyIndicator = oTable.getNoData();
+			const oTable = oView.byId("table");
+			const oBinding = oTable.getBinding();
+			const oBusyIndicator = oTable.getNoData();
 			oBinding.attachDataRequested(function() {
 				oTable.setNoData(oBusyIndicator);
 			});
@@ -48,7 +48,7 @@ sap.ui.define([
 		},
 
 		onExit: function() {
-			var oModel = this.getView().getModel();
+			const oModel = this.getView().getModel();
 			this.getView().setModel();
 			oModel.destroy();
 
@@ -58,19 +58,19 @@ sap.ui.define([
 		},
 
 		columnFactory: function(sId, oContext) {
-			var oModel = this.getView().getModel();
-			var sName = oContext.getProperty("name");
-			var sType = oContext.getProperty("type");
-			var sSemantics = oContext.getProperty("sap:semantics");
-			var bVisible = oContext.getProperty("sap:visible") != "false";
-			var iLen = oContext.getProperty("maxLength");
-			var sColumnWidth = "5rem";
+			const oModel = this.getView().getModel();
+			const sName = oContext.getProperty("name");
+			const sType = oContext.getProperty("type");
+			const sSemantics = oContext.getProperty("sap:semantics");
+			const bVisible = oContext.getProperty("sap:visible") !== "false";
+			let iLen = oContext.getProperty("maxLength");
+			let sColumnWidth = "5rem";
 
 			function specialTemplate() {
-				var sUnit = oContext.getProperty("sap:unit");
+				const sUnit = oContext.getProperty("sap:unit");
 				if (sUnit) {
-					var sUnitType = oModel.getMetaModel().getMetaContext("/ProductSet/" + sUnit).getProperty()["sap:semantics"];
-					if (sUnitType == "currency-code") {
+					const sUnitType = oModel.getMetaModel().getMetaContext("/ProductSet/" + sUnit).getProperty()["sap:semantics"];
+					if (sUnitType === "currency-code") {
 						return new Currency({value: {path: sName, type: new StringType()}, currency: {path: sUnit}});
 					}
 				}
@@ -86,9 +86,9 @@ sap.ui.define([
 			}
 
 			return new Column(sId, {
-				visible: bVisible && sSemantics != "unit-of-measure" && sSemantics != "currency-code",
-				sortProperty: oContext.getProperty("sap:sortable") == "true" ? sName : null,
-				filterProperty: oContext.getProperty("sap:filterable") == "true" ? sName : null,
+				visible: bVisible && sSemantics !== "unit-of-measure" && sSemantics !== "currency-code",
+				sortProperty: oContext.getProperty("sap:sortable") === "true" ? sName : null,
+				filterProperty: oContext.getProperty("sap:filterable") === "true" ? sName : null,
 				width: sColumnWidth,
 				label: new Label({text: "{/#Product/" + sName + "/@sap:label}"}),
 				hAlign: sType && sType.indexOf("Decimal") >= 0 ? "End" : "Begin",

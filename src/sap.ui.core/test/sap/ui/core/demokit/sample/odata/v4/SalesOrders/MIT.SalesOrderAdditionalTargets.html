@@ -9,7 +9,7 @@
 		<h1>Manual Integration Test: Additional Targets in OData Error Response</h1>
 		<h2>DESCRIPTION</h2>
 		With OData V4 error responses, multiple targets are addressed with an OData instance
-		annotation &quot;@com.sap.vocabularies.Common.v1.additionalTargets&quot; in order to highlight
+		annotation "@com.sap.vocabularies.Common.v1.additionalTargets" in order to highlight
 		different UI elements by a single error message.
 		<h2>PREPARATION</h2>
 		To check console errors open the developer tools before starting the application and check
@@ -18,8 +18,8 @@
 		<h3>Testing with mock data</h3>
 		Start the Sales Orders application with following URL (adjust host and port if necessary):
 		<ul>
-			<li> as sample preview in the SDK: http://&lt;host&gt;:&lt;port&gt;/sapui5-sdk-dist/#/sample/sap.ui.core.sample.odata.v4.SalesOrders/preview</li>
-			<li> local: <a href="http://localhost:8080/test-resources/sap/ui/core/demokit/sample/common/index.html?component=odata.v4.SalesOrders">http://&lt;host&gt;:&lt;port&gt;/test-resources/sap/ui/core/demokit/sample/common/index.html?component=odata.v4.SalesOrders</a></li>
+			<li> as sample preview in the SDK: http://&lt;host>:&lt;port>/sapui5-sdk-dist/#/sample/sap.ui.core.sample.odata.v4.SalesOrders/preview</li>
+			<li> local: <a href="http://localhost:8080/test-resources/sap/ui/core/demokit/sample/common/index.html?component=odata.v4.SalesOrders">http://&lt;host>:&lt;port>/test-resources/sap/ui/core/demokit/sample/common/index.html?component=odata.v4.SalesOrders</a></li>
 		</ul>
 
 		<h3>Testing with back end</h3>
@@ -27,7 +27,7 @@
 		back end system.<br>
 		Start the Sales Orders application with the URL (adjust host and port if necessary):
 		<ul>
-			<li>local: <a href="http://localhost:8080/test-resources/sap/ui/core/demokit/sample/common/index.html?component=odata.v4.SalesOrders&amp;realOData=true">http://&lt;host&gt;:&lt;port&gt;/test-resources/sap/ui/core/demokit/sample/common/index.html?component=odata.v4.SalesOrders&amp;realOData=true</a></li>
+			<li>local: <a href="http://localhost:8080/test-resources/sap/ui/core/demokit/sample/common/index.html?component=odata.v4.SalesOrders&amp;realOData=true">http://&lt;host>:&lt;port>/test-resources/sap/ui/core/demokit/sample/common/index.html?component=odata.v4.SalesOrders&amp;realOData=true</a></li>
 		</ul>
 
 		<h2>REALIZE and CHECK</h2>
@@ -47,10 +47,10 @@
 		<ol>
 			<li>Click on <code>Create</code> in the <code>Sales Order Line Items</code> table.</li>
 			<li>Change the <code>Product ID</code> of the newly created sales order line item by
-				entering <code>&quot;HT-1003&quot;</code> as <code>Product ID</code>.</li>
+				entering <code>"HT-1003"</code> as <code>Product ID</code>.</li>
 			<li>Click on <code>Save</code> in the <code>Sales Order Details</code> section.</li>
 			<li><b>Check:</b> The message popover is opened and you get an error regarding the
-				invalid <code>Quantity</code> for ProductID <code>&quot;HT-1003&quot;</code>.</li>
+				invalid <code>Quantity</code> for ProductID <code>"HT-1003"</code>.</li>
 			<li><b>Check:</b> The <code>Quantity</code> field of the new sales order line item
 				has a colored border indicating an error.</li>
 			<li><b>Check:</b> When clicking into the <code>Quantity</code> the same error is
@@ -60,7 +60,7 @@
 			<li><b>Check:</b> When clicking into the <code>ProductID</code> the same error is
 				highlighted below/beside the input field.</li>
 			<li>Change the <code>Quantity</code> of the newly created sales order line item to
-				&quot;3.0&quot;</li>
+				"3.0"</li>
 			<li>Click on <code>Save</code> in the <code>Sales Order Details</code> section.</li>
 			<li><b>Check:</b> The error is no longer raised and the input fields for
 				<code>ProductID</code> and <code>Quantity</code> have no error state any more.</li>

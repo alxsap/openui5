@@ -16,7 +16,7 @@
 			Custom No Data Message
 		</h1>
 		<p>
-			A customized &quot;No Data&quot; message allows the card developer to display information to the users,
+			A customized "No Data" message allows the card developer to display information to the users,
 			when <b>no data</b> is returned from the server, so they will have additional information about the missing data.
 
 			The messages are displayed via the <a data-demokit-href="#/api/sap.m.IllustratedMessage" target="_blank">sap.m.IllustratedMessage</a> control.
@@ -70,43 +70,43 @@
 		<h2 id="examples">
 			Example
 		</h2>
-		<p>An example with a card which uses custom &quot;No Data&quot; messages in content:</p>
+		<p>An example with a card which uses custom "No Data" messages in content:</p>
 		<pre class="lang-json">
-&quot;sap.card&quot;: {
-	&quot;configuration&quot;: {
-	  &quot;messages&quot;: {
-		&quot;noData&quot;: {
-		  &quot;type&quot;: &quot;NoSearchResults&quot;,
-		  &quot;title&quot;: &quot;No products are available with your inquiry&quot;,
-		  &quot;size&quot;: &quot;Auto&quot;
+"sap.card": {
+	"configuration": {
+	  "messages": {
+		"noData": {
+		  "type": "NoSearchResults",
+		  "title": "No products are available with your inquiry",
+		  "size": "Auto"
 		}
 	  }
 	},
-	&quot;type&quot;: &quot;List&quot;,
-	&quot;header&quot;: {
-	  &quot;title&quot;: &quot;Products&quot;,
-	  &quot;subTitle&quot;: &quot;In Stock Information&quot;,
-	  &quot;icon&quot;: {
-		&quot;src&quot;: &quot;sap-icon://product&quot;
+	"type": "List",
+	"header": {
+	  "title": "Products",
+	  "subTitle": "In Stock Information",
+	  "icon": {
+		"src": "sap-icon://product"
 	  }
 	},
-	&quot;content&quot;: {
-	  &quot;data&quot;: {
-		&quot;request&quot;: {
-		  &quot;url&quot;: &quot;https://services.odata.org/V4/Northwind/Northwind.svc/Products&quot;,
-		  &quot;parameters&quot;: {
-			&quot;&#x24;format&quot;: &quot;json&quot;,
-			&quot;filter&quot;: &quot;UnitPrice eq 0&quot;
+	"content": {
+	  "data": {
+		"request": {
+		  "url": "https://services.odata.org/V4/Northwind/Northwind.svc/Products",
+		  "parameters": {
+			"$format": "json",
+			"filter": "UnitPrice eq 0"
 		  }
 		},
-		&quot;path&quot;: &quot;/value&quot;
+		"path": "/value"
 	  },
-	  &quot;item&quot;: {
-		&quot;title&quot;: &quot;{ProductName}&quot;,
-		&quot;description&quot;: &quot;{UnitsInStock} units in stock&quot;,
-		&quot;highlight&quot;: &quot;{= &#x24;{Discontinued} ? &apos;Error&apos; : &apos;Success&apos;}&quot;
+	  "item": {
+		"title": "{ProductName}",
+		"description": "{UnitsInStock} units in stock",
+		"highlight": "{= ${Discontinued} ? 'Error' : 'Success'}"
 	  },
-	  &quot;maxItems&quot;: 5
+	  "maxItems": 5
 	}
   }
 </pre>

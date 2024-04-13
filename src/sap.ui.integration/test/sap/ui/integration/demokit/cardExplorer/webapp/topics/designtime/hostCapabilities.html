@@ -38,25 +38,25 @@
 			</ul>
 			<h2 id="provideHostImplementation">Provide Host Implementation</h2>
 			<pre class="lang-js">
-sap.ui.require([&quot;sap/ui/integration/Host&quot;], function(Host) {
-	// Create a new host environment with id &quot;host&quot;
-	var host = new Host(&quot;host&quot;);
+sap.ui.require(["sap/ui/integration/Host"], function(Host) {
+	// Create a new host environment with id "host"
+	var host = new Host("host");
 
 	// define a list of known destinations
 	host.destinationList = [
-		{&quot;name&quot;: &quot;destination1&quot;},
-		{&quot;name&quot;: &quot;destination2&quot;},
+		{"name": "destination1"},
+		{"name": "destination2"},
 	];
 
 	// define the current context structure with configuration information
 	host.context = {
-		&quot;sap.workzone&quot;: {
-			&quot;currentUser&quot;: {
-				&quot;id&quot;: {
-					&quot;label&quot;: &quot;Id of the Work Zone user&quot;,
-					&quot;placeholder&quot;: &quot;Work Zone user id&quot;,
-					&quot;description&quot;: &quot;The value will change based on the logged on user&quot;,
-					&quot;value&quot;: &quot;MyCurrentUserId&quot;
+		"sap.workzone": {
+			"currentUser": {
+				"id": {
+					"label": "Id of the Work Zone user",
+					"placeholder": "Work Zone user id",
+					"description": "The value will change based on the logged on user",
+					"value": "MyCurrentUserId"
 				}
 			}
 		}
@@ -65,7 +65,7 @@ sap.ui.require([&quot;sap/ui/integration/Host&quot;], function(Host) {
 	// called by runtime to resolve the destination to a real URL
 	host.resolveDestination = function(name) {
 		return this.getDestinations().then(function(destinationList) {
-			return &quot;https://.../dynamic_dest/&quot; + name;
+			return "https://.../dynamic_dest/" + name;
 		})
 		return destination.realUrl
 	};
@@ -75,12 +75,12 @@ sap.ui.require([&quot;sap/ui/integration/Host&quot;], function(Host) {
 		return Promise.resolve(this.destinationList);
 	}
 
-	// called by runtime to resolve a context value by path. example: &quot;/sap.workzone/currentUser/id/value&quot;
+	// called by runtime to resolve a context value by path. example: "/sap.workzone/currentUser/id/value"
 	host.getContextValue = function(path) {
 		return this.getContext().then(function (node) {
-			var parts = path.split(&quot;/&quot;),
+			var parts = path.split("/"),
 				i = 0;
-			while (node &amp;&amp; parts[iIndex]) {
+			while (node && parts[iIndex]) {
 				node = node[parts[iIndex]];
 				i++;
 			}
@@ -102,26 +102,26 @@ sap.ui.require([&quot;sap/ui/integration/Host&quot;], function(Host) {
 			<pre class="lang-html">
 &lt;!-- Administrator Configuration Editor --&gt;
 &lt;ui-integration-card-editor
-	id=&quot;adminEditor&quot;
-	mode=&quot;admin&quot;
-	card=&apos;{&quot;manifest&quot;:&quot;manifest.json&quot;, &quot;baseUrl&quot;:&quot;..&quot;,&quot;manifestChanges&quot;:[...]}&apos;&gt;
+	id="adminEditor"
+	mode="admin"
+	card='{"manifest":"manifest.json", "baseUrl":"..","manifestChanges":[...]}'&gt;
 &lt;/ui-integration-card-editor&gt;
 
 
 &lt;!-- Content Configuration Editor --&gt;
 &lt;ui-integration-card-editor
-	id=&quot;contentEditor&quot;
-	mode=&quot;content&quot;
-	card=&apos;{&quot;manifest&quot;:&quot;manifest.json&quot;,&quot;baseUrl&quot;:&quot;..&quot;,&quot;manifestChanges&quot;:[...]}&apos;&gt;
+	id="contentEditor"
+	mode="content"
+	card='{"manifest":"manifest.json","baseUrl":"..","manifestChanges":[...]}'&gt;
 &lt;/ui-integration-card-editor&gt;
 
 
 &lt;!-- Translator Configuration Editor --&gt;
 &lt;ui-integration-card-editor
-	id=&quot;translationEditor&quot;
-	mode=&quot;translation&quot;
-	card=&apos;{&quot;manifest&quot;:&quot;manifest.json&quot;,&quot;baseUrl&quot;:&quot;..&quot;,&quot;manifestChanges&quot;:[...]}&apos;
-	language=&quot;de&quot;&gt;
+	id="translationEditor"
+	mode="translation"
+	card='{"manifest":"manifest.json","baseUrl":"..","manifestChanges":[...]}'
+	language="de"&gt;
 &lt;/ui-integration-card-editor&gt;</pre>
 			<strong>Embedding in UI5 environments</strong>
 			<p>
@@ -141,22 +141,22 @@ sap.ui.require([&quot;sap/ui/integration/Host&quot;], function(Host) {
 			<pre class="lang-js">
 // if no card instance is available, pass the settings of the card in the part property
 var oEditor = new CardEditor({
-	card: {manifest:&quot;url&quot;, baseUrl:&quot;baseUrl&quot;, manifestChanges:[]},
-	mode: &quot;admin&quot;
+	card: {manifest:"url", baseUrl:"baseUrl", manifestChanges:[]},
+	mode: "admin"
 });
 
 // create a new card instance or use an existing one. Often the card is already on the page
 var oEditor = new CardEditor({
-	card: new Card({manifest:&quot;url&quot;, baseUrl:&quot;baseUrl&quot;, manifestChanges:[]}),
-	mode: &quot;translation&quot;,
-	language: &quot;fr&quot;
+	card: new Card({manifest:"url", baseUrl:"baseUrl", manifestChanges:[]}),
+	mode: "translation",
+	language: "fr"
 });
 
 // for the translation mode a language is needed
 var oEditor = new CardEditor({
-	card: {manifest:&quot;url&quot;, baseUrl:&quot;baseUrl&quot;, manifestChanges:[]},
-	mode: &quot;translation&quot;,
-	language: &quot;fr&quot;
+	card: {manifest:"url", baseUrl:"baseUrl", manifestChanges:[]},
+	mode: "translation",
+	language: "fr"
 });</pre>
 			<h2 id="changehandling">Handling of Changes</h2>
 			<p>
@@ -171,39 +171,39 @@ var oEditor = new CardEditor({
 			<h3 id="gettingChanges">Getting changes from the Configuration Editor</h3>
 			<pre class="lang-js">
 // Administrator Configuration Editor
-var editor = document.getElementById(&quot;adminEditor&quot;);
+var editor = document.getElementById("adminEditor");
 var adminSettings = editor.getCurrentSettings();
 // store the settings adminSettings in the host. These settings should be applied during runtime for all card instances
 // based on this Card template
 
 
 // Content Configuration Editor
-var editor = document.getElementById(&quot;contentEditor&quot;);
+var editor = document.getElementById("contentEditor");
 var contentSettings = editor.getCurrentSettings();
 // store the settings contentSettings in the host for the edited instance
 
 // Translator Configuration Editor
-var editor = document.getElementById(&quot;translationEditor&quot;);
-var language = editor.getAttribute(&quot;language&quot;);
+var editor = document.getElementById("translationEditor");
+var language = editor.getAttribute("language");
 var translationSettings = editor.getCurrentSettings();
 // store the settings translationSettings in the host for the language given in the language attribute during editor creation</pre>
 			<h3 id="applyingChanges">Apply changes to the card instance at runtime</h3>
 			<pre class="lang-js">
 // read the changes
-var adminChanges = myHostEnvImplementation.getChanges(cardid, &quot;admin&quot;); // stringified JSON
-var contentChanges = myHostEnvImplementation.getChanges(cardid, &quot;content&quot;);// stringified JSON
-var translationChanges = myHostEnvImplementation.getChanges(cardid, &quot;translation&quot;, currentuserslanguage); // stringifiedJSON
+var adminChanges = myHostEnvImplementation.getChanges(cardid, "admin"); // stringified JSON
+var contentChanges = myHostEnvImplementation.getChanges(cardid, "content");// stringified JSON
+var translationChanges = myHostEnvImplementation.getChanges(cardid, "translation", currentuserslanguage); // stringifiedJSON
 
-var el = document.createElement(&quot;div&quot;);
+var el = document.createElement("div");
 el.innerHTML = `
 &lt;ui-integration-card
-   id=&quot;cardInstance&quot;
-   manifest=&quot;manifest.json&quot;
-   baseUrl=&quot;...&quot;
-   manifestChanges=&apos;[` + adminChanges + `, ` + contentChanges + `, ` + translationChanges + `]&apos;&gt;
+   id="cardInstance"
+   manifest="manifest.json"
+   baseUrl="..."
+   manifestChanges='[` + adminChanges + `, ` + contentChanges + `, ` + translationChanges + `]'&gt;
 &lt;/ui-integration-card&gt;`;
 
-document.getElementById(&quot;contentarea&quot;).appendChild(el.firstChild);</pre>
+document.getElementById("contentarea").appendChild(el.firstChild);</pre>
 		</div>
 	</div>
 </body>

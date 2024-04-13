@@ -204,28 +204,12 @@ sap.ui.define([
 	var rVoidTags = /^(?:area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)$/;
 
 	/**
-	 * Creates a function based on the passed mode and callback which applies a callback to each child of a node.
-	 * @param {boolean} bAsync The strategy to choose
-	 * @param {function} fnCallback The callback to apply
-	 * @returns {function} The created function
-	 * @private
-	 */
-	function getHandleChildrenStrategy(bAsync, fnCallback) {
-
-		// sync strategy ensures processing order by just being sync
-		function syncStrategy(node, mOptions) {
-			var pChild,
-				aChildren = [];
-
-			for (var i = 0; i < node.childNodes.length; i++) {
-				pChild = fnCallback(node, node.childNodes[i], mOptions);
-				if (pChild) {
-					aChildren.push(pChild.unwrap());
-				}
-			}
-			return SyncPromise.resolve(aChildren);
-		}
-
+		 * Creates a function based on the passed mode and callback which applies a callback to each child of a node.
+		 * @param {function} fnCallback The callback to apply
+		 * @returns {function} The created function
+		 * @private
+		 */
+	function getHandleChildrenStrategy(fnCallback) {
 		// async strategy ensures processing order by chaining the callbacks
 		function asyncStrategy(node, mOptions) {
 			var pChain = Promise.resolve(),
@@ -238,7 +222,7 @@ sap.ui.define([
 			return Promise.all(aChildPromises);
 		}
 
-		return bAsync ? asyncStrategy : syncStrategy;
+		return asyncStrategy;
 	}
 
 	/**
@@ -313,16 +297,15 @@ sap.ui.define([
 	};
 
 	/**
-	 * Parses a complete XML template definition (full node hierarchy) and resolves the ids to their full qualification
-	 *
-	 * @param {Element} xmlNode the XML element representing the View/Fragment
-	 * @param {sap.ui.core.mvc.XMLView|sap.ui.core.Fragment} oView the View/Fragment which corresponds to the parsed XML
-	 * @param {boolean} bAsync Whether or not to perform the template processing asynchronously
-	 * @returns {Promise} which resolves with the xmlNode
-	 * @private
-	 */
-	XMLTemplateProcessor.enrichTemplateIdsPromise = function (xmlNode, oView, bAsync) {
-		return parseTemplate(xmlNode, oView, true, bAsync).then(function() {
+		 * Parses a complete XML template definition (full node hierarchy) and resolves the ids to their full qualification
+		 *
+		 * @param {Element} xmlNode the XML element representing the View/Fragment
+		 * @param {sap.ui.core.mvc.XMLView|sap.ui.core.Fragment} oView the View/Fragment which corresponds to the parsed XML
+		 * @returns {Promise} which resolves with the xmlNode
+		 * @private
+		 */
+	XMLTemplateProcessor.enrichTemplateIdsPromise = function(xmlNode, oView) {
+		return parseTemplate(xmlNode, oView, true, undefined, true).then(function() {
 			return xmlNode;
 		});
 	};
@@ -340,17 +323,18 @@ sap.ui.define([
 	};
 
 	/**
-	 * Parses a complete XML template definition (full node hierarchy)
-	 *
-	 * @param {Element} xmlNode the XML element representing the View/Fragment
-	 * @param {sap.ui.core.mvc.XMLView|sap.ui.core.Fragment} oView the View/Fragment which corresponds to the parsed XML
-	 * @param {boolean} bAsync Whether or not to perform the template processing asynchronously
-	 * @param {object} oParseConfig parse configuration options, e.g. settings pre-processor
-	 * @return {Promise} with an array containing Controls and/or plain HTML element strings
-	 * @private
-	 */
-	XMLTemplateProcessor.parseTemplatePromise = function(xmlNode, oView, bAsync, oParseConfig) {
-		return parseTemplate(xmlNode, oView, false, bAsync, oParseConfig).then(function(vResult) {
+		 * Parses a complete XML template definition (full node hierarchy)
+		 *
+		 * @param {Element} xmlNode the XML element representing the View/Fragment
+		 * @param {sap.ui.core.mvc.XMLView|sap.ui.core.Fragment} oView the View/Fragment which corresponds to the parsed XML
+		 * @param {boolean} bAsync Whether or not to perform the template processing asynchronously
+		 * @param {object} oParseConfig parse configuration options, e.g. settings pre-processor
+		 * @return {Promise} with an array containing Controls and/or plain HTML element strings
+		 * @private
+		 * @ui5-restricted sap.ui.core.Fragment, sap.ui.core.mvc.XMLView
+		 */
+	XMLTemplateProcessor.parseTemplatePromise = function(xmlNode, oView, _bAsync, oParseConfig) {
+		return parseTemplate(xmlNode, oView, false, oParseConfig, true).then(function(vResult) {
 			// vResult is the result array of the XMLTP's parsing.
 			// Elements in vResult can be:
 			//  * RenderManager Call (Array)
@@ -416,16 +400,14 @@ sap.ui.define([
 	}
 
 	/**
-	 * Extract module information which is defined with the "require" attribute under "sap.ui.core" namespace
-	 * and load the modules when there are some defined
-	 *
-	 * @param {Element} xmlNode The current XMLNode which is being processed
-	 * @param {boolean} bAsync Whether the view is processed asynchronously
-	 *
-	 * @return {Promise|undefined} The promise resolves after all modules are loaded. If the given xml node
-	 *  doesn't have require context defined, undefined is returned.
-	 */
-	function parseAndLoadRequireContext(xmlNode, bAsync) {
+		 * Extract module information which is defined with the "require" attribute under "sap.ui.core" namespace
+		 * and load the modules when there are some defined
+		 *
+		 * @param {Element} xmlNode The current XMLNode which is being processed
+		 * @return {Promise|undefined} The promise resolves after all modules are loaded. If the given xml node
+		 *  doesn't have require context defined, undefined is returned.
+		 */
+	function parseAndLoadRequireContext(xmlNode) {
 		var sCoreContext = xmlNode.getAttributeNS(CORE_NAMESPACE, "require"),
 			oRequireContext,
 			oModules,
@@ -446,38 +428,33 @@ sap.ui.define([
 
 			if (!isEmptyObject(oRequireContext)) {
 				oModules = {};
-				if (bAsync) {
-					return new Promise(function(resolve, reject) {
-						// check whether all modules have been loaded already, avoids nested setTimeout calls
-						var bAllLoaded = Object.keys(oRequireContext).reduce(function(bAll, sKey) {
-							oModules[sKey] = sap.ui.require(oRequireContext[sKey]);
-							return bAll && oModules[sKey] !== undefined;
-						}, true);
-						if ( bAllLoaded ) {
-							resolve(oModules);
-							return;
-						}
-						// fall back to async loading
-						sap.ui.require(Object.values(oRequireContext), function() {
-							var aLoadedModules = arguments;
-							Object.keys(oRequireContext).forEach(function(sKey, i) {
-								oModules[sKey] = aLoadedModules[i];
-							});
-							resolve(oModules);
-						}, reject);
-					});
-				} else {
-					Object.keys(oRequireContext).forEach(function(sKey) {
-						oModules[sKey] = sap.ui.requireSync(oRequireContext[sKey]); // legacy-relevant: Sync path
-					});
-
-					return SyncPromise.resolve(oModules);
-				}
+				return new Promise(function(resolve, reject) {
+					// check whether all modules have been loaded already, avoids nested setTimeout calls
+					var bAllLoaded = Object.keys(oRequireContext).reduce(function(bAll, sKey) {
+						oModules[sKey] = sap.ui.require(oRequireContext[sKey]);
+						return bAll && oModules[sKey] !== undefined;
+					}, true);
+					if ( bAllLoaded ) {
+						resolve(oModules);
+						return;
+					}
+					// fall back to async loading
+					sap.ui.require(Object.values(oRequireContext), function() {
+						var aLoadedModules = arguments;
+						Object.keys(oRequireContext).forEach(function(sKey, i) {
+							oModules[sKey] = aLoadedModules[i];
+						});
+						resolve(oModules);
+					}, reject);
+				});
 			}
 		}
 	}
 
-	function fnTriggerExtensionPointProvider(bAsync, oTargetControl, mAggregationsWithExtensionPoints) {
+	/**
+		 * @private
+		 */
+	function fnTriggerExtensionPointProvider(oTargetControl, mAggregationsWithExtensionPoints) {
 		var pProvider = SyncPromise.resolve();
 
 		// if no extension points are given, we don't have to do anything here
@@ -487,11 +464,9 @@ sap.ui.define([
 			// in the async case we can collect the ExtensionPointProvider promises and
 			// then can delay the view.loaded() promise until all extension points are
 			var fnResolveExtensionPoints;
-			if (bAsync) {
-				pProvider = new Promise(function(resolve) {
-					fnResolveExtensionPoints = resolve;
-				});
-			}
+			pProvider = new Promise(function(resolve) {
+				fnResolveExtensionPoints = resolve;
+			});
 
 			Object.keys(mAggregationsWithExtensionPoints).forEach(function(sAggregationName) {
 				var aExtensionPoints = mAggregationsWithExtensionPoints[sAggregationName];
@@ -519,10 +494,7 @@ sap.ui.define([
 				});
 			});
 
-			// we collect the ExtensionProvider Promises
-			if (bAsync) {
-				Promise.all(aAppliedExtensionPoints).then(fnResolveExtensionPoints);
-			}
+			Promise.all(aAppliedExtensionPoints).then(fnResolveExtensionPoints);
 		}
 		return pProvider;
 	}
@@ -540,25 +512,22 @@ sap.ui.define([
 	}
 
 	/**
-	 * Parses a complete XML template definition (full node hierarchy)
-	 *
-	 * @param {Element} xmlNode the XML element representing the View/Fragment
-	 * @param {sap.ui.core.mvc.XMLView|sap.ui.core.Fragment} oView the View/Fragment which corresponds to the parsed XML
-	 * @param {boolean} bEnrichFullIds Flag for running in a mode which only resolves the ids and writes them back
-	 *     to the xml source.
-	 * @param {boolean} bAsync Whether or not to perform the template processing asynchronously.
-	 *     The async processing will only be active in conjunction with the internal XML processing mode set
-	 *     to <code>XMLProcessingMode.Sequential</code> or <code>XMLProcessingMode.SequentialLegacy</code>.
-	 * @param {object} oParseConfig parse configuration options, e.g. settings pre-processor
-	 *
-	 * @return {Promise} with an array containing Controls and/or plain HTML element strings
-	 */
-	function parseTemplate(xmlNode, oView, bEnrichFullIds, bAsync, oParseConfig) {
+		 * Parses a complete XML template definition (full node hierarchy)
+		 *
+		 * @param {Element} xmlNode the XML element representing the View/Fragment
+		 * @param {sap.ui.core.mvc.XMLView|sap.ui.core.Fragment} oView the View/Fragment which corresponds to the parsed XML
+		 * @param {boolean} bEnrichFullIds Flag for running in a mode which only resolves the ids and writes them back
+		 *     to the xml source.
+		 * @param {object} oParseConfig parse configuration options, e.g. settings pre-processor
+		 *
+		 * @return {Promise} with an array containing Controls and/or plain HTML element strings
+		 */
+	function parseTemplate(xmlNode, oView, bEnrichFullIds, oParseConfig) {
 		// the output of the template parsing, containing strings and promises which resolve to control or control arrays
 		// later this intermediate state with promises gets resolved to a flat array containing only strings and controls
 		var aResult = [],
 			sInternalPrefix = findNamespacePrefix(xmlNode, UI5_INTERNAL_NAMESPACE, "__ui5"),
-			pResultChain = parseAndLoadRequireContext(xmlNode, bAsync) || SyncPromise.resolve(),
+			pResultChain = parseAndLoadRequireContext(xmlNode, true) || SyncPromise.resolve(),
 			rm = {
 				openStart: function(tagName, sId) {
 					aResult.push(["openStart", [tagName, sId]]);
@@ -606,9 +575,8 @@ sap.ui.define([
 			});
 		}
 
-		bAsync = bAsync && !!oView._sProcessingMode;
 		Log.debug("XML processing mode is " + (oView._sProcessingMode || "default") + ".", "", "XMLTemplateProcessor");
-		Log.debug("XML will be processed " + (bAsync ? "asynchronously" : "synchronously") + ".", "", "XMLTemplateProcessor");
+		Log.debug("XML will be processed " + ("asynchronously") + ".", "", "XMLTemplateProcessor");
 
 		var bDesignMode = DesignTime.isDesignModeEnabled();
 		if (bDesignMode) {
@@ -745,11 +713,11 @@ sap.ui.define([
 					return createRegularControls(node, oView.getMetadata().getClass(), pChain, null, { rootArea: true, rootNode: true });
 				});
 			} else {
-				var handleChildren = getHandleChildrenStrategy(bAsync, function(node, childNode, mOptions) {
+				var handleChildren = getHandleChildrenStrategy(function(node, childNode, mOptions) {
 					if (childNode.nodeType === 1 /* Element Node*/) {
 						return createControls(childNode, mOptions.chain, null /*closest binding*/, undefined /* aggregation info*/, { rootArea: true });
 					}
-				});
+				}, true);
 
 				pResultChain = pChain.then(function() {
 					return handleChildren(node, {
@@ -925,7 +893,7 @@ sap.ui.define([
 						} else {
 							rm.openEnd();
 
-							var pSelfRequireContext = parseAndLoadRequireContext(node, bAsync);
+							var pSelfRequireContext = parseAndLoadRequireContext(node, true);
 
 							if (pSelfRequireContext) {
 								pRequireContext = SyncPromise.all([pRequireContext, pSelfRequireContext])
@@ -938,9 +906,9 @@ sap.ui.define([
 							// For HTMLTemplateElement nodes, skip the associated DocumentFragment node
 							var oContent = node instanceof HTMLTemplateElement ? node.content : node;
 
-							var handleChildren = getHandleChildrenStrategy(bAsync, function (node, childNode, mOptions) {
+							var handleChildren = getHandleChildrenStrategy(function (node, childNode, mOptions) {
 								return createControls(childNode, mOptions.chain, mOptions.closestBinding, mOptions.aggregation, mOptions.config);
-							});
+							}, true);
 
 							pResult = handleChildren(oContent, {
 								chain: pRequireContext,
@@ -971,7 +939,7 @@ sap.ui.define([
 						var id = node.attributes['id'] ? node.attributes['id'].textContent || node.attributes['id'].text : null;
 
 						if (bEnrichFullIds) {
-							return XMLTemplateProcessor.enrichTemplateIdsPromise(node, oView, bAsync).then(function(){
+							return XMLTemplateProcessor.enrichTemplateIdsPromise(node, oView, true).then(function(){
 								// do not create controls
 								return [];
 							});
@@ -994,16 +962,11 @@ sap.ui.define([
 							};
 
 							return pRequireContext.then(function(oRequireContext) {
-								if (bAsync) {
-									return new Promise(function (resolve, reject) {
-										sap.ui.require(["sap/ui/core/mvc/XMLView"], function(XMLView) {
-											resolve([fnCreateView(XMLView, oRequireContext)]);
-										}, reject);
-									});
-								} else {
-									var XMLView = sap.ui.requireSync("sap/ui/core/mvc/XMLView"); // legacy-relevant: Sync path
-									return [fnCreateView(XMLView, oRequireContext)];
-								}
+								return new Promise(function (resolve, reject) {
+									sap.ui.require(["sap/ui/core/mvc/XMLView"], function(XMLView) {
+										resolve([fnCreateView(XMLView, oRequireContext)]);
+									}, reject);
+								});
 							});
 						}
 					}
@@ -1079,7 +1042,7 @@ sap.ui.define([
 							});
 							return aDefaultContent;
 						});
-					}, undefined /* [targetControl] */, undefined /* [aggregationName] */, bAsync);
+					}, undefined /* [targetControl] */, undefined /* [aggregationName] */, true);
 
 					return SyncPromise.resolve(scopedRunWithOwner(fnExtensionPointFactory));
 				}
@@ -1172,7 +1135,7 @@ sap.ui.define([
 			var oMetadata = oClass.getMetadata();
 			var mKnownSettings = oMetadata.getAllSettings();
 
-			var pSelfRequireContext = !bRootArea ? parseAndLoadRequireContext(node, bAsync) : undefined;
+			var pSelfRequireContext = !bRootArea ? parseAndLoadRequireContext(node, true) : undefined;
 
 			// create new promise only when the current node has core:require defined
 			if (pSelfRequireContext) {
@@ -1192,7 +1155,7 @@ sap.ui.define([
 				// [ASYNC only]: In async mode we instruct the BindingParser to resolve the Types asynchronously.
 				//               The function "parseScalarType()" will then collect the Promises from the BindingParser,
 				//               so that we can then wait for them later on here.
-				var aTypePromises = bAsync ? [] : undefined;
+				var aTypePromises = [];
 
 				if (!bEnrichFullIds) {
 					for (var i = 0; i < node.attributes.length; i++) {
@@ -1396,7 +1359,7 @@ sap.ui.define([
 				// [COMPATIBILITY]
 				// sync: we just log the error and keep on processing
 				// asnyc: throw the error, so the parseTemplate Promise will reject
-				if (bAsync && oView._sProcessingMode !== XMLProcessingMode.SequentialLegacy) {
+				if (oView._sProcessingMode !== XMLProcessingMode.SequentialLegacy) {
 					throw oError;
 				}
 			});
@@ -1408,7 +1371,7 @@ sap.ui.define([
 			 * @private
 			 */
 			// the actual handleChildren function depends on the processing mode
-			var handleChildren = getHandleChildrenStrategy(bAsync, handleChild);
+			var handleChildren = getHandleChildrenStrategy(handleChild, true);
 
 			/**
 			 * @return {Promise} resolving to an array with 0..n controls created from a node
@@ -1457,12 +1420,6 @@ sap.ui.define([
 								StashedControlSupport.createStashedControl({
 									wrapperId: sControlId,
 									fnCreate: function(bSync) {
-										var bPrevAsync = bAsync;
-
-										// temporarily switch the stashed subtree to async=false in case the unstash() operation is triggered sync.
-										// the scoped var bAsync applies to everything contained in this view, the original value is restored after the unstash operation
-										bAsync = !bSync;
-
 										try {
 											setUI5Attribute(oStashedNode, "unstash");
 											const vUnstashedControl = handleChild(node, oStashedNode, {
@@ -1472,9 +1429,7 @@ sap.ui.define([
 												closestBinding: oClosestBinding
 											});
 											return vUnstashedControl;
-										} finally {
-											bAsync = bPrevAsync;
-										}
+										} finally {}
 									}
 								});
 							};
@@ -1602,7 +1557,7 @@ sap.ui.define([
 					mSettings.type = oClass._sType || sType;
 
 					// If the view is owned by an async-component we can propagate the asynchronous creation behavior to the nested views
-					if (bIsAsyncComponent && bAsync) {
+					if (bIsAsyncComponent) {
 						// legacy check: async=false is not supported with an async-component
 						if (mSettings.async === false) {
 							throw new Error(
@@ -1621,7 +1576,7 @@ sap.ui.define([
 						}
 
 						var sViewClass = View._getViewClassName(mSettings, true /* skip error log*/);
-						if (bAsync && sViewClass) {
+						if (sViewClass) {
 							pInstanceCreated = new Promise(function(resolve, reject) {
 								sap.ui.require([sViewClass], resolve, reject);
 							}).then(function() {
@@ -1635,7 +1590,7 @@ sap.ui.define([
 							});
 						}
 					}
-				} else if (oClass.getMetadata().isA("sap.ui.core.Fragment") && bAsync) {
+				} else if (oClass.getMetadata().isA("sap.ui.core.Fragment")) {
 					mSettings.processingMode = oView._sProcessingMode;
 
 					var sFragmentPath = "sap/ui/core/Fragment";
@@ -1662,23 +1617,6 @@ sap.ui.define([
 
 						if (bViewRootNode) {
 							oInstance = oView;
-							if (!bAsync) {
-								// oParseConfig.settings: the settings object that is given to the factory method
-								// mSettings: the settings object that contains the properties parsed from View tag
-								//
-								// In sync case, mSettings is applied before the oParseConfig.settings. In order to make
-								// the mSettings win against the oParseConfig.settings, the properties that exist in
-								// both objects are merged into the oParseConfig.settings with the value taken from
-								// mSettings and they are then deleted from mSettings.
-								if (oParseConfig && oParseConfig.settings) {
-									Object.keys(mSettings).forEach(function(sKey) {
-										if (oParseConfig.settings.hasOwnProperty(sKey)) {
-											oParseConfig.settings[sKey] = mSettings[sKey];
-											delete mSettings[sKey];
-										}
-									});
-								}
-							}
 							oView.applySettings(mSettings);
 						} else {
 							// the scoped runWithOwner function is only during ASYNC processing!
@@ -1700,7 +1638,7 @@ sap.ui.define([
 						}
 
 						// check if we need to hand the ExtensionPoint info to the ExtensionProvider
-						pProvider = fnTriggerExtensionPointProvider(bAsync, oInstance, mAggregationsWithExtensionPoints);
+						pProvider = fnTriggerExtensionPointProvider(oInstance, mAggregationsWithExtensionPoints, true);
 
 						return oInstance;
 					};
@@ -1783,7 +1721,6 @@ sap.ui.define([
 			xmlNode.setAttribute("id", createId(xmlNode.getAttribute("id")));
 			setUI5Attribute(xmlNode, "id");
 		}
-
 	}
 
 	/**

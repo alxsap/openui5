@@ -26,8 +26,8 @@
 		back-end system.<br>
 		Start the Products V2 application with the URL (adjust host and port if necessary):
 		<ul>
-			<li> local: <a href="http://localhost:8080/testsuite/test-resources/sap/ui/core/internal/samples/odata/v2/Products/index.html?realOData=true&amp;sap-ui-language=EN">
-				http://localhost:8080/testsuite/test-resources/sap/ui/core/internal/samples/odata/v2/Products/index.html?realOData=true&amp;sap-ui-language=EN</a></li>
+			<li> local: <a href="http://localhost:8080/testsuite/test-resources/sap/ui/core/internal/samples/odata/v2/Products/index.html?realOData=true&sap-ui-language=EN">
+				http://localhost:8080/testsuite/test-resources/sap/ui/core/internal/samples/odata/v2/Products/index.html?realOData=true&sap-ui-language=EN</a></li>
 		</ul>
 
 		<h2>REALIZE and CHECK</h2>
@@ -44,41 +44,41 @@
 			<li> DEG (99 decimal places)</li>
 		</ul>
 		For a complete list of valid unit codes, see the &quot;ExternalCode&quot; property of the
-		objects linked in &quot;Unit Codes&quot; in the test application.
+		objects linked in "Unit Codes" in the test application.
 		<h4>Testing with back end</h4>
 		For testing, you may try and use the unit codes listed in
 		&quot;Testing with mock data&quot;; depending on the back end they may however not be
 		available in the back-end customizing.
 		For a complete list of valid unit codes, see the &quot;ExternalCode&quot; property of the
-		objects linked in &quot;Unit Codes&quot; in the test application.
+		objects linked in "Unit Codes" in the test application.
 		<h4>Test measures</h4>
 		<ul>
 			<li><b>Check:</b> Weights in the table are displayed with the number of decimal places
 				associated with the corresponding unit.</li>
-			<li>Change the weight for a product in the table to &quot;12.3 NO&quot; and leave the input
+			<li>Change the weight for a product in the table to "12.3 NO" and leave the input
 				field.</li>
 			<li><b>Check:</b> The weight is formatted with the decimal places associated with
-				the entered unit code to &quot;12.30 NO&quot;.</li>
-			<li>Change the weight to &quot;21&quot;.</li>
+				the entered unit code to "12.30 NO".</li>
+			<li>Change the weight to "21".</li>
 			<li><b>Check:</b> The weight is formatted with the decimal places associated with
-				the previous unit code to &quot;21.00 NO&quot;.</li>
-			<li>Change the weight to &quot;12.345 NO&quot;.</li>
-			<li><b>Check:</b> You see a validation error message &quot;Enter a number with a maximum of 2
-				decimal places&quot; and the weight field shows an invalid data state.</li>
-			<li>Change the weight unit to an invalid code such as &apos;XYZ&apos;.</li>
+				the previous unit code to "21.00 NO".</li>
+			<li>Change the weight to "12.345 NO".</li>
+			<li><b>Check:</b> You see a validation error message "Enter a number with a maximum of 2
+				decimal places" and the weight field shows an invalid data state.</li>
+			<li>Change the weight unit to an invalid code such as 'XYZ'.</li>
 			<li><b>Check:</b> You see an error message and the weight field shows an invalid data
 				state.</li>
-			<li>Change the weight to &quot;32&quot;.</li>
+			<li>Change the weight to "32".</li>
 			<li><b>Check:</b> The weight is formatted with the decimal places associated with
-				the <b>last valid</b> unit code &apos;NO&apos; to &quot;32.00 NO&quot;.</li>
+				the <b>last valid</b> unit code 'NO' to "32.00 NO".</li>
 		</ul>
 		Test the following with mock data only
 		<ul>
-			<li>Change the weight of the product &apos;Notebook New&apos; which has no weight yet to &quot;42&quot;.
+			<li>Change the weight of the product 'Notebook New' which has no weight yet to "42".
 			</li>
-			<li><b>Check:</b> The weight is formatted to &quot;42&quot; and the field has no invalid data
+			<li><b>Check:</b> The weight is formatted to "42" and the field has no invalid data
 			state.</li>
-			<li>Change the weight of the product &apos;Notebook New&apos; to &quot;KG&quot;.</li>
+			<li>Change the weight of the product 'Notebook New' to "KG".</li>
 			<li><b>Check:</b> You see an error message and the weight field shows an invalid data
 				state.</li>
 		</ul>
@@ -93,42 +93,42 @@
 			<li> USDN (5 decimal places)</li>
 		</ul>
 		For a complete list of valid currency codes, see the &quot;CurrencyCode&quot; property of
-		the objects linked in &quot;Currency Codes&quot; in the test application.
+		the objects linked in "Currency Codes" in the test application.
 		<h4>Testing with back end</h4>
 		For testing, you may use the currency codes listed in &quot;Testing with mock data&quot;;
 		depending on the back end they may however not be available in the back-end customizing.
 		For a complete list of valid currency codes, see the &quot;CurrencyCode&quot; property of
-		the objects linked in &quot;Currency Codes&quot; in the test application.
+		the objects linked in "Currency Codes" in the test application.
 		<h4>Test currencies</h4>
 		<ul>
 			<li><b>Check:</b> Prices in the table are displayed with the number of decimal places
 				associated with the corresponding currency.</li>
-			<li>Change the price for a product in the table to &quot;12.3 USD&quot; and leave the input
+			<li>Change the price for a product in the table to "12.3 USD" and leave the input
 				field.</li>
 			<li><b>Check:</b> The price is formatted with the decimal places associated with
-				the entered currency code to &quot;12.30 USD&quot;.</li>
-			<li>Change the price to &quot;21&quot;.</li>
+				the entered currency code to "12.30 USD".</li>
+			<li>Change the price to "21".</li>
 			<li><b>Check:</b> The price is formatted with the decimal places associated with
-				the previous currency code to &quot;21.00 USD&quot;.</li>
-			<li>Change the price to &quot;12.345 USD&quot;.</li>
-			<li><b>Check:</b> You see a validation error message &quot;Enter a number with a maximum of 2
-				decimal places&quot; and the price field shows an invalid data state.</li>
-			<li>Change the currency to an invalid code such as &apos;XYZ&apos;.</li>
+				the previous currency code to "21.00 USD".</li>
+			<li>Change the price to "12.345 USD".</li>
+			<li><b>Check:</b> You see a validation error message "Enter a number with a maximum of 2
+				decimal places" and the price field shows an invalid data state.</li>
+			<li>Change the currency to an invalid code such as 'XYZ'.</li>
 			<li><b>Check:</b> You see an error message and the price field shows an invalid data
 				state.</li>
-			<li>Change the price to &quot;32&quot;.</li>
+			<li>Change the price to "32".</li>
 			<li><b>Check:</b> The price is formatted with the decimal places associated with
-				the <b>last valid</b> currency code &apos;USD&apos; to &quot;32.00 USD&quot;.</li>
-			<li>Change the price to &quot;42 &#x24;&quot;.</li>
+				the <b>last valid</b> currency code 'USD' to "32.00 USD".</li>
+			<li>Change the price to "42 $".</li>
 			<li><b>Check:</b> The price is formatted with the decimal places associated with
-				the entered currency code to &quot;42.00 USD&quot;.</li>
+				the entered currency code to "42.00 USD".</li>
 		</ul>
 		Test the following with mock data only
 		<ul>
-			<li>Change the price of the product &apos;Notebook New&apos; which has no price yet to &quot;42&quot;.</li>
-			<li><b>Check:</b> The price is formatted to &quot;42.00&quot; and the field has no invalid data
+			<li>Change the price of the product 'Notebook New' which has no price yet to "42".</li>
+			<li><b>Check:</b> The price is formatted to "42.00" and the field has no invalid data
 			state.</li>
-			<li>Change the price of the product &apos;Notebook New&apos; to &quot;EUR&quot;.</li>
+			<li>Change the price of the product 'Notebook New' to "EUR".</li>
 			<li><b>Check:</b> You see an error message and the price field shows an invalid data
 				state.</li>
 		</ul>

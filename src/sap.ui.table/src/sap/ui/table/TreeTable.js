@@ -27,7 +27,7 @@ sap.ui.define([
 	) {
 		"use strict";
 
-		var _private = TableUtils.createWeakMapFacade();
+		const _private = TableUtils.createWeakMapFacade();
 
 		/**
 		 * Constructor for a new TreeTable.
@@ -47,7 +47,7 @@ sap.ui.define([
 		 * @see {@link topic:148892ff9aea4a18b912829791e38f3e Tables: Which One Should I Choose?}
 		 * @see {@link fiori:/tree-table/ Tree Table}
 		 */
-		var TreeTable = Table.extend("sap.ui.table.TreeTable", /** @lends sap.ui.table.TreeTable.prototype */ {metadata: {
+		const TreeTable = Table.extend("sap.ui.table.TreeTable", /** @lends sap.ui.table.TreeTable.prototype */ {metadata: {
 
 			library: "sap.ui.table",
 			properties: {
@@ -109,7 +109,7 @@ sap.ui.define([
 		TreeTable.prototype._bindRows = function(oBindingInfo) {
 			_private(this).bPendingRequest = false;
 
-			var iExpandedLevels = 0;
+			const iExpandedLevels = 0;
 			this._oProxy.applyLegacySettingsToBindingInfo(oBindingInfo, {
 				rootLevel: this.isPropertyInitial("rootLevel") ? undefined : 0,
 				collapseResursive: this.isPropertyInitial("collapseRecursive") ? undefined : true,
@@ -120,14 +120,14 @@ sap.ui.define([
 		};
 
 		function updateRowState(oState) {
-			var mProxyInfo = oState.context["_mProxyInfo"];
+			const mProxyInfo = oState.context["_mProxyInfo"];
 
 			oState.level = mProxyInfo.level;
 			oState.expandable = !mProxyInfo.isLeaf;
 			oState.expanded = mProxyInfo.isExpanded;
 
 			if (TableUtils.Grouping.isInGroupMode(this)) {
-				var sHeaderProp = this.getGroupHeaderProperty();
+				const sHeaderProp = this.getGroupHeaderProperty();
 
 				if (sHeaderProp) {
 					oState.title = oState.context.getProperty(sHeaderProp);
@@ -141,10 +141,10 @@ sap.ui.define([
 		}
 
 		function expandRow(oRow) {
-			var iIndex = oRow.getIndex();
+			const iIndex = oRow.getIndex();
 
 			this._oProxy.expand(iIndex);
-			var bIsExpanded = this._oProxy.isExpanded(iIndex);
+			const bIsExpanded = this._oProxy.isExpanded(iIndex);
 
 			if (typeof bIsExpanded === "boolean") {
 				this._onGroupHeaderChanged(iIndex, bIsExpanded);
@@ -152,10 +152,10 @@ sap.ui.define([
 		}
 
 		function collapseRow(oRow) {
-			var iIndex = oRow.getIndex();
+			const iIndex = oRow.getIndex();
 
 			this._oProxy.collapse(iIndex);
-			var bIsExpanded = this._oProxy.isExpanded(iIndex);
+			const bIsExpanded = this._oProxy.isExpanded(iIndex);
 
 			if (typeof bIsExpanded === "boolean") {
 				this._onGroupHeaderChanged(iIndex, bIsExpanded);
@@ -189,7 +189,7 @@ sap.ui.define([
 
 		TreeTable.prototype.getBinding = function(sName) {
 			sName = sName == null ? "rows" : sName;
-			var oBinding = Table.prototype.getBinding.call(this, sName);
+			const oBinding = Table.prototype.getBinding.call(this, sName);
 
 			if (oBinding && sName === "rows" && !oBinding.getLength) {
 				if (oBinding.isA("sap.ui.model.odata.v2.ODataTreeBinding")) {
@@ -213,16 +213,16 @@ sap.ui.define([
 		};
 
 		function getRowContexts(oTable, iRequestLength, bSecondCall) {
-			var iOldTotalRowCount = oTable._getTotalRowCount();
-			var aRowContexts = Table.prototype._getRowContexts.call(oTable, iRequestLength);
+			const iOldTotalRowCount = oTable._getTotalRowCount();
+			let aRowContexts = Table.prototype._getRowContexts.call(oTable, iRequestLength);
 
 			if (bSecondCall === true) {
 				return aRowContexts;
 			}
 
-			var iNewTotalRowCount = oTable._getTotalRowCount();
-			var iFirstVisibleRow = oTable._getFirstRenderedRowIndex();
-			var iMaxRowIndex = oTable._getMaxFirstRenderedRowIndex();
+			const iNewTotalRowCount = oTable._getTotalRowCount();
+			const iFirstVisibleRow = oTable._getFirstRenderedRowIndex();
+			const iMaxRowIndex = oTable._getMaxFirstRenderedRowIndex();
 
 			oTable._adjustToTotalRowCount();
 

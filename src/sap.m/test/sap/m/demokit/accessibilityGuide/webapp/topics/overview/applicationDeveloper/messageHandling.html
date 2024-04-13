@@ -21,14 +21,14 @@
 			<p>The MessageToast provides a way for the application to show non-disruptive message on screen.</p>
 			<pre class="lang-js">
 sap.ui.define([
-	&quot;sap/ui/core/mvc/Controller&quot;,
-	<mark>&quot;sap/m/MessageToast&quot;</mark>
+	"sap/ui/core/mvc/Controller",
+	<mark>"sap/m/MessageToast"</mark>
 ], function(Controller, MessageToast) {
-&quot;use strict&quot;;
+"use strict";
 
-	return Controller.extend(&quot;sap.m.sample.messageToast.Controller&quot;, {
+	return Controller.extend("sap.m.sample.messageToast.Controller", {
 		fnHandler: function () {
-			<mark>MessageToast.show(&quot;Toasted!!!&quot;);</mark>
+			<mark>MessageToast.show("Toasted!!!");</mark>
 		}
 	});
 });

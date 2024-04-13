@@ -19,7 +19,7 @@ sap.ui.define([
 ) {
 	"use strict";
 
-	var HeightTestControl = TableQUnitUtils.HeightTestControl;
+	const HeightTestControl = TableQUnitUtils.HeightTestControl;
 
 	TableQUnitUtils.setDefaultSettings({
 		rowMode: new FixedRowMode(),
@@ -42,9 +42,9 @@ sap.ui.define([
 	});
 
 	QUnit.test("Initialize with hideEmptyRows=false", function(assert) {
-		var oDisableNoDataSpy = sinon.spy(FixedRowMode.prototype, "disableNoData");
-		var oEnableNoDataSpy = sinon.spy(FixedRowMode.prototype, "enableNoData");
-		var oTableInvalidateSpy = sinon.spy(this.oTable, "invalidate");
+		const oDisableNoDataSpy = sinon.spy(FixedRowMode.prototype, "disableNoData");
+		const oEnableNoDataSpy = sinon.spy(FixedRowMode.prototype, "enableNoData");
+		const oTableInvalidateSpy = sinon.spy(this.oTable, "invalidate");
 
 		this.oTable.setAggregation("rowMode", new FixedRowMode().setHideEmptyRows(false));
 
@@ -59,9 +59,9 @@ sap.ui.define([
 	});
 
 	QUnit.test("Initialize with hideEmptyRows=true", function(assert) {
-		var oDisableNoDataSpy = sinon.spy(FixedRowMode.prototype, "disableNoData");
-		var oEnableNoDataSpy = sinon.spy(FixedRowMode.prototype, "enableNoData");
-		var oTableInvalidateSpy = sinon.spy(this.oTable, "invalidate");
+		const oDisableNoDataSpy = sinon.spy(FixedRowMode.prototype, "disableNoData");
+		const oEnableNoDataSpy = sinon.spy(FixedRowMode.prototype, "enableNoData");
+		const oTableInvalidateSpy = sinon.spy(this.oTable, "invalidate");
 
 		this.oTable.setAggregation("rowMode", new FixedRowMode().setHideEmptyRows(true));
 
@@ -76,9 +76,9 @@ sap.ui.define([
 	});
 
 	QUnit.test("Change 'hideEmptyRows' property", function(assert) {
-		var oRowMode = new FixedRowMode();
-		var oDisableNoData = sinon.spy(oRowMode, "disableNoData");
-		var oEnableNoData = sinon.spy(oRowMode, "enableNoData");
+		const oRowMode = new FixedRowMode();
+		const oDisableNoData = sinon.spy(oRowMode, "disableNoData");
+		const oEnableNoData = sinon.spy(oRowMode, "enableNoData");
 
 		oRowMode.setHideEmptyRows(false);
 		assert.ok(oDisableNoData.notCalled, "Change from true to false: #disableNoData was not called");
@@ -126,8 +126,8 @@ sap.ui.define([
 	});
 
 	QUnit.test("Change row count", function(assert) {
-		var oTable = this.createTable();
-		var oGetContextsSpy = this.oGetContextsSpy;
+		const oTable = this.createTable();
+		const oGetContextsSpy = this.oGetContextsSpy;
 
 		oTable.setFirstVisibleRow(10);
 

@@ -312,29 +312,23 @@ sap.ui.define([
 	}
 
 	/**
-	 * resolves either the module dependency or the function which was passed to settings to the internal
-	 * preprocessor config object
-	 *
-	 * @param {object} oPreprocessor Preprocessor config object
-	 * @param {boolean} bAsync Whether processing is async or not
-	 * @return {object} oPreprocessorImpl
-	 * @private
-	 */
-	function initPreprocessor(oPreprocessor, bAsync) {
+		 * resolves either the module dependency or the function which was passed to settings to the internal
+		 * preprocessor config object
+		 *
+		 * @param {object} oPreprocessor Preprocessor config object
+		 * @return {object} oPreprocessorImpl
+		 * @private
+		 */
+	function initPreprocessor(oPreprocessor) {
 		var oPreprocessorImpl;
 
 		if (typeof oPreprocessor.preprocessor === "string") {
 			var sPreprocessorName = oPreprocessor.preprocessor.replace(/\./g, "/");
-			// module string given, resolve and retrieve object
-			if (bAsync) {
-				 return new Promise(function(resolve, reject) {
-					sap.ui.require([sPreprocessorName], function(oPreprocessorImpl) {
-						resolve(oPreprocessorImpl);
-					}, reject);
-				});
-			} else {
-				return sap.ui.requireSync(sPreprocessorName); // legacy-relevant: Sync path
-			}
+			return new Promise(function(resolve, reject) {
+			   sap.ui.require([sPreprocessorName], function(oPreprocessorImpl) {
+				   resolve(oPreprocessorImpl);
+			   }, reject);
+		   });
 		} else if (typeof oPreprocessor.preprocessor === "function" && !oPreprocessor.preprocessor.process) {
 			oPreprocessorImpl = {
 				process: oPreprocessor.preprocessor
@@ -343,11 +337,7 @@ sap.ui.define([
 			oPreprocessorImpl = oPreprocessor.preprocessor;
 		}
 
-		if (bAsync) {
-			return Promise.resolve(oPreprocessorImpl);
-		} else {
-			return oPreprocessorImpl;
-		}
+		return Promise.resolve(oPreprocessorImpl);
 	}
 
 	/**
@@ -426,17 +416,16 @@ sap.ui.define([
 	}
 
 	/**
-	 * Creates and connects the controller if the controller is not given in the
-	 * mSettings
-	 *
-	 * @param {sap.ui.core.mvc.XMLView} oThis the instance of the view that should be processed
-	 * @param {object} [mSettings] Settings
-	 * @returns {Promise|undefined} A promise for asynchronous or undefined for synchronous controllers
-	 * @throws {Error}
-	 * @private
-	 */
+		 * Creates and connects the controller if the controller is not given in the
+		 * mSettings
+		 *
+		 * @param {sap.ui.core.mvc.XMLView} oThis the instance of the view that should be processed
+		 * @param {object} [mSettings] Settings
+		 * @returns {Promise|undefined} A promise for asynchronous or undefined for synchronous controllers
+		 * @throws {Error}
+		 * @private
+		 */
 	var createAndConnectController = function(oThis, mSettings) {
-		var bAsync = mSettings.async;
 		var connectToView = function (oController) {
 			oThis.oController = oController;
 			oController.oView = oThis;
@@ -463,40 +452,28 @@ sap.ui.define([
 							defaultController = typeof sControllerReplacement === "string" ? sControllerReplacement : sControllerReplacement.controllerName;
 						}
 					}
-					// create controller
-					if (bAsync) {
-						oController = Controller.create({name: defaultController, _viewId: oThis.sId});
-					} else {
-						oController = sap.ui.controller(defaultController, true, false, oThis.sId); // legacy-relevant: Sync path
-					}
+					oController = Controller.create({name: defaultController, _viewId: oThis.sId});
 				}
 			} else if (oController) {
 				oThis.bControllerIsViewManaged = false;
 				// if passed controller is not extended yet we need to do it.
 				var sOwnerId = ManagedObject._sOwnerId;
 				if (!oController._isExtended()) {
-					oController = Controller.applyExtensions(oController, sName, sOwnerId, oThis.sId, bAsync);
-				} else if (bAsync) {
+					oController = Controller.applyExtensions(oController, sName, sOwnerId, oThis.sId, true);
+				} else {
 					oController = Promise.resolve(oController);
 				}
 			}
 
 			if (oController) {
-				if (bAsync) {
-					if (!oThis.oAsyncState) {
-						throw new Error("The view " + oThis.sViewName + " runs in sync mode and therefore cannot use async controller extensions!");
-					}
-					return oController.then(connectToView);
-				} else {
-					connectToView(oController);
+				if (!oThis.oAsyncState) {
+					throw new Error("The view " + oThis.sViewName + " runs in sync mode and therefore cannot use async controller extensions!");
 				}
+				return oController.then(connectToView);
 			}
-		} else if (bAsync) {
+		} else {
 			const oController = Object.assign(new Controller(), { "_sap.ui.core.mvc.EmptyControllerImpl": true });
 			return Promise.resolve(oController).then(connectToView);
-		} else {
-			sap.ui.controller("sap.ui.core.mvc.EmptyControllerImpl", {"_sap.ui.core.mvc.EmptyControllerImpl":true}); // legacy-relevant: Sync path
-			oThis.oController = sap.ui.controller("sap.ui.core.mvc.EmptyControllerImpl"); // legacy-relevant: Sync path
 		}
 	};
 
@@ -573,16 +550,17 @@ sap.ui.define([
 			}
 		}
 
-		var fnPropagateOwner = function(fnCallback, bAsync) {
+		/**
+				 * @private
+				 */
+		var fnPropagateOwner = function(fnCallback) {
 			assert(typeof fnCallback === "function", "fn must be a function");
 			var oOwnerComponent = Component && Component.getOwnerComponentFor(that);
 			if (oOwnerComponent) {
-				if (bAsync) {
-					// special treatment when component loading is async but instance creation is sync
-					that.fnScopedRunWithOwner = that.fnScopedRunWithOwner || function(fnCallbackToBeScoped) {
-						return oOwnerComponent.runAsOwner(fnCallbackToBeScoped);
-					};
-				}
+				// special treatment when component loading is async but instance creation is sync
+				that.fnScopedRunWithOwner = that.fnScopedRunWithOwner || function(fnCallbackToBeScoped) {
+					return oOwnerComponent.runAsOwner(fnCallbackToBeScoped);
+				};
 				return oOwnerComponent.runAsOwner(fnCallback);
 			}
 
@@ -1346,6 +1324,9 @@ sap.ui.define([
 		}.bind(this), mPreprocessorSettings);
 	};
 
+	/**
+		 * @private
+		 */
 	View.prototype.initViewSettings = function(mSettings) {
 		// check if renderer exists, otherwise default it
 		if (!this.getMetadata()._oRenderer) {
@@ -1356,9 +1337,7 @@ sap.ui.define([
 				return View.getMetadata().getRendererName();
 			};
 		}
-		if (mSettings.async) {
-			return Promise.resolve();
-		}
+		return Promise.resolve();
 	};
 
 	return View;

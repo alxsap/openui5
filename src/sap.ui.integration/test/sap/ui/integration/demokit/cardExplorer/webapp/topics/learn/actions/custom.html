@@ -23,43 +23,43 @@
 			<p>Custom action handled by extension:</p>
 			<pre class="lang-json">
 {
-	&quot;sap.card&quot;: {
-		&quot;extension&quot;: &quot;./ShowMessageExtension&quot;,
-		&quot;header&quot;: {
+	"sap.card": {
+		"extension": "./ShowMessageExtension",
+		"header": {
 			...
 		},
-		&quot;content&quot;: {
-			&quot;data&quot;: {
-				&quot;request&quot;: {
-					&quot;url&quot;: &quot;/products&quot;
+		"content": {
+			"data": {
+				"request": {
+					"url": "/products"
 				}
 			},
-			&quot;item&quot;: {
-				&quot;title&quot;: &quot;{Name}&quot;,
-				&quot;actionsStrip&quot;: [
+			"item": {
+				"title": "{Name}",
+				"actionsStrip": [
 					{
-						&quot;text&quot;: &quot;Add to Favorites&quot;,
-						&quot;actions&quot;: [
+						"text": "Add to Favorites",
+						"actions": [
 							{
-								&quot;type&quot;: &quot;Custom&quot;,
-								&quot;parameters&quot;: {
-									&quot;method&quot;: &quot;addToFavorites&quot;,
-									&quot;name&quot;: &quot;{Name}&quot;,
-									&quot;id&quot;: &quot;{Id}&quot;
+								"type": "Custom",
+								"parameters": {
+									"method": "addToFavorites",
+									"name": "{Name}",
+									"id": "{Id}"
 								}
 							}
 						]
 					},
 					{
-						&quot;buttonType&quot;: &quot;Transparent&quot;,
-						&quot;text&quot;: &quot;Remove&quot;,
-						&quot;actions&quot;: [
+						"buttonType": "Transparent",
+						"text": "Remove",
+						"actions": [
 							{
-								&quot;type&quot;: &quot;Custom&quot;,
-								&quot;parameters&quot;: {
-									&quot;method&quot;: &quot;remove&quot;,
-									&quot;name&quot;: &quot;{Name}&quot;,
-									&quot;id&quot;: &quot;{Id}&quot;
+								"type": "Custom",
+								"parameters": {
+									"method": "remove",
+									"name": "{Name}",
+									"id": "{Id}"
 								}
 							}
 						]
@@ -78,16 +78,16 @@ ShowMessageExtension.prototype.init = function () {
 };
 
 ShowMessageExtension.prototype._handleAction = function (oEvent) {
-	if (oEvent.getParameter(&quot;type&quot;) !== CardActionType.Custom) {
+	if (oEvent.getParameter("type") !== CardActionType.Custom) {
 		return;
 	}
 
-	var oActionParams = oEvent.getParameter(&quot;parameters&quot;);
+	var oActionParams = oEvent.getParameter("parameters");
 	var pExecuteAction;
 
-	if (oActionParams.method === &quot;addToFavorites&quot;) {
+	if (oActionParams.method === "addToFavorites") {
 		this._addItemToFavorites(oActionParams.id);
-	} else if (oActionParams.method === &quot;remove&quot;) {
+	} else if (oActionParams.method === "remove") {
 		this._removeItem(oActionParams.id);
 	}
 	...
