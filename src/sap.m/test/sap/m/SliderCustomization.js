@@ -91,7 +91,7 @@ sap.ui.define([
 				oSliderLabel.classList.add("sapMSliderLabelZoomed");
 			}
 			else {
-				oSliderLabel.classList.remove("sapMSliderLabelZoomed");				
+				oSliderLabel.classList.remove("sapMSliderLabelZoomed");
 			}
 		});
 	};

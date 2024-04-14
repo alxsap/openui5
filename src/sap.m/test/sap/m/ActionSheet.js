@@ -1,439 +1,457 @@
-var app = new sap.m.App("myApp", {initialPage: "page1"});
+sap.ui.define([
+	"sap/m/App",
+	"sap/m/List",
+	"sap/m/StandardListItem",
+	"sap/ui/model/json/JSONModel",
+	"sap/m/ActionSheet",
+	"sap/m/Button",
+	"sap/m/library",
+	"sap/m/Page",
+	"sap/m/Bar",
+	"sap/base/Log"
+], function(App, List, StandardListItem, JSONModel, ActionSheet, Button, mobileLibrary, Page, Bar, Log) {
+	"use strict";
 
-var oList2 = new sap.m.List({
-	inset: true
-});
+	// shortcut for sap.m.PlacementType
+	const PlacementType = mobileLibrary.PlacementType;
 
-var data = {
-	navigation: [{
-		title: "Travel Expend",
-		description: "Access the travel expend workflow",
-		icon: "images/travel_expend.png",
-		iconInset: false,
-		type: "Navigation",
-		press: 'detailPage'
-	}, {
-		title: "Travel and expense report",
-		description: "Access travel and expense reports",
-		icon: "images/travel_expense_report.png",
-		iconInset: false,
-		type: "Navigation",
-		press: 'detailPage'
-	}, {
-		title: "Travel Request",
-		description: "Access the travel request workflow",
-		icon: "images/travel_request.png",
-		iconInset: false,
-		type: "Navigation",
-		press: 'detailPage'
-	}, {
-		title: "Work Accidents",
-		description: "Report your work accidents",
-		icon: "images/wounds_doc.png",
-		iconInset: false,
-		type: "Navigation",
-		press: 'detailPage'
-	}, {
-		title: "Travel Settings",
-		description: "Change your travel worflow settings",
-		icon: "images/settings.png",
-		iconInset: false,
-		type: "Navigation",
-		press: 'detailPage'
-	}]
-};
+	var app = new App("myApp", {initialPage: "page1"});
 
-var oItemTemplate1 = new sap.m.StandardListItem({
-	title: "{title}",
-	description: "{description}",
-	icon: "{icon}",
-	iconInset: "{iconInset}",
-	type: "{type}"
-});
+	var oList2 = new List({
+		inset: true
+	});
 
-function bindListData(data, itemTemplate, list) {
-	var oModel = new sap.ui.model.json.JSONModel();
-	// set the data for the model
-	oModel.setData(data);
-	// set the model to the list
-	list.setModel(oModel);
+	var data = {
+		navigation: [{
+			title: "Travel Expend",
+			description: "Access the travel expend workflow",
+			icon: "images/travel_expend.png",
+			iconInset: false,
+			type: "Navigation",
+			press: 'detailPage'
+		}, {
+			title: "Travel and expense report",
+			description: "Access travel and expense reports",
+			icon: "images/travel_expense_report.png",
+			iconInset: false,
+			type: "Navigation",
+			press: 'detailPage'
+		}, {
+			title: "Travel Request",
+			description: "Access the travel request workflow",
+			icon: "images/travel_request.png",
+			iconInset: false,
+			type: "Navigation",
+			press: 'detailPage'
+		}, {
+			title: "Work Accidents",
+			description: "Report your work accidents",
+			icon: "images/wounds_doc.png",
+			iconInset: false,
+			type: "Navigation",
+			press: 'detailPage'
+		}, {
+			title: "Travel Settings",
+			description: "Change your travel worflow settings",
+			icon: "images/settings.png",
+			iconInset: false,
+			type: "Navigation",
+			press: 'detailPage'
+		}]
+	};
 
-	// bind Aggregation
-	list.bindAggregation("items", "/navigation", itemTemplate);
-}
+	var oItemTemplate1 = new StandardListItem({
+		title: "{title}",
+		description: "{description}",
+		icon: "{icon}",
+		iconInset: "{iconInset}",
+		type: "{type}"
+	});
 
-bindListData(data, oItemTemplate1, oList2)
-
-var oActionSheet = new sap.m.ActionSheet("actionSheet1", {
-	showCancelButton: false,
-	buttons: [
-		new sap.m.Button('actionSheetButton',{
-			icon: "sap-icon://accept",
-			text: "Accept Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://decline",
-			text: "Reject Action"
-		}),
-		new sap.m.Button({
-			text: "Default Action"
-		})
-	],
-	placement: sap.m.PlacementType.Bottom,
-	cancelButtonPress: function () {
-		jQuery.sap.log.info("sap.m.ActionSheet: cancelButton is pressed");
-	}
-});
-
-var oActionSheetWithManyButtons = new sap.m.ActionSheet("actionSheet2", {
-	showCancelButton: false,
-	buttons: [
-		new sap.m.Button('actionSheetWithManyButtonsButton',{
-			icon: "sap-icon://accept",
-			text: "Accept Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://decline",
-			text: "Reject Action"
-		}),
-		new sap.m.Button({
-			text: "Default Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://accept",
-			text: "Accept Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://decline",
-			text: "Reject Action"
-		}),
-		new sap.m.Button({
-			text: "Default Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://accept",
-			text: "Accept Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://decline",
-			text: "Reject Action"
-		}),
-		new sap.m.Button({
-			text: "Default Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://accept",
-			text: "Accept Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://decline",
-			text: "Reject Action"
-		}),
-		new sap.m.Button({
-			text: "Default Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://accept",
-			text: "Accept Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://decline",
-			text: "Reject Action"
-		}),
-		new sap.m.Button({
-			text: "Default Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://accept",
-			text: "Accept Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://decline",
-			text: "Reject Action"
-		}),
-		new sap.m.Button({
-			text: "Default Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://accept",
-			text: "Accept Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://decline",
-			text: "Reject Action"
-		}),
-		new sap.m.Button({
-			text: "Default Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://accept",
-			text: "Accept Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://decline",
-			text: "Reject Action"
-		}),
-		new sap.m.Button({
-			text: "Default Action"
-		}),
-
-		new sap.m.Button({
-			icon: "sap-icon://accept",
-			text: "Accept Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://decline",
-			text: "Reject Action"
-		}),
-		new sap.m.Button({
-			text: "Default Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://accept",
-			text: "Accept Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://decline",
-			text: "Reject Action"
-		}),
-		new sap.m.Button({
-			text: "Default Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://accept",
-			text: "Accept Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://decline",
-			text: "Reject Action"
-		}),
-		new sap.m.Button({
-			text: "Default Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://accept",
-			text: "Accept Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://decline",
-			text: "Reject Action"
-		}),
-		new sap.m.Button({
-			text: "Default Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://accept",
-			text: "Accept Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://decline",
-			text: "Reject Action"
-		}),
-		new sap.m.Button({
-			text: "Default Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://accept",
-			text: "Accept Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://decline",
-			text: "Reject Action"
-		}),
-		new sap.m.Button({
-			text: "Default Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://accept",
-			text: "Accept Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://decline",
-			text: "Reject Action"
-		}),
-		new sap.m.Button({
-			text: "Default Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://accept",
-			text: "Accept Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://decline",
-			text: "Reject Action"
-		}),
-		new sap.m.Button({
-			text: "Default Action"
-		}),
-
-		new sap.m.Button({
-			icon: "sap-icon://accept",
-			text: "Accept Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://decline",
-			text: "Reject Action"
-		}),
-		new sap.m.Button({
-			text: "Default Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://accept",
-			text: "Accept Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://decline",
-			text: "Reject Action"
-		}),
-		new sap.m.Button({
-			text: "Default Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://accept",
-			text: "Accept Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://decline",
-			text: "Reject Action"
-		}),
-		new sap.m.Button({
-			text: "Default Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://accept",
-			text: "Accept Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://decline",
-			text: "Reject Action"
-		}),
-		new sap.m.Button({
-			text: "Default Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://accept",
-			text: "Accept Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://decline",
-			text: "Reject Action"
-		}),
-		new sap.m.Button({
-			text: "Default Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://accept",
-			text: "Accept Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://decline",
-			text: "Reject Action"
-		}),
-		new sap.m.Button({
-			text: "Default Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://accept",
-			text: "Accept Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://decline",
-			text: "Reject Action"
-		}),
-		new sap.m.Button({
-			text: "Default Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://accept",
-			text: "Accept Action"
-		}),
-		new sap.m.Button({
-			icon: "sap-icon://decline",
-			text: "Reject Action"
-		}),
-		new sap.m.Button({
-			text: "Default Action"
-		})
+	function bindListData(data, itemTemplate, list) {
+		var oModel = new JSONModel();
+		// set the data for the model
+		oModel.setData(data);
+		// set the model to the list
+		list.setModel(oModel);
 	
-	],
-	placement: sap.m.PlacementType.Bottom,
-	cancelButtonPress: function () {
-		jQuery.sap.log.info("sap.m.ActionSheet: cancelButton is pressed");
+		// bind Aggregation
+		list.bindAggregation("items", "/navigation", itemTemplate);
 	}
-});
 
-var oActionSheetWithoutIcons = new sap.m.ActionSheet('actionSheet3',{
-	buttons: [
-		new sap.m.Button("specialButton",{
-			icon: "sap-icon://decline",
-			visible: false,
-			text: "First button"
-		}),
-		new sap.m.Button("actionSheetWithoutIconsButton",{
-			text: "Second button"
-		}),
-		new sap.m.Button({
-			text: "Third Button"
-		}),
-		new sap.m.Button({
-			text: "Fourth button"
+	bindListData(data, oItemTemplate1, oList2)
+
+	var oActionSheet = new ActionSheet("actionSheet1", {
+		showCancelButton: false,
+		buttons: [
+			new Button('actionSheetButton',{
+				icon: "sap-icon://accept",
+				text: "Accept Action"
+			}),
+			new Button({
+				icon: "sap-icon://decline",
+				text: "Reject Action"
+			}),
+			new Button({
+				text: "Default Action"
+			})
+		],
+		placement: PlacementType.Bottom,
+		cancelButtonPress: function () {
+			Log.info("sap.m.ActionSheet: cancelButton is pressed");
+		}
+	});
+
+	var oActionSheetWithManyButtons = new ActionSheet("actionSheet2", {
+		showCancelButton: false,
+		buttons: [
+			new Button('actionSheetWithManyButtonsButton',{
+				icon: "sap-icon://accept",
+				text: "Accept Action"
+			}),
+			new Button({
+				icon: "sap-icon://decline",
+				text: "Reject Action"
+			}),
+			new Button({
+				text: "Default Action"
+			}),
+			new Button({
+				icon: "sap-icon://accept",
+				text: "Accept Action"
+			}),
+			new Button({
+				icon: "sap-icon://decline",
+				text: "Reject Action"
+			}),
+			new Button({
+				text: "Default Action"
+			}),
+			new Button({
+				icon: "sap-icon://accept",
+				text: "Accept Action"
+			}),
+			new Button({
+				icon: "sap-icon://decline",
+				text: "Reject Action"
+			}),
+			new Button({
+				text: "Default Action"
+			}),
+			new Button({
+				icon: "sap-icon://accept",
+				text: "Accept Action"
+			}),
+			new Button({
+				icon: "sap-icon://decline",
+				text: "Reject Action"
+			}),
+			new Button({
+				text: "Default Action"
+			}),
+			new Button({
+				icon: "sap-icon://accept",
+				text: "Accept Action"
+			}),
+			new Button({
+				icon: "sap-icon://decline",
+				text: "Reject Action"
+			}),
+			new Button({
+				text: "Default Action"
+			}),
+			new Button({
+				icon: "sap-icon://accept",
+				text: "Accept Action"
+			}),
+			new Button({
+				icon: "sap-icon://decline",
+				text: "Reject Action"
+			}),
+			new Button({
+				text: "Default Action"
+			}),
+			new Button({
+				icon: "sap-icon://accept",
+				text: "Accept Action"
+			}),
+			new Button({
+				icon: "sap-icon://decline",
+				text: "Reject Action"
+			}),
+			new Button({
+				text: "Default Action"
+			}),
+			new Button({
+				icon: "sap-icon://accept",
+				text: "Accept Action"
+			}),
+			new Button({
+				icon: "sap-icon://decline",
+				text: "Reject Action"
+			}),
+			new Button({
+				text: "Default Action"
+			}),
+	
+			new Button({
+				icon: "sap-icon://accept",
+				text: "Accept Action"
+			}),
+			new Button({
+				icon: "sap-icon://decline",
+				text: "Reject Action"
+			}),
+			new Button({
+				text: "Default Action"
+			}),
+			new Button({
+				icon: "sap-icon://accept",
+				text: "Accept Action"
+			}),
+			new Button({
+				icon: "sap-icon://decline",
+				text: "Reject Action"
+			}),
+			new Button({
+				text: "Default Action"
+			}),
+			new Button({
+				icon: "sap-icon://accept",
+				text: "Accept Action"
+			}),
+			new Button({
+				icon: "sap-icon://decline",
+				text: "Reject Action"
+			}),
+			new Button({
+				text: "Default Action"
+			}),
+			new Button({
+				icon: "sap-icon://accept",
+				text: "Accept Action"
+			}),
+			new Button({
+				icon: "sap-icon://decline",
+				text: "Reject Action"
+			}),
+			new Button({
+				text: "Default Action"
+			}),
+			new Button({
+				icon: "sap-icon://accept",
+				text: "Accept Action"
+			}),
+			new Button({
+				icon: "sap-icon://decline",
+				text: "Reject Action"
+			}),
+			new Button({
+				text: "Default Action"
+			}),
+			new Button({
+				icon: "sap-icon://accept",
+				text: "Accept Action"
+			}),
+			new Button({
+				icon: "sap-icon://decline",
+				text: "Reject Action"
+			}),
+			new Button({
+				text: "Default Action"
+			}),
+			new Button({
+				icon: "sap-icon://accept",
+				text: "Accept Action"
+			}),
+			new Button({
+				icon: "sap-icon://decline",
+				text: "Reject Action"
+			}),
+			new Button({
+				text: "Default Action"
+			}),
+			new Button({
+				icon: "sap-icon://accept",
+				text: "Accept Action"
+			}),
+			new Button({
+				icon: "sap-icon://decline",
+				text: "Reject Action"
+			}),
+			new Button({
+				text: "Default Action"
+			}),
+	
+			new Button({
+				icon: "sap-icon://accept",
+				text: "Accept Action"
+			}),
+			new Button({
+				icon: "sap-icon://decline",
+				text: "Reject Action"
+			}),
+			new Button({
+				text: "Default Action"
+			}),
+			new Button({
+				icon: "sap-icon://accept",
+				text: "Accept Action"
+			}),
+			new Button({
+				icon: "sap-icon://decline",
+				text: "Reject Action"
+			}),
+			new Button({
+				text: "Default Action"
+			}),
+			new Button({
+				icon: "sap-icon://accept",
+				text: "Accept Action"
+			}),
+			new Button({
+				icon: "sap-icon://decline",
+				text: "Reject Action"
+			}),
+			new Button({
+				text: "Default Action"
+			}),
+			new Button({
+				icon: "sap-icon://accept",
+				text: "Accept Action"
+			}),
+			new Button({
+				icon: "sap-icon://decline",
+				text: "Reject Action"
+			}),
+			new Button({
+				text: "Default Action"
+			}),
+			new Button({
+				icon: "sap-icon://accept",
+				text: "Accept Action"
+			}),
+			new Button({
+				icon: "sap-icon://decline",
+				text: "Reject Action"
+			}),
+			new Button({
+				text: "Default Action"
+			}),
+			new Button({
+				icon: "sap-icon://accept",
+				text: "Accept Action"
+			}),
+			new Button({
+				icon: "sap-icon://decline",
+				text: "Reject Action"
+			}),
+			new Button({
+				text: "Default Action"
+			}),
+			new Button({
+				icon: "sap-icon://accept",
+				text: "Accept Action"
+			}),
+			new Button({
+				icon: "sap-icon://decline",
+				text: "Reject Action"
+			}),
+			new Button({
+				text: "Default Action"
+			}),
+			new Button({
+				icon: "sap-icon://accept",
+				text: "Accept Action"
+			}),
+			new Button({
+				icon: "sap-icon://decline",
+				text: "Reject Action"
+			}),
+			new Button({
+				text: "Default Action"
+			})
+	
+		],
+		placement: PlacementType.Bottom,
+		cancelButtonPress: function () {
+			Log.info("sap.m.ActionSheet: cancelButton is pressed");
+		}
+	});
+
+	var oActionSheetWithoutIcons = new ActionSheet('actionSheet3',{
+		buttons: [
+			new Button("specialButton",{
+				icon: "sap-icon://decline",
+				visible: false,
+				text: "First button"
+			}),
+			new Button("actionSheetWithoutIconsButton",{
+				text: "Second button"
+			}),
+			new Button({
+				text: "Third Button"
+			}),
+			new Button({
+				text: "Fourth button"
+			})
+		]
+	});
+
+	var page1 = new Page("page1", {
+		title: "Mobile ActionSheet Control",
+		content: [
+			new Button('noTitleNoCancel',{
+				text: "No Title, No Cancel",
+				press: function () {
+					oActionSheet.setTitle(null);
+					oActionSheet.setShowCancelButton(false);
+					oActionSheet.openBy(this);
+				}
+			}).addStyleClass("newButton"),
+			new Button('noTitleWithCancel',{
+				text: "No Title, With Cancel",
+				press: function () {
+					oActionSheet.setTitle(null);
+					oActionSheet.setShowCancelButton(true);
+					oActionSheet.openBy(this);
+				}
+			}).addStyleClass("newButton"),
+			new Button('withTitleAndCancel',{
+				text: "With Title and Cancel",
+				press: function () {
+					oActionSheet.setTitle("Please choose one action");
+					oActionSheet.setShowCancelButton(true);
+					oActionSheet.openBy(this);
+				}
+			}).addStyleClass("newButton"),
+			new Button('withManyButtons',{
+				text: "With Many Buttons",
+				press: function () {
+					oActionSheetWithManyButtons.setTitle("Please choose one action");
+					oActionSheetWithManyButtons.setShowCancelButton(true);
+					oActionSheetWithManyButtons.openBy(this);
+				}
+			}).addStyleClass("newButton"),
+			new Button('withoutIcons',{
+				text: "Without icons",
+				press: function () {
+					oActionSheetWithoutIcons.openBy(this);
+				}
+			}),
+			oList2
+		],
+		footer: new Bar({
+			contentRight: new Button({
+				icon: "sap-icon://manager",
+				press: function () {
+					oActionSheet.setPlacement(PlacementType.Vertical);
+					oActionSheet.setShowCancelButton(true);
+					oActionSheet.openBy(this);
+				}
+			})
 		})
-	]
-});
+	});
 
-var page1 = new sap.m.Page("page1", {
-	title: "Mobile ActionSheet Control",
-	content: [
-		new sap.m.Button('noTitleNoCancel',{
-			text: "No Title, No Cancel",
-			press: function () {
-				oActionSheet.setTitle(null);
-				oActionSheet.setShowCancelButton(false);
-				oActionSheet.openBy(this);
-			}
-		}).addStyleClass("newButton"),
-		new sap.m.Button('noTitleWithCancel',{
-			text: "No Title, With Cancel",
-			press: function () {
-				oActionSheet.setTitle(null);
-				oActionSheet.setShowCancelButton(true);
-				oActionSheet.openBy(this);
-			}
-		}).addStyleClass("newButton"),
-		new sap.m.Button('withTitleAndCancel',{
-			text: "With Title and Cancel",
-			press: function () {
-				oActionSheet.setTitle("Please choose one action");
-				oActionSheet.setShowCancelButton(true);
-				oActionSheet.openBy(this);
-			}
-		}).addStyleClass("newButton"),
-		new sap.m.Button('withManyButtons',{
-			text: "With Many Buttons",
-			press: function () {
-				oActionSheetWithManyButtons.setTitle("Please choose one action");
-				oActionSheetWithManyButtons.setShowCancelButton(true);
-				oActionSheetWithManyButtons.openBy(this);
-			}
-		}).addStyleClass("newButton"),
-		new sap.m.Button('withoutIcons',{
-			text: "Without icons",
-			press: function () {
-				oActionSheetWithoutIcons.openBy(this);
-			}
-		}),
-		oList2
-	],
-	footer: new sap.m.Bar({
-		contentRight: new sap.m.Button({
-			icon: "sap-icon://manager",
-			press: function () {
-				oActionSheet.setPlacement(sap.m.PlacementType.Vertical);
-				oActionSheet.setShowCancelButton(true);
-				oActionSheet.openBy(this);
-			}
-		})
-	})
+	app.addPage(page1).placeAt("content");
 });
-
-app.addPage(page1).placeAt("content");

@@ -224,7 +224,7 @@
 					}));
 
 					show(oFilterPanel, "Filter");
-					
+
 					// Adding some empty rows into the UI by calling some internal functions (only for testing)
 					/* var fAddEmptyFilterItem = function(oPanel, sKeyFieldKey, sOperationKey) {
 						oPanel._handleAddCondition(oPanel._oConditionsGrid, oPanel._oConditionsGrid.getContent()[oPanel._oConditionsGrid.getContent().length - 1]);
@@ -236,11 +236,11 @@
 							oLastConditionGrid.operation.setSelectedKey(sOperationKey)
 						}
 					}
-					
+
 					setTimeout(function() {
-						fAddEmptyFilterItem(oFilterPanel._oIncludeFilterPanel, "c5", "EQ"); 
-						fAddEmptyFilterItem(oFilterPanel._oIncludeFilterPanel, "c2", "BT"); 
-					});	 */		
+						fAddEmptyFilterItem(oFilterPanel._oIncludeFilterPanel, "c5", "EQ");
+						fAddEmptyFilterItem(oFilterPanel._oIncludeFilterPanel, "c2", "BT");
+					});	 */
 
 					oFieldKey.setModel(oModel);
 					oFieldKey.bindValue("/filterItems/0/key");

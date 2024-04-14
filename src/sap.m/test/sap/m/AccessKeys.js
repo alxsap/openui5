@@ -1,94 +1,125 @@
-const label = new sap.m.Label({ text: "Random Label" });
-
-new sap.ui.layout.VerticalLayout({
-	content: [
-		new sap.m.Button({
-			text: "Replace Device",
-			press: function () {
-				new sap.m.Dialog({
-					content: [
-						new sap.m.Button({
-							text: "Demo button starting with D",
-							press: function () {
-								new sap.m.Dialog({
-									content: [
-										new sap.m.Button({
-											text: "Inner button"
-										}),
-									]
-								}).open();
-							}
-						}),
-						new sap.m.Button({
-							text: "Remove Device"
-						}),
-						new sap.m.Button({
-							text: "Add Device"
-						}),
-						new sap.m.Button({
-							text: "Replace Order"
-						}),
-					]
-				}).open();
-			}
-		}),
-		new sap.m.Button({
-			text: "Demo button starting with D"
-		}),
-		new sap.m.Button({
-			text: "Remove Device"
-		}),
-		new sap.m.Button({
-			text: "Add Device"
-		}),
-		new sap.m.Button({
-			text: "Place Order"
-		}),
-		new sap.m.Button({
-			text: "Run Tests"
-		}),
-		new sap.m.Link({
-			text: "Close Page (not labeled)"
-		}),
-		label,
-		new sap.m.Link({
-			text: "I AM LABELED LINK",
-			ariaLabelledBy: label
-		}),
-		new sap.ui.layout.form.Form({
-			editable: true,
-			layout: new sap.ui.layout.form.FormLayout("L1"),
-			formContainers: [
-
-				new sap.ui.layout.form.FormContainer("C3", {
-					tooltip: "This container is expandable",
-					expandable: true,
-					formElements: [
-						new sap.ui.layout.form.FormElement({
-							fields: [new sap.m.CheckBox({ text: 'high school' })]
-						}),
-						new sap.ui.layout.form.FormElement({
-							fields: [new sap.m.CheckBox({ text: 'college' })]
-						}),
-						new sap.ui.layout.form.FormElement({
-							fields: [new sap.m.CheckBox({ text: 'university' })]
-						}),
-						new sap.ui.layout.form.FormElement({
-							fields: [new sap.m.Label({ text: "Order: ", labelFor: "input1" }), new sap.m.Input("input1")]
+sap.ui.define([
+	"sap/m/Label",
+	"sap/ui/layout/VerticalLayout",
+	"sap/m/Button",
+	"sap/m/Dialog",
+	"sap/m/Link",
+	"sap/ui/layout/form/Form",
+	"sap/ui/layout/form/FormLayout",
+	"sap/ui/layout/form/FormContainer",
+	"sap/ui/layout/form/FormElement",
+	"sap/m/CheckBox",
+	"sap/m/Input",
+	"sap/ui/core/VariantLayoutData",
+	"sap/ui/layout/form/GridContainerData"
+], function(
+	Label,
+	VerticalLayout,
+	Button,
+	Dialog,
+	Link,
+	Form,
+	FormLayout,
+	FormContainer,
+	FormElement,
+	CheckBox,
+	Input,
+	VariantLayoutData,
+	GridContainerData
+) {
+	"use strict";
+	const label = new Label({ text: "Random Label" });
+	
+	new VerticalLayout({
+		content: [
+			new Button({
+				text: "Replace Device",
+				press: function () {
+					new Dialog({
+						content: [
+							new Button({
+								text: "Demo button starting with D",
+								press: function () {
+									new Dialog({
+										content: [
+											new Button({
+												text: "Inner button"
+											}),
+										]
+									}).open();
+								}
+							}),
+							new Button({
+								text: "Remove Device"
+							}),
+							new Button({
+								text: "Add Device"
+							}),
+							new Button({
+								text: "Replace Order"
+							}),
+						]
+					}).open();
+				}
+			}),
+			new Button({
+				text: "Demo button starting with D"
+			}),
+			new Button({
+				text: "Remove Device"
+			}),
+			new Button({
+				text: "Add Device"
+			}),
+			new Button({
+				text: "Place Order"
+			}),
+			new Button({
+				text: "Run Tests"
+			}),
+			new Link({
+				text: "Close Page (not labeled)"
+			}),
+			label,
+			new Link({
+				text: "I AM LABELED LINK",
+				ariaLabelledBy: label
+			}),
+			new Form({
+				editable: true,
+				layout: new FormLayout("L1"),
+				formContainers: [
+	
+					new FormContainer("C3", {
+						tooltip: "This container is expandable",
+						expandable: true,
+						formElements: [
+							new FormElement({
+								fields: [new CheckBox({ text: 'high school' })]
+							}),
+							new FormElement({
+								fields: [new CheckBox({ text: 'college' })]
+							}),
+							new FormElement({
+								fields: [new CheckBox({ text: 'university' })]
+							}),
+							new FormElement({
+								fields: [new Label({ text: "Order: ", labelFor: "input1" }), new Input("input1")]
+							})
+						],
+						layoutData: new VariantLayoutData({
+							multipleLayoutData: [new GridContainerData({ halfGrid: true })]
 						})
-					],
-					layoutData: new sap.ui.core.VariantLayoutData({
-						multipleLayoutData: [new sap.ui.layout.form.GridContainerData({ halfGrid: true })]
-					})
-				}),
-			]
-		})
-	]
-}).placeAt("content");
-
-
-['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'].forEach(function(sLetter) {
-	new sap.m.Button({
-		text: sLetter
+					}),
+				]
+			})
+		]
 	}).placeAt("content");
+	
+	
+	['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'].forEach(function(sLetter) {
+		new Button({
+			text: sLetter
+		}).placeAt("content");
+	});
 });

@@ -55,29 +55,12 @@ sap.ui.define([
 	const ListMode = mobileLibrary.ListMode;
 
 	//Initialize the Model
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "data", {
-		configurable: "false",
-		writable: "true",
-		value: {selectionIdx: -1, filter: "", products:[]}
-	});
-
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "aTitles", {
-		configurable: "false",
-		writable: "true",
-
-		value: ["Notebook Basic", "UMTS PDA", "Easy Hand", "Deskjet Super Highspeed",
-					   "Copperberry Cellphone", "Notebook LCD Display", "PC Power Station",
-					   "Gaming Monster Pro", "ITelO FlexTop I4000", "ITelO FlexTop I6300c",
-					   "Goldberry Cellphone", "ITelO FlexTop I9100", "Notebook Professional",
-					   "Smart Office", "Deskjet Super Highspeed", "Notebook Basic XS"]
-	});
-
+	var data = {selectionIdx: -1, filter: "", products:[]};
+	var aTitles = ["Notebook Basic", "UMTS PDA", "Easy Hand", "Deskjet Super Highspeed",
+				   "Copperberry Cellphone", "Notebook LCD Display", "PC Power Station",
+				   "Gaming Monster Pro", "ITelO FlexTop I4000", "ITelO FlexTop I6300c",
+				   "Goldberry Cellphone", "ITelO FlexTop I9100", "Notebook Professional",
+				   "Smart Office", "Deskjet Super Highspeed", "Notebook Basic XS"];
 	for(var i=0; i<aTitles.length; i++){
 		var sTitle = aTitles[i];
 		var oProduct = {id: ""+i, price: Math.floor((Math.random()*1000))+1+" $", category: "PC",
@@ -91,15 +74,7 @@ sap.ui.define([
 		data.products.push(oProduct);
 	}
 
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "oModel", {
-		configurable: "false",
-		writable: "true",
-		value: new JSONModel()
-	});
-
+	var oModel = new JSONModel();
 	oModel.setData(data);
 
 	//Some helper functions
@@ -108,12 +83,12 @@ sap.ui.define([
 			data.products[i].selected = false;
 		}
 		data.selectionIdx = -1;
-
+	
 		if(idx >=0 && idx < data.products.length){
 			data.products[idx].selected = true;
 			data.selectionIdx = idx;
 		}
-
+	
 		oModel.setData(data);
 	}
 
@@ -140,57 +115,13 @@ sap.ui.define([
 
 
 	//Initialization Code
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "oTable", {
-		configurable: "false",
-		writable: "true"
-	}), Object.defineProperty(globalThis, "oDataSet", {
-		configurable: "false",
-		writable: "true"
-	}), Object.defineProperty(globalThis, "oApp", {
-		configurable: "false",
-		writable: "true"
-	}), Object.defineProperty(globalThis, "oShell", {
-		configurable: "false",
-		writable: "true"
-	});
+	var oTable, oDataSet, oApp, oShell;
 
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "currentFilter", {
-		configurable: "false",
-		writable: "true",
-		value: []
-	});
+	var currentFilter = [];
+	var currentControl;
+	var currentMobile = null;
 
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "currentControl", {
-		configurable: "false",
-		writable: "true"
-	});
-
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "currentMobile", {
-		configurable: "false",
-		writable: "true",
-		value: null
-	});
-
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "aPoints", {
-		configurable: "false",
-		writable: "true",
-		value: [420, 750, 1130]
-	});
+	var aPoints = [420, 750, 1130];
 
 	function initialize(from){
 		var aInfo;
@@ -203,9 +134,9 @@ sap.ui.define([
 		}else{
 			aInfo = initializeList();
 		}
-
+	
 		var mobile = aInfo[1];
-
+	
 		function init(){
 			Theming.detachApplied(init);
 			currentControl = aInfo[0];
@@ -217,20 +148,20 @@ sap.ui.define([
 			}else{
 				ctrl = oApp;
 			}
-
+	
 			var uiArea = null;
 			if(!uiArea || uiArea.getContent()[0] != ctrl){
 				ctrl.placeAt("root", "only");
 			}
 		};
-
+	
 		if(currentMobile === null || currentMobile != mobile){
 			Theming.attachApplied(init);
-
+	
 			if(!currentMobile && oShell){
 				oShell._getSearchTool().close();
 			}
-
+	
 			currentMobile = mobile;
 			jQuery("#root").html("");
 			Theming.setTheme(mobile ? "sap_belize" : "sap_bluecrystal");
@@ -245,10 +176,10 @@ sap.ui.define([
 			oTable.__refresh();
 			return [oTable, false];
 		}
-
+	
 		loadLib("sap.ui.commons");
 		loadLib("sap.ui.table");
-
+	
 		oTable = new Table({
 			selectionMode: "Single",
 			rowSelectionChange: function(oEvent){
@@ -277,16 +208,16 @@ sap.ui.define([
 			rows: {path: "/products"}
 		});
 		oTable.setModel(oModel);
-
+	
 		oTable.__refresh = function(){
 			oTable.__ignoreSelectionChange = true;
 			this.getBinding("rows").filter(currentFilter);
 			oTable.__ignoreSelectionChange = false;
 			this.setSelectedIndex(data.selectionIdx);
 		};
-
+	
 		oTable.__refresh();
-
+	
 		return [oTable, false];
 	}
 
@@ -296,10 +227,10 @@ sap.ui.define([
 			oDataSet.__refresh(true, bSingleRow);
 			return [oDataSet, false];
 		}
-
+	
 		loadLib("sap.ui.commons");
 		loadLib("sap.ui.ux3");
-
+	
 		Control.extend("ItemLayout", {
 			metadata : {
 				aggregations : {
@@ -308,7 +239,7 @@ sap.ui.define([
 					"form" : {type : "sap.ui.commons.form.Form", multiple : false},
 				}
 			},
-
+	
 			renderer: {
 				apiVersion: 2,
 				render: function(rm, ctrl){
@@ -335,14 +266,14 @@ sap.ui.define([
 					rm.close("div");
 				}
 			},
-
+	
 			onBeforeRendering : function(){
 				if(this.resizeTimer){
 					clearTimeout(this.resizeTimer);
 					this.resizeTimer = null;
 				}
 			},
-
+	
 			onAfterRendering : function(){
 				var $This = this.$();
 				if($This.parent().parent().hasClass("sapUiUx3DSSVSingleRow")){
@@ -351,7 +282,7 @@ sap.ui.define([
 					$This.addClass("CustomItemLayoutSmall");
 				}
 			},
-
+	
 			_resize: function(){
 				if(!this.getDomRef()){
 					return;
@@ -365,7 +296,7 @@ sap.ui.define([
 				setTimeout(jQuery.proxy(this._resize, this), 300);
 			}
 		});
-
+	
 		function createTemplate(){
 			var c = commonsLibrary;
 			return new ItemLayout({
@@ -395,7 +326,7 @@ sap.ui.define([
 				})
 			});
 		};
-
+	
 		var oResponsiveView = new DataSetSimpleView({
 			floating: true,
 			responsive: true,
@@ -408,7 +339,7 @@ sap.ui.define([
 			itemMinWidth: 0,
 			template: createTemplate()
 		});
-
+	
 		oDataSet = new DataSet({
 			items: {
 				path: "/products",
@@ -424,7 +355,7 @@ sap.ui.define([
 			}
 		});
 		oDataSet.setModel(oModel);
-
+	
 		oDataSet.__refresh = function(bChangeCurrentView, bSingleRow){
 			if(bChangeCurrentView){
 				this.setSelectedView(bSingleRow ? oDataSet.getViews()[1] : oDataSet.getViews()[0]);
@@ -432,9 +363,9 @@ sap.ui.define([
 			this.getBinding("items").filter(currentFilter);
 			this.setLeadSelection(data.selectionIdx);
 		};
-
+	
 		oDataSet.__refresh(true, bSingleRow);
-
+	
 		return [oDataSet, false];
 	}
 
@@ -444,9 +375,9 @@ sap.ui.define([
 			oApp.__refresh();
 			return [oApp, true];
 		}
-
+	
 		loadLib("sap.m");
-
+	
 		var oList = new List({
 			inset : true,
 			showUnread: false,
@@ -464,16 +395,16 @@ sap.ui.define([
 				select(oList.indexOfItem(oEvent.getParameter("listItem")));
 			}
 		});
-
+	
 		oList.setModel(oModel);
-
+	
 		var oSearchField = new SearchField({
 			value: "{/filter}",
 			search: doFilter
 		});
-
+	
 		oSearchField.setModel(oModel);
-
+	
 		oApp = new App({
 			pages: [new Page({
 				title : "Products",
@@ -483,14 +414,14 @@ sap.ui.define([
 				})
 			})]
 		});
-
+	
 		oApp.__refresh = function(){
 			var oList = oApp.getPages()[0].getContent()[0];
 			oList.getBinding("items").filter(currentFilter);
 		};
-
+	
 		oApp.__refresh();
-
+	
 		return [oApp, true];
 	}
 
@@ -499,9 +430,9 @@ sap.ui.define([
 		if(oShell){
 			return oShell;
 		}
-
+	
 		loadLib("sap.ui.ux3");
-
+	
 		oShell = new Shell({
 			appTitle: "Products",
 			showFeederTool: false,
@@ -510,7 +441,7 @@ sap.ui.define([
 				text: "Products"
 			})]
 		});
-
+	
 		var oSearchField = oShell.getSearchField();
 		oSearchField.setModel(oModel);
 		oSearchField.setEnableListSuggest(false);
@@ -521,7 +452,7 @@ sap.ui.define([
 			doFilter(oEvent);
 			oShell._getSearchTool().close();
 		});
-
+	
 		return oShell;
 	}
 	Device.media.initRangeSet('myPoints', aPoints);

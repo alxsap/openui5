@@ -8,7 +8,7 @@ sap.ui.require([
 	"sap/uxap/ObjectPageSubSection",
 	"sap/ui/thirdparty/jquery",
 	"sap/ui/core/mvc/XMLView"
-], 
+],
 function(App, Page, CheckBox, ToggleButton, Core, Element, ObjectPageSubSection, jQuery) {
 
 	Core.ready(function() {
@@ -32,7 +32,7 @@ function(App, Page, CheckBox, ToggleButton, Core, Element, ObjectPageSubSection,
 					select: function(oEvent) {
 						var index = oSelectionForm.indexOfContent(this),
 							bAuto = oEvent.getParameter("selected");
-						updateSubSection(index, bAuto);	
+						updateSubSection(index, bAuto);
 					}
 				});
 				oSelectionForm.addContent(oCheckBox);

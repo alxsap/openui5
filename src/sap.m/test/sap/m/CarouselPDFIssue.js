@@ -13,16 +13,7 @@ sap.ui.define([
 	"sap/ui/core/mvc/Controller"
 ], function(Carousel, Filter, FilterOperator, Dialog, Bar, Title, Button, JSONModel, PDFViewer, jQuery) {
 	"use strict";
-
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "myPDF", {
-		configurable: "false",
-		writable: "true",
-		value: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
-	});
-
+	var myPDF = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
 	data = {
 		previewItems: [
 			{id: 8, objectType: "1", src: myPDF},
@@ -55,16 +46,16 @@ sap.ui.define([
 	sap.ui.controller("myController", {
 		onInit: function () {
 			this.x = 1;
-
+	
 		},
 		doSomething: function () {
-
-
-
+	
+	
+	
 			this.getView().byId("page").addContent(this.createDialog(null));
-
+	
 		},
-
+	
 		createDialog: function (aSorters) {
 			var activePage;
 			if (this.dialog) {
@@ -113,8 +104,8 @@ sap.ui.define([
 			model.setData(data);
 			model.setProperty("/initialPreviewId", 1);
 			this.getView().setModel(model);
-
-
+	
+	
 		},
 		onCarouselPageChanged: function (evt) {
 			//alert(evt.getParameter("newActivePageId"));
@@ -122,7 +113,7 @@ sap.ui.define([
 		createPage: function (obj) {
 			return new PDFViewer({source: obj.src});
 		}
-
+	
 	});
 	sap.ui.xmlview({viewContent: jQuery('#myXml').html()}).placeAt("content");
 });

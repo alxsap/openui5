@@ -1,6 +1,9 @@
-sap.ui.define(
-  ["sap/ui/model/json/JSONModel", "sap/ui/thirdparty/jquery", "sap/ui/core/mvc/XMLView", "sap/ui/core/mvc/Controller"],
-  function(JSONModel, jQuery) {
+sap.ui.define([
+  "sap/ui/model/json/JSONModel",
+  "sap/ui/thirdparty/jquery",
+  "sap/ui/core/mvc/XMLView",
+  "sap/ui/core/mvc/Controller"
+], function(JSONModel, jQuery) {
 	"use strict";
 	sap.ui.controller("myController", {
 	  onInit: function () {
@@ -25,7 +28,7 @@ sap.ui.define(
 		{ Name: "Tablets" },
 		{ Name: "Smartphones and Tablets" },
 		{ Name: "Flat Screens" }]
-
+	
 		const SelectList = [];
 		for (let i of Categories) {
 		  i.Category = i.Name
@@ -33,22 +36,21 @@ sap.ui.define(
 			SelectList.push(i)
 		  }
 		}
-
+	
 		// @ts-ignore
 		const oData = {
 		  Categories: undefined,
 		  SelectList: undefined
 		};
-
+	
 		oData.Categories = Categories;
 		oData.SelectList = SelectList;
 		var oModel = new JSONModel();
 		oModel.setData(oData);
 		this.getView().setModel(oModel);
-
-
+	
+	
 	  }
 	});
 	sap.ui.xmlview({ viewContent: jQuery('#myXml').html() }).placeAt("content");
-  }
-);
+});

@@ -98,7 +98,7 @@ sap.ui.define([
 		value: new Button("button", {
 		text: "{= 'Add item number ' + ${select>/items}.length + ' to list'}",press: function() {
 			 var i= select.getItems().length + 1;
-			
+
 			 select.addItem(new Item({key:"key" + i, text:"Text " + i}));
 		}
 	})

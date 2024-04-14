@@ -1,198 +1,213 @@
-	var oMenu = new sap.m.Menu({
-		title: "random 7",
-		itemSelected: function(oEvent) {
-			var oItem = oEvent.getParameter("item"),
-				sItemPath = "";
-			while (oItem instanceof sap.m.MenuItem) {
-				sItemPath = oItem.getText() + " > " + sItemPath;
-				oItem = oItem.getParent();
+sap.ui.define([
+	"sap/m/Menu",
+	"sap/m/MessageToast",
+	"sap/m/MenuItem",
+	"sap/m/MenuButton",
+	"sap/ui/core/Popup",
+	"sap/m/Button",
+	"sap/m/Select",
+	"sap/ui/core/Item",
+	"sap/m/Page",
+	"sap/m/FlexBox",
+	"sap/m/App"
+], function(Menu, MessageToast, MenuItem, MenuButton, Popup, Button, Select, Item, Page, FlexBox, App) {
+	"use strict";
+		var oMenu = new Menu({
+			title: "random 7",
+			itemSelected: function(oEvent) {
+				var oItem = oEvent.getParameter("item"),
+					sItemPath = "";
+				while (oItem instanceof MenuItem) {
+					sItemPath = oItem.getText() + " > " + sItemPath;
+					oItem = oItem.getParent();
+				}
+	
+				sItemPath = sItemPath.substr(0, sItemPath.lastIndexOf(" > "));
+	
+				MessageToast.show("itemSelected: " + sItemPath);
+			},
+			items: [
+				new MenuItem({
+					text: "responde now"
+				}),
+				new MenuItem({
+					text: "before sending"
+				}),
+				new MenuItem({
+					text: "Do not send"
+				})
+			]
+		});
+	
+		var oMenuButton = new MenuButton("posMenuId", {
+			width: "16rem",
+			text: "Menu position",
+			menuPosition: Popup.Dock.BeginBottom,
+			menu: oMenu
+		});
+	
+		var i = 0;
+		var oButton = new Button("posButtonId", {
+			text: "Change menuPosition",
+			press: function() {
+					i++;
+					switch (i) {
+					case 1:
+						oMenuButton.setMenuPosition(Popup.Dock.BeginTop);
+						oSelect.setSelectedKey(Popup.Dock.BeginTop);
+						break;
+					case 2:
+						oMenuButton.setMenuPosition(Popup.Dock.BeginCenter);
+						oSelect.setSelectedKey(Popup.Dock.BeginCenter);
+						break;
+					case 3:
+						oMenuButton.setMenuPosition(Popup.Dock.LeftTop);
+						oSelect.setSelectedKey(Popup.Dock.LeftTop);
+						break;
+					case 4:
+						oMenuButton.setMenuPosition(Popup.Dock.LeftCenter);
+						oSelect.setSelectedKey(Popup.Dock.LeftCenter);
+						break;
+					case 5:
+						oMenuButton.setMenuPosition(Popup.Dock.LeftBottom);
+						oSelect.setSelectedKey(Popup.Dock.LeftBottom);
+						break;
+					case 6:
+						oMenuButton.setMenuPosition(Popup.Dock.CenterTop);
+						oSelect.setSelectedKey(Popup.Dock.CenterTop);
+						break;
+					case 7:
+						oMenuButton.setMenuPosition(Popup.Dock.CenterCenter);
+						oSelect.setSelectedKey(Popup.Dock.CenterCenter);
+						break;
+					case 8:
+						oMenuButton.setMenuPosition(Popup.Dock.CenterBottom);
+						oSelect.setSelectedKey(Popup.Dock.CenterBottom);
+						break;
+					case 9:
+						oMenuButton.setMenuPosition(Popup.Dock.RightTop);
+						oSelect.setSelectedKey(Popup.Dock.RightTop);
+						break;
+					case 10:
+						oMenuButton.setMenuPosition(Popup.Dock.RightCenter);
+						oSelect.setSelectedKey(Popup.Dock.RightCenter);
+						break;
+					case 11:
+						oMenuButton.setMenuPosition(Popup.Dock.RightBottom);
+						oSelect.setSelectedKey(Popup.Dock.RightBottom);
+						break;
+					case 12:
+						oMenuButton.setMenuPosition(Popup.Dock.EndTop);
+						oSelect.setSelectedKey(Popup.Dock.EndTop);
+						break;
+					case 13:
+						oMenuButton.setMenuPosition(Popup.Dock.EndCenter);
+						oSelect.setSelectedKey(Popup.Dock.EndCenter);
+						break;
+					case 14:
+						oMenuButton.setMenuPosition(Popup.Dock.EndBottom);
+						oSelect.setSelectedKey(Popup.Dock.EndBottom);
+						break;
+					default:
+					case 0:
+						oMenuButton.setMenuPosition(Popup.Dock.BeginBottom);
+						oSelect.setSelectedKey(Popup.Dock.BeginBottom);
+						break;
+				}
 			}
-
-			sItemPath = sItemPath.substr(0, sItemPath.lastIndexOf(" > "));
-
-			sap.m.MessageToast.show("itemSelected: " + sItemPath);
-		},
-		items: [
-			new sap.m.MenuItem({
-				text: "responde now"
-			}),
-			new sap.m.MenuItem({
-				text: "before sending"
-			}),
-			new sap.m.MenuItem({
-				text: "Do not send"
-			})
-		]
-	});
-
-	var oMenuButton = new sap.m.MenuButton("posMenuId", {
-		width: "16rem",
-		text: "Menu position",
-		menuPosition: sap.ui.core.Popup.Dock.BeginBottom,
-		menu: oMenu
-	});
-
-	var i = 0;
-	var oButton = new sap.m.Button("posButtonId", {
-		text: "Change menuPosition",
-		press: function() {
-				i++;
-				switch (i) {
-				case 1:
-					oMenuButton.setMenuPosition(sap.ui.core.Popup.Dock.BeginTop);
-					oSelect.setSelectedKey(sap.ui.core.Popup.Dock.BeginTop);
-					break;
-				case 2:
-					oMenuButton.setMenuPosition(sap.ui.core.Popup.Dock.BeginCenter);
-					oSelect.setSelectedKey(sap.ui.core.Popup.Dock.BeginCenter);
-					break;
-				case 3:
-					oMenuButton.setMenuPosition(sap.ui.core.Popup.Dock.LeftTop);
-					oSelect.setSelectedKey(sap.ui.core.Popup.Dock.LeftTop);
-					break;
-				case 4:
-					oMenuButton.setMenuPosition(sap.ui.core.Popup.Dock.LeftCenter);
-					oSelect.setSelectedKey(sap.ui.core.Popup.Dock.LeftCenter);
-					break;
-				case 5:
-					oMenuButton.setMenuPosition(sap.ui.core.Popup.Dock.LeftBottom);
-					oSelect.setSelectedKey(sap.ui.core.Popup.Dock.LeftBottom);
-					break;
-				case 6:
-					oMenuButton.setMenuPosition(sap.ui.core.Popup.Dock.CenterTop);
-					oSelect.setSelectedKey(sap.ui.core.Popup.Dock.CenterTop);
-					break;
-				case 7:
-					oMenuButton.setMenuPosition(sap.ui.core.Popup.Dock.CenterCenter);
-					oSelect.setSelectedKey(sap.ui.core.Popup.Dock.CenterCenter);
-					break;
-				case 8:
-					oMenuButton.setMenuPosition(sap.ui.core.Popup.Dock.CenterBottom);
-					oSelect.setSelectedKey(sap.ui.core.Popup.Dock.CenterBottom);
-					break;
-				case 9:
-					oMenuButton.setMenuPosition(sap.ui.core.Popup.Dock.RightTop);
-					oSelect.setSelectedKey(sap.ui.core.Popup.Dock.RightTop);
-					break;
-				case 10:
-					oMenuButton.setMenuPosition(sap.ui.core.Popup.Dock.RightCenter);
-					oSelect.setSelectedKey(sap.ui.core.Popup.Dock.RightCenter);
-					break;
-				case 11:
-					oMenuButton.setMenuPosition(sap.ui.core.Popup.Dock.RightBottom);
-					oSelect.setSelectedKey(sap.ui.core.Popup.Dock.RightBottom);
-					break;
-				case 12:
-					oMenuButton.setMenuPosition(sap.ui.core.Popup.Dock.EndTop);
-					oSelect.setSelectedKey(sap.ui.core.Popup.Dock.EndTop);
-					break;
-				case 13:
-					oMenuButton.setMenuPosition(sap.ui.core.Popup.Dock.EndCenter);
-					oSelect.setSelectedKey(sap.ui.core.Popup.Dock.EndCenter);
-					break;
-				case 14:
-					oMenuButton.setMenuPosition(sap.ui.core.Popup.Dock.EndBottom);
-					oSelect.setSelectedKey(sap.ui.core.Popup.Dock.EndBottom);
-					break;
-				default:
-				case 0:
-					oMenuButton.setMenuPosition(sap.ui.core.Popup.Dock.BeginBottom);
-					oSelect.setSelectedKey(sap.ui.core.Popup.Dock.BeginBottom);
-					break;
+		});
+	
+		var oSelect = new Select('select_position', {
+			items: [
+				new Item({
+					text: 'BeginBottom',
+					key: Popup.Dock.BeginBottom
+				}),
+				new Item({
+					text: 'BeginTop',
+					key: Popup.Dock.BeginTop
+				}),
+				new Item({
+					text: 'BeginCenter',
+					key: Popup.Dock.BeginCenter
+				}),
+				new Item({
+					text: 'LeftTop',
+					key: Popup.Dock.LeftTop
+				}),
+				new Item({
+					text: 'LeftCenter',
+					key: Popup.Dock.LeftCenter
+				}),
+				new Item({
+					text: 'LeftBottom',
+					key: Popup.Dock.LeftBottom
+				}),
+				new Item({
+					text: 'CenterTop',
+					key: Popup.Dock.CenterTop
+				}),
+				new Item({
+					text: 'CenterCenter',
+					key: Popup.Dock.CenterCenter
+				}),
+				new Item({
+					text: 'CenterBottom',
+					key: Popup.Dock.CenterBottom
+				}),
+				new Item({
+					text: 'RightTop',
+					key: Popup.Dock.RightTop
+				}),
+				new Item({
+					text: 'RightCenter',
+					key: Popup.Dock.RightCenter
+				}),
+				new Item({
+					text: 'RightBottom',
+					key: Popup.Dock.RightBottom
+				}),
+				new Item({
+					text: 'EndTop',
+					key: Popup.Dock.EndTop
+				}),
+				new Item({
+					text: 'EndCenter',
+					key: Popup.Dock.EndCenter
+				}),
+				new Item({
+					text: 'EndBottom',
+					key: Popup.Dock.EndBottom
+				})
+			],
+			change: function(oEvent) {
+				var sPosition = oEvent.getParameter('selectedItem').getKey();
+				oMenuButton.setMenuPosition(sPosition);
 			}
-		}
-	});
-
-	var oSelect = new sap.m.Select('select_position', {
-		items: [
-			new sap.ui.core.Item({
-				text: 'BeginBottom',
-				key: sap.ui.core.Popup.Dock.BeginBottom
-			}),
-			new sap.ui.core.Item({
-				text: 'BeginTop',
-				key: sap.ui.core.Popup.Dock.BeginTop
-			}),
-			new sap.ui.core.Item({
-				text: 'BeginCenter',
-				key: sap.ui.core.Popup.Dock.BeginCenter
-			}),
-			new sap.ui.core.Item({
-				text: 'LeftTop',
-				key: sap.ui.core.Popup.Dock.LeftTop
-			}),
-			new sap.ui.core.Item({
-				text: 'LeftCenter',
-				key: sap.ui.core.Popup.Dock.LeftCenter
-			}),
-			new sap.ui.core.Item({
-				text: 'LeftBottom',
-				key: sap.ui.core.Popup.Dock.LeftBottom
-			}),
-			new sap.ui.core.Item({
-				text: 'CenterTop',
-				key: sap.ui.core.Popup.Dock.CenterTop
-			}),
-			new sap.ui.core.Item({
-				text: 'CenterCenter',
-				key: sap.ui.core.Popup.Dock.CenterCenter
-			}),
-			new sap.ui.core.Item({
-				text: 'CenterBottom',
-				key: sap.ui.core.Popup.Dock.CenterBottom
-			}),
-			new sap.ui.core.Item({
-				text: 'RightTop',
-				key: sap.ui.core.Popup.Dock.RightTop
-			}),
-			new sap.ui.core.Item({
-				text: 'RightCenter',
-				key: sap.ui.core.Popup.Dock.RightCenter
-			}),
-			new sap.ui.core.Item({
-				text: 'RightBottom',
-				key: sap.ui.core.Popup.Dock.RightBottom
-			}),
-			new sap.ui.core.Item({
-				text: 'EndTop',
-				key: sap.ui.core.Popup.Dock.EndTop
-			}),
-			new sap.ui.core.Item({
-				text: 'EndCenter',
-				key: sap.ui.core.Popup.Dock.EndCenter
-			}),
-			new sap.ui.core.Item({
-				text: 'EndBottom',
-				key: sap.ui.core.Popup.Dock.EndBottom
-			})
-		],
-		change: function(oEvent) {
-			var sPosition = oEvent.getParameter('selectedItem').getKey();
-			oMenuButton.setMenuPosition(sPosition);
-		}
-	});
-
-	oButton.placeAt("ctr_cont");
-	oSelect.placeAt("ctr_cont");
-
-	var oPage = new sap.m.Page("page0", {
-		showHeader: false,
-		content: [
-			new sap.m.FlexBox({
-				height: "300px",
-				width: "600px",
-				justifyContent: "Center",
-				alignItems: "Center",
-				items: oMenuButton
-			})
-		]
-	});
-
-	var oApp = new sap.m.App({
-		initialPage: "page0",
-		pages: [
-			oPage
-		]
-	});
-
-oApp.placeAt("menu_cont");
+		});
+	
+		oButton.placeAt("ctr_cont");
+		oSelect.placeAt("ctr_cont");
+	
+		var oPage = new Page("page0", {
+			showHeader: false,
+			content: [
+				new FlexBox({
+					height: "300px",
+					width: "600px",
+					justifyContent: "Center",
+					alignItems: "Center",
+					items: oMenuButton
+				})
+			]
+		});
+	
+		var oApp = new App({
+			initialPage: "page0",
+			pages: [
+				oPage
+			]
+		});
+	
+	oApp.placeAt("menu_cont");
+});

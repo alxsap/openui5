@@ -1,4 +1,40 @@
-	var oApp = new sap.m.App({  initialPage: "page" });
+sap.ui.define([
+	"sap/m/App",
+	"sap/ui/model/json/JSONModel",
+	"sap/m/Table",
+	"sap/m/Column",
+	"sap/m/Label",
+	"sap/m/ColumnListItem",
+	"sap/m/Text",
+	"sap/m/ObjectMarker",
+	"sap/m/MessageToast",
+	"sap/m/Panel",
+	"sap/m/library",
+	"sap/ui/table/Table",
+	"sap/ui/table/Column",
+	"sap/m/Page"
+], function(
+	App,
+	JSONModel,
+	Table,
+	Column,
+	Label,
+	ColumnListItem,
+	Text,
+	ObjectMarker,
+	MessageToast,
+	Panel,
+	mobileLibrary,
+	TableTable,
+	TableColumn,
+	Page
+) {
+	"use strict";
+
+	// shortcut for sap.m.ObjectMarkerType
+	const ObjectMarkerType = mobileLibrary.ObjectMarkerType;
+
+	var oApp = new App({  initialPage: "page" });
 
 	var aData = [
 		{ lastName: "Dente", name: "Al", type: "Locked", addInfo: "someVeryLongTextToSeeIfItWillWrap" },
@@ -8,38 +44,38 @@
 		{ lastName: "Open", name: "Doris", type: "Flagged", addInfo: "someVeryLongTextToSeeIfItWillWrap" }
 	];
 
-	var oModel = new sap.ui.model.json.JSONModel();
+	var oModel = new JSONModel();
 	oModel.setData({ modelData: aData });
 
-	var oTable = new sap.m.Table({
+	var oTable = new Table({
 		columns : [
-			new sap.m.Column({
-				header : new sap.m.Label({
+			new Column({
+				header : new Label({
 					text : "LastName"
 				})
 			}),
-			new sap.m.Column({
-				header : new sap.m.Label({
+			new Column({
+				header : new Label({
 					text : "FirstName"
 				})
 			}),
-			new sap.m.Column({
-				header : new sap.m.Label({
+			new Column({
+				header : new Label({
 					text : "Object Marker"
 				})
 			}),
-			new sap.m.Column({
-				header : new sap.m.Label({
+			new Column({
+				header : new Label({
 					text : "Object Marker (active)"
 				})
 			}),
-			new sap.m.Column({
-				header : new sap.m.Label({
+			new Column({
+				header : new Label({
 					text : "Object Marker with long text"
 				})
 			}),
-			new sap.m.Column({
-				header : new sap.m.Label({
+			new Column({
+				header : new Label({
 					text : "Object Marker (active) with long text"
 				})
 			})
@@ -47,126 +83,126 @@
 	});
 
 	oTable.setModel(oModel);
-	oTable.bindItems("/modelData", new sap.m.ColumnListItem({
+	oTable.bindItems("/modelData", new ColumnListItem({
 		vAlign: "Middle",
 		cells : [
-			new sap.m.Text({
+			new Text({
 				text : "{lastName}",
 				wrapping : false
 			}),
-			new sap.m.Text({
+			new Text({
 				text : "{name}",
 				wrapping : false
 			}),
-			new sap.m.ObjectMarker({
+			new ObjectMarker({
 				type: "{type}"
 			}),
-			new sap.m.ObjectMarker({
+			new ObjectMarker({
 				type: "{type}",
 				press: function(oEvent) {
-					sap.m.MessageToast.show(oEvent.getParameter("type") + " marker pressed!");
+					MessageToast.show(oEvent.getParameter("type") + " marker pressed!");
 				}
 			}),
-			new sap.m.ObjectMarker({
+			new ObjectMarker({
 				type: "{type}",
 				additionalInfo: "{addInfo}",
 			}),
-			new sap.m.ObjectMarker({
+			new ObjectMarker({
 				type: "{type}",
 				additionalInfo: "{addInfo}",
 				press: function(oEvent) {
-					sap.m.MessageToast.show(oEvent.getParameter("type") + " marker pressed!");
+					MessageToast.show(oEvent.getParameter("type") + " marker pressed!");
 				}
 			})
 		]
 	}));
 
-	var oTablePanel = new sap.m.Panel({
+	var oTablePanel = new Panel({
 		headerText: "In a table usecase",
 		content: oTable
 	});
 
-	var oStandalonePanel = new sap.m.Panel("standalone-panel", {
+	var oStandalonePanel = new Panel("standalone-panel", {
 		headerText: "Standalone usecase",
 		content: [
-			new sap.m.ObjectMarker({
-			}).setType(sap.m.ObjectMarkerType.Locked),
-			new sap.m.ObjectMarker({
+			new ObjectMarker({
+			}).setType(ObjectMarkerType.Locked),
+			new ObjectMarker({
 				type: "Flagged"
 			}),
-			new sap.m.ObjectMarker({
-				type: sap.m.ObjectMarkerType.Favorite
+			new ObjectMarker({
+				type: ObjectMarkerType.Favorite
 			}),
-			new sap.m.ObjectMarker({
+			new ObjectMarker({
 				type: "Locked"
 			}),
-			new sap.m.ObjectMarker({
+			new ObjectMarker({
 				type: "Draft",
 				press: function(oEvent) {
-					sap.m.MessageToast.show(oEvent.getParameter("type") + " marker pressed!");
+					MessageToast.show(oEvent.getParameter("type") + " marker pressed!");
 				}
 			}),
-			new sap.m.ObjectMarker({
-				type: sap.m.ObjectMarkerType.Unsaved
+			new ObjectMarker({
+				type: ObjectMarkerType.Unsaved
 			})
 		]
 	});
 
-	var oUITable = new sap.ui.table.Table({
+	var oUITable = new TableTable({
 	columns : [
-		new sap.ui.table.Column({
+		new TableColumn({
 			name : "ID2",
-			label : new sap.m.Label({
+			label : new Label({
 				text : "Object Marker with press event"
 			}),
-			template : new sap.m.ObjectMarker({
+			template : new ObjectMarker({
 				type : "{type}",
 				press: function(oEvent) {
-					sap.m.MessageToast.show(oEvent.getParameter("type") + " marker pressed!");
+					MessageToast.show(oEvent.getParameter("type") + " marker pressed!");
 				}
 			})
 		}),
-		new sap.ui.table.Column({
+		new TableColumn({
 			name : "ID3",
-			label : new sap.m.Label({
+			label : new Label({
 				text : "Object Marker"
 			}),
 			hAlign:"End",
-			template : new sap.m.ObjectMarker({
+			template : new ObjectMarker({
 				type : "{type}"
 			})
 		}),
-		new sap.ui.table.Column({
+		new TableColumn({
 			name : "ID4",
-			label : new sap.m.Label({
+			label : new Label({
 				text : "Object Marker"
 			}),
-			template : new sap.m.ObjectMarker({
+			template : new ObjectMarker({
 				type : "{type}"
 			})
 		})
 	]
 });
 
-var aTData = [
-	{type : "Flagged"},
-	{type : "Draft"},
-	{type : "Unsaved"},
-	{type : "Favorite"}
-];
+	var aTData = [
+		{type : "Flagged"},
+		{type : "Draft"},
+		{type : "Unsaved"},
+		{type : "Favorite"}
+	];
 
-oUITable.setModel(new sap.ui.model.json.JSONModel(aTData));
+	oUITable.setModel(new JSONModel(aTData));
 
-oUITable.bindAggregation("rows", {
-	path : "/"
-});
-
-var oUITablePanel = new sap.m.Panel({
-		headerText: "In a sap.ui.table.Table usecase",
-		content: oUITable
+	oUITable.bindAggregation("rows", {
+		path : "/"
 	});
 
-	var oPage = new sap.m.Page("page", {
+	var oUITablePanel = new Panel({
+			headerText: "In a sap.ui.table.Table usecase",
+			content: oUITable
+		});
+
+	var oPage = new Page("page", {
 		title:"Object Marker",
 		content: [
 			oStandalonePanel,
@@ -176,3 +212,4 @@ var oUITablePanel = new sap.m.Panel({
 	});
 
 	oApp.addPage(oPage).placeAt("body");
+});

@@ -1,44 +1,59 @@
-var data = {
-	names: [
-		{firstName: "Peter", lastName: "Mueller"},
-		{firstName: "Petra", lastName: "Maier"},
-		{firstName: "Thomas", lastName: "Smith"},
-		{firstName: "John", lastName: "Williams"},
-		{firstName: "Maria", lastName: "Jones"}
-	]
-};
-var oModel = new sap.ui.model.json.JSONModel();
-oModel.setData(data);
+sap.ui.define([
+	"sap/ui/model/json/JSONModel",
+	"sap/m/List",
+	"sap/ui/core/dnd/DragDropInfo",
+	"sap/ui/core/library",
+	"sap/m/StandardListItem",
+	"sap/m/Page",
+	"sap/m/App"
+], function(JSONModel, List, DragDropInfo, coreLibrary, StandardListItem, Page, App) {
+	"use strict";
 
-// create the UI
-var oList = new sap.m.List({
-	headerText:"Names - drag between or on items",
-	dragDropConfig: new sap.ui.core.dnd.DragDropInfo({
-		sourceAggregation: "items",
-		targetAggregation: "items",
-		dropPosition: sap.ui.core.dnd.DropPosition.OnOrBetween,
-		drop: function(oEvent) {
-			var iSourceIndex = oList.indexOfItem(oEvent.getParameter("draggedControl"));
-			var iTargetIndex = oList.indexOfItem(oEvent.getParameter("droppedControl"));
-			var aData = oModel.getObject("/names");
-			var oMovedData = aData.splice(iSourceIndex, 1)[0];
-			aData.splice(iTargetIndex, 0, oMovedData);
-			oModel.refresh();
-		}
-	})
-}).bindItems({
-	path : "/names",
-	template : new sap.m.StandardListItem({
-		title: "{lastName}",
-		description: "{firstName}"
-	})
-}).setModel(oModel);
+	// shortcut for sap.ui.core.dnd.DropPosition
+	const DropPosition = coreLibrary.dnd.DropPosition;
 
-var oPage = new sap.m.Page({
-	title: "Drag And Drop Within List (on or between items)",
-	content : oList
+	var data = {
+		names: [
+			{firstName: "Peter", lastName: "Mueller"},
+			{firstName: "Petra", lastName: "Maier"},
+			{firstName: "Thomas", lastName: "Smith"},
+			{firstName: "John", lastName: "Williams"},
+			{firstName: "Maria", lastName: "Jones"}
+		]
+	};
+	var oModel = new JSONModel();
+	oModel.setData(data);
+
+	// create the UI
+	var oList = new List({
+		headerText:"Names - drag between or on items",
+		dragDropConfig: new DragDropInfo({
+			sourceAggregation: "items",
+			targetAggregation: "items",
+			dropPosition: DropPosition.OnOrBetween,
+			drop: function(oEvent) {
+				var iSourceIndex = oList.indexOfItem(oEvent.getParameter("draggedControl"));
+				var iTargetIndex = oList.indexOfItem(oEvent.getParameter("droppedControl"));
+				var aData = oModel.getObject("/names");
+				var oMovedData = aData.splice(iSourceIndex, 1)[0];
+				aData.splice(iTargetIndex, 0, oMovedData);
+				oModel.refresh();
+			}
+		})
+	}).bindItems({
+		path : "/names",
+		template : new StandardListItem({
+			title: "{lastName}",
+			description: "{firstName}"
+		})
+	}).setModel(oModel);
+
+	var oPage = new Page({
+		title: "Drag And Drop Within List (on or between items)",
+		content : oList
+	});
+
+	new App({
+		pages: [oPage]
+	}).placeAt("content");
 });
-
-var oApp = new sap.m.App({
-	pages: [oPage]
-}).placeAt("content");
