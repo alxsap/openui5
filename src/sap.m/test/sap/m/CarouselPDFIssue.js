@@ -14,7 +14,7 @@ sap.ui.define([
 ], function(Carousel, Filter, FilterOperator, Dialog, Bar, Title, Button, JSONModel, PDFViewer, jQuery) {
 	"use strict";
 	var myPDF = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
-	data = {
+	const data = {
 		previewItems: [
 			{id: 8, objectType: "1", src: myPDF},
 			{id: 9, objectType: "X", src: myPDF},

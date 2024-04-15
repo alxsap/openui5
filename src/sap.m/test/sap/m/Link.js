@@ -107,7 +107,6 @@ sap.ui.define([
 	var page2 = new Page("page2", {
 		title:"Page 2",
 		showNavButton: true,
-		navButtonText: "Page 1",
 		navButtonPress: function(){ app.back(); },
 		content : [ new Button({
 			text : "Nothing to see, back to Page 1",

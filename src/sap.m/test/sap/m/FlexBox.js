@@ -112,7 +112,7 @@ sap.ui.define([
 		]
 	});
 	
-	oButton3 = new Button({
+	const oButton3 = new Button({
 		width: "200px",
 		type: "Emphasized",
 		layoutData: new FlexItemData({
@@ -120,7 +120,7 @@ sap.ui.define([
 		})
 	});
 	
-	oButton4 = new Button({
+	const oButton4 = new Button({
 		width: "200px",
 		type: "Emphasized",
 		layoutData: new FlexItemData({

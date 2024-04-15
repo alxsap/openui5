@@ -95,77 +95,77 @@ sap.ui.define([
 	// select
 	oSelect0 = new Select("select-list", {
 		items: [
-			oItem0 = new Item("begin-bottom" ,{
+			new Item("begin-bottom" ,{
 				key: "begin bottom",
 				text: "begin bottom"
 			}),
 	
-			oItem1 = new Item("begin-center" ,{
+			new Item("begin-center" ,{
 				key: "begin center",
 				text: "begin center"
 			}),
 	
-			oItem2 = new Item("begin-top" ,{
+			new Item("begin-top" ,{
 				key: "begin top",
 				text: "begin top"
 			}),
 	
-			oItem3 = new Item("center-bottom" ,{
+			new Item("center-bottom" ,{
 				key: "center bottom",
 				text: "center bottom",
 			}),
 	
-			oItem4 = new Item("center-center" ,{
+			new Item("center-center" ,{
 				key: "center center",
 				text: "center center"
 			}),
 	
-			oItem5 = new Item("center-top" ,{
+			new Item("center-top" ,{
 				key: "center top",
 				text: "center top"
 			}),
 	
-			oItem6 = new Item("end-bottom" ,{
+			new Item("end-bottom" ,{
 				key: "end bottom",
 				text: "end bottom"
 			}),
 	
-			oItem7 = new Item("end-center" ,{
+			new Item("end-center" ,{
 				key: "end center",
 				text: "end center"
 			}),
 	
-			oItem8 = new Item("end-top" ,{
+			new Item("end-top" ,{
 				key: "end top",
 				text: "end top",
 			}),
 	
-			oItem9 = new Item("left-bottom" ,{
+			new Item("left-bottom" ,{
 				key: "left bottom",
 				text: "left bottom"
 			}),
 	
-			oItem10 = new Item("left-center" ,{
+			new Item("left-center" ,{
 				key: "left center",
 				text: "left center"
 			}),
 	
-			oItem11 = new Item("left-top" ,{
+			new Item("left-top" ,{
 				key: "left top",
 				text: "left top"
 			}),
 	
-			oItem12 = new Item("right-bottom" ,{
+			new Item("right-bottom" ,{
 				key: "right bottom",
 				text: "right bottom"
 			}),
 	
-			oItem13 = new Item("right-center" ,{
+			new Item("right-center" ,{
 				key: "right center",
 				text: "right center"
 			}),
 	
-			oItem14 = new Item("right-top" ,{
+			new Item("right-top" ,{
 				key: "right top",
 				text: "right top"
 			})

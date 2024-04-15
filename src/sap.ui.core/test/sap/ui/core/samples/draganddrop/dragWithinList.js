@@ -6,8 +6,6 @@ sap.ui.define([
 	"sap/m/Page",
 	"sap/m/App"
 ], function(JSONModel, List, DragDropInfo, StandardListItem, Page, App) {
-	sap.ui.loader.config({paths: {"my": "./"}});
-
 	"use strict";
 
 	var data = {

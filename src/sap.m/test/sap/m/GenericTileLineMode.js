@@ -11,6 +11,7 @@ sap.ui.define([
 	"sap/m/Label",
 	"sap/m/ToolbarSpacer",
 	"sap/ui/layout/form/SimpleForm",
+	"sap/ui/layout/library",
 	"sap/m/Input",
 	"sap/m/Select",
 	"sap/ui/core/Item",
@@ -38,6 +39,7 @@ sap.ui.define([
 	Label,
 	ToolbarSpacer,
 	SimpleForm,
+	layoutLibrary,
 	Input,
 	Select,
 	Item,
@@ -57,6 +59,9 @@ sap.ui.define([
 
 	// shortcut for sap.m.InputType
 	const InputType = mobileLibrary.InputType;
+
+	// shortcut for sap.ui.layout.form.SimpleFormLayout
+	const SimpleFormLayout = layoutLibrary.form.SimpleFormLayout;
 
 	// shortcut for sap.m.LoadState
 	const LoadState = mobileLibrary.LoadState;
@@ -173,7 +178,7 @@ sap.ui.define([
 					labelSpanS: 6,
 					labelSpanM: 6, columnsM: 2,
 					labelSpanL: 2, columnsL: 2,
-					layout: "GridLayout",
+					layout: SimpleFormLayout.ResponsiveGridLayout,
 					editable: true,
 					maxContainerCols: 2,
 					content: [

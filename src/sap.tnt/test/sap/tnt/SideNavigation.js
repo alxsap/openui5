@@ -238,7 +238,7 @@ sap.ui.define([
 	};
 	model.setData(data);
 	
-	const sideNavWithGroups = SideNavigation("sideNavWithGroups", {
+	const sideNavWithGroups = new SideNavigation("sideNavWithGroups", {
 		item: new NavigationList({
 			items: [
 				new NavigationListItem({

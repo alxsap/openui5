@@ -11,7 +11,6 @@ sap.ui.define([
 	app.placeAt("body");
 
 	var form = new SimpleForm({
-		minWidth : 1024,
 		maxContainerCols : 2,
 		editable: false,
 		content : [

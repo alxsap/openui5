@@ -67,7 +67,7 @@ sap.ui.define([
 
 	var oModel = new JSONModel();
 	oModel.setData(oProperties);
-	sap.ui.getCore();
+	oApp.setModel(oModel);
 
 	var oInput = new DateTimeField({
 		value: "{/value}",

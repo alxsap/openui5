@@ -84,7 +84,7 @@ sap.ui.define([
 	
 	var oUseTemp = new CheckBox({
 		text : "Use Package",
-		checked: true,
+		selected: true,
 		select : function() {
 			bTemp= !bTemp;
 		}
@@ -92,7 +92,7 @@ sap.ui.define([
 	
 	var oUseLREP = new CheckBox({
 		text : "Use LREP Object",
-		checked: true,
+		selected: true,
 		select : function() {
 			bLrep= !bLrep;
 		}
@@ -100,7 +100,7 @@ sap.ui.define([
 	
 	var oUsePackages = new CheckBox({
 		text : "Use Transports",
-		checked: true,
+		selected: true,
 		select : function() {
 			bPackages= !bPackages;
 		}
@@ -108,7 +108,7 @@ sap.ui.define([
 	
 	var oHidePackage = new CheckBox({
 		text : "Hide Package",
-		checked: true,
+		selected: true,
 		select : function() {
 			bHidePackage= !bHidePackage;
 		}

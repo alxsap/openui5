@@ -67,10 +67,10 @@ sap.ui.define([
 
 	// set the data for the model
 	oModel.setData(mData);
-	sap.ui.getCore();
 
 	// create and add app
 	var app = new App("myApp", {initialPage:"quickViewPage"});
+	app.setModel(oModel);
 	app.placeAt("body");
 
 	var oQuickViewPage = new QuickViewPage({

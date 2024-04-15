@@ -1,5 +1,4 @@
 sap.ui.define([
-	"sap/ui/qunit/utils/nextUIUpdate",
 	"sap/m/Image",
 	"sap/m/Label",
 	"sap/m/Select",
@@ -11,7 +10,7 @@ sap.ui.define([
 	"sap/m/Carousel",
 	"sap/m/Button",
 	"sap/ui/core/Core"
-], function(nextUIUpdate, Image, Label, Select, Item, mobileLibrary, SimpleForm, Toolbar, Title, Carousel, Button, Core) {
+], function(Image, Label, Select, Item, mobileLibrary, SimpleForm, Toolbar, Title, Carousel, Button, Core) {
 	"use strict";
 
 	// shortcut for sap.m.PlacementType
@@ -169,23 +168,21 @@ sap.ui.define([
 		pages: [imgDesert, imgElephant, imgPrairie]
 	});
 
-
-	carousel.placeAt("carouselConatiner");
-	nextUIUpdate.runSync()/*context not obviously suitable for an async function*/;
+	carousel.placeAt("carouselContainer");
 
 	new Button("btnHeight50", {
 		text: "change height to 50%",
 		press: function () {
 			carousel.setHeight("50%")
 		}
-	}).placeAt("buttonsConatiner");
+	}).placeAt("buttonsContainer");
 
 	new Button("btnHeight600px", {
 		text: "change height to 600 px",
 		press: function () {
 			carousel.setHeight("600px");
 		}
-	}).placeAt("buttonsConatiner");
+	}).placeAt("buttonsContainer");
 
 	new Button("btnWidth60", {
 		text: "change width to 60%",
@@ -193,7 +190,7 @@ sap.ui.define([
 			carousel.setWidth("60%");
 			carousel.invalidate();
 		}
-	}).placeAt("buttonsConatiner");
+	}).placeAt("buttonsContainer");
 
 	new Button("btnWidth400px", {
 		text: "change width to 400 px",
@@ -201,7 +198,7 @@ sap.ui.define([
 			carousel.setWidth("400px");
 			carousel.invalidate();
 		}
-	}).placeAt("buttonsConatiner");
+	}).placeAt("buttonsContainer");
 
 	new Button("btnReset", {
 		text: "Reset",
@@ -210,5 +207,5 @@ sap.ui.define([
 			carousel.setHeight("");
 			carousel.invalidate();
 		}
-	}).placeAt("buttonsConatiner");
+	}).placeAt("buttonsContainer");
 });

@@ -63,7 +63,6 @@ sap.ui.define([
 
 	var oModel = new JSONModel();
 	oModel.setData(oData);
-	sap.ui.getCore();
 
 	var oIconList = new List({
 		headerText: "Icons",
@@ -330,6 +329,7 @@ sap.ui.define([
 	});
 
 	new App({
-		pages: [oPage]
+		pages: [oPage],
+		models: oModel
 	}).placeAt("content");
 });

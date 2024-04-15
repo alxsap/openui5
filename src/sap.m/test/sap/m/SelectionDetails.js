@@ -38,7 +38,7 @@ sap.ui.define([
 			unit: "{unit}"
 		});
 	};
-
+	
 	var aItems = [
 		new SelectionDetailsItem({
 			lines: {
@@ -97,8 +97,8 @@ sap.ui.define([
 			enableNav: false
 		})
 	];
-
-	new JSONModel({
+	
+	var oModel = new JSONModel({
 		lines: [
 			[
 				{
@@ -184,31 +184,28 @@ sap.ui.define([
 			}
 		]
 	});
-
-	// set the model to the core
-	sap.ui.getCore();
-
+	
 	var oActionTemplate = new Item({
 		key: "{key}",
 		text: "{text}"
 	});
-
+	
 	var oActionGroupTemplate = new Item({
 		key: "{key}",
 		text: "{text}"
 	});
-
+	
 	var oActionGroupsListTemplate = new ActionListItem({
 		text: "{text}"
 	});
-
+	
 	var oActionGroupsList = new List("actionGroupsList", {
 		items: {
 			path: "/contentActionItems",
 			template: oActionGroupsListTemplate
 		}
 	});
-
+	
 	var oSelectionDetails = new SelectionDetails("selectionDetails", {
 		items: aItems,
 		actions: {
@@ -253,7 +250,7 @@ sap.ui.define([
 			MessageToast.show("Event 'beforeClose' triggered");
 		}
 	});
-
+	
 	var oApp = new App({
 		pages: new Page({
 			title: "Selection Details",
@@ -293,10 +290,11 @@ sap.ui.define([
 					]
 				})
 			]
-		})
+		}),
+		models: oModel
 	});
 	oApp.placeAt("content");
-
+	
 	//set the contrast class for belize plus
 	if (Theming.getTheme() === "sap_belize_plus") {
 		oApp.addStyleClass("sapContrastPlus");
