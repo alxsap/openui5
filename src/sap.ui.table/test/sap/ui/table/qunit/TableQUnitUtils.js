@@ -789,6 +789,39 @@ sap.ui.define([
 				return oTable.qunit.focus(oElement);
 			};
 		};
+
+		/**
+		 * Sets the content density and invalidates the table.
+		 *
+		 * @param {string} [sDensity] The content density value to be set.
+		 * @returns {Promise} A promise that resolves after the rendering of the table is finished.
+		 */
+		oTable.qunit.setDensity = function(sDensity) {
+			document.body.classList.remove("sapUiSizeCozy");
+			document.body.classList.remove("sapUiSizeCompact");
+			oTable.removeStyleClass("sapUiSizeCondensed");
+
+			if (sDensity != null) {
+				if (sDensity === "sapUiSizeCondensed") {
+					document.body.classList.add("sapUiSizeCompact");
+					oTable.addStyleClass("sapUiSizeCondensed");
+				} else {
+					document.body.classList.add(sDensity);
+				}
+			}
+
+			oTable.invalidate();
+			return oTable.qunit.whenRenderingFinished();
+		};
+
+		/**
+		 * Resets to the original content density and invalidates the table.
+		 *
+		 * @returns {Promise} A promise that resolves after the rendering of the table is finished.
+		 */
+		oTable.qunit.resetDensity = function() {
+			return oTable.qunit.setDensity("sapUiSizeCozy");
+		};
 	}
 
 	function addHelpers(oTable) {
@@ -1136,6 +1169,25 @@ sap.ui.define([
 	};
 
 	/**
+	 * Creates an instance of a <code>RowAction</code> with items. Can be used as a row action template in the table.
+	 *
+	 * @param {object[]} [aItemSettings=[{type: "Navigation"}, {type: "Delete"}]]
+	 *     The settings for the items. If no settings are provided, a navigation and a delete item are created. If <code>null</code> is provided, no
+	 *     items are created.
+	 * @returns {sap.ui.table.RowAction} Row action with items.
+	 */
+	TableQUnitUtils.createRowAction = function(aItemSettings = [
+		{type: "Navigation"},
+		{type: "Delete"}
+	]) {
+		return new RowAction({
+			items: (aItemSettings ?? []).map(function(mItemSettings) {
+				return new RowActionItem(mItemSettings);
+			})
+		});
+	};
+
+	/**
 	 * Adds a delegate that listens to an event of an element once. The delegate is removed after the event.
 	 *
 	 * @param {sap.ui.core.Element} oElement The element to add the delegate to.
@@ -1243,29 +1295,6 @@ sap.ui.define([
 		return function() {
 			return TableQUnitUtils.wait(iMilliseconds);
 		};
-	};
-
-	/**
-	 * Sets the content density.
-	 *
-	 * @param {sap.ui.table.Table} oTable Instance of the table.
-	 * @param {string} [sDensity] The content density value to be set.
-	 */
-	TableQUnitUtils.setDensity = function(oTable, sDensity) {
-		document.body.classList.remove("sapUiSizeCozy");
-		document.body.classList.remove("sapUiSizeCompact");
-		oTable.removeStyleClass("sapUiSizeCondensed");
-
-		if (sDensity != null) {
-			if (sDensity === "sapUiSizeCondensed") {
-				document.body.classList.add("sapUiSizeCompact");
-				oTable.addStyleClass("sapUiSizeCondensed");
-			} else {
-				document.body.classList.add(sDensity);
-			}
-		}
-
-		nextUIUpdate.runSync()/*context not obviously suitable for an async function*/;
 	};
 
 	/**
@@ -1891,32 +1920,6 @@ sap.ui.define([
 				resolve(getRowDomRefs(oTableInstance, iRow));
 			});
 		});
-	};
-
-	window.initRowActions = function(oTable, iCount, iNumberOfActions) {
-		oTable.setRowActionCount(iCount);
-		const oRowAction = new RowAction();
-		const aActions = [{type: "Navigation"}, {type: "Delete"}, {icon: "sap-icon://search", text: "Inspect"}];
-		for (let i = 0; i < Math.min(iNumberOfActions, 3); i++) {
-			const oItem = new RowActionItem({
-				icon: aActions[i].icon,
-				text: aActions[i].text,
-				type: aActions[i].type || "Custom"
-			});
-			oRowAction.addItem(oItem);
-		}
-		oTable.setRowActionTemplate(oRowAction);
-		nextUIUpdate.runSync()/*context not obviously suitable for an async function*/;
-	};
-
-	window.removeRowActions = function(oTable) {
-		const oCurrentTemplate = oTable.getRowActionTemplate();
-		if (oCurrentTemplate) {
-			oCurrentTemplate.destroy();
-		}
-
-		oTable.setRowActionCount(0);
-		nextUIUpdate.runSync()/*context not obviously suitable for an async function*/;
 	};
 
 	return TableQUnitUtils;

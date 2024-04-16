@@ -464,8 +464,7 @@ sap.ui.define([
 				icon: "sap-icon://alert",
 				tooltip: "Alert",
 				inverted: "{inverted}"
-			})
-			,new ObjectStatus({
+			}), new ObjectStatus({
 				title: "Some title",
 				text: "VeryLongTextToDemonstrateWrappingVeryLongTextToDemonstrateWrappingVeryLongTextToDemonstrateWrappingVeryLongTextToDemonstrateWrapping",
 				active : true,

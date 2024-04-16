@@ -6,7 +6,6 @@ sap.ui.define([
 	"sap/ui/table/utils/TableUtils",
 	"sap/ui/table/Table",
 	"sap/ui/table/CreationRow",
-	"sap/ui/table/RowAction",
 	"sap/ui/table/rowmodes/Fixed",
 	"sap/ui/table/library",
 	"sap/ui/core/library",
@@ -25,7 +24,6 @@ sap.ui.define([
 	TableUtils,
 	Table,
 	CreationRow,
-	RowAction,
 	FixedRowMode,
 	TableLibrary,
 	CoreLibrary,
@@ -48,7 +46,6 @@ sap.ui.define([
 	const getRowAction = window.getRowAction;
 	const getSelectAll = window.getSelectAll;
 	const iNumberOfRows = window.iNumberOfRows;
-	const initRowActions = window.initRowActions;
 	const TestControl = TableQUnitUtils.TestControl;
 	const TestInputControl = TableQUnitUtils.TestInputControl;
 
@@ -150,7 +147,7 @@ sap.ui.define([
 		oTable.setRowActionCount(2);
 		assert.ok(!TableUtils.hasRowActions(oTable), "Table has still no row actions");
 
-		oTable.setRowActionTemplate(new RowAction());
+		oTable.setRowActionTemplate(TableQUnitUtils.createRowAction(null));
 		assert.ok(TableUtils.hasRowActions(oTable), "Table has row actions");
 	});
 
@@ -177,7 +174,8 @@ sap.ui.define([
 	});
 
 	QUnit.test("getCellInfo", async function(assert) {
-		initRowActions(oTable, 1, 1);
+		oTable.setRowActionTemplate(TableQUnitUtils.createRowAction(null));
+		oTable.setRowActionCount(1);
 		oTable.getColumns()[1].setVisible(false);
 		oTable.getColumns()[2].addMultiLabel(new TestControl({text: "a_1_1"}));
 		oTable.getColumns()[2].addMultiLabel(new TestControl({text: "a_3_2"}));
@@ -336,6 +334,15 @@ sap.ui.define([
 		oInfo = TableUtils.getCellInfo(document.getElementById("outerelement"));
 		delete oInfo.isOfType;
 		assert.deepEqual(oInfo, oDefaultInfo, "Passed a dom element which is no table cell -> Returned the info object with default values");
+
+		/* Cell of a destroyed column before rerendering */
+
+		oCell = getCell(0, 0);
+		oTable.getColumns()[0].destroy();
+		oInfo = TableUtils.getCellInfo(oCell);
+		assert.strictEqual(oInfo.rowIndex, 0, "Row Index: 0");
+		assert.strictEqual(oInfo.columnIndex, -1, "Column Index: -1");
+		assert.strictEqual(oInfo.columnSpan, 1, "Span Length: 1");
 	});
 
 	QUnit.test("hasRowHeader", async function(assert) {
@@ -988,7 +995,7 @@ sap.ui.define([
 
 	QUnit.test("getCell", async function(assert) {
 		oTable.setRowActionCount(2);
-		oTable.setRowActionTemplate(new RowAction());
+		oTable.setRowActionTemplate(TableQUnitUtils.createRowAction(null));
 		oTable.getColumns()[0].setCreationTemplate(new TestInputControl());
 		oTable.setCreationRow(new CreationRow());
 		await nextUIUpdate();
@@ -1154,12 +1161,14 @@ sap.ui.define([
 		}), ["string", 1], "The array of return values was returned");
 	});
 
-	QUnit.test("getInteractiveElements", function(assert) {
+	QUnit.test("getInteractiveElements", async function(assert) {
 		TableQUnitUtils.addColumn(oTable, "Focusable & Not Tabbable", "Focus&NoTabSpan", false, true, false);
 		TableQUnitUtils.addColumn(oTable, "Not Focusable & Not Tabbable", "NoFocus&NoTabSpan", false, false, false);
 		TableQUnitUtils.addColumn(oTable, "Focusable & Tabbable", "Focus&TabInput", true, null, true, null, null, true);
 		TableQUnitUtils.addColumn(oTable, "Focusable & Not Tabbable", "Focus&NoTabInput", true, null, false);
-		initRowActions(oTable, 2, 2);
+		oTable.setRowActionTemplate(TableQUnitUtils.createRowAction());
+		oTable.setRowActionCount(2);
+		await nextUIUpdate();
 
 		/* Data cells */
 
@@ -1200,7 +1209,8 @@ sap.ui.define([
 		assert.strictEqual($InteractiveElements[0], $RowActionIcons[0], "(HTMLElement) The first returned element is the correct row action icon");
 		assert.strictEqual($InteractiveElements[1], $RowActionIcons[1], "(HTMLElement) The second returned element is the correct row action icon");
 
-		initRowActions(oTable, 1, 1);
+		oTable.setRowActionCount(1);
+		await nextUIUpdate();
 		$RowActionCell = getRowAction(0);
 		$RowActionIcons = $RowActionCell.find(".sapUiTableActionIcon:visible");
 		$InteractiveElements = TableUtils.getInteractiveElements($RowActionCell);
@@ -1225,7 +1235,8 @@ sap.ui.define([
 
 		/* Cells without interactive elements */
 
-		initRowActions(oTable, 1, 0);
+		oTable.setRowActionCount(0);
+		await nextUIUpdate();
 		$InteractiveElements = TableUtils.getInteractiveElements(getRowAction(0));
 		assert.strictEqual($InteractiveElements, null, "Row action cell without interactive element: Null was returned");
 
@@ -1284,13 +1295,16 @@ sap.ui.define([
 		assert.strictEqual($InteractiveElements, null, "(HTMLElement) Tree icon cell of leaf node: No element was returned");
 	});
 
-	QUnit.test("getFirstInteractiveElement", function(assert) {
+	QUnit.test("getFirstInteractiveElement", async function(assert) {
 		let oRow = oTable.getRows()[0];
+
 		assert.equal(TableUtils.getFirstInteractiveElement(undefined), null, "The row instance is undefined: returns null");
 		assert.equal(TableUtils.getFirstInteractiveElement(null), null, "The row instance is equal to null: returns null");
 		assert.equal(TableUtils.getFirstInteractiveElement(oRow), null, "There are no interactive elements: returns null");
 
-		initRowActions(oTable, 2, 2);
+		oTable.setRowActionTemplate(TableQUnitUtils.createRowAction());
+		oTable.setRowActionCount(2);
+		await nextUIUpdate();
 
 		assert.equal(TableUtils.getFirstInteractiveElement(oRow, false), null, "");
 		const $RowActionCell = getRowAction(0);
@@ -1672,10 +1686,12 @@ sap.ui.define([
 		return $InteractiveElements[0];
 	}
 
-	QUnit.test("getParentCell", function(assert) {
+	QUnit.test("getParentCell", async function(assert) {
 		oTable.getColumns()[0].setCreationTemplate(new TestInputControl());
 		oTable.setCreationRow(new CreationRow());
-		initRowActions(oTable, 1, 1);
+		oTable.setRowActionTemplate(TableQUnitUtils.createRowAction());
+		oTable.setRowActionCount(1);
+		await nextUIUpdate();
 
 		/* Data Cell */
 

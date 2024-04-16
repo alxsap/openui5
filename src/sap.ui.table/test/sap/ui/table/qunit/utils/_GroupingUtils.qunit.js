@@ -2,6 +2,7 @@
 
 sap.ui.define([
 	"sap/ui/table/qunit/TableQUnitUtils",
+	"sap/ui/qunit/utils/nextUIUpdate",
 	"sap/ui/table/utils/TableUtils",
 	"sap/ui/table/Table",
 	"sap/ui/table/TreeTable",
@@ -11,6 +12,7 @@ sap.ui.define([
 	"sap/ui/Device"
 ], function(
 	TableQUnitUtils,
+	nextUIUpdate,
 	TableUtils,
 	Table,
 	TreeTable,
@@ -29,7 +31,6 @@ sap.ui.define([
 	const getRowAction = window.getRowAction;
 	const getSelectAll = window.getSelectAll;
 	window.iNumberOfRows;
-	const initRowActions = window.initRowActions;
 	const fakeSumRow = window.fakeSumRow;
 	const fakeGroupRow = window.fakeGroupRow;
 	const Grouping = TableUtils.Grouping;
@@ -50,8 +51,10 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("isInSummaryRow", function(assert) {
-		initRowActions(oTable, 1, 1);
+	QUnit.test("isInSummaryRow", async function(assert) {
+		oTable.setRowActionTemplate(TableQUnitUtils.createRowAction(null));
+		oTable.setRowActionCount(1);
+		await nextUIUpdate();
 
 		return fakeSumRow(0).then(function() {
 			assert.ok(TableUtils.Grouping.isInSummaryRow(getCell(0, 0)), "DATACELL in sum row");
@@ -70,8 +73,10 @@ sap.ui.define([
 		});
 	});
 
-	QUnit.test("isInGroupHeaderRow", function(assert) {
-		initRowActions(oTable, 1, 1);
+	QUnit.test("isInGroupHeaderRow", async function(assert) {
+		oTable.setRowActionTemplate(TableQUnitUtils.createRowAction(null));
+		oTable.setRowActionCount(1);
+		await nextUIUpdate();
 
 		return fakeGroupRow(0).then(function() {
 			assert.ok(TableUtils.Grouping.isInGroupHeaderRow(getCell(0, 0)), "DATACELL in group row");

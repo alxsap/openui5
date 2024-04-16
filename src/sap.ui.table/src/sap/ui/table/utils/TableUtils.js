@@ -765,7 +765,7 @@ sap.ui.define([
 
 				oCellInfo.type = TableUtils.CELLTYPE.DATACELL;
 				oCellInfo.rowIndex = parseInt($Cell.parent().attr("data-sap-ui-rowindex"));
-				oCellInfo.columnIndex = oColumn.getIndex();
+				oCellInfo.columnIndex = oColumn?.getIndex() ?? -1;
 				oCellInfo.columnSpan = 1;
 
 			} else if ($Cell.hasClass("sapUiTableHeaderDataCell")) {
@@ -802,7 +802,7 @@ sap.ui.define([
 
 				oCellInfo.type = TableUtils.CELLTYPE.PSEUDO;
 				oCellInfo.rowIndex = -1;
-				oCellInfo.columnIndex = oColumn ? oColumn.getIndex() : -1;
+				oCellInfo.columnIndex = oColumn?.getIndex() ?? -1;
 				oCellInfo.columnSpan = 1;
 			}
 

@@ -1299,6 +1299,8 @@ function(
 			ManagedObjectMetadata.addAPIParentInfoEnd(oToken);
 		}, this);
 
+		// compatibility
+		/* -------------------------------------- */
 		return this;
 	};
 

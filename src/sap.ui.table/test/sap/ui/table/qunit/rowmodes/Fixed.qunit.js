@@ -2,9 +2,9 @@
 
 sap.ui.define([
 	"sap/ui/table/qunit/TableQUnitUtils",
-	"sap/ui/table/qunit/rowmodes/sets/FixedRowHeight",
-	"sap/ui/table/qunit/rowmodes/sets/RowCountConstraints",
-	"sap/ui/table/qunit/rowmodes/sets/RowsUpdated",
+	"sap/ui/table/qunit/rowmodes/shared/FixedRowHeight",
+	"sap/ui/table/qunit/rowmodes/shared/RowCountConstraints",
+	"sap/ui/table/qunit/rowmodes/shared/RowsUpdated",
 	"sap/ui/table/rowmodes/Fixed",
 	"sap/ui/table/Table",
 	"sap/ui/table/Column"

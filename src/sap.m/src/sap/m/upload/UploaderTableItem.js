@@ -9,8 +9,9 @@ sap.ui.define([
 	"sap/ui/core/util/File",
 	"sap/ui/Device",
 	"sap/m/upload/UploadSetwithTableItem",
-	"sap/m/upload/UploaderHttpRequestMethod"
-], function (Log, MobileLibrary, Element, FileUtil, Device, UploadSetItem, UploaderHttpRequestMethod) {
+	"sap/m/upload/UploaderHttpRequestMethod",
+	"sap/m/upload/UploadItem"
+], function (Log, MobileLibrary, Element, FileUtil, Device, UploadSetItem, UploaderHttpRequestMethod, UploadItem) {
 	"use strict";
 
 	/**
@@ -58,9 +59,9 @@ sap.ui.define([
 				uploadStarted: {
 					parameters: {
 						/**
-						 * The item that is going to be uploaded.
+						 * The item {@link sap.m.upload.UploadSetwithTableItem UploadSetwithTableItem} or {@link sap.m.upload.UploadItem UploadItem} that is going to be uploaded.
 						 */
-						item: {type: "sap.m.upload.UploadSetwithTableItem"}
+						item: {type: "any"}
 					}
 				},
 				/**
@@ -69,9 +70,9 @@ sap.ui.define([
 				uploadProgressed: {
 					parameters: {
 						/**
-						 * The item that is being uploaded.
+						 * The item {@link sap.m.upload.UploadSetwithTableItem UploadSetwithTableItem} or {@link sap.m.upload.UploadItem UploadItem} that is being uploaded.
 						 */
-						item: {type: "sap.m.upload.UploadSetwithTableItem"},
+						item: {type: "any"},
 						/**
 						 * The number of bytes transferred since the beginning of the operation.
 						 * This doesn't include headers and other overhead, but only the content itself
@@ -90,9 +91,9 @@ sap.ui.define([
 				uploadCompleted: {
 					parameters: {
 						/**
-						 * The item that was uploaded.
+						 * The item {@link sap.m.upload.UploadSetwithTableItem UploadSetwithTableItem} or {@link sap.m.upload.UploadItem UploadItem} that was uploaded.
 						 */
-						item: {type: "sap.m.upload.UploadSetwithTableItem"},
+						item: {type: "any"},
 						/**
 						 * A JSON object containing the additional response parameters like response, responseXML, readyState, status and headers.
 						 * <i>Sample response object:</i>
@@ -156,7 +157,7 @@ sap.ui.define([
 	/**
 	 * Starts the process of uploading the specified file.
 	 *
-	 * @param {sap.m.upload.UploadSetwithTableItem} oItem Item representing the file to be uploaded.
+	 * @param {sap.m.upload.UploadSetwithTableItem | sap.m.upload.UploadItem} oItem Item representing the file to be uploaded.
 	 * @param {sap.ui.core.Item[]} [aHeaderFields] Collection of request header fields to be send along.
 	 * @public
 	 */
@@ -219,7 +220,7 @@ sap.ui.define([
 	/**
 	 * Starts the process of downloading a file.
 	 *
-	 * @param {sap.m.upload.UploadSetwithTableItem} oItem Item representing the file to be downloaded.
+	 * @param {sap.m.upload.UploadSetwithTableItem | sap.m.upload.UploadItem} oItem Item representing the file to be downloaded.
 	 * @param {sap.ui.core.Item[]} aHeaderFields List of header fields to be added to the GET request.
 	 * @param {boolean} bAskForLocation If it is true, the location of where the file is to be downloaded is queried by a browser dialog.
 	 * @return {boolean} It returns true if the download is processed successfully
@@ -247,8 +248,14 @@ sap.ui.define([
 
 			oXhr.responseType = "blob"; // force the HTTP response, response-type header to be blob
 			oXhr.onload = function () {
+				let targetItem = UploadItem;
+				if (oItem instanceof UploadItem) {
+					targetItem = UploadItem;
+				} else if (oItem instanceof UploadSetItem) {
+					targetItem = UploadSetItem;
+				}
 				var sFileName = oItem.getFileName(),
-					oSplit = UploadSetItem._splitFileName(sFileName, false);
+					oSplit = targetItem._splitFileName(sFileName, false);
 				oBlob = oXhr.response;
 				FileUtil.save(oBlob, oSplit.name, oSplit.extension, oItem.getMediaType(), "utf-8");
 			};

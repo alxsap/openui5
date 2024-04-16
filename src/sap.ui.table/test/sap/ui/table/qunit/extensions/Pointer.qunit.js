@@ -4,22 +4,22 @@ sap.ui.define([
 	"sap/ui/table/qunit/TableQUnitUtils",
 	"sap/ui/qunit/QUnitUtils",
 	"sap/ui/qunit/utils/nextUIUpdate",
-	"sap/ui/Device",
 	"sap/ui/table/extensions/Pointer",
 	"sap/ui/table/utils/TableUtils",
 	"sap/ui/table/library",
 	"sap/ui/table/rowmodes/Fixed",
-	"sap/ui/thirdparty/jquery"
+	"sap/ui/thirdparty/jquery",
+	"sap/ui/Device"
 ], function(
 	TableQUnitUtils,
 	qutils,
 	nextUIUpdate,
-	Device,
 	PointerExtension,
 	TableUtils,
 	tableLibrary,
 	FixedRowMode,
-	jQuery
+	jQuery,
+	Device
 ) {
 	"use strict";
 
@@ -32,7 +32,6 @@ sap.ui.define([
 	const getRowHeader = window.getRowHeader;
 	const getRowAction = window.getRowAction;
 	const iNumberOfRows = window.iNumberOfRows;
-	const initRowActions = window.initRowActions;
 	const checkFocus = window.checkFocus;
 	const fakeSumRow = window.fakeSumRow;
 
@@ -608,7 +607,8 @@ sap.ui.define([
 		oTable.clearSelection();
 		oTable.setSelectionBehavior(tableLibrary.SelectionBehavior.Row);
 		oTable.setSelectionMode(tableLibrary.SelectionMode.Single);
-		initRowActions(oTable, 2, 2);
+		oTable.setRowActionTemplate(TableQUnitUtils.createRowAction(null));
+		oTable.setRowActionCount(1);
 		await nextUIUpdate();
 
 		assert.ok(!oTable.isIndexSelected(0), "First row is not selected");
@@ -629,7 +629,8 @@ sap.ui.define([
 	QUnit.test("MultiToggle Selection - Range", async function(assert) {
 		oTable.clearSelection();
 		oTable.setSelectionBehavior(tableLibrary.SelectionBehavior.Row);
-		initRowActions(oTable, 2, 2);
+		oTable.setRowActionTemplate(TableQUnitUtils.createRowAction(null));
+		oTable.setRowActionCount(1);
 		await nextUIUpdate();
 
 		qutils.triggerMouseEvent(getCell(0, 0), "tap");
@@ -651,7 +652,8 @@ sap.ui.define([
 	QUnit.test("MultiToggle Selection - Toggle", async function(assert) {
 		oTable.clearSelection();
 		oTable.setSelectionBehavior(tableLibrary.SelectionBehavior.Row);
-		initRowActions(oTable, 2, 2);
+		oTable.setRowActionTemplate(TableQUnitUtils.createRowAction(null));
+		oTable.setRowActionCount(1);
 		await nextUIUpdate();
 
 		qutils.triggerMouseEvent(getCell(0, 0), "tap");

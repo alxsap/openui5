@@ -7,7 +7,6 @@ sap.ui.define([
 	"sap/ui/table/TreeTable",
 	"sap/ui/table/AnalyticalTable",
 	"sap/ui/table/Column",
-	"sap/ui/table/RowAction",
 	"sap/ui/table/RowSettings",
 	"sap/ui/table/library",
 	"sap/m/IllustratedMessage",
@@ -26,7 +25,6 @@ sap.ui.define([
 	TreeTable,
 	AnalyticalTable,
 	Column,
-	RowAction,
 	RowSettings,
 	library,
 	IllustratedMessage,
@@ -50,8 +48,6 @@ sap.ui.define([
 	const getRowHeader = window.getRowHeader;
 	const getRowAction = window.getRowAction;
 	const getSelectAll = window.getSelectAll;
-	const initRowActions = window.initRowActions;
-	const removeRowActions = window.removeRowActions;
 	const fakeGroupRow = window.fakeGroupRow;
 	const fakeSumRow = window.fakeSumRow;
 
@@ -173,7 +169,8 @@ sap.ui.define([
 		beforeEach: async function() {
 			createTables();
 			await _modifyTables();
-			initRowActions(oTable, 1, 1);
+			oTable.setRowActionTemplate(TableQUnitUtils.createRowAction(null));
+			oTable.setRowActionCount(1);
 		},
 		afterEach: function() {
 			destroyTables();
@@ -330,7 +327,7 @@ sap.ui.define([
 		);
 	}
 
-	QUnit.test("aria-labelledby with Focus", function(assert) {
+	QUnit.test("aria-labelledby with Focus", async function(assert) {
 		const done = assert.async();
 		let $Cell;
 		let i;
@@ -343,7 +340,8 @@ sap.ui.define([
 			testAriaLabelsForFocusedDataCell($Cell, 1, i, assert, {rowChange: i === 0, colChange: true});
 		}
 
-		removeRowActions(oTable);
+		oTable.destroyRowActionTemplate();
+		await nextUIUpdate();
 
 		for (i = 0; i < oTable.columnCount; i++) {
 			$Cell = getCell(2, i, true, assert);
@@ -356,7 +354,7 @@ sap.ui.define([
 		}, 100);
 	});
 
-	QUnit.test("aria-labelledby with Focus (TreeTable)", function(assert) {
+	QUnit.test("aria-labelledby with Focus (TreeTable)", async function(assert) {
 		const done = assert.async();
 		let $Cell;
 		let i;
@@ -369,7 +367,8 @@ sap.ui.define([
 			testAriaLabelsForFocusedDataCell($Cell, 1, i, assert, {rowChange: i === 0, colChange: true, table: oTreeTable});
 		}
 
-		removeRowActions(oTreeTable);
+		oTable.destroyRowActionTemplate();
+		await nextUIUpdate();
 
 		for (i = 0; i < oTreeTable.columnCount; i++) {
 			$Cell = getCell(2, i, true, assert, oTreeTable);
@@ -540,7 +539,6 @@ sap.ui.define([
 
 	QUnit.test("Group Header Row", function(assert) {
 		const done = assert.async();
-		initRowActions(oTable, 1, 1);
 
 		fakeGroupRow(1).then(async function(oRefs) {
 			assert.strictEqual(oRefs.row.attr("aria-expanded"), "true", "aria-expanded set on group row");
@@ -589,7 +587,6 @@ sap.ui.define([
 	QUnit.test("Sum Row", function(assert) {
 		let oRowDomRefs;
 
-		initRowActions(oTable, 1, 1);
 		TableUtils.Grouping.setToDefaultGroupMode(oTable);
 
 		return fakeSumRow(1).then(async function(oRefs) {
@@ -731,7 +728,7 @@ sap.ui.define([
 		}
 	}
 
-	QUnit.test("aria-labelledby with Focus", function(assert) {
+	QUnit.test("aria-labelledby with Focus", async function(assert) {
 		const done = assert.async();
 		let $Cell;
 		for (let i = 0; i < oTable.columnCount; i++) {
@@ -739,7 +736,8 @@ sap.ui.define([
 			testAriaLabelsForColumnHeader($Cell, i, assert, {firstTime: i === 0, colChange: true, focus: true});
 		}
 
-		removeRowActions(oTable);
+		oTable.destroyRowActionTemplate();
+		await nextUIUpdate();
 
 		for (let i = 0; i < oTable.columnCount; i++) {
 			$Cell = getColumnHeader(i, true, assert);
@@ -1199,8 +1197,10 @@ sap.ui.define([
 		beforeEach: async function() {
 			createTables();
 			await _modifyTables();
-			initRowActions(oTable, 1, 1);
-			initRowActions(oTreeTable, 1, 1);
+			oTable.setRowActionTemplate(TableQUnitUtils.createRowAction(null));
+			oTable.setRowActionCount(1);
+			oTreeTable.setRowActionTemplate(TableQUnitUtils.createRowAction(null));
+			oTreeTable.setRowActionCount(1);
 		},
 		afterEach: function() {
 			destroyTables();
@@ -1549,7 +1549,7 @@ sap.ui.define([
 		oTable.getBinding().filter(new Filter("A", FilterOperator.EQ, "A1"));
 		assert.strictEqual($Elem.attr("aria-rowcount"), "4", "aria-rowcount after filter is applied");
 
-		oTable.setRowActionTemplate(new RowAction());
+		oTable.setRowActionTemplate(TableQUnitUtils.createRowAction(null));
 		oTable.setRowActionCount(1);
 		await nextUIUpdate();
 		assert.strictEqual($Elem.attr("aria-colcount"), "7", "aria-colcount");
@@ -1570,7 +1570,7 @@ sap.ui.define([
 		oTreeTable.getBinding().filter(new Filter("A", FilterOperator.EQ, "A1"));
 		assert.strictEqual($Elem.attr("aria-rowcount"), "4", "aria-rowcount after filter is applied");
 
-		oTreeTable.setRowActionTemplate(new RowAction());
+		oTreeTable.setRowActionTemplate(TableQUnitUtils.createRowAction(null));
 		oTreeTable.setRowActionCount(1);
 		await nextUIUpdate();
 		assert.strictEqual($Elem.attr("aria-colcount"), "7", "aria-colcount");
@@ -1606,7 +1606,8 @@ sap.ui.define([
 	});
 
 	QUnit.test("ARIA attributes of TR elements", async function(assert) {
-		initRowActions(oTable, 1, 1);
+		oTable.setRowActionTemplate(TableQUnitUtils.createRowAction(null));
+		oTable.setRowActionCount(1);
 		await nextUIUpdate();
 
 		const sTableId = oTable.getId();
@@ -1700,7 +1701,7 @@ sap.ui.define([
 		const iNumberOfColumns = oTable._getVisibleColumns().length;
 		let $Elem; let i;
 
-		oTable.setRowActionTemplate(new RowAction());
+		oTable.setRowActionTemplate(TableQUnitUtils.createRowAction(null));
 		oTable.setRowActionCount(1);
 		await nextUIUpdate();
 
@@ -2019,7 +2020,8 @@ sap.ui.define([
 		const oExtension = oTable._getAccExtension();
 		oExtension._debug();
 		oTable.getColumns()[1].setVisible(false);
-		initRowActions(oTable, 2, 2);
+		oTable.setRowActionTemplate(TableQUnitUtils.createRowAction(null));
+		oTable.setRowActionCount(1);
 		await nextUIUpdate();
 
 		getCell(0, 0, true);

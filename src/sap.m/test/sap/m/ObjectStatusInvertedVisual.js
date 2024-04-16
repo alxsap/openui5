@@ -1,8 +1,11 @@
 sap.ui.define([
 	"sap/m/Page",
 	"sap/m/App",
-	"sap/m/ObjectStatus"
-], function(Page, App, ObjectStatus) {
+	"sap/m/ObjectStatus",
+	"sap/ui/layout/form/SimpleForm",
+	"sap/m/Text",
+	"sap/m/Label"
+], function(Page, App, ObjectStatus, SimpleForm, Text, Label) {
 	"use strict";
 	function addToPage(oContent, oPage){
 		oPage.addContent(oContent);
@@ -551,5 +554,45 @@ sap.ui.define([
 		text : "Indication 20",
 		active:true,
 		inverted: true
+	}), oPage);
+	
+	addToPage(new SimpleForm({
+		editable: true,
+		content: [
+			new Text({text: "Inverted ObjectStatus in Editable form"}),
+			new Label({text: "Descr"}),
+			new ObjectStatus({
+				text: "Indication 6",
+				inverted: true,
+				state: "Indication06"
+			}),
+			new Label({text: "Descr"}),
+			new ObjectStatus({
+				title: "title",
+				text: "Indication 04",
+				inverted: true,
+				state: "Indication04"
+			})
+		]
+	}), oPage);
+	
+	addToPage(new SimpleForm({
+		editable: false,
+		content: [
+			new Text({text: "Inverted ObjectStatus in Non editable form"}),
+			new Label({text: "Descr"}),
+			new ObjectStatus({
+				text: "Indication 3",
+				inverted: true,
+				state: "Indication03"
+			}),
+			new Label({text: "Descr"}),
+			new ObjectStatus({
+				title: "title",
+				text: "Indication 16",
+				state: "Indication16",
+				inverted: true
+			})
+		]
 	}), oPage);
 });

@@ -44,7 +44,8 @@ sap.ui.define(["sap/base/i18n/ResourceBundle", "sap/ui/core/Lib", "sap/uxap/libr
 			},
 			reveal : {
 				changeType : "unstashControl",
-				getLabel: fnGetLabel
+				getLabel: fnGetLabel,
+				depthOfRelevantBindings: 2
 			},
 			rename: function () {
 				return {
