@@ -541,13 +541,6 @@ sap.ui.define([
 				}
 			},
 
-			"apply/_internal/flexState/appDescriptorChanges/prepareAppDescriptorMap": {
-				group: "Apply Internal",
-				coverage: {
-					only: ["sap/ui/fl/apply/_internal/flexState/appDescriptorChanges/prepareAppDescriptorMap"]
-				}
-			},
-
 			"apply/_internal/flexState/compVariants/prepareCompVariantsMap": {
 				group: "Apply Internal",
 				coverage: {

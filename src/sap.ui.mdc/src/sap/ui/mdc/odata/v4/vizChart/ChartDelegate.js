@@ -1350,7 +1350,12 @@ sap.ui.define([
 				chartType: "column",
 				height: "100%",
 				width: "100%",
-				isAnalytical: true //,
+				isAnalytical: true,
+				vizProperties: {
+					plotArea: {
+						scrollbar: { forceToShowInMobile: true }
+					}
+				}
 			}));
 
 			this._getChart(oChart).setCustomMessages({

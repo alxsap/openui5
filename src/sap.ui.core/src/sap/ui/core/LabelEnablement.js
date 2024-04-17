@@ -51,7 +51,7 @@ function findLabelForControl(oLabel, fnOnAfterRendering) {
 
 	const oControl = Element.getElementById(sId);
 
-	if (oControl) {
+	if (oControl && typeof oControl.getIdForLabel === "function") {
 		const sDomIdForLabel = oControl.getIdForLabel();
 
 		if (sDomIdForLabel !== oControl.getId()) {
@@ -243,7 +243,7 @@ LabelEnablement.writeLabelForAttribute = function(oRenderManager, oLabel) {
 	Element ??= sap.ui.require("sap/ui/core/Element");
 	const oControl = Element.getElementById(oControlInfo.innerControlId || oControlInfo.controlId);
 	// The "for" attribute should only reference labelable HTML elements.
-	if (oControl && isLabelableControl(oControl)) {
+	if (oControl && typeof oControl.getIdForLabel === "function" && isLabelableControl(oControl)) {
 		oRenderManager.attr("for", oControl.getIdForLabel());
 	}
 };
