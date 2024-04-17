@@ -1,7 +1,7 @@
 sap.ui.define([
-	"sap/m/Button",
-	"sap/ui/core/mvc/XMLView"
-], function(Button) {
+	"sap/ui/core/mvc/XMLView",
+	"sap/m/Button"
+], async function(XMLView, Button) {
 	"use strict";
 	// Define sample preprocessor functions
 	var fnXmlPreprocessor = function(xml, info, settings) {
@@ -43,13 +43,13 @@ sap.ui.define([
 	+ '    </mvc:View>  ';
 	
 	// Create a normal view
-	sap.ui.xmlview({viewContent:xml}).loaded()
+	(await XMLView.create({definition:xml})).loaded()
 		.then(function(oView) {
 			oView.placeAt('content');
 			// Create a view with preprocessor for 'xml'
-			sap.ui.xmlview({
-				viewContent:xml,
-				async: true,
+			XMLView.create({
+				definition:xml,
+
 				preprocessors: {
 					xml: {
 						preprocessor: fnXmlPreprocessor,
@@ -60,9 +60,9 @@ sap.ui.define([
 		.then(function(oView) {
 			oView.placeAt('xmlContent');
 			// Create a view with preprocessor for 'controls'
-			sap.ui.xmlview({
-				viewContent:xml,
-				async: true,
+			XMLView.create({
+				definition:xml,
+
 				preprocessors: {
 					controls: {
 						preprocessor: fnControlPreprocessor,

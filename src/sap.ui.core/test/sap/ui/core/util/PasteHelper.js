@@ -1,4 +1,4 @@
-sap.ui.require([
+sap.ui.define([
 	'sap/ui/core/util/PasteHelper',
 	'sap/ui/core/Core',
 	'sap/ui/core/Element',
@@ -16,6 +16,8 @@ sap.ui.require([
 	"sap/ui/model/type/Currency"
 ],
 		function(PasteHelper, Core, Element, JSONModel, Table, Column, TextArea, Text, Label, MessageBox, TypeString, Byte, TypeBoolean, TypeDate, Currency) {
+			"use strict";
+
 			// Test Data if not using Excel spreadsheet for copying.
 			//var aData3_OK = [["Luis", "10", "yes", "2018-12-03", "5 USD"],["Leo", "8", "no","2018-12-18", "15.53 EUR"]];
 			const testA = "Luis\t10\ttrue\t2018-12-03\t5 USD\tLuis White\nLeo\t8\tfalse\t2018-12-18\t10 EUR\tLeo Bond";

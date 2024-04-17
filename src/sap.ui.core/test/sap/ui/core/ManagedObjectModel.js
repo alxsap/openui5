@@ -1,4 +1,5 @@
 sap.ui.define([
+	"sap/ui/core/mvc/XMLView",
 	"sap/ui/model/base/ManagedObjectModel",
 	"sap/m/Label",
 	"sap/m/Select",
@@ -6,9 +7,8 @@ sap.ui.define([
 	"sap/m/Input",
 	"sap/m/Button",
 	"sap/ui/thirdparty/jquery",
-	"sap/ui/core/mvc/XMLView",
 	"sap/ui/core/mvc/Controller"
-], function(ManagedObjectModel, Label, Select, Item, Input, Button, jQuery) {
+], async function(XMLView, ManagedObjectModel, Label, Select, Item, Input, Button, jQuery) {
 	"use strict";
 	sap.ui.controller("managedobjectmodel.example.Controller", {
 		onInit: function(oEvent) {
@@ -41,7 +41,7 @@ sap.ui.define([
 	Object.defineProperty(globalThis, "myView", {
 		configurable: "false",
 		writable: "true",
-		value: sap.ui.xmlview({viewContent: jQuery('#view1').html()})
+		value: await XMLView.create({definition: jQuery('#view1').html()})
 	});
 
 	myView.placeAt("content");

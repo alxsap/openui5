@@ -1,4 +1,4 @@
-sap.ui.require([
+sap.ui.define([
 	'sap/ui/core/Messaging',
 	'sap/ui/core/util/MockServer',
 	'sap/ui/model/odata/v2/ODataModel',
@@ -20,6 +20,8 @@ sap.ui.require([
 	'sap/ui/model/json/JSONModel',
 	'sap/ui/codeeditor/CodeEditor'
 ], function (Messaging, MockServer, ODataModel, ResponsiveSplitter, SplitPane, PaneContainer, VerticalLayout, HorizontalLayout, Item, Column, ColumnListItem, Text, Input, Label, Select, Button, Table, Panel, JSONModel, CodeEditor) {
+	"use strict";
+
 	// 1. Mocking
 	var sServiceUri = "/SalesOrderSrv/";
 	var sDataRootPath = "qunit/testdata/SalesOrder/";

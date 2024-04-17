@@ -1,15 +1,15 @@
-		sap.ui.require(
+		sap.ui.define(
 			[
 				"sap/ui/core/Control",
 				"sap/ui/core/Lib",
 				"sap/ui/qunit/qunit-css",
 				"sap/ui/thirdparty/qunit",
 				"sap/ui/qunit/qunit-junit",
-				"sap/ui/qunit/qunit-coverage",
 				"sap/base/util/ObjectPath",
 				"sap/ui/core/Core"
 			],
-			function(Control, Library, qunitCss, qunit, qunitJunit, qunitCoverage, ObjectPath, Core) {
+			function(Control, Library, qunitCss, qunit, qunitJunit, ObjectPath, Core) {
+				"use strict";
 
 				function getDetachedControls(sControlName) {
 					return Control.getControlsByFieldGroupId([]).filter(function(control) {
@@ -83,9 +83,9 @@
 					document.body.removeChild(oContentDomElement);
 				});
 
-	//			QUnit.test("test sap.ui.core controls", function(assert) {
-	//				fnMemoryLeakCheckLibrary(assert, "sap.ui.core");
-	//			});
+				//			QUnit.test("test sap.ui.core controls", function(assert) {
+				//				fnMemoryLeakCheckLibrary(assert, "sap.ui.core");
+				//			});
 
 				QUnit.test("test sap.m controls", function(assert) {
 					fnMemoryLeakCheckLibrary(assert, "sap.m");
@@ -93,24 +93,24 @@
 					fnMemoryLeakCheckLibrary(assert, "sap.m");
 				});
 
-/*				QUnit.test("test sap.ui.unified controls", function(assert) {
-					fnMemoryLeakCheckLibrary(assert, "sap.ui.unified");
-				});
+				/*				QUnit.test("test sap.ui.unified controls", function(assert) {
+									fnMemoryLeakCheckLibrary(assert, "sap.ui.unified");
+								});
 
-				QUnit.test("test sap.ui.suite controls", function(assert) {
-					fnMemoryLeakCheckLibrary(assert, "sap.ui.suite");
-				});
+								QUnit.test("test sap.ui.suite controls", function(assert) {
+									fnMemoryLeakCheckLibrary(assert, "sap.ui.suite");
+								});
 
-				QUnit.test("test sap.ui.table controls", function(assert) {
-					fnMemoryLeakCheckLibrary(assert, "sap.ui.table");
-				});
+								QUnit.test("test sap.ui.table controls", function(assert) {
+									fnMemoryLeakCheckLibrary(assert, "sap.ui.table");
+								});
 
-				QUnit.test("test sap.uxap controls", function(assert) {
-					fnMemoryLeakCheckLibrary(assert, "sap.uxap");
-				});
+								QUnit.test("test sap.uxap controls", function(assert) {
+									fnMemoryLeakCheckLibrary(assert, "sap.uxap");
+								});
 
-				QUnit.test("test sap.ui.commons controls", function(assert) {
-					fnMemoryLeakCheckLibrary(assert, "sap.ui.commons");
-				}); */
+								QUnit.test("test sap.ui.commons controls", function(assert) {
+									fnMemoryLeakCheckLibrary(assert, "sap.ui.commons");
+								}); */
 			}
 		);

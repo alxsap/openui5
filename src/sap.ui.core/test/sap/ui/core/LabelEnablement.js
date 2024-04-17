@@ -1,8 +1,8 @@
 sap.ui.define([
-	"sap/ui/thirdparty/jquery",
 	"sap/ui/core/mvc/XMLView",
+	"sap/ui/thirdparty/jquery",
 	"sap/ui/core/mvc/Controller"
-], function(jQuery) {
+], async function(XMLView, jQuery) {
 	"use strict";
 	try {
 		sap.ui.getCore().loadLibrary("sap.ui.commons");
@@ -18,6 +18,6 @@ sap.ui.define([
 	}
 	
 	sap.ui.controller("my.own.controller", {});
-	var myView = sap.ui.xmlview({viewContent: jQuery('#view1').html()});
+	var myView = await XMLView.create({definition: jQuery('#view1').html()});
 	myView.placeAt("content");
 });

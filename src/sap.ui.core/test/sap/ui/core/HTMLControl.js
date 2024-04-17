@@ -1,4 +1,5 @@
-sap.ui.require(["sap/ui/core/Element", "sap/ui/commons/layout/MatrixLayout", "sap/ui/commons/Button", "sap/ui/commons/TextField", "sap/ui/core/HTML", "sap/ui/commons/Dialog", "sap/ui/thirdparty/jquery"], function(Element, MatrixLayout, Button, TextField, HTML, Dialog, jQuery) {
+sap.ui.define(["sap/ui/core/Element", "sap/ui/commons/layout/MatrixLayout", "sap/ui/commons/Button", "sap/ui/commons/TextField", "sap/ui/core/HTML", "sap/ui/commons/Dialog", "sap/ui/thirdparty/jquery"], function(Element, MatrixLayout, Button, TextField, HTML, Dialog, jQuery) {
+	"use strict";
 	try{
 		sap.ui.getCore().loadLibrary("sap.ui.commons");
 	}catch(e){
@@ -63,7 +64,7 @@ sap.ui.require(["sap/ui/core/Element", "sap/ui/commons/layout/MatrixLayout", "sa
 		// oDialog.placeAt("target1")
 		oDialog.open();
 		/**/
-	};
+	}
 
 	var delta = 10;
 
@@ -74,7 +75,7 @@ sap.ui.require(["sap/ui/core/Element", "sap/ui/commons/layout/MatrixLayout", "sa
 				delta = delta <= 2 ? 2 : delta-1;
 			}});
 		oButton.placeAt(jQuery(".x").get(0));
-	};
+	}
 
 	function animate() {
 		var html5 = jQuery("#embedded");

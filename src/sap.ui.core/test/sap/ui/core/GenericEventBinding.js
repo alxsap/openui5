@@ -1,4 +1,4 @@
-sap.ui.require([
+sap.ui.define([
 	"sap/ui/core/Core",
 	"sap/ui/core/Rendering",
 	"sap/ui/commons/TextField",
@@ -11,6 +11,7 @@ sap.ui.require([
 	MatrixLayout,
 	Button
 ) {
+	"use strict";
 	Core.ready().then(function() {
 		function scream() {
 			alert("Help! I'm blurred!");

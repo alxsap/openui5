@@ -1,8 +1,7 @@
-sap.ui.require([
+sap.ui.define([
 	"sap/ui/core/Element",
 	"sap/ui/table/plugins/ODataV4Selection",
 	"sap/ui/model/odata/v4/ODataModel",
-	"sap/ui/core/Core",
 	"sap/ui/table/TreeTable",
 	"sap/ui/table/Column",
 	"sap/m/HBox",
@@ -14,7 +13,8 @@ sap.ui.require([
 	"sap/m/Toolbar",
 	"sap/m/VBox",
 	"sap/m/FlexItemData"
-], function(Element, ODataV4Selection, ODataModel, Core, TreeTable, Column, HBox, Icon, Text, OverflowToolbar, Title, Input, Toolbar, VBox, FlexItemData) {
+], function(Element, ODataV4Selection, ODataModel, TreeTable, Column, HBox, Icon, Text, OverflowToolbar, Title, Input, Toolbar, VBox, FlexItemData) {
+	"use strict";
 	var oTable = new TreeTable({
 		columns: [
 			new Column({

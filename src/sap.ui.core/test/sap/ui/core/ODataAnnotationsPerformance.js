@@ -1,4 +1,5 @@
-sap.ui.require(["sap/ui/core/Core", "sap/ui/model/odata/ODataMetadata", "sap/ui/model/odata/ODataAnnotations", "sap/ui/model/odata/v2/ODataAnnotations"],function(Core, ODataMetadata, ODataAnnotations, V2ODataAnnotations) {
+sap.ui.define(["sap/ui/core/Core", "sap/ui/model/odata/ODataMetadata", "sap/ui/model/odata/v2/ODataAnnotations", "sap/ui/model/odata/ODataAnnotations"],function(Core, ODataMetadata, V2ODataAnnotations, ODataAnnotations) {
+	"use strict";
 	Core.ready().then(function() {
 
 		var mService = {

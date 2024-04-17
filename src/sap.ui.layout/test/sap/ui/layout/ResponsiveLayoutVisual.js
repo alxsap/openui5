@@ -1,4 +1,4 @@
-sap.ui.require([
+sap.ui.define([
 	"sap/ui/core/Core",
 	"sap/m/App",
 	"sap/m/Button",
@@ -15,7 +15,6 @@ sap.ui.require([
 	"sap/ui/core/Title",
 	"sap/ui/layout/form/SimpleForm",
 	"sap/ui/layout/library",
-	"sap/ui/layout/form/ResponsiveLayout", // to render only after everything is loaded to keep initial focus stable
 	"sap/ui/layout/ResponsiveFlowLayoutData"
 ], async function(Core, App, Button, Input, Label, Link, Page, SegmentedButton, SegmentedButtonItem, Text, Title, Toolbar, ToolbarSpacer, CoreTitle, SimpleForm, layoutLibrary) {
 	"use strict";

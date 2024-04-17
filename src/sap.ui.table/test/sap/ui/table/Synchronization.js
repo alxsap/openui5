@@ -1,17 +1,8 @@
 sap.ui.require([
-	"sap/ui/core/RenderManager",
-	"sap/ui/model/json/JSONModel",
-	"sap/ui/table/TreeTable",
-	"sap/ui/table/Column",
-	"sap/m/Text",
-	"sap/m/Link",
-	"sap/ui/core/Icon",
+	"sap/ui/model/json/JSONModel", "sap/ui/table/TreeTable", "sap/ui/table/Column", "sap/m/Text", "sap/m/Link", "sap/ui/core/Icon",
 	"sap/m/Toolbar",
-	"sap/ui/layout/Splitter",
-	"sap/ui/core/Control",
-	"sap/m/Label",
-	"sap/ui/thirdparty/jquery"
-], function(RenderManager, JSONModel, TreeTable, Column, Text, Link, Icon, Toolbar, Splitter, Control, Label, jQuery) {
+	"sap/ui/layout/Splitter", "sap/ui/core/Control"
+], function(JSONModel, TreeTable, Column, Text, Link, Icon, Toolbar, Splitter, Control) {
 	var iGeneratedSizeFactors = 0;
 
 	function getSizeFactor() {
@@ -107,7 +98,7 @@ sap.ui.require([
 
 				this.oSyncInterface.placeVerticalScrollbarAt(this.oVSbContainer);
 
-				var oRenderManager = new RenderManager().getInterface();
+				var oRenderManager = sap.ui.getCore().createRenderManager();
 				this.oSyncInterface.renderHorizontalScrollbar(oRenderManager, this.getId() + "-hsb", 1000);
 				oRenderManager.flush(this.oHSbContainer);
 			}
@@ -271,28 +262,28 @@ sap.ui.require([
 		selectionBehavior: "Row",
 		columns: [
 			new Column({
-				label: new Label({text: "Name"}),
+				label: new sap.m.Label({text: "Name"}),
 				template: new Text({text: "{name}", wrapping: false}),
 				sortProperty: "name",
 				filterProperty: "name",
 				width: "250px"
 			}),
 			new Column({
-				label: new Label({text: "Description"}),
+				label: new sap.m.Label({text: "Description"}),
 				template: new Text({text: "{description}", wrapping: false}),
 				sortProperty: "description",
 				filterProperty: "description",
 				width: "400px"
 			}),
 			new Column({
-				label: new Label({text: "State"}),
+				label: new sap.m.Label({text: "State"}),
 				template: new Text({text: "{highlightState}", wrapping: false}),
 				sortProperty: "highlightState",
 				filterProperty: "highlightState",
 				width: "250px"
 			}),
 			new Column({
-				label: new Label({text: "Icon"}),
+				label: new sap.m.Label({text: "Icon"}),
 				template: new Icon({
 					src: "sap-icon://account",
 					size: {path: "sizeFactor", formatter: function(iFactor) {return (iFactor * 48) + "px";}}
@@ -316,7 +307,7 @@ sap.ui.require([
 		selectionBehavior: "Row",
 		columns: [
 			new Column({
-				label: new Label({text: "Name"}),
+				label: new sap.m.Label({text: "Name"}),
 				template: new Text({text: "{name}", wrapping: false}),
 				sortProperty: "name",
 				filterProperty: "name",

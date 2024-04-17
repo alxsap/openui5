@@ -1,4 +1,4 @@
-sap.ui.require([
+sap.ui.define([
 	"sap/ui/core/Core",
 	"sap/ui/core/HTML",
 	"sap/m/App",
@@ -7,6 +7,7 @@ sap.ui.require([
 	"sap/m/Slider",
 	"sap/base/Log"
 ], async function(Core, HTML, App, Page, ResponsiveScale, Slider, Log) {
+	"use strict";
 	await Core.ready();
 
 	var oDefaultTitle = new HTML({ content: "<h2>Default</h2>" }),

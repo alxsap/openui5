@@ -1,29 +1,29 @@
-sap.ui.require(['sap/ui/model/json/JSONModel', 'sap/ui/model/odata/ODataModel', 'sap/ui/core/util/Export', 'sap/ui/core/util/ExportTypeCSV', "sap/ui/thirdparty/jquery"],
-		function(JSONModel, ODataModel, Export, ExportTypeCSV, jQuery) {
+sap.ui.define(["sap/ui/thirdparty/jquery", 'sap/ui/model/json/JSONModel'],
+		function($, JSONModel) {
 		'use strict';
 
 		var getSettings = function() {
 
-			var sExportType = jQuery('#export-type').val(),
-				sSeparatorChar = jQuery('#separator-char').val(),
-				bByteOrderMark = jQuery('#byte-order-mark').val() === "default" ? undefined : jQuery('#byte-order-mark').val() === "true";
+			var sExportType = $('#export-type').val(),
+				sSeparatorChar = $('#separator-char').val(),
+				bByteOrderMark = $('#byte-order-mark').val() === "default" ? undefined : $('#byte-order-mark').val() === "true";
 
 			var oExportType;
 
 			if (sExportType === 'csv') {
-				oExportType = new ExportTypeCSV({
+				oExportType = new undefined/*ExportTypeCSV*/({
 					separatorChar: sSeparatorChar,
 					byteOrderMark: bByteOrderMark
 				});
 			}
 
-			var sDataSource = jQuery("#data-source").val();
+			var sDataSource = $("#data-source").val();
 
 			if (sDataSource === "json") {
 
 				// Settings
-				var iRows = jQuery("#json-rows").val(),
-					iColumns = jQuery("#json-columns").val();
+				var iRows = $("#json-rows").val(),
+					iColumns = $("#json-columns").val();
 
 				// Create Model
 				var aData = [];
@@ -58,18 +58,18 @@ sap.ui.require(['sap/ui/model/json/JSONModel', 'sap/ui/model/odata/ODataModel', 
 				};
 			} else if (sDataSource === "odata") {
 
-				var oModel = new ODataModel(jQuery("#odata-service-url").val());
+				var oModel = new undefined/*ODataModel*/($("#odata-service-url").val());
 
 				return {
 					exportType: oExportType,
 					rows: {
-						path: '/' + jQuery("#odata-collection").val()
+						path: '/' + $("#odata-collection").val()
 					},
 					columns: [ {
-						name: jQuery("#odata-column-name").val(),
+						name: $("#odata-column-name").val(),
 						template: {
 							content: {
-								path: jQuery("#odata-column-property").val()
+								path: $("#odata-column-property").val()
 							}
 						}
 					} ],
@@ -80,8 +80,8 @@ sap.ui.require(['sap/ui/model/json/JSONModel', 'sap/ui/model/odata/ODataModel', 
 			return {};
 		}
 
-		jQuery("#export").on("click", function() {
-			var oExport = new Export(getSettings());
+		$("#export").on("click", function() {
+			var oExport = new undefined/*Export*/(getSettings());
 
 			function destroyExportObject() {
 				oExport.destroy();
@@ -89,15 +89,15 @@ sap.ui.require(['sap/ui/model/json/JSONModel', 'sap/ui/model/odata/ODataModel', 
 
 			oExport.generate()
 			.then(function(sFile) {
-				jQuery("#result").html(sFile.replace(/\n/g, '<br>'));
+				$("#result").html(sFile.replace(/\n/g, '<br>'));
 			})
 			.then(destroyExportObject, destroyExportObject);
 		});
 
-		jQuery("#download").on("click", function() {
-			jQuery("#result").html('');
+		$("#download").on("click", function() {
+			$("#result").html('');
 
-			var oExport = new Export(getSettings());
+			var oExport = new undefined/*Export*/(getSettings());
 
 			function destroyExportObject() {
 				oExport.destroy();
@@ -106,10 +106,10 @@ sap.ui.require(['sap/ui/model/json/JSONModel', 'sap/ui/model/odata/ODataModel', 
 			oExport.saveFile().then(destroyExportObject, destroyExportObject);
 		});
 
-		var $json = jQuery(".data-source-json"),
-			$odata = jQuery(".data-source-odata");
-		jQuery("#data-source").on("change", function() {
-			if (jQuery(this).val() === 'json') {
+		var $json = $(".data-source-json"),
+			$odata = $(".data-source-odata");
+		$("#data-source").on("change", function() {
+			if ($(this).val() === 'json') {
 				$odata.css('display', 'none');
 				$json.css('display', '');
 			} else {

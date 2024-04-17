@@ -1,5 +1,7 @@
-sap.ui.require(["jquery.sap.global", "sap/ui/model/json/JSONModel", "sap/ui/core/mvc/XMLView", "sap/ui/core/cache/CacheManager", "sap/ui/layout/HorizontalLayout", "sap/ui/layout/VerticalLayout", "sap/m/Button", "sap/m/Panel", "sap/m/Page", "sap/m/App", "sap/suite/ui/microchart/ComparisonMicroChart", "sap/suite/ui/microchart/ComparisonMicroChartData", "sap/ui/performance/Measurement", "sap/ui/util/XMLHelper", "sap/ui/thirdparty/sinon"],
+sap.ui.define(["sap/ui/thirdparty/jquery", "sap/ui/model/json/JSONModel", "sap/ui/core/mvc/XMLView", "sap/ui/core/cache/CacheManager", "sap/ui/layout/HorizontalLayout", "sap/ui/layout/VerticalLayout", "sap/m/Button", "sap/m/Panel", "sap/m/Page", "sap/m/App", "sap/suite/ui/microchart/ComparisonMicroChart", "sap/suite/ui/microchart/ComparisonMicroChartData", "sap/ui/performance/Measurement", "sap/ui/util/XMLHelper", "sap/ui/thirdparty/sinon"],
 function(jQuery, JSONModel, XMLView, Cache, HLayout, VLayout, Button, Panel, Page, App, ComparisonMicroChart, ComparisonMicroChartData /*, sinon*/, Measurement, XMLHelper) {
+	"use strict";
+
 	var oModel = new JSONModel({
 		cachedViewTime: 0,
 		notCachedViewTime: 0
@@ -7,9 +9,9 @@ function(jQuery, JSONModel, XMLView, Cache, HLayout, VLayout, Button, Panel, Pag
 
 	function createView(sId, mCacheConfig) {
 		Measurement.start(sId, "create a view", "view_cache");
-		var pView = sap.ui.xmlview(sId, {
+		var pView = XMLView.create({
+			id: sId,
 			viewName: "cache",
-			async: true,
 			preprocessors: {
 				xml: {
 					preprocessor: function(x) {

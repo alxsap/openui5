@@ -1,6 +1,7 @@
 var openPopup, closePopup, greenClicked, openAnim, closeAnim;
 
-sap.ui.require(["sap/ui/core/Popup", "sap/ui/thirdparty/jquery"], function(Popup, jQuery) {
+sap.ui.define(["sap/ui/core/Popup", "sap/ui/thirdparty/jquery"], function(Popup, jQuery) {
+	"use strict";
 	openAnim = function($Ref, iDuration, fnCallback) {
 	  $Ref.slideDown(iDuration, fnCallback);
 	};

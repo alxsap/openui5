@@ -1,5 +1,6 @@
 var oCache;
-sap.ui.require(["sap/ui/core/cache/CacheManager"], function (classCacheManager) {
+sap.ui.define(["sap/ui/core/cache/CacheManager"], function (classCacheManager) {
+	"use strict";
 	oCache = classCacheManager;
 });
 function addEntry(key, idValue) {

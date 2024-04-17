@@ -1,4 +1,4 @@
-sap.ui.require([
+sap.ui.define([
 	"sap/m/App",
 	"sap/m/Page",
 	"sap/m/CheckBox",
@@ -10,6 +10,7 @@ sap.ui.require([
 	"sap/ui/core/mvc/XMLView"
 ],
 function(App, Page, CheckBox, ToggleButton, Core, Element, ObjectPageSubSection, jQuery) {
+	"use strict";
 
 	Core.ready(function() {
 		var oApp = new App(),

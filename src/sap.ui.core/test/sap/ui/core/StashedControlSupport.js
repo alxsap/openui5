@@ -1,11 +1,11 @@
 sap.ui.define([
+	"sap/ui/core/mvc/XMLView",
 	"sap/ui/model/json/JSONModel",
 	"sap/m/Label",
 	"sap/base/Log",
 	"sap/ui/performance/Measurement",
-	"sap/ui/core/mvc/XMLView",
 	"sap/ui/core/mvc/Controller"
-], function(JSONModel, Label, Log, Measurement) {
+], async function(XMLView, JSONModel, Label, Log, Measurement) {
 	"use strict";
 
 	/* TODO: Consider replacing this
@@ -38,10 +38,11 @@ sap.ui.define([
 
 	Measurement.setActive(true);
 	Measurement.start("view_loading");
-	sap.ui.xmlview("view1", {
+	(await XMLView.create({
+		id: "view1",
 		controller: myController,
-		viewContent: document.getElementById("myview").innerHTML
-	}).setModel(oModel).placeAt("content");
+		definition: document.getElementById("myview").innerHTML
+	})).setModel(oModel).placeAt("content");
 	Measurement.end("view_loading");
 	new Label({
 		text: "loading time: " + Measurement.getMeasurement("view_loading").duration + " ms"

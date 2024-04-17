@@ -1,9 +1,9 @@
 sap.ui.define([
+  "sap/ui/core/mvc/XMLView",
   "sap/ui/model/json/JSONModel",
   "sap/ui/thirdparty/jquery",
-  "sap/ui/core/mvc/XMLView",
   "sap/ui/core/mvc/Controller"
-], function(JSONModel, jQuery) {
+], async function(XMLView, JSONModel, jQuery) {
 	"use strict";
 	sap.ui.controller("myController", {
 	  onInit: function () {
@@ -52,5 +52,5 @@ sap.ui.define([
 	
 	  }
 	});
-	sap.ui.xmlview({ viewContent: jQuery('#myXml').html() }).placeAt("content");
+	(await XMLView.create({ definition: jQuery('#myXml').html() })).placeAt("content");
 });

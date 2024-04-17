@@ -1,13 +1,13 @@
 sap.ui.define([
+	"sap/ui/core/mvc/XMLView",
 	"sap/ui/commons/Button",
 	"sap/ui/commons/Link",
 	"sap/ui/model/json/JSONModel",
 	"sap/ui/commons/ListBox",
 	"sap/ui/core/ListItem",
 	"sap/ui/core/CustomData",
-	"sap/ui/core/mvc/XMLView",
 	"sap/ui/core/mvc/Controller"
-], function(Button, Link, JSONModel, ListBox, ListItem, CustomData) {
+], async function(XMLView, Button, Link, JSONModel, ListBox, ListItem, CustomData) {
 	"use strict";
 	try{
 		sap.ui.getCore().loadLibrary("sap.ui.commons");
@@ -98,8 +98,8 @@ sap.ui.define([
 			}
 	};
 	// instantiate the View
-	var myView = sap.ui.xmlview({
-		viewContent : xml
+	var myView = await XMLView.create({
+		definition : xml
 	});
 	// create a Model and assign it to the View
 	oModel = new JSONModel();

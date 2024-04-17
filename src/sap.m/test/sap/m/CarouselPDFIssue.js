@@ -1,4 +1,5 @@
 sap.ui.define([
+	"sap/ui/core/mvc/XMLView",
 	"sap/m/Carousel",
 	"sap/ui/model/Filter",
 	"sap/ui/model/FilterOperator",
@@ -9,9 +10,8 @@ sap.ui.define([
 	"sap/ui/model/json/JSONModel",
 	"sap/m/PDFViewer",
 	"sap/ui/thirdparty/jquery",
-	"sap/ui/core/mvc/XMLView",
 	"sap/ui/core/mvc/Controller"
-], function(Carousel, Filter, FilterOperator, Dialog, Bar, Title, Button, JSONModel, PDFViewer, jQuery) {
+], async function(XMLView, Carousel, Filter, FilterOperator, Dialog, Bar, Title, Button, JSONModel, PDFViewer, jQuery) {
 	"use strict";
 	var myPDF = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
 	const data = {
@@ -115,5 +115,5 @@ sap.ui.define([
 		}
 	
 	});
-	sap.ui.xmlview({viewContent: jQuery('#myXml').html()}).placeAt("content");
+	(await XMLView.create({definition: jQuery('#myXml').html()})).placeAt("content");
 });

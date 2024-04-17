@@ -1,6 +1,6 @@
 sap.ui.define([
 	"sap/ui/core/mvc/XMLView"
-], function() {
+], async function(XMLView) {
 	"use strict";
 	try{
 		sap.ui.getCore().loadLibrary("sap.ui.commons");
@@ -14,8 +14,8 @@ sap.ui.define([
 	sap.ui.loader.config({paths: {"sap/ui/core/mvctest": "../../../../../../test-resources/sap/ui/core/samples/mvc/"}});
 	
 	// define View and place it onto the page
-	sap.ui.xmlview({
+	(await XMLView.create({
 		id : "id1",
 		viewName : "sap.ui.core.mvctest.views.Product"
-	}).placeAt("content");
+	})).placeAt("content");
 });

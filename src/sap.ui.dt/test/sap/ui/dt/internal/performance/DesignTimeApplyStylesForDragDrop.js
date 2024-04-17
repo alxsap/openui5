@@ -6,7 +6,7 @@ window.onAppReady = new Promise(function (fnResolve) {
 	window.fnResolve = fnResolve;
 });
 
-sap.ui.require([
+sap.ui.define([
 	"dt/performance/PerformanceTestUtil",
 	"sap/m/Panel",
 	"sap/ui/core/Core",
@@ -23,6 +23,7 @@ sap.ui.require([
 	nextUIUpdate,
 	jQuery0
 ) {
+	"use strict";
 	Core.ready().then(async () => {
 		var oSourcePanel = new Panel("SourcePanel");
 		var oTargetPanel = new Panel("TargetPanel");

@@ -1,4 +1,4 @@
-sap.ui.require([
+sap.ui.define([
 	"sap/ui/core/Core",
 	"appUnderTest/server",
 	"sap/m/Shell",

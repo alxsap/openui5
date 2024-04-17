@@ -1,4 +1,4 @@
-sap.ui.require(["sap/ui/core/Core", "sap/m/Shell", "sap/ui/core/ComponentContainer"], function(Core, Shell, ComponentContainer) {
+sap.ui.define(["sap/ui/core/Core", "sap/m/Shell", "sap/ui/core/ComponentContainer"], function(Core, Shell, ComponentContainer) {
 	"use strict";
 	Core.ready().then(function () {
 		new Shell('Shell', {

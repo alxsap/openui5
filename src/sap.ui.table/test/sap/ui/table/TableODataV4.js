@@ -1,6 +1,5 @@
-sap.ui.require([
+sap.ui.define([
 	"sap/ui/table/plugins/V4Aggregation",
-	"sap/ui/table/plugins/ODataV4Selection",
 	"sap/ui/model/odata/v4/ODataModel",
 	"sap/ui/model/json/JSONModel",
 	"sap/ui/table/Table",
@@ -17,7 +16,8 @@ sap.ui.require([
 	"sap/m/VBox",
 	"sap/m/FlexItemData",
 	"sap/m/Button"
-], function(V4Aggregation, ODataV4Selection, ODataModel, JSONModel, Table, OverflowToolbar, Title, ToggleButton, Select, Item, ToolbarSpacer, Text, Column, HBox, Toolbar, VBox, FlexItemData, Button) {
+], function(V4Aggregation, ODataModel, JSONModel, Table, OverflowToolbar, Title, ToggleButton, Select, Item, ToolbarSpacer, Text, Column, HBox, Toolbar, VBox, FlexItemData, Button) {
+	"use strict";
 	var oTable = new Table({
 		extension: [
 			new OverflowToolbar({

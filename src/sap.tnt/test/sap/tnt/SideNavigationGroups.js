@@ -1,4 +1,4 @@
-sap.ui.require([
+sap.ui.define([
 	"sap/ui/Device",
 	"sap/tnt/SideNavigation",
 	"sap/tnt/NavigationList",
@@ -14,6 +14,7 @@ sap.ui.require([
 	"sap/m/OverflowToolbar"
 ], (Device, SideNavigation, NavigationList, NavigationListItem, NavigationListGroup,
 	ToolPage, ToolHeader, Button, CheckBox, mLibrary, Title, Image, OverflowToolbar) => {
+	"use strict";
 
 	const ButtonType = mLibrary.ButtonType;
 	const OverflowToolbarPriority = mLibrary.OverflowToolbarPriority;

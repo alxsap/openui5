@@ -1,4 +1,4 @@
-sap.ui.require(["sap/ui/core/Element", "sap/ui/commons/TextField", "sap/ui/commons/Button", "sap/ui/thirdparty/jquery", "sap/ui/core/mvc/XMLView"], function(Element, TextField, Button, jQuery) {
+sap.ui.require(["sap/ui/core/Element", "sap/ui/core/mvc/XMLView", "sap/ui/commons/TextField", "sap/ui/commons/Button", "sap/ui/thirdparty/jquery"], function(Element, XMLView, TextField, Button, jQuery) {
 	try{
 		sap.ui.getCore().loadLibrary("sap.ui.commons");
 	}catch(e){
@@ -47,10 +47,9 @@ sap.ui.require(["sap/ui/core/Element", "sap/ui/commons/TextField", "sap/ui/commo
 				oView.destroy();
 			}
 
-			sap.ui.xmlview({
+			XMLView.create({
 				id : "asyncView",
-				viewName : "sap.ui.core.mvctest.views.Async",
-				async : true
+				viewName : "sap.ui.core.mvctest.views.Async"
 			}).placeAt("contentAsync");
 		}
 	}).placeAt("asyncButton");

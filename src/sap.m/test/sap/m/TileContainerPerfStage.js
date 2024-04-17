@@ -1,13 +1,12 @@
 sap.ui.define([
-	"sap/ui/core/Core",
+	"sap/ui/core/mvc/XMLView",
 	"sap/ui/model/json/JSONModel",
 	"sap/m/TileContainer",
 	"sap/m/CustomTile",
 	"sap/m/ObjectHeader",
 	"sap/ui/thirdparty/jquery",
-	"sap/ui/core/mvc/XMLView",
 	"sap/ui/core/mvc/Controller"
-], function(Core, JSONModel, TileContainer, CustomTile, ObjectHeader, jQuery) {
+], async function(XMLView, JSONModel, TileContainer, CustomTile, ObjectHeader, jQuery) {
 	"use strict";
 
 	// define a new (simple) Controller type
@@ -248,30 +247,28 @@ sap.ui.define([
 	Object.defineProperty(globalThis, "myView", {
 		configurable: "false",
 		writable: "true",
-		value: sap.ui.xmlview({viewContent: jQuery('#view1').html()})
+		value: await XMLView.create({definition: jQuery('#view1').html()})
 	}); // accessing the HTML inside the script tag above
 
 	// create a Model and assign it to the View
 	// put the View onto the screen
 	myView.placeAt('content');
-	Core.ready(function () {
-		oStatusLabel.setText("Working");
+	oStatusLabel.setText("Working");
 
-		oModel = new JSONModel();
-		oModel.setSizeLimit(parseInt(oModelSizeLimit.getValue()));
-		myView.setModel(oModel, "tilesModel");
+	oModel = new JSONModel();
+	oModel.setSizeLimit(parseInt(oModelSizeLimit.getValue()));
+	myView.setModel(oModel, "tilesModel");
 
-		oStatusLabel.setText("Idle");
+	oStatusLabel.setText("Idle");
 
-		//Act
-		oModel.setData(oModelData);
-		oInsertTileTime.setText(window.addTile);
-		if (window.updatePager) {
-			oUpdatePager.setText(window.updatePager.time + "/" + window.updatePager.count);
-		} else {
-			oUpdatePager.setText("N/A");
-		}
+	//Act
+	oModel.setData(oModelData);
+	oInsertTileTime.setText(window.addTile);
+	if (window.updatePager) {
+		oUpdatePager.setText(window.updatePager.time + "/" + window.updatePager.count);
+	} else {
+		oUpdatePager.setText("N/A");
+	}
 
-		oModelData = jQuery.extend({}, oModel.getData());
-	});
+	oModelData = jQuery.extend({}, oModel.getData());
 });

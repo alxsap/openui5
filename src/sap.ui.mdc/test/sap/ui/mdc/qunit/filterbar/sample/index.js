@@ -1,4 +1,5 @@
-sap.ui.require(["sap/ui/core/Component", "sap/ui/core/ComponentContainer"], function(Component, ComponentContainer) {
+sap.ui.define(["sap/ui/core/Component", "sap/ui/core/ComponentContainer"], function(Component, ComponentContainer) {
+	"use strict";
 	return Component.create({
 		name: "sap.ui.mdc.filterbar.sample",
 		url: "./",

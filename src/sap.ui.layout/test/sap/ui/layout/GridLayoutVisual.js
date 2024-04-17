@@ -1,4 +1,4 @@
-sap.ui.require([
+sap.ui.define([
 	"sap/ui/core/Core",
 	"sap/m/App",
 	"sap/m/Button",
@@ -13,12 +13,9 @@ sap.ui.require([
 	"sap/m/Toolbar",
 	"sap/m/ToolbarSpacer",
 	"sap/ui/core/Title",
-	"sap/ui/layout/form/GridElementData",
 	"sap/ui/layout/form/SimpleForm",
-	"sap/ui/layout/library",
-	"sap/ui/layout/form/GridLayout", // to render only after everything is loaded to keep initial focus stable
-	"sap/ui/layout/form/GridContainerData",
-], async function(Core, App, Button, Input, Label, Link, Page, SegmentedButton, SegmentedButtonItem, Text, Title, Toolbar, ToolbarSpacer, CoreTitle, GridElementData, SimpleForm, layoutLibrary) {
+	"sap/ui/layout/library"
+], async function(Core, App, Button, Input, Label, Link, Page, SegmentedButton, SegmentedButtonItem, Text, Title, Toolbar, ToolbarSpacer, CoreTitle, SimpleForm, layoutLibrary) {
 	"use strict";
 
 	var BackgroundDesign = layoutLibrary.BackgroundDesign;
@@ -32,9 +29,9 @@ sap.ui.require([
 						new Input({value:"Max Mustermann", required: true}),
 						new Label({text:"Street/ No."}),
 						new Input({value:"Musterweg"}),
-						new Input({value:"10", layoutData: new GridElementData({hCells: "1"})}),
+						new Input({value:"10", layoutData: new undefined/*GridElementData*/({hCells: "1"})}),
 						new Label({text:"PostCode / City"}),
-						new Input({value:"12345", layoutData: new GridElementData({hCells: "2"})}),
+						new Input({value:"12345", layoutData: new undefined/*GridElementData*/({hCells: "2"})}),
 						new Input({value:"Musterstadt"}),
 						new CoreTitle({text:"Contact"}),
 						new Label({text:"Phone"}),
@@ -56,9 +53,9 @@ sap.ui.require([
 							   new Input({value:"Max Mustermann", required: true}),
 							   new Label({text:"Street/ No."}),
 							   new Input({value:"Musterweg"}),
-							   new Input({value:"10", layoutData: new GridElementData({hCells: "1"})}),
+							   new Input({value:"10", layoutData: new undefined/*GridElementData*/({hCells: "1"})}),
 							   new Label({text:"PostCode / City"}),
-							   new Input({value:"12345", layoutData: new GridElementData({hCells: "2"})}),
+							   new Input({value:"12345", layoutData: new undefined/*GridElementData*/({hCells: "2"})}),
 							   new Input({value:"Musterstadt"}),
 							   new Toolbar({
 								 content: [new Title({text: "Contact", tooltip: "Title tooltip"}),
@@ -79,9 +76,9 @@ sap.ui.require([
 							  new Input({value:"Max Mustermann", required: true}),
 							  new Label({text:"Street/ No."}),
 							  new Input({value:"Musterweg"}),
-							  new Input({value:"10", layoutData: new GridElementData({hCells: "2"})}),
+							  new Input({value:"10", layoutData: new undefined/*GridElementData*/({hCells: "2"})}),
 							  new Label({text:"PostCode / City"}),
-							  new Input({value:"12345", layoutData: new GridElementData({hCells: "3"})}),
+							  new Input({value:"12345", layoutData: new undefined/*GridElementData*/({hCells: "3"})}),
 							  new Input({value:"Musterstadt"}),
 							  ];
 

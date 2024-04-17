@@ -1,4 +1,4 @@
-sap.ui.require([
+sap.ui.define([
 	"sap/m/App",
 	"sap/m/Page",
 	"sap/m/Panel",

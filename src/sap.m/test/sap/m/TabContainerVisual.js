@@ -1,4 +1,4 @@
-sap.ui.require([
+sap.ui.define([
 	"sap/m/App",
 	"sap/m/Page",
 	"sap/m/Panel",
@@ -14,6 +14,7 @@ function(
 	TabContainer,
 	TabContainerItem
 ) {
+	"use strict";
 	Device.system.phone = true;
 	Device.system.desktop = false;
 	document.querySelector("html").classList.add("sap-phone");

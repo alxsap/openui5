@@ -6,7 +6,7 @@ window.onAppReady = new Promise(function (fnResolve) {
 	window.fnResolve = fnResolve;
 });
 
-sap.ui.require([
+sap.ui.define([
 	"dt/performance/PerformanceTestUtil",
 	"sap/m/Panel",
 	"sap/m/Button",
@@ -19,6 +19,7 @@ sap.ui.require([
 	Core,
 	nextUIUpdate
 ) {
+	"use strict";
 	Core.ready().then(async () => {
 		var oPanel = new Panel("Panel", {
 			width: "2000px",

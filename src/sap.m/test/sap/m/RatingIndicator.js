@@ -1,4 +1,4 @@
-sap.ui.require([
+sap.ui.define([
 	"sap/ui/core/Core",
 	"sap/ui/core/IconPool",
 	"sap/ui/core/Item",
@@ -24,6 +24,8 @@ sap.ui.require([
 	"sap/m/library",
 	"sap/base/Log"
 ], async function(Core, IconPool, Item, JSONModel, App, Bar, Button, CheckBox, Column, ColumnListItem, ComboBox, HBox, Input, InputListItem, FlexItemData, Label, List, Page, RatingIndicator, Select, Table, VBox, mobileLibrary, Log) {
+	"use strict";
+
 	// shortcut for sap.m.InputType
 	const InputType = mobileLibrary.InputType;
 

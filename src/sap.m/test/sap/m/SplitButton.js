@@ -1,4 +1,5 @@
-sap.ui.require(["sap/m/SplitButton", "sap/m/App", "sap/m/Page"], function(SplitButton, App, Page) {
+sap.ui.define(["sap/m/SplitButton", "sap/m/App", "sap/m/Page"], function(SplitButton, App, Page) {
+	"use strict";
 	new App().addPage(new Page({
 		title: "sap.m.SplitButton",
 		content: [

@@ -1,9 +1,10 @@
-sap.ui.require([
+sap.ui.define([
 	"sap/ui/core/Component",
 	"sap/m/Shell",
 	"sap/ui/core/ComponentContainer",
 	"sap/ui/core/Core"
 ], function (Component, Shell, ComponentContainer, Core) {
+	"use strict";
 	Core.ready().then(() => {
 		return Component.create({
 			name: "sap.ui.fl.qunit.integration.async.testComponentWithView",

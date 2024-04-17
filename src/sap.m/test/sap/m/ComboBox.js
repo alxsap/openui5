@@ -1,4 +1,4 @@
-sap.ui.require([
+sap.ui.define([
 	"sap/ui/core/Core",
 	"sap/ui/model/json/JSONModel",
 	"sap/ui/core/Item",
@@ -22,6 +22,8 @@ sap.ui.require([
 	"sap/base/Log",
 	"sap/ui/thirdparty/jquery"
 ], async function(Core, JSONModel, Item, SeparatorItem, ListItem, HTML, HorizontalLayout, ComboBox, Label, FormattedText, Link, Text, coreLibrary, MessageToast, Popup, Button, Page, Title, ToolbarSpacer, App, Log, jQuery) {
+	"use strict";
+
 	// shortcut for sap.ui.core.ValueState
 	const ValueState = coreLibrary.ValueState;
 

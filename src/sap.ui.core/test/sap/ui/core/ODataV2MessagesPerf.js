@@ -1,4 +1,4 @@
-sap.ui.require([
+sap.ui.define([
 	'sap/ui/core/util/MockServer',
 	'sap/ui/model/odata/v2/ODataModel',
 	'sap/ui/model/json/JSONModel',
@@ -25,6 +25,7 @@ sap.ui.require([
 	Column,
 	ColumnListItem
 ) {
+	"use strict";
 	var sServiceUri = "/SalesOrderSrv/";
 	var sDataRootPath = "qunit/testdata/SalesOrder/";
 

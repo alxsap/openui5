@@ -1,4 +1,4 @@
-sap.ui.require([
+sap.ui.define([
 	"sap/ui/core/Core",
 	"sap/m/Button",
 	"sap/m/Dialog",
@@ -11,6 +11,7 @@ sap.ui.require([
 	"sap/m/App",
 	"sap/ui/thirdparty/jquery"
 ], async function(Core, Button, Dialog, Page, TextArea, FormattedText, Link, MessageToast, Popup, App, jQuery) {
+	"use strict";
 
 	await Core.ready();
 

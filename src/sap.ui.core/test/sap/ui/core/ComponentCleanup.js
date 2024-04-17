@@ -1,4 +1,5 @@
-sap.ui.require(["sap/ui/core/Core"],function(Core) {
+sap.ui.define(["sap/ui/core/Core"],function(Core) {
+	"use strict";
 
 	Core.ready().then(function() {
 
@@ -8,7 +9,7 @@ sap.ui.require(["sap/ui/core/Core"],function(Core) {
 					includes : [ "style1.css" ]
 				}
 			});
-		});
+		}, true);
 
 		sap.ui.define("test2/Component", ['sap/ui/core/UIComponent'], function(UIComponent) {
 			return UIComponent.extend("test2.Component", {
@@ -16,7 +17,7 @@ sap.ui.require(["sap/ui/core/Core"],function(Core) {
 					includes : [ "style2.css" ]
 				}
 			});
-		});
+		}, true);
 
 		sap.ui.define("test3/Component", ['sap/ui/core/UIComponent'], function(UIComponent) {
 			return UIComponent.extend("test3.Component", {
@@ -24,7 +25,7 @@ sap.ui.require(["sap/ui/core/Core"],function(Core) {
 					includes : [ "style3.css" ]
 				}
 			});
-		});
+		}, true);
 
 		sap.ui.define("test4/Component", ['sap/ui/core/UIComponent'], function(UIComponent) {
 			return UIComponent.extend("test4.Component", {
@@ -32,7 +33,7 @@ sap.ui.require(["sap/ui/core/Core"],function(Core) {
 					includes : [ "style3.css" ]
 				}
 			});
-		});
+		}, true);
 
 		var oManifest = {
 			"sap.app": {
@@ -241,5 +242,4 @@ sap.ui.require(["sap/ui/core/Core"],function(Core) {
 
 		});
 	});
-
 });

@@ -1,6 +1,6 @@
 sap.ui.define(
-	["sap/ui/core/Control", "sap/ui/core/InvisibleText", "sap/ui/core/mvc/XMLView", "sap/ui/core/mvc/Controller"],
-	function(Control, InvisibleText) {
+	["sap/ui/core/mvc/XMLView", "sap/ui/core/Control", "sap/ui/core/InvisibleText", "sap/ui/core/mvc/Controller"],
+	async function(XMLView, Control, InvisibleText) {
 		"use strict";
 
 		const TestControl = Control.extend("sap.ui.core.TestControl", {
@@ -73,7 +73,7 @@ sap.ui.define(
 		Object.defineProperty(globalThis, "myView", {
 			configurable: "false",
 			writable: "true",
-			value: sap.ui.xmlview({viewContent:xml})
+			value: await XMLView.create({definition:xml})
 		});
 
 		myView.placeAt('content');

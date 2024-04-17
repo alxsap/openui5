@@ -3,9 +3,8 @@ sap.ui.require([
 	"sap/ui/core/mvc/XMLView",
 	'sap/ui/core/mvc/Controller',
 	'sap/ui/model/json/JSONModel',
-	'sap/m/Token',
-	"sap/ui/thirdparty/jquery"
-], async function(Core, XMLView, Controller, JSONModel, Token, jQuery) {
+	'sap/m/Token'
+], async function (Core, XMLView, Controller, JSONModel, Token) {
 	await Core.ready();
 	Controller.extend("myController", {
 		_btnToControlMap: {

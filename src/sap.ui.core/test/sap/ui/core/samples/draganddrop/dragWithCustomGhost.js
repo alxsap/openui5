@@ -1,6 +1,6 @@
 sap.ui.loader.config({paths: {"my": "./"}});
 
-sap.ui.require(["my/DraggableText", "sap/ui/core/dnd/DragDropInfo"], function(DraggableText, DragDropInfo) {
+sap.ui.define(["my/DraggableText", "sap/ui/core/dnd/DragDropInfo"], function(DraggableText, DragDropInfo) {
 	"use strict";
 
 	var oControl = new DraggableText({

@@ -1,4 +1,4 @@
-sap.ui.require([
+sap.ui.define([
 	"sap/ui/core/Core",
 	"sap/ui/core/HTML",
 	"sap/m/App",
@@ -8,6 +8,7 @@ sap.ui.require([
 	"sap/m/Title",
 	"sap/base/Log"
 ], async function(Core, HTML, App, Page, RangeSlider, ResponsiveScale, Title, Log) {
+	"use strict";
 
 	await Core.ready();
 
@@ -48,78 +49,78 @@ sap.ui.require([
 			showHandleTooltip: false
 		});
 
-var oStepsTitle = new Title({
-		text: "RangeSlider with steps",
-		width: "100%"
-	}),
-	oRangeSlider4 = new RangeSlider("rangeSlider4", {
-		width: "100%",
-		step: 5,
-		showAdvancedTooltip: true,
-		min: -50,
-		max: 50,
-		range: [-45, 45],
-		liveChange: function(oControlEvent) {
-			Log.info("Event fired: 'liveChange' range property to " + oControlEvent.getParameter("range") + " on " + this);
-		},
-		change : function(oControlEvent) {
-			Log.info("Event fired: 'change' range property to " + oControlEvent.getParameter("range") + " on " + this);
-		},
-		showHandleTooltip: false
-	});
+	var oStepsTitle = new Title({
+			text: "RangeSlider with steps",
+			width: "100%"
+		}),
+		oRangeSlider4 = new RangeSlider("rangeSlider4", {
+			width: "100%",
+			step: 5,
+			showAdvancedTooltip: true,
+			min: -50,
+			max: 50,
+			range: [-45, 45],
+			liveChange: function(oControlEvent) {
+				Log.info("Event fired: 'liveChange' range property to " + oControlEvent.getParameter("range") + " on " + this);
+			},
+			change : function(oControlEvent) {
+				Log.info("Event fired: 'change' range property to " + oControlEvent.getParameter("range") + " on " + this);
+			},
+			showHandleTooltip: false
+		});
 
-var oInputsTitle = new Title({ text: "RangeSlider with inputs" }),
-	oRangeSlider5 = new RangeSlider("rangeSlider5", {
-		width: "100%",
-		showAdvancedTooltip: true,
-		min: -100,
-		max: 100,
-		range: [-35, 40],
-		liveChange: function(oControlEvent) {
-			Log.info("Event fired: 'liveChange' range property to " + oControlEvent.getParameter("range") + " on " + this);
-		},
-		change : function(oControlEvent) {
-			Log.info("Event fired: 'change' range property to " + oControlEvent.getParameter("range") + " on " + this);
-		},
-		showHandleTooltip: false,
-		inputsAsTooltips: true,
-		name: "RangeSlider10"
-	});
+	var oInputsTitle = new Title({ text: "RangeSlider with inputs" }),
+		oRangeSlider5 = new RangeSlider("rangeSlider5", {
+			width: "100%",
+			showAdvancedTooltip: true,
+			min: -100,
+			max: 100,
+			range: [-35, 40],
+			liveChange: function(oControlEvent) {
+				Log.info("Event fired: 'liveChange' range property to " + oControlEvent.getParameter("range") + " on " + this);
+			},
+			change : function(oControlEvent) {
+				Log.info("Event fired: 'change' range property to " + oControlEvent.getParameter("range") + " on " + this);
+			},
+			showHandleTooltip: false,
+			inputsAsTooltips: true,
+			name: "RangeSlider10"
+		});
 
-var oDecimalNumbersTitle = new Title({ text: "RangeSlider with decimal numbers" }),
-	oRangeSlider6 = new RangeSlider("rangeSlider6", {
-		width: "100%",
-		showAdvancedTooltip: true,
-		min: -100,
-		max: 100,
-		range: [-35.5, 40],
-		liveChange: function(oControlEvent) {
-			Log.info("Event fired: 'liveChange' range property to " + oControlEvent.getParameter("range") + " on " + this);
-		},
-		change : function(oControlEvent) {
-			Log.info("Event fired: 'change' range property to " + oControlEvent.getParameter("range") + " on " + this);
-		},
-		showHandleTooltip: false,
-		name: "RangeSlider11",
-		step: 0.5
-	});
+	var oDecimalNumbersTitle = new Title({ text: "RangeSlider with decimal numbers" }),
+		oRangeSlider6 = new RangeSlider("rangeSlider6", {
+			width: "100%",
+			showAdvancedTooltip: true,
+			min: -100,
+			max: 100,
+			range: [-35.5, 40],
+			liveChange: function(oControlEvent) {
+				Log.info("Event fired: 'liveChange' range property to " + oControlEvent.getParameter("range") + " on " + this);
+			},
+			change : function(oControlEvent) {
+				Log.info("Event fired: 'change' range property to " + oControlEvent.getParameter("range") + " on " + this);
+			},
+			showHandleTooltip: false,
+			name: "RangeSlider11",
+			step: 0.5
+		});
 
-var oTickmarksTitle = new Title({ text: "RangeSlider with tickmarks" }),
-	oRangeSlider7 = new RangeSlider("rangeSlider7", {
-		showAdvancedTooltip: true,
-		showHandleTooltip: false,
-		inputsAsTooltips: true,
-		enableTickmarks: true
-	}).addStyleClass("sapUiSmallMarginBottom");
+	var oTickmarksTitle = new Title({ text: "RangeSlider with tickmarks" }),
+		oRangeSlider7 = new RangeSlider("rangeSlider7", {
+			showAdvancedTooltip: true,
+			showHandleTooltip: false,
+			inputsAsTooltips: true,
+			enableTickmarks: true
+		}).addStyleClass("sapUiSmallMarginBottom");
 
-var oTickmarksAndLabelsTitle = new Title({ text: "RangeSlider with tickmarks and labels" }),
-	oRangeSlider8 = new RangeSlider("rangeSlider8", {
-		showAdvancedTooltip: true,
-		showHandleTooltip: false,
-		inputsAsTooltips: true,
-		enableTickmarks: true,
-		scale: new ResponsiveScale({tickmarksBetweenLabels: 5})
-	}).addStyleClass("sapUiSmallMarginBottom");
+	var oTickmarksAndLabelsTitle = new Title({ text: "RangeSlider with tickmarks and labels" }),
+		oRangeSlider8 = new RangeSlider("rangeSlider8", {
+			showAdvancedTooltip: true,
+			showHandleTooltip: false,
+			inputsAsTooltips: true,
+			enableTickmarks: true,
+			scale: new ResponsiveScale({tickmarksBetweenLabels: 5})
+		}).addStyleClass("sapUiSmallMarginBottom");
 
 	var oPage = new Page("page", {
 		title: "sap.m.RangeSlider",

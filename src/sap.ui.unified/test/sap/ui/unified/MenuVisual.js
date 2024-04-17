@@ -1,4 +1,4 @@
-sap.ui.require([
+sap.ui.define([
 	"sap/ui/unified/Menu",
 	"sap/ui/unified/MenuItem",
 	"sap/ui/unified/MenuTextFieldItem",
@@ -7,6 +7,7 @@ sap.ui.require([
 	"sap/m/App",
 	"sap/m/Page"
 ], function(Menu, MenuItem, MenuTextFieldItem, Popup, Button, App, Page) {
+	"use strict";
 
 	var oTestMenu = new Menu("mainMenu"),
 		oTestMenu3 = new Menu("shortcutsMenu", {

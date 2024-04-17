@@ -1,10 +1,10 @@
 sap.ui.define([
+	"sap/ui/core/mvc/View",
 	"sap/ui/model/json/JSONModel",
 	"sap/ui/core/mvc/ViewType",
 	"sap/ui/thirdparty/jquery",
-	"sap/ui/core/mvc/View",
 	"sap/ui/core/mvc/Controller"
-], function(JSONModel, ViewType, jQuery) {
+], async function(View, JSONModel, ViewType, jQuery) {
 	"use strict";
 	sap.ui.controller("myController", {
 		onInit : function() {
@@ -45,8 +45,8 @@ sap.ui.define([
 			this.getView().setModel(model);
 		}
 	});
-	sap.ui.view({
-		viewContent : jQuery('#myXml').html(),
+	(await View.create({
+		definition : jQuery('#myXml').html(),
 		type : ViewType.XML
-	}).placeAt("content")
+	})).placeAt("content")
 });

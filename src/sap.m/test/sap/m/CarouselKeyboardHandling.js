@@ -1,6 +1,7 @@
 sap.ui.define([
 	"sap/m/ImageRenderer",
 	"sap/ui/qunit/utils/nextUIUpdate",
+	"sap/ui/core/mvc/XMLView",
 	"sap/ui/core/Element",
 	"sap/m/List",
 	"sap/m/MessageToast",
@@ -28,11 +29,11 @@ sap.ui.define([
 	"sap/m/App",
 	"sap/base/Log",
 	"sap/ui/thirdparty/jquery",
-	"sap/ui/core/mvc/XMLView",
 	"sap/ui/core/mvc/Controller"
-], function(
+], async function(
 	ImageRenderer,
 	nextUIUpdate,
+	XMLView,
 	Element,
 	List,
 	MessageToast,
@@ -338,7 +339,7 @@ sap.ui.define([
 	Object.defineProperty(globalThis, "oView", {
 		configurable: "false",
 		writable: "true",
-		value: sap.ui.xmlview({ viewContent: jQuery('#mainView').html() })
+		value: await XMLView.create({ definition: jQuery('#mainView').html() })
 	});
 
 	oView.setModel(new JSONModel({
@@ -666,5 +667,5 @@ sap.ui.define([
 	appCarousel.addPage(carouselPage);
 	appCarousel.placeAt("body");
 
-	nextUIUpdate.runSync()/*context not obviously suitable for an async function*/;
+	await nextUIUpdate();
 });

@@ -1,5 +1,6 @@
 sap.ui.define([
 	"sap/ui/core/Element",
+	"sap/ui/core/mvc/View",
 	"sap/ui/rta/RuntimeAuthoring",
 	"sap/ui/core/util/MockServer",
 	"sap/ui/model/odata/v2/ODataModel",
@@ -23,11 +24,11 @@ sap.ui.define([
 	"sap/m/Page",
 	"sap/ui/core/ComponentContainer",
 	"sap/ui/thirdparty/jquery",
-	"sap/ui/core/mvc/View",
 	"sap/ui/core/mvc/JSView",
 	"sap/ui/core/mvc/Controller"
-], function(
+], async function(
 	Element,
+	View,
 	RuntimeAuthoring,
 	MockServer,
 	ODataModel,
@@ -233,7 +234,7 @@ sap.ui.define([
 	Object.defineProperty(globalThis, "JSView", {
 		configurable: "false",
 		writable: "true",
-		value: sap.ui.view({type:ViewType.JS, viewName:"my.own.view"})
+		value: await View.create({type:ViewType.JS, viewName:"my.own.view"})
 	});
 
 	/* TODO: Consider replacing this

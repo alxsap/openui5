@@ -1,8 +1,9 @@
-sap.ui.require([
+sap.ui.define([
 	"sap/ui/thirdparty/jquery",
 	"sap/base/util/UriParameters",
 	"sap/base/i18n/ResourceBundle"
 ], function(jQuery, UriParameters, ResourceBundle) {
+	"use strict";
 	var data = [];
 	var sLocale = UriParameters.fromQuery(window.location.search).get("sap-ui-language") || "";
 

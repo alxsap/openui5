@@ -1,5 +1,4 @@
-sap.ui.require([
-	'sap/ui/core/Messaging',
+sap.ui.define([
 	'sap/ui/core/util/MockServer',
 	'sap/ui/model/odata/v2/ODataModel',
 	'sap/ui/model/Filter',
@@ -18,8 +17,9 @@ sap.ui.require([
 	'sap/m/Label',
 	'sap/m/Table',
 	'sap/ui/model/json/JSONModel'
-], function (Messaging, MockServer, ODataModel, Filter, ResponsiveSplitter, SplitPane, PaneContainer, VerticalLayout,
-	HorizontalLayout, Column, ColumnListItem, Text, SimpleForm, Button, Panel, Input, Label, Table, JSONModel) {
+], function(MockServer, ODataModel, Filter, ResponsiveSplitter, SplitPane, PaneContainer, VerticalLayout, HorizontalLayout, Column, ColumnListItem, Text, SimpleForm, Button, Panel, Input, Label, Table, JSONModel) {
+	"use strict";
+
 	var sServiceUri = "/SalesOrderSrv/";
 	var sDataRootPath = "qunit/testdata/SalesOrder/";
 

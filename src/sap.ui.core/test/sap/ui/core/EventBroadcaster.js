@@ -1,4 +1,4 @@
-sap.ui.require(['sap/ui/core/Core', 'sap/ui/core/mvc/XMLView', 'sap/ui/core/support/usage/EventBroadcaster', 'sap/ui/core/mvc/Controller', 'sap/m/ColumnListItem', 'sap/m/Text', 'sap/m/MessageToast', "sap/ui/thirdparty/jquery"],
+sap.ui.define(['sap/ui/core/Core', 'sap/ui/core/mvc/XMLView', 'sap/ui/core/support/usage/EventBroadcaster', 'sap/ui/core/mvc/Controller', 'sap/m/ColumnListItem', 'sap/m/Text', 'sap/m/MessageToast', "sap/ui/thirdparty/jquery"],
 	function(Core, XMLView, EventBroadcaster, Controller, ColumnListItem, Text, MessageToast, jQuery) {
 		"use strict";
 

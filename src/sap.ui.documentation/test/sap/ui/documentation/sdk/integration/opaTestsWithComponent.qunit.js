@@ -7,19 +7,17 @@ window['sap-ui-documentation-config'] = {
 	apiInfoRootURL: 'test-resources/sap/ui/documentation/sdk/integration/mock/docs/api/api-index.json'
 };
 
-sap.ui.require(["sap/ui/core/Core"], Core => Core.ready(function () {
+"use strict";
+
+sap.ui.define([
+	"sap/ui/documentation/sdk/test/configureOpa",
+	"sap/ui/documentation/sdk/test/AllJourneys",
+	"sap/ui/documentation/sdk/controller/util/APIInfo",
+
+], function (configureOpa, AllJourneys, APIInfo) {
 	"use strict";
+	// configuration has been applied and the tests in the journeys have been loaded - start QUnit
 
-	sap.ui.require([
-		"sap/ui/documentation/sdk/test/configureOpa",
-		"sap/ui/documentation/sdk/test/AllJourneys",
-		"sap/ui/documentation/sdk/controller/util/APIInfo",
-
-	], function (configureOpa, AllJourneys, APIInfo) {
-		// configuration has been applied and the tests in the journeys have been loaded - start QUnit
-
-		APIInfo._setRoot('test-resources/sap/ui/documentation/sdk/integration/mock');
-		QUnit.start();
-
-	});
-}));
+	APIInfo._setRoot('test-resources/sap/ui/documentation/sdk/integration/mock');
+	QUnit.start();
+});

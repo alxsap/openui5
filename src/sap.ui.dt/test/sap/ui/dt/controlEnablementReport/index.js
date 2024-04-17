@@ -1,7 +1,5 @@
-sap.ui.require([
+sap.ui.define([
 	"controlEnablementReport/LibraryScanner",
-	"sap/ui/core/util/Export",
-	"sap/ui/core/util/ExportTypeCSV",
 	"sap/ui/core/Core",
 	"sap/ui/core/Element",
 	"sap/ui/VersionInfo",
@@ -16,7 +14,8 @@ sap.ui.require([
 	"sap/ui/table/Column",
 	"sap/m/Text",
 	"sap/ui/layout/VerticalLayout"
-], function(LibraryScanner, Export, ExportTypeCSV, Core, Element, VersionInfo, JSONModel, Item, MultiComboBox, FilterBar, FilterItem, Toolbar, Button, Table, Column, Text, VerticalLayout) {
+], function(LibraryScanner, Core, Element, VersionInfo, JSONModel, Item, MultiComboBox, FilterBar, FilterItem, Toolbar, Button, Table, Column, Text, VerticalLayout) {
+	"use strict";
 	Core.ready().then(async () => {
 		const oVersionInfo = await VersionInfo.load();
 		var aLibs = oVersionInfo.libraries.filter(function(sLib) {
@@ -84,8 +83,8 @@ sap.ui.require([
 					}
 
 					var fnExportToExcel = function(oEvent) {
-						var oExport = new Export({
-							exportType : new ExportTypeCSV({
+						var oExport = new undefined/*Export*/({
+							exportType : new undefined/*ExportTypeCSV*/({
 								separatorChar : ";"
 							}),
 							models : oModel,

@@ -1,4 +1,4 @@
-sap.ui.require([
+sap.ui.define([
 	"sap/ui/core/Core",
 	"sap/m/App",
 	"sap/m/Page",
@@ -7,51 +7,52 @@ sap.ui.require([
 	"sap/m/Text",
 	"sap/m/PageAccessibleLandmarkInfo"],
 	async function(Core,App, Page, Bar, Button, Text, PageAccessibleLandmarkInfo) {
-	await Core.ready();
+		"use strict";
+		await Core.ready();
 
-	var oApp = new App("myApp", {
-		initialPage: "page"
-	});
+		var oApp = new App("myApp", {
+			initialPage: "page"
+		});
 
-	var oPage = new Page("page", {
-		landmarkInfo: new PageAccessibleLandmarkInfo(),
-		title: "Page with responsive paddings",
-		showNavButton: true,
-		contentOnlyBusy: true,
-		subHeader: [new Bar ({
-			contentRight: [new Button('hide-show-header', {
-				text: "Hide/show header",
-				press: function () {
-					oPage.setShowHeader(!oPage.getShowHeader());
-				}
+		var oPage = new Page("page", {
+			landmarkInfo: new PageAccessibleLandmarkInfo(),
+			title: "Page with responsive paddings",
+			showNavButton: true,
+			contentOnlyBusy: true,
+			subHeader: [new Bar ({
+				contentRight: [new Button('hide-show-header', {
+					text: "Hide/show header",
+					press: function () {
+						oPage.setShowHeader(!oPage.getShowHeader());
+					}
+				})],
 			})],
-		})],
-		content: [
-			new Text({
-				text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rhoncus faucibus sem at condimentum. Nulla eget aliquam ante, quis fringilla dolor. Mauris consequat maximus velit, vel dictum odio hendrerit sit amet. Curabitur vitae maximus nunc. Cras iaculis sodales nisl, vitae mollis elit hendrerit ac. In faucibus erat sit amet nibh convallis egestas ac at enim. Morbi scelerisque diam sit amet sem pharetra pulvinar. Phasellus pharetra at nibh vitae sodales. In semper, diam scelerisque mattis commodo, mi mauris suscipit arcu, in luctus nisi metus nec eros. Sed hendrerit sit amet lacus eget feugiat. Duis pulvinar quam nec tempor fermentum. Nunc sit amet est nec erat pellentesque dictum. Maecenas sit amet ultricies ipsum. Vivamus at sagittis felis."
+			content: [
+				new Text({
+					text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rhoncus faucibus sem at condimentum. Nulla eget aliquam ante, quis fringilla dolor. Mauris consequat maximus velit, vel dictum odio hendrerit sit amet. Curabitur vitae maximus nunc. Cras iaculis sodales nisl, vitae mollis elit hendrerit ac. In faucibus erat sit amet nibh convallis egestas ac at enim. Morbi scelerisque diam sit amet sem pharetra pulvinar. Phasellus pharetra at nibh vitae sodales. In semper, diam scelerisque mattis commodo, mi mauris suscipit arcu, in luctus nisi metus nec eros. Sed hendrerit sit amet lacus eget feugiat. Duis pulvinar quam nec tempor fermentum. Nunc sit amet est nec erat pellentesque dictum. Maecenas sit amet ultricies ipsum. Vivamus at sagittis felis."
+				})
+			],
+			footer: new Bar({
+				contentLeft: [new Button('hide-show-footer', {
+					text: "Hide/show footer",
+					press: function () {
+						oPage.setShowFooter(!oPage.getShowFooter());
+					}
+				})],
+				contentRight: [new Button('toggle-floating-footer', {
+					text: "Toggle FloatingFooter",
+					press: function () {
+						oPage.setFloatingFooter(!oPage.getFloatingFooter());
+					}
+				})]
 			})
-		],
-		footer: new Bar({
-			contentLeft: [new Button('hide-show-footer', {
-				text: "Hide/show footer",
-				press: function () {
-					oPage.setShowFooter(!oPage.getShowFooter());
-				}
-			})],
-			contentRight: [new Button('toggle-floating-footer', {
-				text: "Toggle FloatingFooter",
-				press: function () {
-					oPage.setFloatingFooter(!oPage.getFloatingFooter());
-				}
-			})]
-		})
+		});
+
+		oPage.addStyleClass("sapUiResponsivePadding--header");
+		oPage.addStyleClass("sapUiResponsivePadding--subHeader");
+		oPage.addStyleClass("sapUiResponsivePadding--content");
+		oPage.addStyleClass("sapUiResponsivePadding--footer");
+		oPage.addStyleClass("sapUiResponsivePadding--floatingFooter");
+
+		oApp.addPage(oPage).placeAt("content");
 	});
-
-	oPage.addStyleClass("sapUiResponsivePadding--header");
-	oPage.addStyleClass("sapUiResponsivePadding--subHeader");
-	oPage.addStyleClass("sapUiResponsivePadding--content");
-	oPage.addStyleClass("sapUiResponsivePadding--footer");
-	oPage.addStyleClass("sapUiResponsivePadding--floatingFooter");
-
-	oApp.addPage(oPage).placeAt("content");
-});

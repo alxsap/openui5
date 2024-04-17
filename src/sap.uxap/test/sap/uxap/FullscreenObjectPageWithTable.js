@@ -2,17 +2,17 @@ sap.ui.define([
 	"sap/ui/thirdparty/jquery",
 	"sap/m/App",
 	"sap/m/Page",
+	"sap/ui/core/mvc/XMLView",
 	"sap/ui/model/json/JSONModel",
 	"sap/ui/table/Table",
 	"sap/ui/table/Column",
-	"sap/m/Text",
-	"sap/ui/core/mvc/XMLView"
+	"sap/m/Text"
 ],
-		function(jQuery, App, Page, JSONModel, Table, Column, Text) {
+		async function(jQuery, App, Page, XMLView, JSONModel, Table, Column, Text) {
 			"use strict";
 
 			var oApp = new App(),
-					myView = sap.ui.xmlview({viewContent:jQuery('#view1').html()}),
+					myView = await XMLView.create({definition:jQuery('#view1').html()}),
 					btnToggleFooter = myView.byId("btnToggleFooter"),
 					btnToggleUseIconTabBar = myView.byId("btnToggleUseIconTabBar"),
 					aData = [],

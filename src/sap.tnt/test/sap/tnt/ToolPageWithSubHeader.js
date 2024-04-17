@@ -1,11 +1,11 @@
 sap.ui.define([
-	"sap/ui/thirdparty/jquery",
 	"sap/ui/core/mvc/XMLView",
+	"sap/ui/thirdparty/jquery",
 	"sap/ui/core/mvc/Controller"
-], function(jQuery) {
+], async function(XMLView, jQuery) {
 	"use strict";
 	sap.ui.controller("myController", {
 		onInit: function() {}
 	});
-	sap.ui.xmlview({ viewContent: jQuery('#myXml').html() }).placeAt("content");
+	(await XMLView.create({ definition: jQuery('#myXml').html() })).placeAt("content");
 });
