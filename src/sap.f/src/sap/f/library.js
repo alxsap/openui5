@@ -5,9 +5,16 @@
 /**
  * Initialization Code and shared classes of library sap.f.
  */
-sap.ui.define(["sap/ui/base/DataType", "sap/ui/core/Lib", // library dependency
-"sap/m/library", "sap/ui/Global", "sap/ui/core/library", "sap/ui/layout/library"], // library dependency
-	function(DataType, Library) {
+sap.ui.define([
+ "sap/ui/core/Lib",
+ "sap/ui/base/DataType",
+ // library dependency
+ "sap/m/library",
+ "sap/ui/Global",
+ "sap/ui/core/library",
+ "sap/ui/layout/library"
+], // library dependency
+	function(Library, DataType) {
 	 "use strict";
 
 	 /**
@@ -21,6 +28,7 @@ sap.ui.define(["sap/ui/base/DataType", "sap/ui/core/Lib", // library dependency
 	  * @public
 	  */
 	 var thisLib = Library.init({
+		 apiVersion: 2,
 		 name : "sap.f",
 		 version: "${version}",
 		 dependencies : ["sap.ui.core", "sap.m", "sap.ui.layout"],
@@ -44,7 +52,9 @@ sap.ui.define(["sap/ui/base/DataType", "sap/ui/core/Lib", // library dependency
 		  "sap.f.DynamicPageTitleShrinkRatio",
 		  "sap.f.IllustratedMessageSize",
 		  "sap.f.IllustratedMessageType",
-		  "sap.f.LayoutType"
+		  "sap.f.LayoutType",
+		  "sap.f.SidePanelPosition",
+		  "sap.f.NavigationDirection"
 		 ],
 		 controls: [
 		  "sap.f.AvatarGroup",
@@ -520,6 +530,8 @@ sap.ui.define(["sap/ui/base/DataType", "sap/ui/core/Lib", // library dependency
 		 Right: "Right"
 	 };
 
+	 DataType.registerEnum("sap.f.NavigationDirection", thisLib.NavigationDirection);
+
 	 /**
 	  * Enumeration for different SidePanel position.
 	  *
@@ -541,6 +553,16 @@ sap.ui.define(["sap/ui/base/DataType", "sap/ui/core/Lib", // library dependency
 		 */
 		Right: "Right"
 	};
+
+	 DataType.registerEnum("sap.f.SidePanelPosition", thisLib.SidePanelPosition);
+
+	 /*
+	 * Register all of the above defined enums.
+	 */
+	 DataType.registerEnum("sap.f.AvatarGroupType", thisLib.AvatarGroupType);
+	 DataType.registerEnum("sap.f.cards.HeaderPosition", thisLib.cards.HeaderPosition);
+	 DataType.registerEnum("sap.f.cards.NumericHeaderSideIndicatorsAlignment", thisLib.cards.NumericHeaderSideIndicatorsAlignment);
+	 DataType.registerEnum("sap.f.LayoutType", thisLib.LayoutType);
 
 	 return thisLib;
 	});

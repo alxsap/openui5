@@ -314,130 +314,6 @@ sap.ui.define([
 		assert.strictEqual(document.getElementById("generic-tile-focus").parentNode, oTileElement, "The tile content is a child of the link.");
 	});
 
-	/**
-	 * @deprecated Since version 1.121
-	 */
-	QUnit.test("GenericTile border rendered - HCB", function(assert) {
-		var done = assert.async();
-		this.applyTheme("sap_hcb", async function() {
-			this.oGenericTile.invalidate();
-			await nextUIUpdate();
-			var $tile = this.oGenericTile.$();
-			// the complete property name should be written for test in 'ie' and 'firefox'
-			assert.equal($tile.css("border-bottom-style"), "solid", "Border bottom style was rendered successfully");
-			assert.equal($tile.css("border-top-style"), "solid", "Border top style was rendered successfully");
-			assert.equal($tile.css("border-right-style"), "solid", "Border right style was rendered successfully");
-			assert.equal($tile.css("border-left-style"), "solid", "Border left style was rendered successfully");
-			done();
-		}.bind(this));
-	});
-
-	/**
-	 * @deprecated Since version 1.121
-	 */
-	QUnit.test("GenericTile focus rendered - HCB", function(assert) {
-		var done = assert.async();
-		this.applyTheme("sap_hcb", async function() {
-			this.oGenericTile.invalidate();
-			await nextUIUpdate();
-			assert.ok(document.getElementById("generic-tile-hover-overlay"), "Hover overlay div was rendered successfully");
-			assert.ok(document.getElementById("generic-tile-focus"), "Focus div was rendered successfully");
-			done();
-		});
-	});
-
-	/**
-	 * @deprecated Since version 1.121
-	 */
-	QUnit.test("GenericTile border rendered - Belize", function(assert) {
-		var done = assert.async();
-		this.applyTheme("sap_belize", async function() {
-			this.oGenericTile.invalidate();
-			await nextUIUpdate();
-			var $tile = this.oGenericTile.$();
-			// the complete property name should be written for test in 'ie' and 'firefox'
-			assert.equal($tile.css("border-bottom-style"), "solid", "Border bottom style was rendered successfully");
-			assert.equal($tile.css("border-top-style"), "solid", "Border top style was rendered successfully");
-			assert.equal($tile.css("border-right-style"), "solid", "Border right style was rendered successfully");
-			assert.equal($tile.css("border-left-style"), "solid", "Border left style was rendered successfully");
-			done();
-		}.bind(this));
-	});
-
-	/**
-	 * @deprecated Since version 1.121
-	 */
-	QUnit.test("GenericTile focus and hover overlay rendered - Belize", function(assert) {
-		var done = assert.async();
-		this.applyTheme("sap_belize", async function() {
-			this.oGenericTile.invalidate();
-			await nextUIUpdate();
-			assert.ok(document.getElementById("generic-tile-focus"), "Focus div was rendered successfully");
-			assert.ok(jQuery("#generic-tile-hover-overlay").hasClass("sapMGTWithoutImageHoverOverlay"), "Hover overlay was rendered successfully");
-			assert.ok(!jQuery("#generic-tile-hover-overlay").hasClass("sapMGTPressActive"), "Press action is not triggered");
-			this.oGenericTile.ontouchstart();
-			assert.ok(jQuery("#generic-tile-hover-overlay").hasClass("sapMGTPressActive"), "Press action is triggered and press active selector is added");
-			this.oGenericTile.ontouchend();
-			assert.ok(!jQuery("#generic-tile-hover-overlay").hasClass("sapMGTPressActive"), "Press action stopped and press active selector is removed");
-			done();
-		});
-	});
-
-	/**
-	 * @deprecated Since version 1.121
-	 */
-	QUnit.test("GenericTile focus and hover overlay rendered - Fiori 3", function(assert) {
-		var done = assert.async();
-		this.applyTheme("sap_fiori_3", async function() {
-			this.oGenericTile.invalidate();
-			await nextUIUpdate();
-			// hover overlay is used only in case of tiles with background image
-			assert.ok(document.getElementById("generic-tile-focus"), "Focus div was rendered successfully");
-			assert.ok(jQuery("#generic-tile-hover-overlay").hasClass("sapMGTWithoutImageHoverOverlay"), "Hover overlay was rendered successfully");
-			assert.ok(!jQuery("#generic-tile").hasClass("sapMGTPressActive"), "Press action is not triggered on GenericTile");
-			assert.ok(!jQuery("#generic-tile-hover-overlay").hasClass("sapMGTPressActive"), "Press action is not triggered on GenericTile hover overlay");
-			this.oGenericTile.ontouchstart();
-			assert.ok(jQuery("#generic-tile").hasClass("sapMGTPressActive"), "Press action is triggered and press active selector is added to GenericTile");
-			assert.ok(jQuery("#generic-tile-hover-overlay").hasClass("sapMGTPressActive"), "Press action is triggered and press active selector is added to GenericTile hover overlay");
-			this.oGenericTile.ontouchend();
-			assert.ok(!jQuery("#generic-tile").hasClass("sapMGTPressActive"), "Press action stopped and press active selector is removed from GenericTile");
-			assert.ok(!jQuery("#generic-tile-hover-overlay").hasClass("sapMGTPressActive"), "Press action stopped and press active selector is removed from GenericTile hover overlay");
-			done();
-		});
-	});
-
-	/**
-	 * @deprecated Since version 1.121
-	 */
-	QUnit.test("GenericTile does not expand on focus - theme hcb", function(assert) {
-		var $tile = this.oGenericTile.$();
-
-		var done = assert.async();
-		this.applyTheme("sap_hcb", function() {
-
-			//get dimensions
-			var beforeWidth = $tile.outerWidth();
-			var beforeHeight = $tile.outerHeight();
-
-			//set :focus on tile
-			$tile.trigger("focus");
-			if (!this.checkFocus($tile)) {
-				assert.expect(0);
-				done();
-				return;
-			}
-
-			//get new dimensions
-			var afterWidth = $tile.outerWidth();
-			var afterHeight = $tile.outerHeight();
-
-			assert.strictEqual(afterWidth, beforeWidth, "Tile's outer width did not change");
-			assert.strictEqual(afterHeight, beforeHeight, "Tile's outer height did not change");
-
-			done();
-		});
-	});
-
 	QUnit.test("Wrapping type is propagated to title", async function(assert) {
 		this.oGenericTile.setWrappingType(library.WrappingType.Hyphenated);
 		await nextUIUpdate();
@@ -3219,7 +3095,7 @@ sap.ui.define([
 			this.oGenericTile.setAppShortcut("app shortcut");
 			this.oGenericTile.setSystemInfo("system info");
 			await nextUIUpdate();
-			assert.equal(this.oGenericTile.$().find(".sapMGTTInfo").css("margin-bottom"),"8px","Sufficient Height applied");
+			assert.equal(this.oGenericTile.$().find(".sapMGTTInfo").css("margin-bottom"),"11.2px","Sufficient Height applied");
 	});
 
 	QUnit.test("App shortcut and System info only rendered in OneByOne", async function(assert) {
@@ -3852,7 +3728,7 @@ sap.ui.define([
 				assert.equal(this.oGenericTile.getMode(), GenericTileMode.IconMode, "CurrentMode is " + GenericTileMode.IconMode);
 				assert.equal(this.oGenericTile.getFrameType(), FrameType.OneByOne, "Current FrameType is " + FrameType.OneByOne);
 				assert.equal(this.oGenericTile.getTileIcon(), "sap-icon://key", "Tile Icon is present.");
-				assert.equal(this.oGenericTile._sBGColor, "#ad7900", "Tile Background Color is present");
+				assert.equal(this.oGenericTile._sBGColor, "#c35500", "Tile Background Color is present");
 				assert.ok(this.oGenericTile._oIcon.isA("sap.ui.core.Icon"), "Icon Created");
 				assert.equal(this.oGenericTile.getDomRef().querySelectorAll(".sapMGTHdrContent").length, 1, "Header Created.");
 				assert.equal(this.oGenericTile.getDomRef().querySelectorAll(".sapMGTHdrTxt").length, 1, "Header Text Created.");
@@ -3870,7 +3746,7 @@ sap.ui.define([
 					assert.equal(this.oGenericTile.getMode(), GenericTileMode.IconMode, "CurrentMode is " + GenericTileMode.IconMode);
 					assert.equal(this.oGenericTile.getFrameType(), FrameType.OneByOne, "Current FrameType is " + FrameType.OneByOne);
 					assert.equal(this.oGenericTile.getTileIcon(), IMAGE_PATH + "female_BaySu.jpg", "Tile Icon is present.");
-					assert.equal(this.oGenericTile._sBGColor, "#ad7900", "Tile Background Color is present");
+					assert.equal(this.oGenericTile._sBGColor, "#c35500", "Tile Background Color is present");
 					assert.ok(this.oGenericTile._oIcon.isA("sap.m.Image"), "Image Created.");
 					assert.equal(this.oGenericTile.getDomRef().querySelectorAll(".sapMGTHdrContent").length, 1, "Header Created.");
 					assert.equal(this.oGenericTile.getDomRef().querySelectorAll(".sapMGTHdrTxt").length, 1, "Header Text Created.");
@@ -3922,7 +3798,7 @@ sap.ui.define([
 				assert.equal(this.oGenericTile.getMode(), GenericTileMode.IconMode, "CurrentMode is " + GenericTileMode.IconMode);
 				assert.equal(this.oGenericTile.getFrameType(), FrameType.TwoByHalf, "Current FrameType is " + FrameType.TwoByHalf);
 				assert.equal(this.oGenericTile.getTileIcon(), "sap-icon://key", "Tile Icon is present.");
-				assert.equal(this.oGenericTile._sBGColor, "#dc5c0c", "Default background color is restored");
+				assert.equal(this.oGenericTile._sBGColor, "#d23a0a", "Default background color is restored");
 				assert.ok(this.oGenericTile._oIcon.isA("sap.ui.core.Icon"), "Icon Created");
 				assert.equal(this.oGenericTile.getDomRef().querySelectorAll(".sapMGTHdrContent").length, 1, "Header Created.");
 				assert.equal(this.oGenericTile.getDomRef().querySelectorAll(".sapMGTHdrTxt").length, 1, "Header Text Created.");
@@ -3940,7 +3816,7 @@ sap.ui.define([
 					assert.equal(this.oGenericTile.getMode(), GenericTileMode.IconMode, "CurrentMode is " + GenericTileMode.IconMode);
 					assert.equal(this.oGenericTile.getFrameType(), FrameType.TwoByHalf, "Current FrameType is " + FrameType.TwoByHalf);
 					assert.equal(this.oGenericTile.getTileIcon(), IMAGE_PATH + "female_BaySu.jpg", "Tile Icon is present.");
-					assert.equal(this.oGenericTile._sBGColor, "#dc5c0c", "Default background color is restored");
+					assert.equal(this.oGenericTile._sBGColor, "#d23a0a", "Default background color is restored");
 					assert.ok(this.oGenericTile._oIcon.isA("sap.m.Image"), "Image Created");
 					assert.equal(this.oGenericTile.getDomRef().querySelectorAll(".sapMGTHdrContent").length, 1, "Header Created.");
 					assert.equal(this.oGenericTile.getDomRef().querySelectorAll(".sapMGTHdrTxt").length, 1, "Header Text Created.");
@@ -5021,7 +4897,7 @@ sap.ui.define([
 	QUnit.test("Test if the tile has rendered again on theme change", function(assert){
 		var done = assert.async();
 		this.oSpy = this.spy(this.oGenericTile, "invalidate");
-		this.applyTheme("sap_horizon", function() {
+		this.applyTheme("sap_horizon_dark", function() {
 			assert.ok(this.oSpy.calledOnce, "The Tile has been Rendered upon theme change");
 			done();
 		});
@@ -5032,7 +4908,7 @@ sap.ui.define([
 		this.oGenericTile.setRenderOnThemeChange(false);
 		await nextUIUpdate();
 		this.oSpy = this.spy(this.oGenericTile, "invalidate");
-		this.applyTheme("sap_horizon", function() {
+		this.applyTheme("sap_horizon_dark", function() {
 			assert.notOk(this.oSpy.callCount, "The Tile has not been Rendered upon theme change");
 			done();
 		});
