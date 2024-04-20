@@ -1,12 +1,12 @@
 /*global QUnit sinon*/
 sap.ui.define([
+	"sap/base/Log",
+	"sap/base/i18n/ResourceBundle",
+	"sap/base/util/LoaderExtensions",
 	"sap/ui/core/Lib",
 	"sap/ui/core/theming/ThemeManager",
-	"sap/base/i18n/ResourceBundle",
-	"sap/ui/dom/includeScript",
-	"sap/base/util/LoaderExtensions",
-	"sap/base/Log"
-], function(Library, ThemeManager, ResourceBundle, includeScript, LoaderExtensions, Log) {
+	"sap/ui/dom/includeScript"
+], function(Log, ResourceBundle, LoaderExtensions, Library, ThemeManager, includeScript) {
 	"use strict";
 
 	QUnit.module("Instance methods");
@@ -537,6 +537,8 @@ sap.ui.define([
 			}, reject);
 		});
 	});
+
+
 
 	QUnit.module("Handling of 'apiVersion: 2'");
 

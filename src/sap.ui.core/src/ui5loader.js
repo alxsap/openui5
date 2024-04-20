@@ -1179,7 +1179,7 @@
 		return error;
 	}
 
-	function declareModule(sModuleName, sDeprecationMessage) {
+	function declareModule(sModuleName, fnDeprecationMessage) {
 		// sModuleName must be a unified resource name of type .js
 		assert(/\.js$/.test(sModuleName), "must be a Javascript module");
 
@@ -1195,7 +1195,7 @@
 
 		// avoid cycles
 		oModule.state = READY;
-		oModule.deprecation = sDeprecationMessage || undefined;
+		oModule.deprecation = fnDeprecationMessage || undefined;
 
 		return oModule;
 	}
@@ -1489,7 +1489,8 @@
 		const oShim = mShims[sModuleName];
 
 		if (oModule.deprecation) {
-			log.error((oRequestingModule ? "(dependency of '" + oRequestingModule.name + "') " : "") + oModule.deprecation);
+			const msg = typeof oModule.deprecation === "function" ? oModule.deprecation() : oModule.deprecation;
+			log.error((oRequestingModule ? "(dependency of '" + oRequestingModule.name + "') " : "") + msg);
 		}
 
 		// when there's a shim with dependencies for the module
@@ -1954,6 +1955,11 @@
 			if ( typeof vDependencies === 'string' ) {
 				const sModuleName = getMappedName(vDependencies + '.js', sContextName);
 				const oModule = Module.get(sModuleName);
+
+				if (oModule.deprecation) {
+					const msg = typeof oModule.deprecation === "function" ? oModule.deprecation() : oModule.deprecation;
+					log.error(msg);
+				}
 
 				// check the modules internal state
 				// everything from PRELOADED to LOADED (incl. FAILED) is considered erroneous

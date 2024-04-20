@@ -11,10 +11,12 @@ sap.ui.define([
 	"sap/ui/model/Filter",
 	"sap/ui/model/Sorter",
 	"sap/ui/model/json/JSONModel",
+	"sap/ui/model/type/Currency",
 	"sap/ui/model/type/Date",
 	"sap/ui/model/type/String",
 	"sap/base/Log"
-], function(future, BindingParser, ExpressionParser, ManagedObject, BindingInfo, InvisibleText, Filter, Sorter, JSONModel, Date, String, Log) {
+], function (future, BindingParser, ExpressionParser, ManagedObject, BindingInfo, InvisibleText, Filter,
+	Sorter, JSONModel, Currency, Date, String, Log) {
 	/*global QUnit, sinon */
 	/*eslint no-warning-comments: 0 */
 	"use strict";
@@ -808,8 +810,8 @@ sap.ui.define([
 		try {
 			future.active = true;
 
-			// code under test
-			parse("{:= ${parts:[{path:'/foo'},{path:'/bar'}],type:'sap.ui.model.type.Currency'} }");
+			// code under test - use Currency to avoid that the UI5 2.0 build removes the unused dependency
+			parse("{:= ${parts:[{path:'/foo'},{path:'/bar'}],type:'" + Currency.getMetadata().getName() + "'} }");
 
 			assert.ok(false, "Unexpected success");
 		} catch (oError) {

@@ -7,8 +7,8 @@ sap.ui.define([
 	"sap/ui/core/ComponentContainer",
 	"sap/ui/model/json/JSONModel",
 	"sap/ui/qunit/utils/createAndAppendDiv",
-	"sap/base/util/deepExtend",
 	"sap/ui/qunit/utils/nextUIUpdate",
+	"sap/base/util/deepExtend",
 	"test-resources/sap/ui/fl/api/FlexTestAPI"
 ], function(
 	AddTableColumnChangeHandler,
@@ -18,8 +18,8 @@ sap.ui.define([
 	ComponentContainer,
 	JSONModel,
 	createAndAppendDiv,
-	deepExtend,
 	nextUIUpdate,
+	deepExtend,
 	FlexTestAPI
 ) {
 	"use strict";
@@ -97,8 +97,8 @@ sap.ui.define([
 						].join("");
 
 						var oView = XMLView.create({
-							 id : this.createId("view"),
-							 definition : oXmlStringWithBinding
+							id : this.createId("view"),
+							definition : oXmlStringWithBinding
 						});
 						return oView;
 					}

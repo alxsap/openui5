@@ -7,9 +7,9 @@ sap.ui.define([
 	"sap/ui/core/ComponentContainer",
 	"sap/ui/model/json/JSONModel",
 	"sap/ui/qunit/utils/createAndAppendDiv",
+	"sap/ui/qunit/utils/nextUIUpdate",
 	"sap/ui/core/mvc/XMLView",
 	"sap/base/util/deepExtend",
-	"sap/ui/qunit/utils/nextUIUpdate",
 	"test-resources/sap/ui/fl/api/FlexTestAPI"
 ], function(
 	MoveTableColumnsChangeHandler,
@@ -19,9 +19,9 @@ sap.ui.define([
 	ComponentContainer,
 	JSONModel,
 	createAndAppendDiv,
+	nextUIUpdate,
 	XMLView,
 	deepExtend,
-	nextUIUpdate,
 	FlexTestAPI
 ) {
 	'use strict';

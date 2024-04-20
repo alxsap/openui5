@@ -49,7 +49,7 @@ sap.ui.define([
 		}
 	];
 
-	function createMTree() {
+	async function createMTree() {
 		var oCustomTreeItem = new CustomTreeItem({
 			content: [
 				new Image({
@@ -72,12 +72,12 @@ sap.ui.define([
 		this.oTree.bindItems("/", oCustomTreeItem);
 
 		this.oTree.placeAt("content");
-		nextUIUpdate.runSync()/*context not obviously suitable for an async function*/;
+		await nextUIUpdate();
 	}
 
-	function destroyMTree() {
+	async function destroyMTree() {
 		this.oTree.destroy();
-		nextUIUpdate.runSync()/*context not obviously suitable for an async function*/;
+		await nextUIUpdate();
 	}
 
 	/*
