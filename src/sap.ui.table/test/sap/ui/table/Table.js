@@ -30,8 +30,7 @@ sap.ui.define([
 	"sap/ui/model/json/JSONModel",
 	"sap/m/VBox",
 	"sap/m/FlexItemData",
-	"sap/base/Log",
-	"sap/base/util/UriParameters"
+	"sap/base/Log"
 ], function(
 	Table,
 	IllustratedMessage,
@@ -64,8 +63,7 @@ sap.ui.define([
 	JSONModel,
 	VBox,
 	FlexItemData,
-	Log,
-	UriParameters
+	Log
 ) {
 	"use strict";
 
@@ -346,7 +344,7 @@ sap.ui.define([
 		oTable.bindRows(oBindingInfo || {path: "/modelData"});
 	}
 
-	var bBindTable = UriParameters.fromQuery(window.location.search).get("sap-ui-xx-table-bind") !== "false";
+	var bBindTable = (new URLSearchParams(window.location.search)).get("sap-ui-xx-table-bind") !== "false";
 	if (bBindTable) {
 		rebind();
 	}

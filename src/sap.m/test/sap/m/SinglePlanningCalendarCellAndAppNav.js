@@ -16,12 +16,12 @@ sap.ui.define([
 	'sap/m/ToggleButton',
 	'sap/ui/core/Item',
 	'sap/ui/core/date/UI5Date',
+	'sap/ui/core/message/MessageType',
 	'sap/ui/unified/CalendarAppointment',
 	'sap/ui/unified/CalendarLegendItem',
 	'sap/m/MessageToast',
 	'sap/m/MessageView',
 	'sap/m/MessageItem',
-	'sap/ui/core/library',
 	'sap/m/library',
 	'sap/m/App',
 	'sap/m/Page',
@@ -31,13 +31,12 @@ sap.ui.define([
 	"sap/ui/unified/DateTypeRange",
 	"sap/ui/unified/library"
 ],
-	function(Element, JSONModel, SinglePlanningCalendar, SinglePlanningCalendarDayView, SinglePlanningCalendarWorkWeekView, SinglePlanningCalendarWeekView, SinglePlanningCalendarMonthView, PlanningCalendarLegend, Dialog, Button, ToggleButton, Item, UI5Date, CalendarAppointment, CalendarLegendItem, MessageToast, MessageView, MessageItem, coreLibrary, mobileLibrary, App, Page, Popover, Bar, Text, DateTypeRange, unifiedLibrary) {
+	function(Element, JSONModel, SinglePlanningCalendar, SinglePlanningCalendarDayView, SinglePlanningCalendarWorkWeekView, SinglePlanningCalendarWeekView, SinglePlanningCalendarMonthView, PlanningCalendarLegend, Dialog, Button, ToggleButton, Item, UI5Date, MessageType, CalendarAppointment, CalendarLegendItem, MessageToast, MessageView, MessageItem, mobileLibrary, App, Page, Popover, Bar, Text, DateTypeRange, unifiedLibrary) {
 		"use strict";
 
 		// shortcut for sap.ui.unified.CalendarDayType
 		const CalendarDayType = unifiedLibrary.CalendarDayType;
 
-		var MessageType = coreLibrary.MessageType;
 		var PlacementType = mobileLibrary.PlacementType;
 
 		var aAppointments = [

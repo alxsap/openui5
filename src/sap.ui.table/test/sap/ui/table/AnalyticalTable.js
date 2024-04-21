@@ -8,25 +8,9 @@ sap.ui.define([
 	"sap/m/Label",
 	"sap/m/Text",
 	"sap/ui/model/odata/v2/ODataModel",
-	"sap/ui/table/RowSettings",
-	"sap/ui/core/library"
-], function(
-	Button,
-	AnalyticalTable,
-	tableLibrary,
-	AnalyticalColumn,
-	Currency,
-	TypeString,
-	Label,
-	Text,
-	ODataModel,
-	RowSettings,
-	coreLibrary
-) {
+	"sap/ui/table/RowSettings"
+], function(Button, AnalyticalTable, tableLibrary, AnalyticalColumn, Currency, TypeString, Label, Text, ODataModel, RowSettings) {
 	"use strict";
-
-	// shortcut for sap.ui.core.MessageType
-	const MessageType = coreLibrary.MessageType;
 
 	// shortcut for sap.ui.table.SelectionMode
 	const SelectionMode = tableLibrary.SelectionMode;
@@ -150,11 +134,11 @@ sap.ui.define([
 					action: function(oTable, bValue) {
 						if (bValue) {
 							oTable.setRowSettingsTemplate(new RowSettings({
-								highlight: MessageType.Success
+								highlight: sap.ui.core.message.MessageType.Success
 							}));
 						} else {
 							oTable.setRowSettingsTemplate(new RowSettings({
-								highlight: MessageType.None
+								highlight: sap.ui.core.message.MessageType.None
 							}));
 						}
 					}

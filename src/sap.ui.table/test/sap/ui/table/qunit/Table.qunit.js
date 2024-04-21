@@ -41,6 +41,7 @@ sap.ui.define([
 	"sap/ui/core/message/Message",
 	"sap/ui/core/util/PasteHelper",
 	"sap/ui/core/library",
+	"sap/ui/core/message/MessageType",
 	"sap/ui/Device",
 	"sap/ui/thirdparty/jquery",
 	"sap/base/Log"
@@ -85,6 +86,7 @@ sap.ui.define([
 	Message,
 	PasteHelper,
 	CoreLibrary,
+	MessageType,
 	Device,
 	jQuery,
 	Log
@@ -663,12 +665,12 @@ sap.ui.define([
 		assert.ok(oRowSettings != null, "The rows have a settings template clone");
 
 		oOnAfterRenderingEventListener.resetHistory();
-		oTable.getRowSettingsTemplate().setHighlight(CoreLibrary.MessageType.Success);
+		oTable.getRowSettingsTemplate().setHighlight(MessageType.Success);
 		await nextUIUpdate();
 		assert.ok(oOnAfterRenderingEventListener.notCalled, "Changing the highlight property of the template did not cause the table to re-render");
 
 		oRowSettings = oTable.getRows()[0].getAggregation("_settings");
-		assert.strictEqual(oRowSettings.getHighlight(), CoreLibrary.MessageType.None,
+		assert.strictEqual(oRowSettings.getHighlight(), MessageType.None,
 			"Changing the highlight property of the template did not change the highlight property of the template clones in the rows");
 
 		oOnAfterRenderingEventListener.resetHistory();
@@ -677,18 +679,18 @@ sap.ui.define([
 		assert.ok(oOnAfterRenderingEventListener.calledOnce, "Invalidating the template caused the table to re-render");
 
 		oRowSettings = oTable.getRows()[0].getAggregation("_settings");
-		assert.strictEqual(oRowSettings.getHighlight(), CoreLibrary.MessageType.None,
+		assert.strictEqual(oRowSettings.getHighlight(), MessageType.None,
 			"Invalidating the template did not change the highlight property of the template clones in the rows");
 
 		oOnAfterRenderingEventListener.resetHistory();
 		oTable.setRowSettingsTemplate(new RowSettings({
-			highlight: CoreLibrary.MessageType.Warning
+			highlight: MessageType.Warning
 		}));
 		await nextUIUpdate();
 		assert.ok(oOnAfterRenderingEventListener.calledOnce, "Changing the template caused the table to re-render");
 
 		oRowSettings = oTable.getRows()[0].getAggregation("_settings");
-		assert.strictEqual(oRowSettings.getHighlight(), CoreLibrary.MessageType.Warning,
+		assert.strictEqual(oRowSettings.getHighlight(), MessageType.Warning,
 			"Changing the template changed the highlight property of the template clones in the rows");
 	});
 

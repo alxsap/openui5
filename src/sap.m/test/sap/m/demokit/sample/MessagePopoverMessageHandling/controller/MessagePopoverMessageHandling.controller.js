@@ -5,15 +5,12 @@ sap.ui.define([
 	"sap/ui/core/ElementRegistry",
 	"sap/ui/core/Messaging",
 	'sap/ui/core/message/Message',
-	'sap/ui/core/library',
+	'sap/ui/core/message/MessageType',
 	"sap/ui/dom/isBehindOtherElement",
 	'sap/ui/core/mvc/Controller',
 	'sap/ui/model/json/JSONModel'
-], function(MessagePopover, MessageItem, MessageToast, ElementRegistry, Messaging, Message, coreLibrary, isBehindOtherElement, Controller, JSONModel) {
+], function(MessagePopover, MessageItem, MessageToast, ElementRegistry, Messaging, Message, MessageType, isBehindOtherElement, Controller, JSONModel) {
 	"use strict";
-
-	// shortcut for sap.ui.core.MessageType
-	var MessageType = coreLibrary.MessageType;
 
 	return Controller.extend("sap.m.sample.MessagePopoverMessageHandling.controller.MessagePopoverMessageHandling", {
 		onInit: function () {
