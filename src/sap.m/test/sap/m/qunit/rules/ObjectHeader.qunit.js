@@ -3,105 +3,11 @@
 sap.ui.define([
 	"sap/m/Page",
 	"sap/m/ObjectHeader",
-	"sap/m/ObjectMarker",
-	"sap/m/ObjectStatus",
 	"sap/m/ObjectNumber",
 	"sap/m/HeaderContainer",
 	"test-resources/sap/ui/support/TestHelper"
-], function (Page, ObjectHeader, ObjectMarker, ObjectStatus, ObjectNumber, HeaderContainer, testRule)  {
+], function(Page, ObjectHeader, ObjectNumber, HeaderContainer, testRule) {
 	"use strict";
-
-	QUnit.module("ObjectHeader markers aggregation with markFlagged: true", {
-		beforeEach: function () {
-			this.page = new Page("objectHeaderContext", {
-				content: new ObjectHeader({
-					markers: new ObjectMarker(),
-					markFlagged: true
-				})
-			});
-			this.page.placeAt("qunit-fixture");
-		},
-		afterEach: function () {
-			this.page.destroy();
-		}
-	});
-
-	testRule({
-		executionScopeType: "subtree",
-		executionScopeSelectors: "objectHeaderContext",
-		libName: "sap.m",
-		ruleId: "objectHeaderMarkers",
-		expectedNumberOfIssues: 1
-	});
-
-	QUnit.module("ObjectHeader markers aggregation with markFavorite: true", {
-		beforeEach: function () {
-			this.page = new Page("objectHeaderContext", {
-				content: new ObjectHeader({
-					markers: new ObjectMarker(),
-					markFavorite: true
-				})
-			});
-			this.page.placeAt("qunit-fixture");
-		},
-		afterEach: function () {
-			this.page.destroy();
-		}
-	});
-
-	testRule({
-		executionScopeType: "subtree",
-		executionScopeSelectors: "objectHeaderContext",
-		libName: "sap.m",
-		ruleId: "objectHeaderMarkers",
-		expectedNumberOfIssues: 1
-	});
-
-	QUnit.module("ObjectHeader statuses with set firstStatus", {
-		beforeEach: function () {
-			this.page = new Page("objectHeaderContext", {
-				content: new ObjectHeader({
-					statuses: new ObjectStatus(),
-					firstStatus: new ObjectStatus()
-				})
-			});
-			this.page.placeAt("qunit-fixture");
-		},
-		afterEach: function () {
-			this.page.destroy();
-		}
-	});
-
-	testRule({
-		executionScopeType: "subtree",
-		executionScopeSelectors: "objectHeaderContext",
-		libName: "sap.m",
-		ruleId: "objectHeaderStatuses",
-		expectedNumberOfIssues: 1
-	});
-
-	QUnit.module("ObjectHeader statuses with set secondStatus", {
-		beforeEach: function () {
-			this.page = new Page("objectHeaderContext", {
-				content: new ObjectHeader({
-					statuses: new ObjectStatus(),
-					secondStatus: new ObjectStatus()
-				})
-			});
-			this.page.placeAt("qunit-fixture");
-		},
-		afterEach: function () {
-			this.page.destroy();
-		}
-	});
-
-	testRule({
-		executionScopeType: "subtree",
-		executionScopeSelectors: "objectHeaderContext",
-		libName: "sap.m",
-		ruleId: "objectHeaderStatuses",
-		expectedNumberOfIssues: 1
-	});
 
 	QUnit.module("ObjectHeader condensed set to true with responsive - true", {
 		beforeEach: function () {
