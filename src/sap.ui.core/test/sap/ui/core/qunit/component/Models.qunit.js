@@ -1,5 +1,6 @@
 sap.ui.define([
 	"sap/base/config",
+	"sap/base/future",
 	"sap/base/Log",
 	"sap/base/i18n/Localization",
 	"sap/base/i18n/ResourceBundle",
@@ -11,6 +12,7 @@ sap.ui.define([
 	"sap/ui/core/UIComponentMetadata"
 ], function(
 	BaseConfig,
+	future,
 	Log,
 	Localization,
 	ResourceBundle,
@@ -215,23 +217,25 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("metadata v2 with dataSources", function(assert) {
+	QUnit.test("metadata v2 with dataSources (future=true)", function (assert) {
+		future.active = true;
 		this.stubGetUriParameters();
 
 		return Component.create({
-			name: "sap.ui.test.v2models.parent",
+			name: "sap.ui.test.v2models.parentValid",
 			manifest: false
-		}).then(function(oComponent) {
+		}).then(function (oComponent) {
+
 			this.oComponent = oComponent;
 
 			// sap.ui.model.odata.v2.ODataModel
-			sinon.assert.callCount(this.modelSpy.odataV2, 9);
+			sinon.assert.callCount(this.modelSpy.odataV2, 7);
 
 			// model: "default-with-annotations"
 			sinon.assert.calledWithExactly(this.modelSpy.odataV2, {
 				serviceUrl: '/path/to/default/datasource?sap-client=foo&sap-server=bar',
 				annotationURI: [
-					'test-resources/sap/ui/core/qunit/component/testdata/v2models/parent/path/to/local/odata/annotations/2?sap-language=EN&sap-client=foo',
+					'test-resources/sap/ui/core/qunit/component/testdata/v2models/parentValid/path/to/local/odata/annotations/2?sap-language=EN&sap-client=foo',
 					'/path/to/odata/annotations/1?sap-language=EN&sap-client=foo'
 				],
 				headers: { "Cache-Control": "max-age=500" },
@@ -256,37 +260,23 @@ sap.ui.define([
 				refreshAfterChange: true
 			});
 
-			// model: "invalid-annotations"
-			sinon.assert.calledWithExactly(this.modelSpy.odataV2, {
-				serviceUrl: '/path/to/odata/service?sap-client=foo&sap-server=bar',
-				annotationURI: [ '/path/to/odata/annotations/1?sap-language=EN&sap-client=foo' ],
-				metadataUrlParams: { "sap-language": "EN" }
-			});
-
 			// model: "v2-ODataModel" with multi origin annotations
 			sinon.assert.calledWithExactly(this.modelSpy.odataV2, {
 				serviceUrl: '/path/to/odata/service/with/multi/origin/annotations/?sap-client=foo&sap-server=bar',
 				annotationURI: ["/path/to/other/odata/service/Annotations(TechnicalName='%2FIWBEP%2FTEA_TEST_ANNOTATION_FILE',Version='0001')/$value?sap-language=EN&sap-client=foo",
-												"test-resources/sap/ui/core/qunit/component/testdata/v2models/parent/path/to/other/odata/service/Annotations%28TechnicalName=%27%2FIWBEP%2FTEA_TEST_ANNOTATION_FILE%27,Version=%270001%27%29/$value?sap-language=EN&sap-client=foo",
-												"/path/to/other/odata/service/other2/Annotations(TechnicalName='%2FIWBEP%2FTEA_TEST_ANNOTATION_FILE',Version='0001')/?sap-language=EN&sap-client=foo",
-												"/path/to/other3/odata/service/;o=sid(G1Y.400)/Annotations(TechnicalName='%2FIWBEP%2FTEA_TEST_ANNOTATION_FILE',Version='0001')/$value?sap-language=EN&sap-client=foo"
-											],
+					"test-resources/sap/ui/core/qunit/component/testdata/v2models/parentValid/path/to/other/odata/service/Annotations%28TechnicalName=%27%2FIWBEP%2FTEA_TEST_ANNOTATION_FILE%27,Version=%270001%27%29/$value?sap-language=EN&sap-client=foo",
+					"/path/to/other/odata/service/other2/Annotations(TechnicalName='%2FIWBEP%2FTEA_TEST_ANNOTATION_FILE',Version='0001')/?sap-language=EN&sap-client=foo",
+					"/path/to/other3/odata/service/;o=sid(G1Y.400)/Annotations(TechnicalName='%2FIWBEP%2FTEA_TEST_ANNOTATION_FILE',Version='0001')/$value?sap-language=EN&sap-client=foo"
+				],
 				metadataUrlParams: { "sap-language": "EN" }
 			});
 
 			// model: "v2-ODataModel-SAPClient" with SAP client
 			sinon.assert.calledWithExactly(this.modelSpy.odataV2, {
 				serviceUrl: '/path/to/odata/service/with/sapclient/?sap-client=100&sap-server=bar',
-				annotationURI: [ '/path/to/odata/annotations/with/sapclient/?sap-client=200&sap-language=EN' ],
+				annotationURI: ['/path/to/odata/annotations/with/sapclient/?sap-client=200&sap-language=EN'],
 				metadataUrlParams: { "sap-language": "EN" }
 			});
-
-			// model: "v2-ODataModel-unknown-odataVersion"
-			sinon.assert.calledWithExactly(this.modelSpy.odataV2, {
-				serviceUrl: '/path/to/unknown/odataVersion?sap-client=foo&sap-server=bar',
-				metadataUrlParams: { "sap-language": "EN" }
-			});
-
 
 			// sap.ui.model.odata.v4.ODataModel
 			sinon.assert.callCount(this.modelSpy.odataV4, 1);
@@ -295,7 +285,7 @@ sap.ui.define([
 			sinon.assert.calledWithExactly(this.modelSpy.odataV4, {
 				odataVersion: "4.0",
 				serviceUrl: '/path/to/odata/service/?sap-client=foo&sap-server=bar',
-				metadataUrlParams: {"sap-language": "EN"}
+				metadataUrlParams: { "sap-language": "EN" }
 			});
 
 
@@ -306,7 +296,7 @@ sap.ui.define([
 			sinon.assert.calledWithExactly(this.modelSpy.json, '/path/to/data.json?sap-client=foo&sap-server=bar');
 
 			// model: "json-relative"
-			sinon.assert.calledWithExactly(this.modelSpy.json, 'test-resources/sap/ui/core/qunit/component/testdata/v2models/parent/path/to/local/data.json?sap-client=foo&sap-server=bar');
+			sinon.assert.calledWithExactly(this.modelSpy.json, 'test-resources/sap/ui/core/qunit/component/testdata/v2models/parentValid/path/to/local/data.json?sap-client=foo&sap-server=bar');
 
 			// model: "json-relative-2"
 			sinon.assert.calledWithExactly(this.modelSpy.json, 'test-resources/sap/ui/core/qunit/component/testdata/path/to/other/data.json?sap-client=foo&sap-server=bar');
@@ -319,7 +309,7 @@ sap.ui.define([
 			sinon.assert.calledWithExactly(this.modelSpy.xml, '/path/to/data.xml?sap-client=foo&sap-server=bar');
 
 			// model: "xml-relative"
-			sinon.assert.calledWithExactly(this.modelSpy.xml, 'test-resources/sap/ui/core/qunit/component/testdata/v2models/parent/path/to/local/data.xml?sap-client=foo&sap-server=bar');
+			sinon.assert.calledWithExactly(this.modelSpy.xml, 'test-resources/sap/ui/core/qunit/component/testdata/v2models/parentValid/path/to/local/data.xml?sap-client=foo&sap-server=bar');
 
 
 			// sap.ui.model.resource.ResourceModel
@@ -332,7 +322,7 @@ sap.ui.define([
 
 			// model: "resourceBundle-legacy-uri"
 			sinon.assert.calledWithExactly(this.modelSpy.resource, {
-				bundleUrl: "test-resources/sap/ui/core/qunit/component/testdata/v2models/parent/i18n.properties"
+				bundleUrl: "test-resources/sap/ui/core/qunit/component/testdata/v2models/parentValid/i18n.properties"
 			});
 
 
@@ -343,7 +333,7 @@ sap.ui.define([
 			sinon.assert.calledWithExactly(this.modelSpy.custom, '/path/to/custom.datatype?sap-client=foo&sap-server=bar');
 
 			// model: "custom-uri-relative-string"
-			sinon.assert.calledWithExactly(this.modelSpy.custom, 'test-resources/sap/ui/core/qunit/component/testdata/v2models/parent/path/to/local/custom.datatype?sap-client=foo&sap-server=bar');
+			sinon.assert.calledWithExactly(this.modelSpy.custom, 'test-resources/sap/ui/core/qunit/component/testdata/v2models/parentValid/path/to/local/custom.datatype?sap-client=foo&sap-server=bar');
 
 			// model: "custom-uri-string-with-settings"
 			sinon.assert.calledWithExactly(this.modelSpy.custom, '/path/to/custom.datatype?sap-client=foo&sap-server=bar', {
@@ -369,26 +359,12 @@ sap.ui.define([
 				uri: 'foo'
 			});
 
-
-			// Log.error
-			sinon.assert.calledWithExactly(this.oLogSpy, sinon.match(/Component Manifest: Missing \"type\" for model \"no-model-type\"/), "[\"sap.ui5\"][\"models\"][\"no-model-type\"]", this.oComponent.getMetadata().getComponentName());
-			sinon.assert.calledWithExactly(this.oLogSpy, sinon.match(/Class \"sap.ui.not.defined.Model\" for model \"missing-model-class\" could not be loaded./), "[\"sap.ui5\"][\"models\"][\"missing-model-class\"]", this.oComponent.getMetadata().getComponentName());
-			sinon.assert.calledWithExactly(this.oLogSpy, sinon.match(/Component Manifest: Class \"sap.ui.test.v2models.parent.ModelNotDefined\" for model \"model-not-found\" could not be found/), "[\"sap.ui5\"][\"models\"][\"model-not-found\"]", this.oComponent.getMetadata().getComponentName());
-			sinon.assert.calledWithExactly(this.oLogSpy, sinon.match(/Component Manifest: ODataAnnotation \"undefined\" for dataSource \"odata-invalid-annotations\" could not be found in manifest/), "[\"sap.app\"][\"dataSources\"][\"undefined\"]", this.oComponent.getMetadata().getComponentName());
-			sinon.assert.calledWithExactly(this.oLogSpy, sinon.match(/Component Manifest: Missing \"uri\" for ODataAnnotation \"annotation-without-uri\"/), "[\"sap.app\"][\"dataSources\"][\"annotation-without-uri\"]", this.oComponent.getMetadata().getComponentName());
-			sinon.assert.calledWithExactly(this.oLogSpy, sinon.match(/Component Manifest: dataSource \"json\" was expected to have type \"ODataAnnotation\" but was \"JSON\"/), "[\"sap.app\"][\"dataSources\"][\"json\"]", this.oComponent.getMetadata().getComponentName());
-			sinon.assert.calledWithExactly(this.oLogSpy, sinon.match(/Component Manifest: dataSource \"invalid\" for model \"dataSource-invalid\" not found or invalid/), "[\"sap.app\"][\"dataSources\"][\"invalid\"]", this.oComponent.getMetadata().getComponentName());
-			sinon.assert.calledWithExactly(this.oLogSpy, sinon.match(/Component Manifest: dataSource \"does-not-exist\" for model \"dataSource-not-found\" not found or invalid/), "[\"sap.app\"][\"dataSources\"][\"does-not-exist\"]", this.oComponent.getMetadata().getComponentName());
-			sinon.assert.calledWithExactly(this.oLogSpy, sinon.match(/Component Manifest: Provided OData version \"3.0\" in dataSource \"unknown-odataVersion\" for model \"v2-ODataModel-unknown-odataVersion\" is unknown. Falling back to default model type \"sap.ui.model.odata.v2.ODataModel\"./), "[\"sap.app\"][\"dataSources\"][\"unknown-odataVersion\"]", this.oComponent.getMetadata().getComponentName());
-
-
 			// check if models are set on component (and save them internally)
 			this.assertModelInstances({
 				"": this.modelSpy.odataV2,
 				"default-with-annotations": this.modelSpy.odataV2,
 				"old-uri-syntax": this.modelSpy.odataV2,
 				"v2-ODataModel": this.modelSpy.odataV2,
-				"invalid-annotations": this.modelSpy.odataV2,
 				"v2-ODataModel-OtherOrigins": this.modelSpy.odataV2,
 				"ODataV4Model": this.modelSpy.odataV4,
 				"json": this.modelSpy.json,
@@ -415,14 +391,375 @@ sap.ui.define([
 
 			// check if internal models references were removed
 			assert.ok(!this.oComponent._mManifestModels, "Component should not have internal model references anymore");
+
+			future.active = undefined;
 		}.bind(this));
+	});
+
+	QUnit.test("metadata v2 with dataSources - Invalid ODataAnnotation (future=true)", function(assert) {
+		future.active = true;
+
+		const oManifestJson = {
+			"_version": "1.0.0",
+
+			"sap.app": {
+				"_version": "1.0.0",
+				"id": "sap.ui.test.v2models.parent",
+				"type": "application",
+				"applicationVersion": {
+					"version": "1.0.0"
+				},
+				"i18n": "i18n.properties",
+				"title": "{{title}}",
+				"description": "{{description}}",
+				"dataSources": {
+					"default": {
+						"uri": "/path/to/default/datasource"
+					},
+					"odata-invalid-annotations": {
+						"type": "OData",
+						"uri": "/path/to/odata/service",
+						"settings": {
+							"annotations": [ "undefined", "annotations1", "annotation-without-uri", "json" ]
+						}
+					}
+				}
+			},
+			"sap.ui": {
+				"_version": "1.0.0",
+				"technology": "UI5"
+			},
+			"sap.ui5": {
+				"_version": "1.0.0",
+				"dependencies": {
+					"minUI5Version": "1.28.0",
+					"libs": {
+						"sap.ui.core": {
+							"minVersion": "1.28.0"
+						}
+					}
+				},
+				"models": {
+					"": "default",
+					"invalid-annotations": {
+						"dataSource": "odata-invalid-annotations"
+					}
+				}
+			}
+		};
+
+		return Component.create({
+			name: "sap.ui.test.v2models.parent",
+			manifest: oManifestJson
+		}).catch((error) => {
+			assert.ok(error.message.includes(`Component Manifest: ODataAnnotation "undefined" for dataSource "odata-invalid-annotations" could not be found in manifest`),
+				"Error thrown because of invalid odata annotations.");
+
+			future.active = undefined;
+		});
+	});
+
+	QUnit.test("metadata v2 with dataSources - Invalid dataSource (future=true)", function(assert) {
+		future.active = true;
+
+		const oManifestJson = {
+			"_version": "1.0.0",
+
+			"sap.app": {
+				"_version": "1.0.0",
+				"id": "sap.ui.test.v2models.parent",
+				"type": "application",
+				"applicationVersion": {
+					"version": "1.0.0"
+				},
+				"i18n": "i18n.properties",
+				"title": "{{title}}",
+				"description": "{{description}}",
+				"dataSources": {
+					"default": {
+						"uri": "/path/to/default/datasource"
+					},
+					"invalid": true
+				}
+			},
+			"sap.ui": {
+				"_version": "1.0.0",
+				"technology": "UI5"
+			},
+			"sap.ui5": {
+				"_version": "1.0.0",
+				"dependencies": {
+					"minUI5Version": "1.28.0",
+					"libs": {
+						"sap.ui.core": {
+							"minVersion": "1.28.0"
+						}
+					}
+				},
+				"models": {
+					"": "default",
+					"dataSource-invalid": {
+						"type": "sap.ui.model.odata.v2.ODataModel",
+						"dataSource": "invalid"
+					}
+				}
+			}
+		};
+
+		return Component.create({
+			name: "sap.ui.test.v2models.parent",
+			manifest: oManifestJson
+		}).catch((error) => {
+			assert.ok(error.message.includes(`Component Manifest: dataSource "invalid" for model "dataSource-invalid" not found or invalid`),
+				"Error thrown because invalid dataSource defined.");
+
+			future.active = undefined;
+		});
+	});
+
+	QUnit.test("metadata v2 with dataSources - dataSource not found (future=true)", function(assert) {
+		future.active = true;
+
+		const oManifestJson = {
+			"_version": "1.0.0",
+
+			"sap.app": {
+				"_version": "1.0.0",
+				"id": "sap.ui.test.v2models.parent",
+				"type": "application",
+				"applicationVersion": {
+					"version": "1.0.0"
+				},
+				"i18n": "i18n.properties",
+				"title": "{{title}}",
+				"description": "{{description}}",
+				"dataSources": {
+					"default": {
+						"uri": "/path/to/default/datasource"
+					}
+				}
+			},
+			"sap.ui": {
+				"_version": "1.0.0",
+				"technology": "UI5"
+			},
+			"sap.ui5": {
+				"_version": "1.0.0",
+				"dependencies": {
+					"minUI5Version": "1.28.0",
+					"libs": {
+						"sap.ui.core": {
+							"minVersion": "1.28.0"
+						}
+					}
+				},
+				"models": {
+					"": "default",
+					"dataSource-not-found": {
+						"type": "sap.ui.model.odata.v2.ODataModel",
+						"dataSource": "does-not-exist"
+					}
+				}
+			}
+		};
+
+		return Component.create({
+			name: "sap.ui.test.v2models.parent",
+			manifest: oManifestJson
+		}).catch((error) => {
+			assert.ok(error.message.includes(`Component Manifest: dataSource "does-not-exist" for model "dataSource-not-found" not found or invalid`),
+				"Error thrown because dataSource not found.");
+
+			future.active = undefined;
+		});
+	});
+
+	QUnit.test("metadata v2 with dataSources - Model not found (future=true)", function(assert) {
+		future.active = true;
+
+		const oManifestJson = {
+			"_version": "1.0.0",
+
+			"sap.app": {
+				"_version": "1.0.0",
+				"id": "sap.ui.test.v2models.parent",
+				"type": "application",
+				"applicationVersion": {
+					"version": "1.0.0"
+				},
+				"i18n": "i18n.properties",
+				"title": "{{title}}",
+				"description": "{{description}}",
+				"dataSources": {
+					"default": {
+						"uri": "/path/to/default/datasource"
+					}
+				}
+			},
+			"sap.ui": {
+				"_version": "1.0.0",
+				"technology": "UI5"
+			},
+			"sap.ui5": {
+				"_version": "1.0.0",
+				"dependencies": {
+					"minUI5Version": "1.28.0",
+					"libs": {
+						"sap.ui.core": {
+							"minVersion": "1.28.0"
+						}
+					}
+				},
+				"models": {
+					"": "default",
+					"model-not-found": {
+						"type": "sap.ui.test.v2models.parent.ModelNotDefined"
+					}
+				}
+			}
+		};
+
+		return Component.create({
+			name: "sap.ui.test.v2models.parent",
+			manifest: oManifestJson
+		}).catch((error) => {
+			assert.ok(error.message.includes(`Component Manifest: Class "sap.ui.test.v2models.parent.ModelNotDefined" for model "model-not-found" could not be found`),
+				"Error thrown because model is not found.");
+
+			future.active = undefined;
+		});
+
+	});
+	QUnit.test("metadata v2 with dataSources - Missing model class (future=true)", function(assert) {
+		future.active = true;
+
+		const oManifestJson = {
+			"_version": "1.0.0",
+
+			"sap.app": {
+				"_version": "1.0.0",
+				"id": "sap.ui.test.v2models.parent",
+				"type": "application",
+				"applicationVersion": {
+					"version": "1.0.0"
+				},
+				"i18n": "i18n.properties",
+				"title": "{{title}}",
+				"description": "{{description}}",
+				"dataSources": {
+					"default": {
+						"uri": "/path/to/default/datasource"
+					}
+				}
+			},
+			"sap.ui": {
+				"_version": "1.0.0",
+				"technology": "UI5"
+			},
+			"sap.ui5": {
+				"_version": "1.0.0",
+				"dependencies": {
+					"minUI5Version": "1.28.0",
+					"libs": {
+						"sap.ui.core": {
+							"minVersion": "1.28.0"
+						}
+					}
+				},
+				"models": {
+					"": "default",
+					"missing-model-class": {
+						"type": "sap.ui.not.defined.Model"
+					}
+				}
+			}
+		};
+
+		return Component.create({
+			name: "sap.ui.test.v2models.parent",
+			manifest: oManifestJson
+		}).catch((error) => {
+			assert.ok(error.message.includes(`Cannot load module 'sap/ui/not/defined/Model'. This will most probably cause an error once the module is used later on.`),
+				"Error thrown because defined model class is not found.");
+
+			future.active = undefined;
+		});
+
+	});
+
+	QUnit.test("metadata v2 with dataSources - unknown-odataVersion (future=true)", function(assert) {
+		future.active = true;
+
+		const oManifestJson = {
+			"_version": "1.0.0",
+
+			"sap.app": {
+				"_version": "1.0.0",
+				"id": "sap.ui.test.v2models.parent1",
+				"type": "application",
+				"applicationVersion": {
+					"version": "1.0.0"
+				},
+				"i18n": "i18n.properties",
+				"title": "{{title}}",
+				"description": "{{description}}",
+				"dataSources": {
+					"default": {
+						"uri": "/path/to/default/datasource"
+					},
+
+					"unknown-odataVersion": {
+						"uri": "/path/to/unknown/odataVersion",
+						"settings": {
+							"odataVersion": "3.0"
+						}
+					},
+					"invalid": true
+				}
+			},
+			"sap.ui": {
+				"_version": "1.0.0",
+				"technology": "UI5"
+			},
+			"sap.ui5": {
+				"_version": "1.0.0",
+				"dependencies": {
+					"minUI5Version": "1.28.0",
+					"libs": {
+						"sap.ui.core": {
+							"minVersion": "1.28.0"
+						}
+					}
+				},
+				"models": {
+					"": "default",
+					"v2-ODataModel-unknown-odataVersion": {
+						"dataSource": "unknown-odataVersion"
+					},
+					"dataSource-invalid": {
+						"type": "sap.ui.model.odata.v2.ODataModel",
+						"dataSource": "invalid"
+					}
+				}
+			}
+		};
+
+		return Component.create({
+			name: "sap.ui.test.v2models.parent",
+			manifest: oManifestJson
+		}).catch((error) => {
+			assert.ok(error.message.includes(`Component Manifest: Provided OData version "3.0" in dataSource "unknown-odataVersion" for model "v2-ODataModel-unknown-odataVersion" is unknown. Falling back to default model type "sap.ui.model.odata.v2.ODataModel".`),
+				"Error thrown because unknown dataSource defined in Component Manifest.");
+
+			future.active = undefined;
+		});
 	});
 
 	QUnit.test("metadata v2 with sap-system URL parameter", function(assert) {
 		this.stubGetUriParameters({ sapSystem: "BLA_123" });
 
 		return Component.create({
-			name: "sap.ui.test.v2models.parent",
+			name: "sap.ui.test.v2models.parentValid",
 			manifest: false
 		}).then(function(oComponent) {
 			this.oComponent = oComponent;
@@ -439,7 +776,7 @@ sap.ui.define([
 				serviceUrl: '/path/to/odata/service/with/trailing/slash;o=BLA_123/?sap-client=foo&sap-server=bar',
 				annotationURI: [
 					'/path/to/odata/service/with/trailing/slash;o=BLA_123/annotations.xml?sap-language=EN&sap-client=foo',
-					'test-resources/sap/ui/core/qunit/component/testdata/v2models/parent/path/to/local/odata/annotations/2?sap-language=EN&sap-client=foo'
+					'test-resources/sap/ui/core/qunit/component/testdata/v2models/parentValid/path/to/local/odata/annotations/2?sap-language=EN&sap-client=foo'
 				],
 				useBatch: true,
 				refreshAfterChange: true,
@@ -450,7 +787,7 @@ sap.ui.define([
 			sinon.assert.calledWithExactly(this.modelSpy.odataV2, {
 				serviceUrl: '/path/to/odata/service/with/multi/origin/annotations;o=BLA_123/?sap-client=foo&sap-server=bar',
 				annotationURI: ["/path/to/other/odata/service;o=BLA_123/Annotations(TechnicalName='%2FIWBEP%2FTEA_TEST_ANNOTATION_FILE',Version='0001')/$value?sap-language=EN&sap-client=foo",
-												"test-resources/sap/ui/core/qunit/component/testdata/v2models/parent/path/to/other/odata/service;o=BLA_123/Annotations%28TechnicalName=%27%2FIWBEP%2FTEA_TEST_ANNOTATION_FILE%27,Version=%270001%27%29/$value?sap-language=EN&sap-client=foo",
+												"test-resources/sap/ui/core/qunit/component/testdata/v2models/parentValid/path/to/other/odata/service;o=BLA_123/Annotations%28TechnicalName=%27%2FIWBEP%2FTEA_TEST_ANNOTATION_FILE%27,Version=%270001%27%29/$value?sap-language=EN&sap-client=foo",
 												"/path/to/other/odata/service/other2/Annotations(TechnicalName='%2FIWBEP%2FTEA_TEST_ANNOTATION_FILE',Version='0001')/?sap-language=EN&sap-client=foo",
 												"/path/to/other3/odata/service/;o=sid(G1Y.400)/Annotations(TechnicalName='%2FIWBEP%2FTEA_TEST_ANNOTATION_FILE',Version='0001')/$value?sap-language=EN&sap-client=foo"
 												],
@@ -475,6 +812,7 @@ sap.ui.define([
 
 			// check if internal models references were removed
 			assert.ok(!this.oComponent._mManifestModels, "Component should not have internal model references anymore");
+
 		}.bind(this));
 	});
 
@@ -482,7 +820,7 @@ sap.ui.define([
 		this.stubGetUriParameters();
 
 		return Component.create({
-			name: "sap.ui.test.v2models.parent",
+			name: "sap.ui.test.v2models.parentValid",
 			manifest: false,
 			componentData: {
 				startupParameters: {
@@ -504,7 +842,7 @@ sap.ui.define([
 				serviceUrl: '/path/to/odata/service/with/trailing/slash;o=STARTUP456/?sap-client=foo&sap-server=bar',
 				annotationURI: [
 					'/path/to/odata/service/with/trailing/slash;o=STARTUP456/annotations.xml?sap-language=EN&sap-client=foo',
-					'test-resources/sap/ui/core/qunit/component/testdata/v2models/parent/path/to/local/odata/annotations/2?sap-language=EN&sap-client=foo'
+					'test-resources/sap/ui/core/qunit/component/testdata/v2models/parentValid/path/to/local/odata/annotations/2?sap-language=EN&sap-client=foo'
 				],
 				useBatch: true,
 				refreshAfterChange: true,
@@ -515,7 +853,7 @@ sap.ui.define([
 			sinon.assert.calledWithExactly(this.modelSpy.odataV2, {
 				serviceUrl: '/path/to/odata/service/with/multi/origin/annotations;o=STARTUP456/?sap-client=foo&sap-server=bar',
 				annotationURI: ["/path/to/other/odata/service;o=STARTUP456/Annotations(TechnicalName='%2FIWBEP%2FTEA_TEST_ANNOTATION_FILE',Version='0001')/$value?sap-language=EN&sap-client=foo",
-												"test-resources/sap/ui/core/qunit/component/testdata/v2models/parent/path/to/other/odata/service;o=STARTUP456/Annotations%28TechnicalName=%27%2FIWBEP%2FTEA_TEST_ANNOTATION_FILE%27,Version=%270001%27%29/$value?sap-language=EN&sap-client=foo",
+												"test-resources/sap/ui/core/qunit/component/testdata/v2models/parentValid/path/to/other/odata/service;o=STARTUP456/Annotations%28TechnicalName=%27%2FIWBEP%2FTEA_TEST_ANNOTATION_FILE%27,Version=%270001%27%29/$value?sap-language=EN&sap-client=foo",
 												"/path/to/other/odata/service/other2/Annotations(TechnicalName='%2FIWBEP%2FTEA_TEST_ANNOTATION_FILE',Version='0001')/?sap-language=EN&sap-client=foo",
 												"/path/to/other3/odata/service/;o=sid(G1Y.400)/Annotations(TechnicalName='%2FIWBEP%2FTEA_TEST_ANNOTATION_FILE',Version='0001')/$value?sap-language=EN&sap-client=foo"
 												],
@@ -540,13 +878,14 @@ sap.ui.define([
 
 			// check if internal models references were removed
 			assert.ok(!this.oComponent._mManifestModels, "Component should not have internal model references anymore");
+
 		}.bind(this));
 	});
 
 	QUnit.test("metadata v2 with cacheTokens", function(assert) {
 
 		return Component.create({
-			name: "sap.ui.test.v2models.parent",
+			name: "sap.ui.test.v2models.parentValid",
 			manifest: false,
 			asyncHints: {
 				cacheTokens: {
@@ -578,14 +917,14 @@ sap.ui.define([
 				},
 				annotationURI: [
 					'/path/to/odata/service/with/trailing/slash/annotations.xml?sap-language=EN',
-					'test-resources/sap/ui/core/qunit/component/testdata/v2models/parent/path/to/local/odata/annotations/2?sap-language=EN'
+					'test-resources/sap/ui/core/qunit/component/testdata/v2models/parentValid/path/to/local/odata/annotations/2?sap-language=EN'
 				],
 				useBatch: true,
 				refreshAfterChange: true
 			});
 
 			// model: "v2-ODataModel-SAPClient" with SAP client
-			sinon.assert.calledWithExactly(this.modelSpy.odataV2.getCall(7), {
+			sinon.assert.calledWithExactly(this.modelSpy.odataV2.getCall(6), {
 				serviceUrl: '/path/to/odata/service/with/sapclient/?sap-client=100',
 				annotationURI: [ '/path/to/odata/annotations/with/sapclient/?sap-client=200&sap-language=EN' ],
 				metadataUrlParams: { 'sap-language': 'EN' }
@@ -609,6 +948,7 @@ sap.ui.define([
 
 			// check if internal models references were removed
 			assert.ok(!this.oComponent._mManifestModels, "Component should not have internal model references anymore");
+
 		}.bind(this));
 	});
 
@@ -616,7 +956,7 @@ sap.ui.define([
 		this.stubGetUriParameters();
 
 		return Component.create({
-			name: "sap.ui.test.v2models.parent",
+			name: "sap.ui.test.v2models.parentValid",
 			manifest: false,
 			asyncHints: {
 				cacheTokens: {
@@ -648,7 +988,7 @@ sap.ui.define([
 				},
 				annotationURI: [
 					'/path/to/odata/service/with/trailing/slash/annotations.xml?sap-language=EN&sap-client=foo&sap-context-token=1476971136',
-					'test-resources/sap/ui/core/qunit/component/testdata/v2models/parent/path/to/local/odata/annotations/2?sap-language=EN&sap-client=foo&sap-context-token=1476971160'
+					'test-resources/sap/ui/core/qunit/component/testdata/v2models/parentValid/path/to/local/odata/annotations/2?sap-language=EN&sap-client=foo&sap-context-token=1476971160'
 				],
 				useBatch: true,
 				refreshAfterChange: true
@@ -672,6 +1012,7 @@ sap.ui.define([
 
 			// check if internal models references were removed
 			assert.ok(!this.oComponent._mManifestModels, "Component should not have internal model references anymore");
+
 		}.bind(this));
 	});
 
@@ -731,15 +1072,14 @@ sap.ui.define([
 		}).then(function(oComponent) {
 			this.oComponent = oComponent;
 
-
 			// sap.ui.model.odata.v2.ODataModel
-			sinon.assert.callCount(this.modelSpy.odataV2, 9);
+			sinon.assert.callCount(this.modelSpy.odataV2, 7);
 
 			// model: "default-with-annotations"
 			sinon.assert.calledWithExactly(this.modelSpy.odataV2, {
 				serviceUrl: '/path/to/default/datasource?sap-client=foo&sap-server=bar',
 				annotationURI: [
-					'test-resources/sap/ui/core/qunit/component/testdata/v2models/parent/path/to/local/odata/annotations/2?sap-language=EN&sap-client=foo',
+					'test-resources/sap/ui/core/qunit/component/testdata/v2models/parentValid/path/to/local/odata/annotations/2?sap-language=EN&sap-client=foo',
 					'/path/to/odata/annotations/1?sap-language=EN&sap-client=foo',
 					'test-resources/sap/ui/core/qunit/component/testdata/v2models/extension/path/to/local/extension/annotation?sap-language=EN&sap-client=foo'
 				],
@@ -762,30 +1102,18 @@ sap.ui.define([
 			sinon.assert.calledWithExactly(this.modelSpy.odataV2, {
 				serviceUrl: '/path/to/odata/service',
 				useBatch: true,
-				refreshAfterChange: true
-			});
-
-			// model: "invalid-annotations"
-			sinon.assert.calledWithExactly(this.modelSpy.odataV2, {
-				serviceUrl: '/path/to/odata/service?sap-client=foo&sap-server=bar',
-				annotationURI: [ '/path/to/odata/annotations/1?sap-language=EN&sap-client=foo' ],
-				metadataUrlParams: { "sap-language": "EN" }
+				refreshAfterChange: true,
+				skipMetadataAnnotationParsing: true
 			});
 
 			// model: "v2-ODataModel" with multi origin annotations
 			sinon.assert.calledWithExactly(this.modelSpy.odataV2, {
 				serviceUrl: '/path/to/odata/service/with/multi/origin/annotations/?sap-client=foo&sap-server=bar',
 				annotationURI: ["/path/to/other/odata/service/Annotations(TechnicalName='%2FIWBEP%2FTEA_TEST_ANNOTATION_FILE',Version='0001')/$value?sap-language=EN&sap-client=foo",
-												"test-resources/sap/ui/core/qunit/component/testdata/v2models/parent/path/to/other/odata/service/Annotations%28TechnicalName=%27%2FIWBEP%2FTEA_TEST_ANNOTATION_FILE%27,Version=%270001%27%29/$value?sap-language=EN&sap-client=foo",
+												"test-resources/sap/ui/core/qunit/component/testdata/v2models/parentValid/path/to/other/odata/service/Annotations%28TechnicalName=%27%2FIWBEP%2FTEA_TEST_ANNOTATION_FILE%27,Version=%270001%27%29/$value?sap-language=EN&sap-client=foo",
 												"/path/to/other/odata/service/other2/Annotations(TechnicalName='%2FIWBEP%2FTEA_TEST_ANNOTATION_FILE',Version='0001')/?sap-language=EN&sap-client=foo",
 												"/path/to/other3/odata/service/;o=sid(G1Y.400)/Annotations(TechnicalName='%2FIWBEP%2FTEA_TEST_ANNOTATION_FILE',Version='0001')/$value?sap-language=EN&sap-client=foo"
 												],
-				metadataUrlParams: { "sap-language": "EN" }
-			});
-
-			// model: "v2-ODataModel-unknown-odataVersion"
-			sinon.assert.calledWithExactly(this.modelSpy.odataV2, {
-				serviceUrl: '/path/to/unknown/odataVersion?sap-client=foo&sap-server=bar',
 				metadataUrlParams: { "sap-language": "EN" }
 			});
 
@@ -809,7 +1137,7 @@ sap.ui.define([
 			sinon.assert.calledWithExactly(this.modelSpy.xml, '/path/to/data.xml?sap-client=foo&sap-server=bar');
 
 			// model: "xml-relative"
-			sinon.assert.calledWithExactly(this.modelSpy.xml, 'test-resources/sap/ui/core/qunit/component/testdata/v2models/parent/path/to/local/data.xml?sap-client=foo&sap-server=bar');
+			sinon.assert.calledWithExactly(this.modelSpy.xml, 'test-resources/sap/ui/core/qunit/component/testdata/v2models/parentValid/path/to/local/data.xml?sap-client=foo&sap-server=bar');
 
 			// model: "xml-extension"
 			sinon.assert.calledWithExactly(this.modelSpy.xml, 'test-resources/sap/ui/core/qunit/component/testdata/v2models/extension/path/to/local/data.xml?sap-client=foo&sap-server=bar');
@@ -825,9 +1153,8 @@ sap.ui.define([
 
 			// model: "resourceBundle-legacy-uri"
 			sinon.assert.calledWithExactly(this.modelSpy.resource, {
-				bundleUrl: "test-resources/sap/ui/core/qunit/component/testdata/v2models/parent/i18n.properties"
+				bundleUrl: "test-resources/sap/ui/core/qunit/component/testdata/v2models/parentValid/i18n.properties"
 			});
-
 
 			// sap.ui.test.v2models.parent.CustomModel
 			sinon.assert.callCount(this.modelSpy.custom, 7);
@@ -836,7 +1163,7 @@ sap.ui.define([
 			sinon.assert.calledWithExactly(this.modelSpy.custom, '/path/to/custom.datatype?sap-client=foo&sap-server=bar');
 
 			// model: "custom-uri-relative-string"
-			sinon.assert.calledWithExactly(this.modelSpy.custom, 'test-resources/sap/ui/core/qunit/component/testdata/v2models/parent/path/to/local/custom.datatype?sap-client=foo&sap-server=bar');
+			sinon.assert.calledWithExactly(this.modelSpy.custom, 'test-resources/sap/ui/core/qunit/component/testdata/v2models/parentValid/path/to/local/custom.datatype?sap-client=foo&sap-server=bar');
 
 			// model: "custom-uri-string-with-settings"
 			sinon.assert.calledWithExactly(this.modelSpy.custom, '/path/to/custom.datatype?sap-client=foo&sap-server=bar', {
@@ -862,25 +1189,12 @@ sap.ui.define([
 				uri: 'foo'
 			});
 
-			// Log.error
-			sinon.assert.calledWithExactly(this.oLogSpy, sinon.match(/Component Manifest: Missing \"type\" for model \"no-model-type\"/), "[\"sap.ui5\"][\"models\"][\"no-model-type\"]", this.oComponent.getMetadata().getComponentName());
-			sinon.assert.calledWithExactly(this.oLogSpy, sinon.match(/Class \"sap.ui.not.defined.Model\" for model \"missing-model-class\" could not be loaded./), "[\"sap.ui5\"][\"models\"][\"missing-model-class\"]", this.oComponent.getMetadata().getComponentName());
-			sinon.assert.calledWithExactly(this.oLogSpy, sinon.match(/Component Manifest: Class \"sap.ui.test.v2models.parent.ModelNotDefined\" for model \"model-not-found\" could not be found/), "[\"sap.ui5\"][\"models\"][\"model-not-found\"]", this.oComponent.getMetadata().getComponentName());
-			sinon.assert.calledWithExactly(this.oLogSpy, sinon.match(/Component Manifest: ODataAnnotation \"undefined\" for dataSource \"odata-invalid-annotations\" could not be found in manifest/), "[\"sap.app\"][\"dataSources\"][\"undefined\"]", this.oComponent.getMetadata().getComponentName());
-			sinon.assert.calledWithExactly(this.oLogSpy, sinon.match(/Component Manifest: Missing \"uri\" for ODataAnnotation \"annotation-without-uri\"/), "[\"sap.app\"][\"dataSources\"][\"annotation-without-uri\"]", this.oComponent.getMetadata().getComponentName());
-			sinon.assert.calledWithExactly(this.oLogSpy, sinon.match(/Component Manifest: dataSource \"json\" was expected to have type \"ODataAnnotation\" but was \"JSON\"/), "[\"sap.app\"][\"dataSources\"][\"json\"]", this.oComponent.getMetadata().getComponentName());
-			sinon.assert.calledWithExactly(this.oLogSpy, sinon.match(/Component Manifest: dataSource \"invalid\" for model \"dataSource-invalid\" not found or invalid/), "[\"sap.app\"][\"dataSources\"][\"invalid\"]", this.oComponent.getMetadata().getComponentName());
-			sinon.assert.calledWithExactly(this.oLogSpy, sinon.match(/Component Manifest: dataSource \"does-not-exist\" for model \"dataSource-not-found\" not found or invalid/), "[\"sap.app\"][\"dataSources\"][\"does-not-exist\"]", this.oComponent.getMetadata().getComponentName());
-			sinon.assert.calledWithExactly(this.oLogSpy, sinon.match(/Component Manifest: Provided OData version \"3.0\" in dataSource \"unknown-odataVersion\" for model \"v2-ODataModel-unknown-odataVersion\" is unknown. Falling back to default model type \"sap.ui.model.odata.v2.ODataModel\"./), "[\"sap.app\"][\"dataSources\"][\"unknown-odataVersion\"]", this.oComponent.getMetadata().getComponentName());
-
-
 			// check if models are set on component (and save them internally)
 			this.assertModelInstances({
 				"": this.modelSpy.odataV2,
 				"default-with-annotations": this.modelSpy.odataV2,
 				"old-uri-syntax": this.modelSpy.odataV2,
 				"v2-ODataModel": this.modelSpy.odataV2,
-				"invalid-annotations": this.modelSpy.odataV2,
 				"json": this.modelSpy.json,
 				"json-relative": this.modelSpy.json,
 				"json-relative-2": this.modelSpy.json,
@@ -905,6 +1219,7 @@ sap.ui.define([
 
 			// check if internal models references were removed
 			assert.ok(!this.oComponent._mManifestModels, "Component should not have internal model references anymore");
+
 		}.bind(this));
 	});
 
@@ -931,6 +1246,7 @@ sap.ui.define([
 
 			// destroy the component
 			this.oComponent.destroy();
+
 		}.bind(this));
 	});
 
@@ -944,7 +1260,6 @@ sap.ui.define([
 		}).then(function(oComponent) {
 			this.oComponent = oComponent;
 
-
 			// sap.ui.model.resource.ResourceModel
 			sinon.assert.callCount(this.modelSpy.resource, 1);
 
@@ -955,7 +1270,8 @@ sap.ui.define([
 
 			// check if models are set on component (and save them internally)
 			this.assertModelInstances({
-				"i18n": this.modelSpy.resource
+				"i18n": this.modelSpy.resource,
+				"sfapi": this.modelSpy.odataV2
 			});
 
 			// destroy the component
@@ -966,6 +1282,7 @@ sap.ui.define([
 
 			// check if internal models references were removed
 			assert.ok(!this.oComponent._mManifestModels, "Component should not have internal model references anymore");
+
 		}.bind(this));
 	});
 
@@ -1193,13 +1510,13 @@ sap.ui.define([
 		},
 		assertAll: function(assert) {
 			// sap.ui.model.odata.v2.ODataModel
-			sinon.assert.callCount(this.modelSpy.odataV2, 9);
+			sinon.assert.callCount(this.modelSpy.odataV2, 7);
 
 			// model: "default-with-annotations"
 			sinon.assert.calledWithExactly(this.modelSpy.odataV2, {
 				serviceUrl: '/path/to/default/datasource?sap-client=foo&sap-server=bar',
 				annotationURI: [
-					'test-resources/sap/ui/core/qunit/component/testdata/v2models/parent/path/to/local/odata/annotations/2?sap-language=EN&sap-client=foo',
+					'test-resources/sap/ui/core/qunit/component/testdata/v2models/parentValid/path/to/local/odata/annotations/2?sap-language=EN&sap-client=foo',
 					'/path/to/odata/annotations/1?sap-language=EN&sap-client=foo'
 				],
 				headers: { "Cache-Control": "max-age=500" },
@@ -1224,30 +1541,16 @@ sap.ui.define([
 				refreshAfterChange: true
 			});
 
-			// model: "invalid-annotations"
-			sinon.assert.calledWithExactly(this.modelSpy.odataV2, {
-				serviceUrl: '/path/to/odata/service?sap-client=foo&sap-server=bar',
-				annotationURI: [ '/path/to/odata/annotations/1?sap-language=EN&sap-client=foo' ],
-				metadataUrlParams: { "sap-language": "EN" }
-			});
-
 			// model: "v2-ODataModel" with multi origin annotations
 			sinon.assert.calledWithExactly(this.modelSpy.odataV2, {
 				serviceUrl: '/path/to/odata/service/with/multi/origin/annotations/?sap-client=foo&sap-server=bar',
 				annotationURI: ["/path/to/other/odata/service/Annotations(TechnicalName='%2FIWBEP%2FTEA_TEST_ANNOTATION_FILE',Version='0001')/$value?sap-language=EN&sap-client=foo",
-												"test-resources/sap/ui/core/qunit/component/testdata/v2models/parent/path/to/other/odata/service/Annotations%28TechnicalName=%27%2FIWBEP%2FTEA_TEST_ANNOTATION_FILE%27,Version=%270001%27%29/$value?sap-language=EN&sap-client=foo",
+												"test-resources/sap/ui/core/qunit/component/testdata/v2models/parentValid/path/to/other/odata/service/Annotations%28TechnicalName=%27%2FIWBEP%2FTEA_TEST_ANNOTATION_FILE%27,Version=%270001%27%29/$value?sap-language=EN&sap-client=foo",
 												"/path/to/other/odata/service/other2/Annotations(TechnicalName='%2FIWBEP%2FTEA_TEST_ANNOTATION_FILE',Version='0001')/?sap-language=EN&sap-client=foo",
 												"/path/to/other3/odata/service/;o=sid(G1Y.400)/Annotations(TechnicalName='%2FIWBEP%2FTEA_TEST_ANNOTATION_FILE',Version='0001')/$value?sap-language=EN&sap-client=foo"
 												],
 				metadataUrlParams: { "sap-language": "EN" }
 			});
-
-			// model: "v2-ODataModel-unknown-odataVersion"
-			sinon.assert.calledWithExactly(this.modelSpy.odataV2, {
-				serviceUrl: '/path/to/unknown/odataVersion?sap-client=foo&sap-server=bar',
-				metadataUrlParams: { "sap-language": "EN" }
-			});
-
 
 			// sap.ui.model.json.JSONModel
 			sinon.assert.callCount(this.modelSpy.json, 3);
@@ -1256,7 +1559,7 @@ sap.ui.define([
 			sinon.assert.calledWithExactly(this.modelSpy.json, '/path/to/data.json?sap-client=foo&sap-server=bar');
 
 			// model: "json-relative"
-			sinon.assert.calledWithExactly(this.modelSpy.json, 'test-resources/sap/ui/core/qunit/component/testdata/v2models/parent/path/to/local/data.json?sap-client=foo&sap-server=bar');
+			sinon.assert.calledWithExactly(this.modelSpy.json, 'test-resources/sap/ui/core/qunit/component/testdata/v2models/parentValid/path/to/local/data.json?sap-client=foo&sap-server=bar');
 
 			// model: "json-relative-2"
 			sinon.assert.calledWithExactly(this.modelSpy.json, 'test-resources/sap/ui/core/qunit/component/testdata/path/to/other/data.json?sap-client=foo&sap-server=bar');
@@ -1269,7 +1572,7 @@ sap.ui.define([
 			sinon.assert.calledWithExactly(this.modelSpy.xml, '/path/to/data.xml?sap-client=foo&sap-server=bar');
 
 			// model: "xml-relative"
-			sinon.assert.calledWithExactly(this.modelSpy.xml, 'test-resources/sap/ui/core/qunit/component/testdata/v2models/parent/path/to/local/data.xml?sap-client=foo&sap-server=bar');
+			sinon.assert.calledWithExactly(this.modelSpy.xml, 'test-resources/sap/ui/core/qunit/component/testdata/v2models/parentValid/path/to/local/data.xml?sap-client=foo&sap-server=bar');
 
 
 			// sap.ui.model.resource.ResourceModel
@@ -1282,7 +1585,7 @@ sap.ui.define([
 
 			// model: "resourceBundle-legacy-uri"
 			sinon.assert.calledWithExactly(this.modelSpy.resource, {
-				bundleUrl: "test-resources/sap/ui/core/qunit/component/testdata/v2models/parent/i18n.properties"
+				bundleUrl: "test-resources/sap/ui/core/qunit/component/testdata/v2models/parentValid/i18n.properties"
 			});
 
 
@@ -1293,7 +1596,7 @@ sap.ui.define([
 			sinon.assert.calledWithExactly(this.modelSpy.custom, '/path/to/custom.datatype?sap-client=foo&sap-server=bar');
 
 			// model: "custom-uri-relative-string"
-			sinon.assert.calledWithExactly(this.modelSpy.custom, 'test-resources/sap/ui/core/qunit/component/testdata/v2models/parent/path/to/local/custom.datatype?sap-client=foo&sap-server=bar');
+			sinon.assert.calledWithExactly(this.modelSpy.custom, 'test-resources/sap/ui/core/qunit/component/testdata/v2models/parentValid/path/to/local/custom.datatype?sap-client=foo&sap-server=bar');
 
 			// model: "custom-uri-string-with-settings"
 			sinon.assert.calledWithExactly(this.modelSpy.custom, '/path/to/custom.datatype?sap-client=foo&sap-server=bar', {
@@ -1319,26 +1622,12 @@ sap.ui.define([
 				uri: 'foo'
 			});
 
-
-			// Log.error
-			sinon.assert.calledWithExactly(this.oLogSpy, sinon.match(/Component Manifest: Missing \"type\" for model \"no-model-type\"/), "[\"sap.ui5\"][\"models\"][\"no-model-type\"]", this.oComponent.getMetadata().getComponentName());
-			sinon.assert.calledWithExactly(this.oLogSpy, sinon.match(/Class \"sap.ui.not.defined.Model\" for model \"missing-model-class\" could not be loaded./), "[\"sap.ui5\"][\"models\"][\"missing-model-class\"]", this.oComponent.getMetadata().getComponentName());
-			sinon.assert.calledWithExactly(this.oLogSpy, sinon.match(/Component Manifest: Class \"sap.ui.test.v2models.parent.ModelNotDefined\" for model \"model-not-found\" could not be found/), "[\"sap.ui5\"][\"models\"][\"model-not-found\"]", this.oComponent.getMetadata().getComponentName());
-			sinon.assert.calledWithExactly(this.oLogSpy, sinon.match(/Component Manifest: ODataAnnotation \"undefined\" for dataSource \"odata-invalid-annotations\" could not be found in manifest/), "[\"sap.app\"][\"dataSources\"][\"undefined\"]", this.oComponent.getMetadata().getComponentName());
-			sinon.assert.calledWithExactly(this.oLogSpy, sinon.match(/Component Manifest: Missing \"uri\" for ODataAnnotation \"annotation-without-uri\"/), "[\"sap.app\"][\"dataSources\"][\"annotation-without-uri\"]", this.oComponent.getMetadata().getComponentName());
-			sinon.assert.calledWithExactly(this.oLogSpy, sinon.match(/Component Manifest: dataSource \"json\" was expected to have type \"ODataAnnotation\" but was \"JSON\"/), "[\"sap.app\"][\"dataSources\"][\"json\"]", this.oComponent.getMetadata().getComponentName());
-			sinon.assert.calledWithExactly(this.oLogSpy, sinon.match(/Component Manifest: dataSource \"invalid\" for model \"dataSource-invalid\" not found or invalid/), "[\"sap.app\"][\"dataSources\"][\"invalid\"]", this.oComponent.getMetadata().getComponentName());
-			sinon.assert.calledWithExactly(this.oLogSpy, sinon.match(/Component Manifest: dataSource \"does-not-exist\" for model \"dataSource-not-found\" not found or invalid/), "[\"sap.app\"][\"dataSources\"][\"does-not-exist\"]", this.oComponent.getMetadata().getComponentName());
-			sinon.assert.calledWithExactly(this.oLogSpy, sinon.match(/Component Manifest: Provided OData version \"3.0\" in dataSource \"unknown-odataVersion\" for model \"v2-ODataModel-unknown-odataVersion\" is unknown. Falling back to default model type \"sap.ui.model.odata.v2.ODataModel\"./), "[\"sap.app\"][\"dataSources\"][\"unknown-odataVersion\"]", this.oComponent.getMetadata().getComponentName());
-
-
 			// check if models are set on component (and save them internally)
 			this.assertModelInstances({
 				"": this.modelSpy.odataV2,
 				"default-with-annotations": this.modelSpy.odataV2,
 				"old-uri-syntax": this.modelSpy.odataV2,
 				"v2-ODataModel": this.modelSpy.odataV2,
-				"invalid-annotations": this.modelSpy.odataV2,
 				"json": this.modelSpy.json,
 				"json-relative": this.modelSpy.json,
 				"json-relative-2": this.modelSpy.json,
@@ -1487,16 +1776,7 @@ sap.ui.define([
 						"i18n2": {
 							"type": "sap.ui.model.resource.ResourceModel",
 							"uri": "./i18n.properties"
-						},
-
-						// This model should not get preloaded as the class is not declared and a warning should get logged
-						// When creating the model on component init an error should get logged
-						// but all other models should still be created
-						"class-not-loaded": {
-							"type": "sap.ui.sample.model.MyModel",
-							"preload": true
 						}
-
 					}
 				}
 			};
@@ -1586,12 +1866,6 @@ sap.ui.define([
 			assert.ok(this.modelSpy.resource.getCall(1).returnValue, "ResourceModel should be available");
 			assert.ok(this.modelSpy.resource.getCall(1).returnValue.getResourceBundle() instanceof ResourceBundle,
 				"ResourceBundle should be available");
-
-			// check error log for "class-not-loaded" model
-			sinon.assert.calledWithExactly(this.oLogErrorSpy,
-				sinon.match(/Component Manifest: Class \"sap.ui.sample.model.MyModel\" for model \"class-not-loaded\" could not be loaded./),
-				"[\"sap.ui5\"][\"models\"][\"class-not-loaded\"]",
-				this.oComponent.getMetadata().getComponentName());
 
 			assert.ok(this.oComponent.getMetadata() instanceof UIComponentMetadata, "The metadata is instance of UIComponentMetadata");
 			assert.ok(this.oComponent.getManifest(), "Manifest is available");
@@ -1707,11 +1981,6 @@ sap.ui.define([
 			// sap.ui.model.resource.ResourceModel
 			sinon.assert.callCount(this.modelSpy.resource, 2);
 
-			// check error log for "class-not-loaded" model
-			sinon.assert.calledWithExactly(this.oLogErrorSpy,
-				sinon.match(/Component Manifest: Class \"sap.ui.sample.model.MyModel\" for model \"class-not-loaded\" could not be loaded./),
-				"[\"sap.ui5\"][\"models\"][\"class-not-loaded\"]",
-				this.oComponent.getMetadata().getComponentName());
 
 			assert.ok(this.oComponent.getMetadata() instanceof UIComponentMetadata, "The metadata is instance of UIComponentMetadata");
 			assert.ok(this.oComponent.getManifest(), "Manifest is available");
@@ -1886,13 +2155,6 @@ sap.ui.define([
 
 			var oResourceModel2 = this.modelSpy.resource.getCall(1).returnValue;
 			assert.ok(oResourceModel2.bDestroyed, "ResourceModel should have been destroyed.");
-
-			// check warning log for "class-not-loaded" model
-			sinon.assert.calledWithExactly(this.oLogWarningSpy,
-				"Can not preload model \"class-not-loaded\" as required class has not been loaded: \"sap.ui.sample.model.MyModel\"",
-				this.oManifest["sap.app"]["id"],
-				"sap.ui.core.Component");
-
 		}.bind(this));
 	});
 
@@ -1946,13 +2208,6 @@ sap.ui.define([
 
 			var oResourceModel2 = this.modelSpy.resource.getCall(1).returnValue;
 			assert.ok(oResourceModel2.bDestroyed, "ResourceModel should have been destroyed.");
-
-			// check warning log for "class-not-loaded" model
-			sinon.assert.calledWithExactly(this.oLogWarningSpy,
-				"Can not preload model \"class-not-loaded\" as required class has not been loaded: \"sap.ui.sample.model.MyModel\"",
-				this.oManifest["sap.app"]["id"],
-				"sap.ui.core.Component");
-
 		}.bind(this));
 	});
 

@@ -1,5 +1,6 @@
 /*global QUnit */
 sap.ui.define([
+	"sap/base/future",
 	"sap/ui/core/theming/Parameters",
 	"sap/ui/core/Control",
 	"sap/ui/core/Element",
@@ -10,7 +11,7 @@ sap.ui.define([
 	"sap/m/Bar",
 	"sap/ui/thirdparty/URI",
 	"sap/ui/qunit/utils/nextUIUpdate"
-], function(Parameters, Control, Element, Icon, Library, Theming, includeStylesheet, Bar, URI, nextUIUpdate) {
+], function(future, Parameters, Control, Element, Icon, Library, Theming, includeStylesheet, Bar, URI, nextUIUpdate) {
 	"use strict";
 
 	QUnit.module("Parmeters.get", {
@@ -127,34 +128,29 @@ sap.ui.define([
 		});
 	});
 
-	QUnit.test("Read multiple given parameters (including undefined param name)", async function(assert) {
+	QUnit.test("Read multiple given parameters (including undefined param name) (future=true)", async function (assert) {
+		future.active = true;
 		var done = assert.async();
 		var oControl = new Control();
 		var aParams = ["sapUiMultipleAsyncThemeParamWithScopeForLib7", "sapUiMultipleAsyncThemeParamWithoutScopeForLib7", "sapUiNotExistingTestParam", "sapUiBaseColor"];
-		var oExpected = {
-			"sapUiMultipleAsyncThemeParamWithScopeForLib7": "#cccccc",
-			"sapUiMultipleAsyncThemeParamWithoutScopeForLib7": "#dddddd",
-			"sapUiBaseColor": "#000000"
-		};
 
-		await Library.load({name: "testlibs.themeParameters.lib7"});
+		await Library.load({ name: "testlibs.themeParameters.lib7" });
 
-		oControl.addStyleClass("sapTestScope");
+		Theming.attachAppliedOnce((oEvent) => {
+			oControl.addStyleClass("sapTestScope");
 
-		assert.strictEqual(Parameters.get({
-			name: aParams,
-			scopeElement: oControl,
-			callback: function (oParamResult) {
-				aParams.forEach(function(key) {
-					if (oParamResult[key]) {
-						oParamResult[key] = unifyHexNotation(oParamResult[key]);
+			assert.throws(() => {
+				Parameters.get({
+					name: aParams,
+					scopeElement: oControl,
+					callback: function () {
+						assert.ok(false, "Callback should not be executed");
 					}
 				});
-				assert.deepEqual(oParamResult, oExpected, "Key-value map for the given params 'sapUiMultipleAsyncThemeParamWithScopeForLib7', 'sapUiMultipleAsyncThemeParamWithoutScopeForLib7' and 'sapUiBaseColor' should be returned");
-				assert.strictEqual(checkLibraryParametersJsonRequestForLib("7").length, 0, "library-parameters.json not requested for testlibs.themeParameters.lib7");
-				done();
-			}
-		}), undefined, "Parameter 'sapUiBaseColor' should already be available but value should be returned in callback.");
+			}, new Error("One or more parameters could not be found."), "Throws Error.");
+			future.active = undefined;
+			done();
+		});
 	});
 
 	QUnit.test("Call Parameters.get multiple times with same callback function should only be executed once", async function (assert) {
@@ -188,18 +184,23 @@ sap.ui.define([
 		});
 	});
 
-	QUnit.test("Read not defined parameter using callback", async function(assert) {
+	QUnit.test("Read not defined parameter using callback (future=true)", async function (assert) {
+		future.active = true;
 		var done = assert.async();
 
-		await Library.load({name: "testlibs.themeParameters.lib9"});
+		await Library.load({ name: "testlibs.themeParameters.lib9" });
 
-		Parameters.get({
-			name: "sapUiNotExistingTestParam",
-			callback: function (oParamResult) {
-				assert.deepEqual(oParamResult, undefined, "Value for the given param 'sapUiNotExistingTestParam' does not exist and 'undefined' should be returned");
-				assert.strictEqual(checkLibraryParametersJsonRequestForLib("8").length, 0, "library-parameters.json not requested for testlibs.themeParameters.lib9");
-				done();
-			}
+		Theming.attachAppliedOnce((oEvent) => {
+			assert.throws(() => {
+				Parameters.get({
+					name: "sapUiNotExistingTestParam",
+					callback: function () {
+						assert.ok(false, "Callback should not be executed");
+					}
+				});
+			}, new Error("One or more parameters could not be found."), "Throws Error.");
+			future.active = undefined;
+			done();
 		});
 	});
 

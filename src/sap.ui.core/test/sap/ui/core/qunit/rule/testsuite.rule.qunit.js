@@ -29,15 +29,6 @@ sap.ui.define(function () {
 				}
 			},
 
-			"app/controllerExtension": {
-				title: "QUnit Tests for controller extensions",
-				loader: {
-					paths: {
-						"mvc": "test-resources/sap/ui/core/qunit/mvc"
-					}
-				}
-			},
-
 			"app/lowerCaseControlsInViews": {
 				title: "QUnit Tests for 'xmlViewLowerCaseControl' rule",
 				loader: {

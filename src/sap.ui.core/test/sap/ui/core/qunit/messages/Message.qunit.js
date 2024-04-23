@@ -129,13 +129,6 @@ sap.ui.define([
 	].forEach(function (sType0, i0, aTypes) {
 		var oMessage0 = new Message({type : sType0});
 
-		QUnit.test("compare " + sType0 + " with unknown", function (assert) {
-			var oMessageUnknown = new Message({type : "unknown"});
-
-			// code under test
-			assert.ok(isNaN(Message.compare(oMessage0, oMessageUnknown)));
-			assert.ok(isNaN(Message.compare(oMessageUnknown, oMessage0)));
-		});
 		aTypes.forEach(function (sType1, i1) {
 			QUnit.test("compare " + sType0 + " with " + sType1, function (assert) {
 				var oMessage1 = new Message({type : sType1}),

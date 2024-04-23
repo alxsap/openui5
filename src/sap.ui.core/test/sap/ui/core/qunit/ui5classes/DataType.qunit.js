@@ -1,12 +1,13 @@
 /*global sinon, QUnit*/
 sap.ui.define([
+	"sap/base/future",
 	"sap/base/Log",
 	"sap/base/util/isPlainObject",
 	"sap/ui/base/DataType",
 	"sap/ui/core/Lib",
 	// provides sap.ui.core data type and enums
 	'sap/ui/core/library'
-], function(Log, isPlainObject, DataType, Library) {
+], function(future, Log, isPlainObject, DataType, Library) {
 	"use strict";
 
 	function random(values) {
@@ -425,25 +426,6 @@ sap.ui.define([
 
 	QUnit.module("Type Lookup");
 
-	QUnit.test("non-existing type", function (assert) {
-		var oWarningSpy = this.spy(Log, "warning");
-		var oErrorSpy = this.spy(Log, "error");
-		Log.setLevel(Log.Level.DEBUG);
-
-		// check precondition
-		assert.equal(typeof nonExistingType, "undefined", "[precondition] There should be no global var 'nonExistingType'");
-
-		assert.strictEqual(DataType.getType("nonExistingType"), undefined, "for a non-existing type, undefined is returned");
-		assert.ok(oErrorSpy.calledWith(sinon.match(/data type/).and(sinon.match(/could not be found/))), "access to non-existing type should produce an error message in the log");
-		assert.ok(!oWarningSpy.called, "no warnings should be produced");
-
-		// eslint-disable-next-line no-undef-init, prefer-const
-		const expectedType = undefined;
-
-		assert.strictEqual(DataType.getType("toString"), expectedType, "'toString' should not resolve to something");
-		assert.strictEqual(DataType.getType("hasOwnProperty"), expectedType, "'hasOwnProperty' should not resolve to something");
-	});
-
 
 
 	QUnit.module("Type Creation");
@@ -525,33 +507,6 @@ sap.ui.define([
 		assert.equal(oType.isValid('world'), false, "suffix alone is not enough");
 		assert.equal(oType.isValid('helloworld'), true, "both together are okay");
 		assert.equal(oType.isValid('hello              world'), true, "both together are okay");
-	});
-
-	QUnit.test("re-defining a type", function (assert) {
-		var oWarningSpy = this.spy(Log, "warning");
-		var oErrorSpy = this.spy(Log, "error");
-		Log.setLevel(Log.Level.DEBUG);
-
-		var oType1 = DataType.createType("myNewType", {
-			isValid: function (oValue) {
-				return /hello.*world/.test(oValue);
-			}
-		}, DataType.getType("string"));
-
-		assert.ok(oType1 instanceof DataType, "first creation should succeed");
-		assert.ok(!oErrorSpy.called, "first creation must not log an error");
-		assert.ok(!oWarningSpy.called, "first creation must not log a warning");
-
-		var oType2 = DataType.createType("myNewType", {
-			isValid: function (oValue) {
-				return /hello.*world/.test(oValue);
-			}
-		}, DataType.getType("string"));
-		assert.ok(!oErrorSpy.called, "re-defining a type must not log an error");
-		assert.ok(oWarningSpy.calledWith(sinon.match(/re-?defined.*unsupported/i)), "re-defining a type must log a warning");
-		assert.ok(oType2 instanceof DataType, "recreation must return a type");
-		assert.notStrictEqual(oType1, oType2, "new type should differ from previous type with same name");
-		assert.strictEqual(DataType.getType("myNewType"), oType2, "lookup returns new type");
 	});
 
 

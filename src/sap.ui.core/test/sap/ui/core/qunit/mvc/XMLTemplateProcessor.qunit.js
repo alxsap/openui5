@@ -5,15 +5,16 @@ sap.ui.define([
 	"sap/ui/core/mvc/View",
 	"sap/ui/core/mvc/XMLView",
 	"sap/ui/util/XMLHelper",
-	"sap/base/Log",
+	"sap/base/future",
 	"sap/ui/base/DesignTime"
-], function(coreLibrary, XMLTemplateProcessor, View, XMLView, XMLHelper, Log, DesignTime) {
+], function(coreLibrary, XMLTemplateProcessor, View, XMLView, XMLHelper, future, DesignTime) {
 	"use strict";
 
 	// shortcut for sap.ui.core.mvc.ViewType
 	var ViewType = coreLibrary.mvc.ViewType;
 
-	var sView =
+
+	const sView =
 		'<mvc:View height="100%" xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns="sap.m" id="view" ' +
 			'xmlns:dt="sap.ui.dt" displayBlock="true" unknownProperty="true">' +
 			'<Panel id="panel">' +
@@ -30,27 +31,54 @@ sap.ui.define([
 				'</content>' +
 			'</Panel>' +
 		'</mvc:View>';
+	const sView2 =
+		'<mvc:View height="100%" xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns="sap.m" ' +
+			'xmlns:dt="sap.ui.dt" displayBlock="true" >' +
+			'<Panel id="panel">' +
+				'<content>' +
+					'<Button text="Button" id="button"></Button>' +
+					'<Button text="Button With Designtime Data" id="buttonWithDTData" dt:test="testvalue"></Button>' +
+					'<Button text="Button using core:require" id="buttonRequire" core:require="{Link:\'sap/m/Link\'}"></Button>' +
+					'<Button text="Button using Designtime Data and core:require" id="buttonWithDTDataAndRequire" dt:test="testvalue2" core:require="{Link:\'sap/m/Link\'}"></Button>' +
+					'<Button text="StashedButton" id="stashedButton" stashed="true"></Button>' +
+					'<Button text="Wrong Type value" id="brokenButton"></Button>' +
+					'<core:ExtensionPoint name="extension">' +
+						'<Button text="ExtensionButton" id="extensionButton"></Button>' +
+					'</core:ExtensionPoint>' +
+				'</content>' +
+			'</Panel>' +
+		'</mvc:View>';
 
+	const sView3 =
+		'<mvc:View height="100%" xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns="sap.m" ' +
+			'xmlns:dt="sap.ui.dt" displayBlock="true" >' +
+			'<Panel id="panel">' +
+				'<content>' +
+					'<Button text="Button" id="button"></Button>' +
+					'<Button text="Button With Designtime Data" id="buttonWithDTData" dt:test="testvalue"></Button>' +
+					'<Button text="Button using core:require" id="buttonRequire" core:require="{Link:\'sap/m/Link\'}"></Button>' +
+					'<Button text="Button using Designtime Data and core:require" id="buttonWithDTDataAndRequire" dt:test="testvalue2" core:require="{Link:\'sap/m/Link\'}"></Button>' +
+					'<Button text="StashedButton" id="stashedButton" stashed="true"></Button>' +
+					'<Button text="Wrong Type value" id="brokenButton" type="somethingInvalid"></Button>' +
+					'<Button text="Wrong Type value" id="brokenButton"></Button>' +
+					'<core:ExtensionPoint name="extension">' +
+						'<Button text="ExtensionButton" id="extensionButton"></Button>' +
+					'</core:ExtensionPoint>' +
+				'</content>' +
+			'</Panel>' +
+		'</mvc:View>';
 
-	QUnit.module("parseScalarType", {
-		beforeEach: function() {
-			this.oLogSpy = sinon.spy(Log, "error");
-			this.pViewLoaded = XMLView.create({
-				definition: sView
-			});
-			return this.pViewLoaded;
-		},
-		afterEach: function() {
-			return this.pViewLoaded.then(function (oView) {
-				this.oLogSpy.restore();
-				oView.destroy();
-			}.bind(this));
-		}
-	});
+	QUnit.module("parseScalarType (future=true)", {});
 
-	QUnit.test("Error Logging of invalid type values", function (assert) {
-		assert.ok(this.oLogSpy.calledOnce, "Log.error was only called once");
-		assert.ok(this.oLogSpy.calledWith(sinon.match(/Value 'somethingInvalid' is not valid for type 'sap.m.ButtonType'./)), "Log.error spy was called");
+	QUnit.test("Error Logging of invalid type values", async function (assert) {
+		future.active = true;
+		const oView = XMLView.create({
+			definition: sView3
+		});
+		assert.rejects(oView);
+		await oView.catch((err) => {
+			assert.ok(err.message.includes("Value 'somethingInvalid' is not valid for type 'sap.m.ButtonType'.", "View creation rejected with type error"));
+		});
 	});
 
 	QUnit.module("General");
@@ -189,7 +217,7 @@ sap.ui.define([
 	QUnit.module("Custom Settings",{
 		beforeEach: function() {
 			this.pView = XMLView.create({
-				definition: sView,
+				definition: sView2,
 				id: "view"
 			});
 			this.xml = XMLHelper.parse(sView);

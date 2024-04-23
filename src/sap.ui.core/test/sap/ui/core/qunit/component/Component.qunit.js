@@ -1894,8 +1894,8 @@ sap.ui.define([
 				},
 				"models": {
 					"myModel": {
-						"type": "sap.ui.model.odata.ODataModel",
-						"uri": "./some/odata/service"
+						"type": "sap.ui.model.odata.v2.ODataModel",
+						"uri": "./some/odata/service/"
 					}
 				}
 			}
@@ -1903,8 +1903,8 @@ sap.ui.define([
 
 		Component._fnPreprocessManifest = function(oManifestJSON) {
 			// To test if the modification is correctly passed back to the
-			// Component's manifest processing, we just change the class of a given model v1 -> v2
-			oManifestJSON["sap.ui5"]["models"]["myModel"].type = "sap.ui.model.odata.v2.ODataModel";
+			// Component's manifest processing, we just change the class of a given model v2 -> v4
+			oManifestJSON["sap.ui5"]["models"]["myModel"].type = "sap.ui.model.odata.v4.ODataModel";
 
 			return Promise.resolve(oManifestJSON);
 		};
@@ -1915,7 +1915,7 @@ sap.ui.define([
 		}).then(function(oComponent) {
 			// check if the modification was correctly taken over
 			var oModel = oComponent.getModel("myModel");
-			assert.ok(oModel.isA("sap.ui.model.odata.v2.ODataModel"), "Manifest was modified to use v2 instead of v1 ODataModel.");
+			assert.ok(oModel.isA("sap.ui.model.odata.v4.ODataModel"), "Manifest was modified to use v4 instead of v2 ODataModel.");
 		});
 	});
 
@@ -1982,8 +1982,8 @@ sap.ui.define([
 		// register hook and modify the manifest
 		Component._fnPreprocessManifest = function(oManifestJSON) {
 			// To test if the modification is correctly passed back to the
-			// Component's manifest processing, we just change the class of a given model v1 -> v2
-			oManifestJSON["sap.ui5"]["models"]["sfapi"].type = "sap.ui.model.odata.v2.ODataModel";
+			// Component's manifest processing, we just change the class of a given model v2 -> v4
+			oManifestJSON["sap.ui5"]["models"]["sfapi"].type = "sap.ui.model.odata.v4.ODataModel";
 
 			return Promise.resolve(oManifestJSON);
 		};
@@ -1994,7 +1994,7 @@ sap.ui.define([
 		}).then(function(oComponent) {
 			// check if the modification was correctly taken over
 			var oModel = oComponent.getModel("sfapi");
-			assert.ok(oModel.isA("sap.ui.model.odata.v2.ODataModel"), "Manifest was modified to use v2 instead of v1 ODataModel.");
+			assert.ok(oModel.isA("sap.ui.model.odata.v4.ODataModel"), "Manifest was modified to use v4 instead of v2 ODataModel.");
 		});
 	});
 
@@ -2041,8 +2041,8 @@ sap.ui.define([
 		// register hook and modify the manifest
 		Component._fnPreprocessManifest = function(oManifestJSON) {
 			// To test if the modification is correctly passed back to the
-			// Component's manifest processing, we just change the class of a given model v1 -> v2
-			oManifestJSON["sap.ui5"]["models"]["sfapi"].type = "sap.ui.model.odata.v2.ODataModel";
+			// Component's manifest processing, we just change the class of a given model v2 -> v4
+			oManifestJSON["sap.ui5"]["models"]["sfapi"].type = "sap.ui.model.odata.v4.ODataModel";
 
 			return Promise.resolve(oManifestJSON);
 		};
@@ -2053,7 +2053,7 @@ sap.ui.define([
 		}).then(function(oComponent) {
 			// check if the modification was correctly taken over
 			var oModel = oComponent.getModel("sfapi");
-			assert.ok(oModel.isA("sap.ui.model.odata.v2.ODataModel"), "Manifest was modified to use v2 instead of v1 ODataModel.");
+			assert.ok(oModel.isA("sap.ui.model.odata.v4.ODataModel"), "Manifest was modified to use v4 instead of v2 ODataModel.");
 		});
 	});
 

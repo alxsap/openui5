@@ -1,6 +1,6 @@
 /*global QUnit, sinon */
 sap.ui.define([
-	"sap/base/Log",
+	"sap/base/future",
 	"sap/ui/core/mvc/Controller",
 	"sap/ui/core/UIComponent",
 	'sap/ui/core/Component',
@@ -12,8 +12,7 @@ sap.ui.define([
 	"sap/ui/core/mvc/XMLView",
 	"sap/ui/core/StashedControlSupport",
 	"sap/ui/qunit/utils/nextUIUpdate"
-], function(Log, Controller, UIComponent, Component, Element, Panel, HBox, MyGlobal, SyncPromise, XMLView, StashedControlSupport, nextUIUpdate) {
-
+], function(future, Controller, UIComponent, Component, Element, Panel, HBox, MyGlobal, SyncPromise, XMLView, StashedControlSupport, nextUIUpdate) {
 	"use strict";
 
 	// create content div
@@ -299,23 +298,19 @@ sap.ui.define([
 
 	/**
 	 * Tests parsing of a control which is not properly defined (does not return its class)
-	 * In V1: We check if the control is retrieved via globals + an error log.
 	 * In V2: we only check for the error log.
 	 */
-	QUnit.test("Bad control processing", async function(assert) {
-		const oLogSpy = this.spy(Log, "error");
+	QUnit.test("Bad control processing (future=true)", async function(assert) {
+		future.active = true;
 
-		// view
-		const oView = await this.viewFactory("myViewBadControl", "sap.ui.core.qunit.mvc.viewprocessing.ViewProcessingBadControl");
+		// Check for error concerning the missing module content
+		const oView = this.viewFactory("myViewBadControl", "sap.ui.core.qunit.mvc.viewprocessing.ViewProcessingBadControl");
+		await assert.rejects(oView);
+		oView.catch((err) => {
+			assert.ok(err.message.includes("Control 'sap.ui.core.qunit.mvc.viewprocessing.BadControl' did not return a class definition from sap.ui.define."), "Error must be thrown");
+		});
 
-		await this.render(oView);
-
-		// V1 and V2: Check for error concerning the missing module content
-		const sClassName = "sap.ui.core.qunit.mvc.viewprocessing.BadControl";
-		const sErrorLogMessage = `[FUTURE FATAL] Control '${sClassName}' did not return a class definition from sap.ui.define.`;
-		assert.ok(oLogSpy.calledWith(sinon.match(sErrorLogMessage)), "Error log for missing class definition is correct.");
-
-		oLogSpy.restore();
+		future.active = undefined;
 	});
 
 

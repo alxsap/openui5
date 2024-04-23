@@ -1,5 +1,6 @@
-/*global QUnit */
+/*global QUnit, sinon */
 sap.ui.define([
+	"sap/base/future",
 	"sap/ui/core/library",
 	"sap/ui/core/message/ControlMessageProcessor",
 	"sap/ui/core/message/Message",
@@ -18,6 +19,7 @@ sap.ui.define([
 	"sap/ui/qunit/utils/createAndAppendDiv",
 	"sap/ui/test/TestUtils"
 ], function(
+	future,
 	coreLibrary,
 	ControlMessageProcessor,
 	Message,
@@ -120,7 +122,6 @@ sap.ui.define([
 		if (oControl.propagateMessages) {
 			var fnPropagate = oControl.propagateMessages;
 			oControl.propagateMessages = function(sProp, aMessages) {
-				Input.prototype.propagateMessages.apply(oControl, arguments);
 				fnTest(sProp, aMessages);
 				oControl.propagateMessages = fnPropagate;
 			};
@@ -188,6 +189,21 @@ sap.ui.define([
 		var oMessageModel = Messaging.getMessageModel();
 		assert.ok(oMessageModel instanceof MessageModel, 'MessageModel created');
 		assert.equal(oMessageModel.getObject('/').length, 0, 'No Messages');
+	});
+
+	QUnit.test("addMessage: propagateMessages not implemented (future=true)", function(assert) {
+		future.active = true;
+		const oTestInput = new Input("TESTID", {value:""});
+		const oMessage = createControlMessage("TEST", oTestInput.getId() + "/value");
+		const expectedMessage = "Message for Element sap.m.Input#TESTID, Property value received. Control sap.m.Input does not support messaging without using data binding.";
+		assert.throws(() => {
+			Messaging.addMessages(oMessage);
+		}, new Error(expectedMessage));
+		assert.throws(() => {
+			Messaging.removeAllMessages();
+		}, new Error(expectedMessage));
+		oTestInput.destroy();
+		future.active = undefined;
 	});
 
 	QUnit.test("addMessage", function(assert) {
@@ -449,7 +465,7 @@ sap.ui.define([
 		var count = 0;
 		var done = assert.async();
 		Messaging.removeAllMessages();
-		var oTestInput = new Input({value:""});
+		var oTestInput = new Input({value:"{/}"});
 		oTestInput.placeAt("content");
 		var sControlId = oTestInput.getId();
 		var oMessage = createControlMessage("TEST", "/" + sControlId + "/value");
@@ -647,6 +663,7 @@ sap.ui.define([
 			value: "{/test}"
 		});
 
+		spyPropagateMessages(oInput, () => {});
 
 		oInput.setModel(oModel);
 		Messaging.registerObject(oInput);
@@ -681,5 +698,4 @@ sap.ui.define([
 		Messaging.removeMessages(oMessage);
 
 	});
-
 });

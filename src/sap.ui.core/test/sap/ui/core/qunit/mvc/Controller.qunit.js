@@ -6,9 +6,10 @@ sap.ui.define([
 	'sap/ui/core/ElementRegistry',
 	'sap/ui/core/mvc/XMLView',
 	'sap/ui/core/mvc/Controller',
+	'sap/base/future',
 	'sap/base/Log',
 	'sap/ui/qunit/utils/nextUIUpdate'
-], function(Component, Fragment, Element, ElementRegistry, XMLView, Controller, Log, nextUIUpdate) {
+], function(Component, Fragment, Element, ElementRegistry, XMLView, Controller, future, Log, nextUIUpdate) {
 	"use strict";
 
 	QUnit.module("Controller.create API");
@@ -24,6 +25,7 @@ sap.ui.define([
 			})
 			.then(function(oController) {
 				assert.equal(oController.double(8), 16, "Controller implementation was correctly returned");
+				oController.destroy();
 				done();
 			});
 		});
@@ -41,10 +43,14 @@ sap.ui.define([
 		});
 
 		sap.ui.require(["sap/ui/core/Component"], function(Component) {
+			let oCreatedComponent;
 			Component.create({
 				name: "mvc.testdata.ControllerExtensionTest.Test1"
 			})
 			.then(function(oComponent) {
+				oCreatedComponent = oComponent;
+				//oControl is a view and we must take care of the loaded promise.
+				//Actually nested Views/Fragments are created in the 'old' not fully async way
 				return oComponent.getRootControl().loaded();
 			})
 			.then(function(oView) {
@@ -53,6 +59,7 @@ sap.ui.define([
 				assert.ok(oController.triple, "Controller should be extended with 'triple' function");
 				assert.equal(oController.double(3), 6, "Controller implementation works correctly");
 				assert.equal(oController.triple(3), 9, "Controller implementation works correctly");
+				oCreatedComponent.destroy();
 				done();
 			});
 		});
@@ -96,6 +103,10 @@ sap.ui.define([
 					this._pFragment = Fragment.load({
 						name: "testdata.fragments.XMLView",
 						type: "XML"
+					}).then(function(oControl) {
+						//oControl is a view and we must take care of the loaded promise.
+						//Actually nested Views/Fragments are created in the 'old' not fully async way
+						return oControl.loaded();
 					});
 				}
 			});
@@ -204,6 +215,10 @@ sap.ui.define([
 						name: "testdata.fragments.XMLView",
 						type: "XML"
 					}).then(function(oControl) {
+						//oControl is a view and we must take care of the loaded promise.
+						//Actually nested Views/Fragments are created in the 'old' not fully async way
+						return oControl.loaded();
+					}).then(function(oControl) {
 						this.getView().addDependent(oControl);
 					}.bind(this));
 				}
@@ -294,6 +309,10 @@ sap.ui.define([
 							name: "testdata.fragments.XMLView",
 							type: "XML",
 							id: "horst"
+						}).then(function(oControl) {
+							//oControl is a view and we must take care of the loaded promise.
+							//Actually nested Views/Fragments are created in the 'old' not fully async way
+							return oControl.loaded();
 						}).then(function() {
 							res([]);
 						});
@@ -310,6 +329,7 @@ sap.ui.define([
 				return pFragmentReady.then(function() {
 					assert.equal(oComponent, Component.getOwnerComponentFor(oView.getDependents()[0]), "Owner component set cortrectly for fragment");
 					oComponent.destroy();
+					oView.destroy();
 				});
 			});
 		});
@@ -328,8 +348,12 @@ sap.ui.define([
 							name: "testdata.fragments.XMLView",
 							type: "XML",
 							addToDependents: false
-						}).then(function() {
-							res([]);
+						}).then(function(oControl) {
+							//oControl is a view and we must take care of the loaded promise.
+							//Actually nested Views/Fragments are created in the 'old' not fully async way
+							return oControl.loaded();
+						}).then(function(oFragment) {
+							res(oFragment);
 						});
 					}.bind(this));
 				}
@@ -340,8 +364,9 @@ sap.ui.define([
 			definition: "<mvc:View xmlns:mvc='sap.ui.core.mvc' controllerName='my.Controller06'>" +
 				"</mvc:View>"
 		}).then(function(oView) {
-			return pFragmentReady.then(function() {
+			return pFragmentReady.then(function(oFragment) {
 				assert.equal(oView.getDependents().length, 0, "Fragment is not added to the dependents aggregation of the view");
+				oFragment.destroy();
 				oView.destroy();
 			});
 		});
@@ -360,6 +385,10 @@ sap.ui.define([
 							name: "testdata.fragments.XMLView",
 							type: "XML",
 							autoPrefixId: false
+						}).then(function(oControl) {
+							//oControl is a view and we must take care of the loaded promise.
+							//Actually nested Views/Fragments are created in the 'old' not fully async way
+							return oControl.loaded();
 						}).then(function() {
 							res([]);
 						});
@@ -394,6 +423,10 @@ sap.ui.define([
 							type: "XML",
 							id: "myFragment",
 							autoPrefixId: false
+						}).then(function(oControl) {
+							//oControl is a view and we must take care of the loaded promise.
+							//Actually nested Views/Fragments are created in the 'old' not fully async way
+							return oControl.loaded();
 						}).then(function() {
 							res([]);
 						});
@@ -416,48 +449,117 @@ sap.ui.define([
 
 	QUnit.module("Controller Lifecycle-Hooks");
 
-	QUnit.test("Shouldn't return any values", async (assert) => {
-		const aPromises = [];
-		sap.ui.define("my/Controller09.controller", ["sap/ui/core/mvc/Controller"], function(Controller) {
-			return Controller.extend("my.Controller09", {
+	QUnit.test("onInit Shouldn't return any values (future=true)", async (assert) => {
+		future.active = true;
+		sap.ui.define("my/Controller10.controller", ["sap/ui/core/mvc/Controller"], function(Controller) {
+			return Controller.extend("my.Controller10", {
 				onInit: function() {
 					return "onInit returns a String value";
-				},
+				}
+			});
+		});
+
+		const expectedMessage = "The registered Event Listener 'onInit' must not have a return value.";
+		const oController = await Controller.create({
+			name: "my.Controller10"
+		});
+		await assert.rejects(XMLView.create({
+			viewName: "example.mvc.asyncHooks",
+			controller: oController
+		}), new Error(expectedMessage), "onInit must throw an error as it has a return value");
+
+		future.active = undefined;
+	});
+
+	QUnit.test("onExit Shouldn't return any values (future=true)", async (assert) => {
+		future.active = true;
+		let oOnExitPromise;
+		sap.ui.define("my/Controller11.controller", ["sap/ui/core/mvc/Controller"], function(Controller) {
+			return Controller.extend("my.Controller11", {
 				onExit: function() {
 					const oPromise = Promise.reject(new Error("onExit returns rejected Promise."));
-					aPromises.push(oPromise);
+					oOnExitPromise = oPromise;
 					return oPromise;
-				},
+				}
+			});
+		});
+
+		const expectedMessage = "The registered Event Listener 'onExit' must not have a return value.";
+		const oController = await Controller.create({
+			name: "my.Controller11"
+		});
+		const oView = await XMLView.create({
+			viewName: "example.mvc.asyncHooks",
+			controller: oController
+		});
+
+		assert.throws(() => {
+			oView.destroy();
+		}, new Error(expectedMessage), "onExit must throw an error as it has a return value");
+
+		await oOnExitPromise.catch((err) => {
+			assert.equal(err.message, "onExit returns rejected Promise.", "onExit promise rejected");
+		});
+
+		future.active = undefined;
+	});
+
+	QUnit.test("onBeforeRendering Shouldn't return any values (future=true)", async (assert) => {
+		future.active = true;
+
+		sap.ui.define("my/Controller12.controller", ["sap/ui/core/mvc/Controller"], function(Controller) {
+			return Controller.extend("my.Controller12", {
 				onBeforeRendering: async function() {
 					const oPromise = Promise.resolve("async onBeforeRendering returns resolved Promise.");
-					aPromises.push(oPromise);
-					await oPromise;
-				},
-				onAfterRendering: async function() {
-					const oPromise = Promise.reject(new Error("async onAfterRendering returns rejected Promise."));
-					aPromises.push(oPromise);
 					await oPromise;
 				}
 			});
 		});
 
-		const oFatalLogSpy = sinon.spy(Log, "fatal");
-		const oView = await XMLView.create({
-			viewName: "example.mvc.asyncHooks"
+		const expectedMessage = "The registered Event Listener 'onBeforeRendering' must not have a return value.";
+		const oController = await Controller.create({
+			name: "my.Controller12"
 		});
-		assert.ok(oView, "View is created");
-		assert.ok(oFatalLogSpy.getCall(0).calledWith("[FUTURE FATAL] The registered Event Listener 'onInit' must not have a return value."), "Correct Fatal Log displayed");
-
-		// render view to enforce lifecycle-Hooks to be triggered
+		const oView = await XMLView.create({
+			viewName: "example.mvc.asyncHooks",
+			controller: oController
+		});
 		oView.placeAt("qunit-fixture");
-		await nextUIUpdate();
-		assert.ok(oView.getDomRef(), "View is rendered");
-		assert.ok(oFatalLogSpy.getCall(1).calledWith("[FUTURE FATAL] The registered Event Listener 'onBeforeRendering' must not have a return value."), "Correct Fatal Log displayed");
-		assert.ok(oFatalLogSpy.getCall(2).calledWith("[FUTURE FATAL] The registered Event Listener 'onAfterRendering' must not have a return value."), "Correct Fatal Log displayed");
 
+		await assert.rejects(nextUIUpdate(), new Error(expectedMessage), "onBeforeRendering must throw an error as it has a return value");
+
+		future.active = undefined;
 		oView.destroy();
-		assert.ok(oFatalLogSpy.getCall(3).calledWith("[FUTURE FATAL] The registered Event Listener 'onExit' must not have a return value."), "Correct Fatal Log displayed");
+	});
 
-		oFatalLogSpy.restore();
+	QUnit.test("onAfterRendering Shouldn't return any values (future=true)", async (assert) => {
+		future.active = true;
+		let oOnAfterRenderingPromise;
+		sap.ui.define("my/Controller13.controller", ["sap/ui/core/mvc/Controller"], function(Controller) {
+			return Controller.extend("my.Controller13", {
+				onAfterRendering: async function() {
+					const oPromise = Promise.reject(new Error("async onAfterRendering returns rejected Promise."));
+					oOnAfterRenderingPromise =  oPromise;
+					await oPromise;
+				}
+			});
+		});
+
+		const expectedMessage = "The registered Event Listener 'onAfterRendering' must not have a return value.";
+		const oController = await Controller.create({
+			name: "my.Controller13"
+		});
+		const oView = await XMLView.create({
+			viewName: "example.mvc.asyncHooks",
+			controller: oController
+		});
+		oView.placeAt("qunit-fixture");
+
+		await assert.rejects(nextUIUpdate(), new Error(expectedMessage), "onAfterRendering must throw an error as it has a return value");
+		await oOnAfterRenderingPromise.catch((err) => {
+			assert.equal(err.message, "async onAfterRendering returns rejected Promise.", "onAfterRendering promise rejected");
+		});
+		future.active = undefined;
+		oView.destroy();
 	});
 });

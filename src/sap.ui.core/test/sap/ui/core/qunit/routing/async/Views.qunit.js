@@ -342,39 +342,6 @@ sap.ui.define([
 		});
 	});
 
-	QUnit.test("Get view sync", function(assert) {
-		var oViewOption = {
-				viewName: "qunit.view.Async1",
-				type: "XML",
-				async: false
-			},
-			oParameters,
-			fnEventSpy = this.spy(function (oEvent) {
-				oParameters = oEvent.getParameters();
-			}),
-			fnCreateViewSpy = this.spy(View, "create"),
-			fnGenericCreateViewSpy = this.spy(View, "_create");
-
-		this.oViews.attachCreated(fnEventSpy);
-
-		var oPromise = this.oViews.getView(oViewOption);
-
-		new Promise(function(resolve) {
-			resolve();
-		}).then(function() {
-			assert.strictEqual(fnEventSpy.callCount, 1, "The created event is fired");
-		});
-
-		return oPromise.then(function(oView) {
-			assert.ok(oView, "view should be created");
-			assert.ok(oView.getContent().length > 0, "View content is loaded");
-			assert.strictEqual(oParameters.view, oView, "Did pass the view to the event parameters");
-			assert.strictEqual(oParameters.viewOptions, oViewOption, "Did pass the option to the event parameters");
-			assert.strictEqual(fnCreateViewSpy.callCount, 0, "The 'View.create' factory is not called");
-			assert.strictEqual(fnGenericCreateViewSpy.callCount, 1, "The 'View._create' factory is called");
-		});
-	});
-
 	QUnit.module("legacy behavior of set/get", {
 		beforeEach: function () {
 			// System under test + Arrange
@@ -419,5 +386,4 @@ sap.ui.define([
 			assert.deepEqual(oFetchedView.getContent(), this.oView.getContent(), "The correct view is returned from second get call");
 		}.bind(this));
 	});
-
 });

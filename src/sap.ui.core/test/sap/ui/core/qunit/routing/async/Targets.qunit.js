@@ -1,5 +1,6 @@
 /*global QUnit, sinon */
 sap.ui.define([
+	"sap/base/future",
 	"sap/ui/core/mvc/XMLView",
 	"sap/ui/core/routing/Targets",
 	"sap/ui/core/routing/Views",
@@ -10,7 +11,7 @@ sap.ui.define([
 	"sap/m/App",
 	"sap/m/Panel",
 	"sap/ui/model/json/JSONModel"
-], function(XMLView, Targets, Views, Router, Log, deepExtend, ModuleHook, App, Panel, JSONModel){
+], function(future, XMLView, Targets, Views, Router, Log, deepExtend, ModuleHook, App, Panel, JSONModel){
 	"use strict";
 
 	// use sap.m.Panel as a lightweight drop-in replacement for the ux3.Shell
@@ -183,23 +184,17 @@ sap.ui.define([
 		assert.strictEqual(oTarget._oParent, this.oTargets.getTarget("myParent"), "correct parent should be set");
 	});
 
-	QUnit.test("Should kept the existing target and log an error message if 'addTarget' is called with the same name", function (assert) {
-		// Arrange
-		var oStub = this.stub(Log, "error");
+	QUnit.test("Throw Error if 'addTarget' is called with the same name (future=true)", function (assert) {
+		future.active = true;
 
 		// Act
-		this.oTargets.addTarget("myParent", {
-			viewName: "myNewParentView"
-		});
-		var oParent = this.oTargets.getTarget("myParent");
+		assert.throws(() => {
+			this.oTargets.addTarget("myParent", {
+				viewName: "myNewParentView"
+			});
+		}, new Error("Target with name myParent already exists"), "");
 
-		// Assert
-		assert.strictEqual(oParent._oRawOptions.viewName, "myParentView", "options stay the same");
-		assert.strictEqual(oParent._oOptions.name, "myParentView", "config is converted to the new format");
-		assert.strictEqual(oParent._oOptions.type, "View", "config is converted to the new format");
-		assert.notOk(oParent._oOptions.viewName, "config is converted to the new format");
-		// Check whether the error message is thrown
-		sinon.assert.calledWith(oStub, sinon.match(/myParent/), sinon.match(this.oTargets));
+		future.active = undefined;
 	});
 
 	QUnit.module("config - defaults and additional values", {
@@ -246,13 +241,10 @@ sap.ui.define([
 		assert.strictEqual(oOptions.rootView, "changed", "Did pass one of the routing api values from the config");
 	});
 
-	QUnit.module("config - invalid parent", {
-		afterEach: function () {
-			this.oTargets.destroy();
-		}
-	});
+	QUnit.module("config - invalid parent");
 
-	QUnit.test("Should complain about an non existing parent", function (assert) {
+	QUnit.test("Should complain about an non existing parent (future=true)", function (assert) {
+		future.active = true;
 		// Arrange
 		var oIncorrectConfig = {
 				targets: {
@@ -260,14 +252,13 @@ sap.ui.define([
 						parent:"foo"
 					}
 				}
-			},
-			oErrorStub = this.stub(Log, "error");
+			};
 
 		// System under test + Act
-		this.oTargets = new Targets(oIncorrectConfig);
+		assert.throws(() => { this.oTargets = new Targets(oIncorrectConfig); },
+			new Error("The target 'myChildWithoutParent' has a parent 'foo' defined, but it was not found in the other targets"), "Throws an error because parent doesn't exist.");
 
-		// Assert
-		sinon.assert.calledWith(oErrorStub, sinon.match(/was not found/), sinon.match(this.oTargets));
+		future.active = undefined;
 	});
 
 	QUnit.module("display", {
@@ -348,37 +339,10 @@ sap.ui.define([
 
 	});
 
-	QUnit.test("Should log an error if user tries to display a non existing Target", function (assert) {
-		// Assert
-		var oErrorStub = this.stub(Log, "error");
-
-		// Act
-		return this.oTargets.display("foo").then(function(aViewInfos) {
-			assert.strictEqual(aViewInfos[0].name, "foo", "Matching target info is returned");
-			assert.ok(aViewInfos[0].error.includes("The target with the name \"foo\" does not exist!"), "Matching error message is returned");
-			// Assert
-			sinon.assert.calledWith(oErrorStub, sinon.match(/does not exist/), sinon.match(this.oTargets));
-		}.bind(this));
-	});
-
-	QUnit.test("Should log an error if user tries to display a non existing Target, but should display existing ones", function (assert) {
-		// Assert
-		var oErrorStub = this.stub(Log, "error");
-		// Replace display with an empty fn
-		var fnFirstDisplayStub = this.stub(this.oTargets.getTarget("firstTarget"), "_display").callsFake(function() {
-			return Promise.resolve({name:"firstTarget"});
-		});
-
-		// Act
-		return this.oTargets.display(["foo", "firstTarget"]).then(function(aViewInfos) {
-			// Assert
-			assert.strictEqual(fnFirstDisplayStub.callCount, 1, "Did invoke display on the first target");
-			sinon.assert.calledWith(oErrorStub, sinon.match(/does not exist/), sinon.match(this.oTargets));
-			assert.ok(Array.isArray(aViewInfos), "Did resolve with an array of the view infos");
-			assert.strictEqual(aViewInfos.length, 2, "Did resolve with two viewinfos");
-			assert.strictEqual(aViewInfos[1].name, "firstTarget", "Did resolve with first target");
-			assert.ok(aViewInfos[0].error.includes("The target with the name \"foo\" does not exist!"), "Did resolve with the error message of the erroneous target");
-		}.bind(this));
+	QUnit.test("Should throw an error if user tries to display a non existing Target (future=true)", function (assert) {
+		future.active = true;
+		assert.throws(() => { this.oTargets.display("foo"); }, new Error("The target with the name \"foo\" does not exist!"), "Promise rejects because target does not exist");
+		future.active = undefined;
 	});
 
 	function createView (aContent, sId) {
@@ -990,10 +954,11 @@ sap.ui.define([
 		});
 	});
 
-	QUnit.test("multiple targets - provided TitleTarget pointing to target without title", function (assert) {
+	QUnit.test("multiple targets - provided TitleTarget pointing to target without title (future=true)", function (assert) {
+		future.active = true;
 		// Arrange
-		var that = this,
-			oData = {some : "data"},
+		const that = this,
+			oData = { some: "data" },
 			fnEventSpy = this.spy();
 
 		this.stub(this.oViews, "_getView").callsFake(function () {
@@ -1003,38 +968,39 @@ sap.ui.define([
 		this.oTargets.attachTitleChanged(fnEventSpy);
 
 		// Act
-		var oDisplayed = this.oTargets.display(["myNoTitleTarget", "myTarget", "mySecondTarget"], oData, "myNoTitleTarget");
+		const myAssertFn = () => {
+			this.oTargets.display(["myNoTitleTarget", "myTarget", "mySecondTarget"], oData, "myNoTitleTarget");
+		};
 
 		// Assert
-		return oDisplayed.then(function() {
-			assert.ok(fnEventSpy.notCalled, "the event isn't fired");
-		});
+		assert.throws(myAssertFn, new Error("The target with the name \"myNoTitleTarget\" where the titleChanged event should be fired does not exist!"),
+			"Throws an error because target does not exist.");
+		assert.ok(fnEventSpy.notCalled, "the event isn't fired");
+		future.active = undefined;
 	});
 
-	QUnit.test("provided invalid TitleTarget", function (assert) {
+	QUnit.test("provided invalid TitleTarget (future=true)", function (assert) {
+		future.active = true;
 		// Arrange
 		var that = this,
-			oData = {some : "data"},
+			oData = { some: "data" },
 			fnEventSpy = this.spy();
 
 		this.stub(this.oViews, "_getView").callsFake(function () {
 			return that.oView;
 		});
-		var oLogSpy = this.spy(Log, "error");
 
 		this.oTargets.attachTitleChanged(fnEventSpy);
 
 		// Act
-		var oDisplayed = this.oTargets.display(["myTarget"], oData, "foo");
+		const myAssertFn = () => {
+			this.oTargets.display(["myTarget"], oData, "foo");
+		};
+		assert.throws(myAssertFn, new Error("The target with the name \"foo\" where the titleChanged event should be fired does not exist!"),
+			"Throws an error because TitleTarget is invalid.");
+		assert.ok(fnEventSpy.notCalled, "the event isn't fired");
 
-		return oDisplayed.then(function() {
-			// Assert
-			assert.ok(fnEventSpy.notCalled, "the event isn't fired");
-			assert.ok(
-				oLogSpy.calledWith(sinon.match(/The target with the name \"foo\" where the titleChanged event should be fired does not exist!/)),
-				this.oTargets
-			);
-		}.bind(this));
+		future.active = undefined;
 	});
 
 	QUnit.test("single target which has its own title with parent", function (assert) {

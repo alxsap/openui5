@@ -1,5 +1,6 @@
 /*global QUnit, sinon, hasher */
 sap.ui.define([
+	"sap/base/future",
 	"sap/base/Log",
 	"sap/base/util/deepExtend",
 	"sap/ui/core/UIComponent",
@@ -13,7 +14,7 @@ sap.ui.define([
 	"./AsyncViewModuleHook",
 	"sap/ui/core/Component",
 	"sap/ui/core/ComponentContainer"
-], function(Log, deepExtend, UIComponent, View, HashChanger, Router, Views, App, NavContainer, Panel, ModuleHook, Component, ComponentContainer) {
+], function(future, Log, deepExtend, UIComponent, View, HashChanger, Router, Views, App, NavContainer, Panel, ModuleHook, Component, ComponentContainer) {
 	"use strict";
 
 	// This global namespace is used for creating custom component classes.
@@ -328,38 +329,33 @@ sap.ui.define([
 
 	});
 
-	QUnit.test("Should log a warning if a router gets destroyed while the hash changes", function (assert) {
-
+	QUnit.test("Should throw an error if a router gets destroyed while the hash changes (future=true)", function (assert) {
+		future.active = true;
 		// Arrange
-		var oWarningSpy = this.stub(Log, "warning"),
-			oFirstRouter = fnCreateRouter({
-				"matchingRoute" : {
-					pattern: "matches"
-				}
-			}),
-			oRouterToBeDestroyed = fnCreateRouter({
-				"matchingRoute" : {
-					pattern: "matches"
-				}
-			});
+		const oFirstRouter = fnCreateRouter({
+			"matchingRoute": {
+				pattern: "matches"
+			}
+		}),
+		oRouterToBeDestroyed = fnCreateRouter({
+			"matchingRoute": {
+				pattern: "matches"
+			}
+		});
 
 		// first router has to init first it is the first registered router on the hashchanger
 		oFirstRouter.initialize();
 		oRouterToBeDestroyed.initialize();
 
-		this.stub(oFirstRouter, "parse").callsFake(function() {
+		this.stub(oFirstRouter, "parse").callsFake(function () {
 			Router.prototype.parse.apply(this, arguments);
 			oRouterToBeDestroyed.destroy();
 		});
 
 		// Act - trigger both routers
-		hasher.setHash("matches");
+		assert.throws(() => { hasher.setHash("matches"); }, new Error("This router has been destroyed while the hash changed. No routing events where fired by the destroyed instance."), "Error thrown because router has been destroyed while the hash changed.");
 
-		// Assert
-		assert.equal(oWarningSpy.callCount, 1, "");
-		assert.ok(oWarningSpy.args[0][0].indexOf("destroyed") !== -1, "The message contains the correct keyword");
-		assert.strictEqual(oWarningSpy.args[0][1], oRouterToBeDestroyed, "The second parameter to the warning call is correct");
-		oFirstRouter.destroy();
+		future.active = undefined;
 	});
 
 	QUnit.module("config", {
@@ -414,24 +410,25 @@ sap.ui.define([
 		});
 	});
 
-	QUnit.test("Handle setting invalid option 'viewName' in route", function(assert) {
-		var oLogSpy = this.spy(Log, "error");
+	QUnit.test("Throw Error when setting invalid option 'viewName' in route (future=true)", function (assert) {
+		future.active = true;
 
 		//Arrange System under Test
-		fnCreateRouter({
-			name: {
-				// This is a wrong usage, the option "view" should be set
-				// instead of "viewName"
-				// We should still support the usage but log an error to
-				// let the app be aware of the wrong usage
-				viewName: "myView",
-				viewType: "JS",
-				pattern : "view1"
-			}
-		});
+		assert.throws(() => {
+			fnCreateRouter({
+				name: {
+					// This is a wrong usage, the option "view" should be set
+					// instead of "viewName"
+					// We should still support the usage but log an error to
+					// let the app be aware of the wrong usage
+					viewName: "myView",
+					viewType: "JS",
+					pattern: "view1"
+				}
+			});
+		}, new Error("The 'viewName' option shouldn't be used in Route. please use 'view' instead"), "Error thrown because invalid option 'viewName' is set for route.");
 
-
-		assert.ok(oLogSpy.calledWith(sinon.match(/The 'viewName' option shouldn't be used in Route. please use 'view' instead/)), "The error log is done and the log message is correct");
+		future.active = undefined;
 	});
 
 	QUnit.test("subroute handling", function(assert) {
@@ -1077,24 +1074,32 @@ sap.ui.define([
 		});
 	});
 
-	QUnit.module("navTo", {
-		beforeEach: function () {
-			this.oRouter = fnCreateRouter();
-			this.oRouter.oHashChanger = {
-				setHash: function() {}
-			};
-		},
-		afterEach: function () {
-			this.oRouter.destroy();
-		}
+	QUnit.module("navTo", {});
+
+
+	QUnit.test("Throw Error when route doesn't exist (future=true)", function(assert) {
+		future.active = true;
+		const oRouter = fnCreateRouter();
+
+		assert.throws(() => oRouter.navTo("home"), new Error("Route with name home does not exist"), "Error thrown because route does not exist.");
+		future.active = undefined;
 	});
 
 	QUnit.test("Should be able to chain NavTo", function (assert) {
+		const oRouter = fnCreateRouter([
+			{
+				name: "home",
+				pattern: ""
+			}
+		]);
+		oRouter.oHashChanger = {
+			setHash: function () { }
+		};
 		// Act
-		var oReturnValue = this.oRouter.navTo();
+		var oReturnValue = oRouter.navTo("home");
 
 		// Assert
-		assert.strictEqual(oReturnValue, this.oRouter, "able to chain navTo");
+		assert.strictEqual(oReturnValue, oRouter, "able to chain navTo");
 	});
 
 	QUnit.test("Should be able to use navTo with query parameters", function (assert) {
@@ -1140,9 +1145,6 @@ sap.ui.define([
 			}
 		});
 		oRouter.initialize();
-
-		// Act
-		oRouter.navTo("home");
 	});
 
 	QUnit.test("Should throw an exception if route placeholder are not unique", function(assert){

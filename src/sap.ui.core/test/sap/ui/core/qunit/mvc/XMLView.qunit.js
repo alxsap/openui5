@@ -1,5 +1,6 @@
 /*global QUnit, sinon */
 sap.ui.define([
+	"sap/base/future",
 	'sap/base/Log',
 	"sap/base/i18n/Localization",
 	'sap/base/i18n/ResourceBundle',
@@ -13,7 +14,7 @@ sap.ui.define([
 	'./AnyView.qunit',
 	'sap/ui/thirdparty/jquery',
 	"sap/ui/qunit/utils/nextUIUpdate"
-], function(Log, Localization, ResourceBundle, coreLibrary, Controller, View, XMLView, JSONModel, ResourceModel, XMLHelper, testsuite, jQuery, nextUIUpdate) {
+], function(future, Log, Localization, ResourceBundle, coreLibrary, Controller, View, XMLView, JSONModel, ResourceModel, XMLHelper, testsuite, jQuery, nextUIUpdate) {
 	"use strict";
 
 	// shortcut for sap.ui.core.mvc.ViewType
@@ -116,7 +117,7 @@ sap.ui.define([
 				"\t\t   resourceBundleAlias=\"i18n\"\n" +
 				"\t\t   xmlns:mvc=\"sap.ui.core.mvc\" xmlns=\"sap.m\" xmlns:html=\"http://www.w3.org/1999/xhtml\">\n" +
 				"\t<Panel id=\"aPanel\">\n" +
-				"\t\t<Button id=\"Button1\" text=\"{i18n>TEXT_CLOSE}\" press=\"doIt\"></Button>\n" +
+				"\t\t<Button id=\"Button1\" text=\"{i18n>TEXT_CLOSE}\"></Button>\n" +
 				"\t</Panel>\n" +
 				"</mvc:View>" +
 				""});
@@ -504,7 +505,7 @@ sap.ui.define([
 
 	QUnit.test("Named Aggregation", function(assert) {
 		var sXmlWithNamedAggregations = [
-			'<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:test="sap.ui.testlib" xmlns:html="http://www.w3.org/1999/xhtml">',
+			'<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:test="sap.ui.testlib" xmlns:html="http://www.w3.org/1999/xhtml" controllerName="example.mvc.test">',
 			'  <mvc:content>',
 			'    <test:TestButton id="contentButton" />',
 			'    <html:div id="div1">test1</html:div>',
@@ -519,7 +520,7 @@ sap.ui.define([
 		].join('');
 
 		var sXmlWithNamedDependents = [
-			'<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:test="sap.ui.testlib">',
+			'<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:test="sap.ui.testlib" controllerName="example.mvc.test">',
 			'  <test:TestButton id="contentButton" />',
 			'  <mvc:dependents>',
 			'    <test:TestButton id="dependentButton" />',
@@ -529,7 +530,7 @@ sap.ui.define([
 		].join('');
 
 		var sXmlWithWrongAggregation = [
-			'<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:test="sap.ui.testlib">',
+			'<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:test="sap.ui.testlib" controllerName="example.mvc.test">',
 			'  <test:TestButton id="contentButton" />',
 			'  <mvc:wrong>',
 			'    <test:TestButton id="dependentButton" />',
@@ -609,6 +610,8 @@ sap.ui.define([
 
 	QUnit.module("Preprocessor API", {
 		beforeEach: function() {
+			// reset global preprocessors
+			View._mPreprocessors = {};
 			this.sViewContent = '<mvc:View xmlns:mvc="sap.ui.core.mvc"/>';
 			this.runPreprocessorSpy = sinon.spy(View.prototype, "runPreprocessor");
 			this.fnGetConfig = function(fnPreprocessor, bSyncSupport) {
@@ -636,14 +639,13 @@ sap.ui.define([
 			}.bind(this);
 		},
 		afterEach: function() {
-			// reset global preprocessors
-			View._mPreprocessors = {};
 			this.runPreprocessorSpy.restore();
 			delete this.xml;
 		}
 	});
 
-	QUnit.test("registration", function(assert) {
+	QUnit.test("registration (future=true)", function(assert) {
+		future.active = true;
 		var logSpyError = this.spy(Log, "error");
 
 		var noop = function() {};
@@ -651,21 +653,22 @@ sap.ui.define([
 		XMLView.registerPreprocessor(XMLView.PreprocessorType.VIEWXML, noop, false);
 		XMLView.registerPreprocessor(XMLView.PreprocessorType.CONTROLS, noop, false);
 
-		assert.strictEqual(View._mPreprocessors["XML"]["xml"][1].preprocessor, noop, "Registration for xml successful");
+		assert.strictEqual(View._mPreprocessors["XML"]["xml"][0].preprocessor, noop, "Registration for xml successful");
 		assert.strictEqual(View._mPreprocessors["XML"]["viewxml"][0].preprocessor, noop, "Registration for viewxml successful");
 		assert.strictEqual(View._mPreprocessors["XML"]["controls"][0].preprocessor, noop, "Registration for content successful");
 
 		logSpyError.resetHistory();
-		XMLView.registerPreprocessor("unknown", noop, false, {type: "unknown"});
-		assert.ok(
-			logSpyError.calledWith(sinon.match(/could not be registered due to unknown/)),
+		let sExpectedMessage = 'Preprocessor could not be registered due to unknown sType "UNKNOWN"';
+		assert.throws(() => XMLView.registerPreprocessor("unknown", noop, false, {type: "unknown"}),
+			new Error(sExpectedMessage),
 			"Error logged when registering invalid type");
 		assert.strictEqual(View._mPreprocessors["XML"]["unknown"], undefined, "Registration for invalid type refused");
 
 		logSpyError.resetHistory();
 		XMLView.registerPreprocessor(XMLView.PreprocessorType.XML, noop, false, true);
-		assert.ok(
-			logSpyError.calledWith(sinon.match(/only one on-demand-preprocessor allowed/)),
+		sExpectedMessage = 'Registration for "xml" failed, only one on-demand-preprocessor allowed';
+		assert.throws(() => XMLView.registerPreprocessor(XMLView.PreprocessorType.XML, noop, false, true),
+			new Error(sExpectedMessage),
 			"Error logged when registering more than one ondemand pp");
 		assert.strictEqual(View._mPreprocessors["XML"]["unknown"], undefined, "Registration for invalid type refused");
 
@@ -681,6 +684,7 @@ sap.ui.define([
 		assert.throws(function() {
 			XMLView.registerPreprocessor(XMLView.PreprocessorType.XML, fnUniquePP, "YAML", false);
 		}, TypeError, "TypeError thrown when registering for a view type other than XML");
+		future.active = undefined;
 	});
 
 	QUnit.test("async: assignment of preprocessor results", function(assert) {
@@ -765,8 +769,8 @@ sap.ui.define([
 
 	QUnit.module("Compatibility");
 
-	QUnit.test("XMLView with wrong root node name should still be parsed correctly", function(assert) {
-		var oLogErrorSpy = this.spy(Log, "error");
+	QUnit.test("XMLView with wrong root node name should still be parsed correctly (future=true)", async function(assert) {
+		future.active = true;
 		var sContent = [
 			'<mvc:view xmlns:mvc="sap.ui.core.mvc" xmlns:m="sap.m">',
 			'  <m:Panel id="panel">',
@@ -774,21 +778,14 @@ sap.ui.define([
 			'</mvc:view>'
 		].join('');
 
-		return XMLView.create({
+		await assert.rejects(XMLView.create({
 			id: "wrongRootNodeName",
 			definition: sContent
-		}).then(function(oView) {
-			assert.equal(oLogErrorSpy.callCount, 1, "Error is logged");
-			assert.ok(oLogErrorSpy.calledWith(sinon.match(/XMLView's root node must be 'View' or 'XMLView' and have the namespace 'sap.ui.core.mvc'/)), "Log message is correct");
-
-			assert.ok(oView.byId("panel"), "The panel control is created");
-			assert.equal(oView.getContent()[0], oView.byId("panel"), "The panel is added to the view's content aggregation");
-
-			oView.destroy();
-		}, function() {
-			assert.notOk(true, "The XMLView.create promise should not reject");
-		});
+		}),
+		new Error("XMLView's root node must be 'View' or 'XMLView' and have the namespace 'sap.ui.core.mvc'"),
+		"View creation rejects with correct error");
 	});
+
 
 	// let test starter wait for the XML to be loaded
 	return pViewXMLLoaded;

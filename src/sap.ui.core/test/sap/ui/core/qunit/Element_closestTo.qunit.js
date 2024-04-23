@@ -1,10 +1,10 @@
 /*global QUnit, sinon*/
 sap.ui.define([
-	"sap/base/Log",
+	"sap/base/future",
 	"sap/ui/core/Element",
 	"sap/ui/qunit/utils/createAndAppendDiv",
 	"sap/ui/thirdparty/jquery"
-], function(Log, Element, createAndAppendDiv, jQuery) {
+], function(future, Element, createAndAppendDiv, jQuery) {
 	"use strict";
 
 	QUnit.module("Element.closestTo()");
@@ -125,8 +125,8 @@ sap.ui.define([
 		oUI5Element.destroy();
 	});
 
-	QUnit.test("Should support jQuery object given as parameter", function(assert) {
-		var oErrorLogSpy = this.spy(Log, "error");
+	QUnit.test("Should support jQuery object given as parameter (future=true)", function(assert) {
+		future.active = true;
 		var sId = "el1";
 		var oContainer = createAndAppendDiv(sId);
 		oContainer.setAttribute("data-sap-ui", sId);
@@ -134,16 +134,11 @@ sap.ui.define([
 									<span id='startPoint'></span> \
 								</div>";
 
-		var oUI5Element = new Element(sId);
-
-		var oUI5ElementFound = Element.closestTo(jQuery("#startPoint"));
-		assert.strictEqual(oUI5ElementFound, oUI5Element);
-
-		sinon.assert.calledWithExactly(oErrorLogSpy, "[FUTURE FATAL] Do not call Element.closestTo() with jQuery object as parameter. \
-				The function should be called with either a DOM Element or a CSS selector. \
-				(future error, ignored for now)");
+		assert.throws(() => {
+			Element.closestTo(jQuery("#startPoint"));
+		}, new Error("Do not call Element.closestTo() with jQuery object as parameter. The function should be called with either a DOM Element or a CSS selector."), "Error thrown because jQuery object is provided as argument.");
 
 		oContainer.remove();
-		oUI5Element.destroy();
+		future.active = undefined;
 	});
 });

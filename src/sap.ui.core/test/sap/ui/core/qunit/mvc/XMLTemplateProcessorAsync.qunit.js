@@ -1,5 +1,6 @@
 /*global sinon QUnit */
 sap.ui.define([
+	"sap/base/future",
 	"sap/base/Log",
 	"sap/m/Button",
 	'sap/ui/core/Component',
@@ -10,7 +11,7 @@ sap.ui.define([
 	"sap/ui/model/json/JSONModel",
 	"sap/ui/thirdparty/jquery",
 	"sap/ui/base/DesignTime"
-], function(Log, Button, Component, UIComponent, XMLTemplateProcessor, XMLProcessingMode, XMLView, JSONModel, jQuery, DesignTime) {
+], function(future, Log, Button, Component, UIComponent, XMLTemplateProcessor, XMLProcessingMode, XMLView, JSONModel, jQuery, DesignTime) {
 	"use strict";
 
 	QUnit.module("enrichTemplateIdsPromise", {
@@ -343,7 +344,8 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("[Simple Binding] Async loading of data types", function(assert) {
+	QUnit.test("[Simple Binding] Async loading of data types (future=false)", async function(assert) {
+		future.active = true;
 		var oModel = new JSONModel({
 			value: 1234,
 			customDataValue: "#FF06B5",
@@ -353,12 +355,19 @@ sap.ui.define([
 
 		var oView;
 
-		return XMLView.create({
-			viewName: "testdata/mvc/XMLViewWithTypes",
+		await assert.rejects(XMLView.create({
+			viewName: "testdata/mvc/XMLViewWithTypesFailure",
 			models: {"undefined": oModel}
+		})).then(() => {
+			return XMLView.create({
+				viewName: "testdata/mvc/XMLViewWithTypes",
+				models: {"undefined": oModel}
+			});
 		}).then(function (oFinishedView) {
 			oView = oFinishedView;
 			oFinishedView.placeAt("qunit-fixture");
+
+
 
 			// test binding values
 			var oInput = oView.byId("inputField");
@@ -366,9 +375,6 @@ sap.ui.define([
 
 			var oInputInvalidType = oView.byId("inputField_invalidType");
 			assert.equal(oInputInvalidType.getValue(), "1234", "Input field has correct unformatted(!) value '1234'.");
-
-			// test error log for invalid/missing type
-			assert.ok(this.logErrorSpy.calledWith(sinon.match(/Failed to resolve type 'sap.ui.non.existing.Type'. Maybe not loaded or a typo\?/)), "Error message for missing type is logged.");
 
 			// test CustomData binding values
 			var oPanel = oView.byId("panel");
@@ -379,10 +385,11 @@ sap.ui.define([
 
 			var oLabel = oView.byId("label");
 			assert.equal(oLabel.getText(), "12.3 EUR on 2023-04-27", "Composite binding is resolved correctly");
-		}.bind(this)).finally(function(){
+		}).finally(function(){
 			if (oView) {
 				oView.destroy();
 			}
+			future.active = undefined;
 		});
 	});
 });

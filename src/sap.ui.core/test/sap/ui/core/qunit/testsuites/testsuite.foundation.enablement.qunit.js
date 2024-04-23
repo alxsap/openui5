@@ -71,10 +71,6 @@ sap.ui.define(function() {
 				title: "QUnit Page for Deferred"
 			},
 
-			"base/util/defineCoupledProperty": {
-				title: "QUnit Page for defineCoupledProperty"
-			},
-
 			"base/util/defineLazyProperty": {
 				title: "QUnit Page for defineLazyProperty"
 			},

@@ -44,7 +44,6 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "./ReuseExtensionContext", "sap/ui/
 			return "privateMethod2OnBase";
 		},
 		reuse: ReuseExtension.override({
-			myFinalMethod: function() {},
 			publicMethod: function() {
 				QUnit.config.current.assert.ok(this instanceof ControllerExtension, "Context is controller extension");
 				QUnit.config.current.assert.equal(this.getMetadata().getNamespace(), "my.test.reuse", "Context is correct controller extension");

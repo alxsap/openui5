@@ -1,5 +1,6 @@
 /*global QUnit, sinon */
 sap.ui.define([
+	"sap/base/future",
 	"sap/base/Log",
 	"sap/ui/core/Element",
 	"sap/ui/core/library",
@@ -7,7 +8,7 @@ sap.ui.define([
 	"sap/ui/model/json/JSONModel",
 	"sap/m/Button",
 	"sap/ui/qunit/utils/nextUIUpdate"
-], function(Log, Element, library, View, JSONModel, Button, nextUIUpdate) {
+], function(future, Log, Element, library, View, JSONModel, Button, nextUIUpdate) {
 	"use strict";
 
 	var ViewType = library.mvc.ViewType;
@@ -173,10 +174,14 @@ sap.ui.define([
 		assert.equal(object_data_ori.two, 3, "The object data of the original object should be changed as well, as only the reference to it is cloned");
 	});
 
-	QUnit.test("Calling data() after destroy", function(assert) {
+	QUnit.test("Calling data() after destroy (future=true)", function(assert) {
+		future.active = true;
 		// Setup: create an element, add some custom data and destroy it
+
 		this.stub(Log, "error");
-		var element = new Element();
+		var element = new Element({
+			id: "myElement"
+		});
 		element.data("test", "value");
 		element.destroy();
 
@@ -200,9 +205,7 @@ sap.ui.define([
 
 		// add single key/value pairs
 		Log.error.resetHistory();
-		assert.strictEqual(element.data("a", "b"), element, "data(key,value) should return the element itself");
-		assert.strictEqual(element.getAggregation("customData"), null, "data(key,value) should not have modified aggregation 'customData'");
-		assert.ok(Log.error.calledWith(sinon.match(/Cannot create custom data on an already destroyed element/)));
+		assert.throws(() => { element.data("a", "b"); }, new Error("Cannot create custom data on an already destroyed element 'Element sap.ui.core.Element#myElement'"), "Error thrown because calling data(key,value) after destroy");
 
 		// remove single key/value pairs
 		Log.error.resetHistory();
@@ -212,21 +215,17 @@ sap.ui.define([
 
 		// add single key/value pair with DOM
 		Log.error.resetHistory();
-		assert.strictEqual(element.data("a", "b", false), element, "data(key,value,bool) should return the element itself");
-		assert.strictEqual(element.getAggregation("customData"), null, "data(key,value,bool) should not have modified aggregation 'customData'");
-		assert.ok(Log.error.calledWith(sinon.match(/Cannot create custom data on an already destroyed element/)));
+		assert.throws(() => { element.data("a", "b", false); }, new Error("Cannot create custom data on an already destroyed element 'Element sap.ui.core.Element#myElement'"), "Error thrown because calling data(key,value,bool) after destroy");
 
 		// add single key/value pair with DOM
 		Log.error.resetHistory();
-		assert.strictEqual(element.data("a", "b", true), element, "data(key,value,bool) should return the element itself");
-		assert.strictEqual(element.getAggregation("customData"), null, "data(key,value,bool) should not have modified aggregation 'customData'");
-		assert.ok(Log.error.calledWith(sinon.match(/Cannot create custom data on an already destroyed element/)));
+		assert.throws(() => { element.data("a", "b", true); }, new Error("Cannot create custom data on an already destroyed element 'Element sap.ui.core.Element#myElement'"), "Error thrown because calling data(key,value,bool) after destroy");
 
 		// add multiple key/value pairs
 		Log.error.resetHistory();
-		assert.strictEqual(element.data({a:"b",b:"c"}), element, "data({data}) should return the element itself");
-		assert.strictEqual(element.getAggregation("customData"), null, "data({data}) should not have modified aggregation 'customData'");
-		assert.ok(Log.error.calledWith(sinon.match(/Cannot create custom data on an already destroyed element/)));
+		assert.throws(() => { element.data({a:"b",b:"c"}); }, new Error("Cannot create custom data on an already destroyed element 'Element sap.ui.core.Element#myElement'"), "Error thrown because calling data({data}) after destroy");
+
+		future.active = undefined;
 	});
 
 	// Data Binding
@@ -283,8 +282,8 @@ sap.ui.define([
 
 	});
 
-
-	QUnit.test("Write Data to HTML", async function(assert) {
+	QUnit.test("Write Data to HTML (future=true)", async function(assert) {
+		future.active = true;
 		var btn = new Button({text:"Hello"});
 
 		btn.data("test", "some payload", true);
@@ -294,14 +293,8 @@ sap.ui.define([
 		btn.data("test5", {"test":"nope"}, true);
 
 		btn.placeAt("content");
-		await nextUIUpdate();
+		await assert.rejects(nextUIUpdate(), "nextUIUpdate rejected because no string value was provided to CustomData");
 
-		var $btn = btn.$();
-		assert.equal($btn.attr("data-test"), "some payload", "the 'test' data should be written to DOM");
-		assert.equal($btn.attr("data-test2"), undefined, "the 'test2' data should NOT be written to DOM");
-		assert.equal($btn.attr("data-test3"), undefined, "the 'test3' data should NOT be written to DOM");
-		assert.equal($btn.attr("data-test4"), undefined, "the 'test4' data should NOT be written to DOM");
-		assert.equal($btn.attr("data-test5"), undefined, "the 'test5' data should NOT be written to DOM");
+		future.active = undefined;
 	});
-
 });

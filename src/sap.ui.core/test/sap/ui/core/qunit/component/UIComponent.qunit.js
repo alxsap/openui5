@@ -1,4 +1,5 @@
 sap.ui.define([
+	"sap/base/future",
 	"sap/base/Log",
 	"sap/m/Button",
 	"sap/ui/base/ManagedObject",
@@ -8,7 +9,7 @@ sap.ui.define([
 	"sap/ui/core/UIComponent",
 	"sap/ui/core/mvc/View",
 	"sap/ui/qunit/utils/nextUIUpdate"
-], function(Log, Button, ManagedObject, Component, ComponentContainer, Element, UIComponent, View, nextUIUpdate) {
+], function(future, Log, Button, ManagedObject, Component, ComponentContainer, Element, UIComponent, View, nextUIUpdate) {
 	"use strict";
 	/*global sinon, QUnit*/
 
@@ -988,8 +989,9 @@ sap.ui.define([
 		});
 	});
 
-	QUnit.test("Check if modules could not be loaded and a warning was logged", function(assert) {
-		assert.expect(3);
+	QUnit.test("Check if modelclass could not be loaded and a warning was logged (future=true)", function(assert) {
+		future.active = true;
+		assert.expect(1);
 		var oManifest = {
 			"sap.app" : {
 				"id" : "app"
@@ -1000,7 +1002,41 @@ sap.ui.define([
 						"type": "sap.ui.model.odata.ODataModelNotExists",
 						"uri": "./some/odata/service"
 					}
-				},
+				}
+			}
+		};
+		this.setRespondedManifest(oManifest, "scenario4");
+
+		sap.ui.define("manifestModules/scenario4/Component", ["sap/ui/core/UIComponent"], function(UIComponent) {
+			return UIComponent.extend("manifestModules.scenario4.Component", {
+				metadata: {
+					manifest: "json",
+					interfaces: ["sap.ui.core.IAsyncContentCreation"]
+				}
+			});
+		});
+
+		return Component.create({
+			name: "manifestModules.scenario4",
+			manifest: true
+		}).catch((err) => {
+			assert.equal(
+				err.message,
+				"Cannot load module 'sap/ui/model/odata/ODataModelNotExists'. This will most probably cause an error once the module is used later on.",
+				"Component creation rejects with correct error"
+			);
+			future.active = undefined;
+		});
+	});
+
+	QUnit.test("Check if routerclass could not be loaded and a warning was logged (future=true)", function(assert) {
+		future.active = true;
+		assert.expect(1);
+		var oManifest = {
+			"sap.app" : {
+				"id" : "app"
+			},
+			"sap.ui5": {
 				"routing": {
 					"config": {
 						"routerClass": "someRouterNotExists",
@@ -1019,16 +1055,11 @@ sap.ui.define([
 		};
 		this.setRespondedManifest(oManifest, "scenario4");
 
-		var logWarningSpy = this.logWarningSpy;
 		sap.ui.define("manifestModules/scenario4/Component", ["sap/ui/core/UIComponent"], function(UIComponent) {
 			return UIComponent.extend("manifestModules.scenario4.Component", {
 				metadata: {
-					manifest: "json"
-				},
-				constructor: function() {
-					assert.ok(logWarningSpy.calledWith(sinon.match(/Cannot load module 'sap\/ui\/model\/odata\/ODataModelNotExists'. This will most probably cause an error once the module is used later on./)), "Model not found");
-					assert.ok(logWarningSpy.calledWith(sinon.match(/Cannot load module 'someRouterNotExists'. This will most probably cause an error once the module is used later on./)), "Router not found");
-					UIComponent.apply(this, arguments);
+					manifest: "json",
+					interfaces: ["sap.ui.core.IAsyncContentCreation"]
 				}
 			});
 		});
@@ -1036,8 +1067,13 @@ sap.ui.define([
 		return Component.create({
 			name: "manifestModules.scenario4",
 			manifest: true
-		}).catch(function() {
-			assert.ok(true, "Modules could not be loaded and an error occured.");
+		}).catch((err) => {
+			assert.equal(
+				err.message,
+				"Cannot load module 'someRouterNotExists'. This will most probably cause an error once the module is used later on.",
+				"Component creation rejects with correct error"
+			);
+			future.active = undefined;
 		});
 	});
 
@@ -1243,8 +1279,9 @@ sap.ui.define([
 		});
 	});
 
-	QUnit.test("Component with missing super.init(...) call", function(assert) {
-		assert.expect(3);
+	QUnit.test("Component with missing super.init(...) call (future=true)", function(assert) {
+		future.active = true;
+		assert.expect(2);
 		var oManifest = {
 			"sap.app" : {
 				"id" : "app"
@@ -1258,8 +1295,8 @@ sap.ui.define([
 		};
 		this.setRespondedManifest(oManifest, "scenario11");
 
-		sap.ui.define("manifestModules/scenario11/Component", ["sap/ui/core/UIComponent", "sap/ui/core/mvc/View"], function(UIComponent, View) {
-			return UIComponent.extend("manifestModules.scenario11.Component", {
+		sap.ui.define("manifestModules/scenario11_1/Component", ["sap/ui/core/UIComponent", "sap/ui/core/mvc/View"], function(UIComponent, View) {
+			return UIComponent.extend("manifestModules.scenario11_1.Component", {
 				metadata: {
 					manifest: "json"
 				},
@@ -1272,15 +1309,12 @@ sap.ui.define([
 			});
 		});
 
-		var oErrorLogSpy = sinon.spy(Log, "error");
 		return Component.create({
-			name: "manifestModules.scenario11",
+			name: "manifestModules.scenario11_1",
 			manifest: true
-		}).then(function(oComponent){
-			assert.equal(oErrorLogSpy.callCount, 1, "error logged");
-			assert.ok(oErrorLogSpy.calledWith(sinon.match(/Mandatory init\(\) not called for UIComponent: 'manifestModules.scenario11'. This is likely caused by a missing super call in the component's init implementation./)), "missing init super error logged");
 		}).catch(function() {
-			assert.ok(false, "Modules could not be loaded and an error occured.");
+			assert.ok(true, "Modules could not be loaded and an error occured.");
+			future.active = undefined;
 		});
 	});
 
