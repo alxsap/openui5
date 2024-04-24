@@ -13,12 +13,12 @@ sap.ui.define([
 	var on1 = new ObjectNumber("on1", {
 		number: "300,000,000",
 		unit: "Euro"
-	});
+	}).addStyleClass("sapUiSmallMargin");
 
 	var on2 = new ObjectNumber("on2", {
 		number: "300,000,000",
 		unit: "Euro"
-	}).addStyleClass("sapMObjectNumberLarge");
+	}).addStyleClass("sapMObjectNumberLarge").addStyleClass("sapUiSmallMargin");
 
 	var oButtonEmphasized =new Button("emphasized", {
 		text:"Toggle emphasized",
@@ -76,6 +76,37 @@ sap.ui.define([
 		}
 	});
 
+	var on3 = new ObjectNumber("on3", {
+		number: "300",
+		unit: "Euro",
+		active: true
+	}).addStyleClass("sapUiSmallMargin");
+
+	var on4 = new ObjectNumber("on4", {
+		number: "300000",
+		unit: "Euro",
+		active: true
+	}).addStyleClass("sapMObjectNumberLarge").addStyleClass("sapUiSmallMargin");
+
+	var on5 = new ObjectNumber("on5", {
+		number: "1.50",
+		active: true,
+		inverted: true
+	}).addStyleClass("sapUiSmallMargin");
+
+	var on6 = new ObjectNumber("on6", {
+		number: "1.50",
+		unit: "Euro",
+		inverted: true
+	}).addStyleClass("sapUiSmallMargin");
+
+	var on7 = new ObjectNumber("on7", {
+		number: "300000",
+		unit: "Euro",
+		inverted: true,
+		active: true
+	}).addStyleClass("sapMObjectNumberLarge").addStyleClass("sapUiSmallMargin");
+
 	var app = new App();
 	var page = new Page({
 		showHeader : false,
@@ -89,7 +120,12 @@ sap.ui.define([
 			oButtonStateS,
 			oButtonStateE,
 			oButtonStateW,
-			oButtonStateI
+			oButtonStateI,
+			on3,
+			on4,
+			on5,
+			on6,
+			on7
 		]
 	});
 	app.setInitialPage(page.getId());

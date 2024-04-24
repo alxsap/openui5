@@ -20,7 +20,6 @@ sap.ui.define([
 	"sap/ui/model/type/Float",
 	"sap/ui/model/resource/ResourceModel",
 	"sap/ui/commons/TextView",
-	"sap/base/util/UriParameters",
 	"sap/ui/thirdparty/jquery",
 	"sap/ui/core/Configuration"
 ], function(
@@ -45,7 +44,6 @@ sap.ui.define([
 	Float,
 	ResourceModel,
 	TextView,
-	UriParameters,
 	jQuery,
 	Configuration
 ) {
@@ -66,14 +64,7 @@ sap.ui.define([
 		value: Configuration.getFormatSettings()
 	});
 
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "oParams", {
-		configurable: "false",
-		writable: "true",
-		value: UriParameters.fromQuery(window.location.search)
-	});
+	const oParams = new URLSearchParams(window.location.search);
 
 	/* TODO: Consider replacing this
 		* with a local var (let x=...) or 

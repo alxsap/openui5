@@ -603,6 +603,7 @@ function(
 		// even though there is no user input (check Input.prototype.onsapright).
 		this._setTypedInValue("");
 		this._bDoTypeAhead = false;
+		this._isValueInitial = false;
 
 		// indicates whether input is clicked (on mobile) or the clear button
 		// used for identifying whether dialog should be open.
@@ -682,6 +683,10 @@ function(
 
 		InputBase.prototype.onBeforeRendering.call(this);
 
+		if (!this.getDomRef() && this.getValue()) {
+			this._isValueInitial = true;
+		}
+
 		if (this.getShowClearIcon()) {
 			this._getClearIcon().setProperty("visible", bShowClearIcon);
 		} else if (this._oClearButton) {
@@ -733,6 +738,15 @@ function(
 			If the input has FormattedText aggregation while the suggestions popover is open then
 			it's new, because the old is already switched to have the value state header as parent */
 			this._updateSuggestionsPopoverValueState();
+		}
+	};
+
+	Input.prototype.onAfterRendering = function() {
+		InputBase.prototype.onAfterRendering.call(this);
+
+		if (this._isValueInitial && this.getType() === InputType.Password) {
+			this.getDomRef("inner").value = this.getProperty("value");
+			this._isValueInitial = false;
 		}
 	};
 
@@ -1399,28 +1413,27 @@ function(
 		const aItems = this._hasTabularSuggestions() ? this.getSuggestionRows() : this.getSuggestionItems();
 		const oSuggestionsPopover = this._getSuggestionsPopover();
 		const oSelectedItem = oSuggestionsPopover?.getItemsContainer()?.getSelectedItem();
+		const oFocusedItem = bFocusInPopup && oSuggestionsPopover.getFocusedListItem();
 		const sText = oSelectedItem?.getTitle?.() || oSelectedItem?.getCells?.()[0]?.getText?.() || "";
 		const bPendingSuggest = !!this._iSuggestDelay && !sText.toLowerCase().includes(this._getTypedInValue().toLowerCase());
 		const bFireSubmit = this.getEnabled() && this.getEditable();
-		let iValueLength, oFocusedItem;
+		let iValueLength;
 
 		// when enter is pressed before the timeout of suggestion delay, suggest event is cancelled
 		this.cancelPendingSuggest();
 
 		bFocusInPopup && this.setSelectionUpdatedFromList(true);
 
-		if (this.getShowSuggestion() && this._bDoTypeAhead && bPopupOpened && !this.isComposingCharacter() && !bPendingSuggest) {
-			oFocusedItem = oSuggestionsPopover.getFocusedListItem();
+		// prevent closing of popover, when Enter is pressed on a group header
+		if (this._bDoTypeAhead && oFocusedItem && oFocusedItem.isA("sap.m.GroupHeaderListItem")) {
+			return;
+		}
 
+		if (this._bDoTypeAhead && bPopupOpened && !this.isComposingCharacter() && !bPendingSuggest) {
 			if (this._hasTabularSuggestions()) {
 				oSelectedItem && this.setSelectionRow(oSelectedItem, true);
 			} else {
 				oSelectedItem && this.setSelectionItem(ListHelpers.getItemByListItem(aItems, oSelectedItem), true);
-			}
-
-			// prevent closing of popover, when Enter is pressed on a group header
-			if (oFocusedItem && oFocusedItem.isA("sap.m.GroupHeaderListItem")) {
-				return;
 			}
 		}
 

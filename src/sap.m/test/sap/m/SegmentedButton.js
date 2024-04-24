@@ -26,7 +26,6 @@ sap.ui.define([
 	"sap/m/MessageToast",
 	"sap/m/List",
 	"sap/m/InputListItem",
-	"sap/base/util/UriParameters",
 	"sap/ui/thirdparty/jquery",
 	"sap/base/Log",
 	"sap/ui/core/mvc/View"
@@ -58,7 +57,6 @@ sap.ui.define([
 	MessageToast,
 	List,
 	InputListItem,
-	UriParameters,
 	jQuery,
 	Log
 ) {
@@ -74,412 +72,193 @@ sap.ui.define([
 	const ButtonType = mobileLibrary.ButtonType;
 
 	// Transform page to size compact
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "sCompact", {
-		configurable: "false",
-		writable: "true",
-		value: UriParameters.fromQuery(window.location.search).get("compact")
-	});
-
+	const sCompact = new URLSearchParams(window.location.search).get("compact");
 	if(sCompact) {
 		jQuery(document).ready(function() {
 			jQuery("#content").addClass("sapUiSizeCompact");
 		});
 	}
 
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "sAddIconURI", {
-		configurable: "false",
-		writable: "true",
-		value: IconPool.getIconURI("add")
-	});
-
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "app", {
-		configurable: "false",
-		writable: "true",
-		value: new SplitApp()
-	});
-
+	var sAddIconURI = IconPool.getIconURI("add");
+	var app = new SplitApp();
 	app.placeAt("content");
 
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "page", {
-		configurable: "false",
-		writable: "true",
-
-		value: new Page("myFirstPage", {
-			backgroundDesign: "Standard",
-			title : "Test",
-			enableScrolling : false
-		})
+	var page = new Page("myFirstPage", {
+		backgroundDesign: "Standard",
+		title : "Test",
+		enableScrolling : false
 	});
 
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "page2", {
-		configurable: "false",
-		writable: "true",
+	var page2 = new Page("mySecondPage", {
+		backgroundDesign: "Standard",
+		title : "Test",
+		showNavButton: true,
+		enableScrolling : true,
+		navButtonTap: function() {
+			app.to(page);
+		}
+	});
 
-		value: new Page("mySecondPage", {
-			backgroundDesign: "Standard",
-			title : "Test",
-			showNavButton: true,
-			enableScrolling : true,
-			navButtonTap: function() {
-				app.to(page);
+	var button1 = new Button('button1', {
+		type: ButtonType.Default,
+		text: "to Page 2",
+		enabled: true,
+		press: function(oEvent) {
+			Log.info('press event button: ' + oEvent.getParameter('id'));
+			app.to(page2);
+		}
+	});
+	var button2 = new Button('button2', {
+		type: ButtonType.Default,
+		icon: sAddIconURI,
+		enabled: true,
+		press: function(oEvent) {
+			Log.info('press event button: ' + oEvent.getParameter('id'));
+		}
+	});
+	var button3 = new Button('button3', {
+		type: ButtonType.Default,
+		icon: "images/favorite_grey_24.png",
+		enabled: true,
+		tooltip: "Favorite"
+	});
+	var button4 = new Button('button4', {
+		type: ButtonType.Default,
+		icon: sAddIconURI,
+		enabled: true
+	});
+	var button5 = new Button('button5', {
+		type: ButtonType.Default,
+		text: "test",
+		enabled: true
+	});
+	var button6 = new Button('button6', {
+		type: ButtonType.Default,
+		enabled: true,
+		text: "test"
+	});
+
+	new Button('button7', {
+		type: ButtonType.Default,
+		text: "LabelBar",
+		enabled: true
+	});
+
+	new Button('button8', {
+		type: ButtonType.Default,
+		text: "Label Bar",
+		enabled: true
+	});
+
+	new Button('button9', {
+		type: ButtonType.Default,
+		text: "Label Bar",
+		enabled: true
+	});
+
+	new Button('button10', {
+		type: ButtonType.Default,
+		icon: sAddIconURI,
+		enabled: true
+	});
+
+	new Button('button11', {
+		type: ButtonType.Default,
+		text: "Label Header",
+		enabled: true
+	});
+
+	new Button('button12', {
+		type: ButtonType.Default,
+		text: "Label Header",
+		enabled: true
+	});
+
+	var button13 = new Button('button13', {
+		type: ButtonType.Default,
+		text: "Label Footer",
+		enabled: true
+	});
+	var button14 = new Button('button14', {
+		type: ButtonType.Default,
+		icon: sAddIconURI,
+		enabled: true
+	});
+	var button15 = new Button('button15', {
+		type: ButtonType.Default,
+		text: "Label Footer",
+		enabled: true
+	});
+
+	var Bar = new Bar({
+		contentLeft: [new Button('Button', {text: "Back", type:ButtonType.Back})],
+		contentMiddle: [ new SegmentedButton('SegmentedBar1', {
+			buttons: [button1, button2, button3],
+			selectedButton: button2,
+			visible: true,
+			selectionChange: function(oEvent) {
+				Log.info('press event segmented: ' + oEvent.getSource().getSelectedButton());
 			}
-		})
+		})],
+		contentRight: [new Button('Button1', {text: "Edit"})]
 	});
-
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "button1", {
-		configurable: "false",
-		writable: "true",
-
-		value: new Button('button1', {
-			type: ButtonType.Default,
-			text: "to Page 2",
-			enabled: true,
-			press: function(oEvent) {
-				Log.info('press event button: ' + oEvent.getParameter('id'));
-				app.to(page2);
-			}
-		})
-	});
-
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "button2", {
-		configurable: "false",
-		writable: "true",
-
-		value: new Button('button2', {
-			type: ButtonType.Default,
-			icon: sAddIconURI,
-			enabled: true,
-			press: function(oEvent) {
-				Log.info('press event button: ' + oEvent.getParameter('id'));
-			}
-		})
-	});
-
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "button3", {
-		configurable: "false",
-		writable: "true",
-
-		value: new Button('button3', {
-			type: ButtonType.Default,
-			icon: "images/favorite_grey_24.png",
-			enabled: true,
-			tooltip: "Favorite"
-		})
-	});
-
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "button4", {
-		configurable: "false",
-		writable: "true",
-
-		value: new Button('button4', {
-			type: ButtonType.Default,
-			icon: sAddIconURI,
-			enabled: true
-		})
-	});
-
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "button5", {
-		configurable: "false",
-		writable: "true",
-
-		value: new Button('button5', {
-			type: ButtonType.Default,
-			text: "test",
-			enabled: true
-		})
-	});
-
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "button6", {
-		configurable: "false",
-		writable: "true",
-
-		value: new Button('button6', {
-			type: ButtonType.Default,
-			enabled: true,
-			text: "test"
-		})
-	});
-
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "button7", {
-		configurable: "false",
-		writable: "true",
-
-		value: new Button('button7', {
-			type: ButtonType.Default,
-			text: "LabelBar",
-			enabled: true
-		})
-	});
-
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "button8", {
-		configurable: "false",
-		writable: "true",
-
-		value: new Button('button8', {
-			type: ButtonType.Default,
-			text: "Label Bar",
-			enabled: true
-		})
-	});
-
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "button9", {
-		configurable: "false",
-		writable: "true",
-
-		value: new Button('button9', {
-			type: ButtonType.Default,
-			text: "Label Bar",
-			enabled: true
-		})
-	});
-
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "button10", {
-		configurable: "false",
-		writable: "true",
-
-		value: new Button('button10', {
-			type: ButtonType.Default,
-			icon: sAddIconURI,
-			enabled: true
-		})
-	});
-
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "button11", {
-		configurable: "false",
-		writable: "true",
-
-		value: new Button('button11', {
-			type: ButtonType.Default,
-			text: "Label Header",
-			enabled: true
-		})
-	});
-
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "button12", {
-		configurable: "false",
-		writable: "true",
-
-		value: new Button('button12', {
-			type: ButtonType.Default,
-			text: "Label Header",
-			enabled: true
-		})
-	});
-
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "button13", {
-		configurable: "false",
-		writable: "true",
-
-		value: new Button('button13', {
-			type: ButtonType.Default,
-			text: "Label Footer",
-			enabled: true
-		})
-	});
-
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "button14", {
-		configurable: "false",
-		writable: "true",
-
-		value: new Button('button14', {
-			type: ButtonType.Default,
-			icon: sAddIconURI,
-			enabled: true
-		})
-	});
-
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "button15", {
-		configurable: "false",
-		writable: "true",
-
-		value: new Button('button15', {
-			type: ButtonType.Default,
-			text: "Label Footer",
-			enabled: true
-		})
-	});
-
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "Bar", {
-		configurable: "false",
-		writable: "true",
-
-		value: new Bar({
-			contentLeft: [new Button('Button', {text: "Back", type:ButtonType.Back})],
-			contentMiddle: [ new SegmentedButton('SegmentedBar1', {
-				buttons: [button1, button2, button3],
-				selectedButton: button2,
-				visible: true,
-				selectionChange: function(oEvent) {
-					Log.info('press event segmented: ' + oEvent.getSource().getSelectedButton());
-				}
-			})],
-			contentRight: [new Button('Button1', {text: "Edit"})]
-		})
-	});
-
 	page.setCustomHeader(Bar);
 
 	//---CONTENT---
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "oSegmented2", {
-		configurable: "false",
-		writable: "true",
-
-		value: new SegmentedButton('SegmentedCnt1', {
-			selectionChange: function(oEvent) {
-				Log.info('press event segmented: ' + oEvent.getSource().getSelectedButton());
-			},
-			width: '100%'
-		})
+	var oSegmented2 = new SegmentedButton('SegmentedCnt1', {
+		selectionChange: function(oEvent) {
+			Log.info('press event segmented: ' + oEvent.getSource().getSelectedButton());
+		},
+		width: '100%'
 	});
-
 	oSegmented2.addButton(button4);
 	oSegmented2.setSelectedButton(button4);
 	oSegmented2.createButton('100% Width', null, true);
 	oSegmented2.createButton('This is a Very Very Very Long Text', null, true);
 	page.addContent(oSegmented2);
 
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "oSegmented3", {
-		configurable: "false",
-		writable: "true",
-
-		value: new SegmentedButton('SegmentedCnt2', {
-			buttons: [button5, button6],
-			selectedButton: button5,
-			selectionChange: function(oEvent) {
-				Log.info('press event segmented: ' + oEvent.getSource().getSelectedButton());
-			}
-		})
+	var oSegmented3 = new SegmentedButton('SegmentedCnt2', {
+		buttons: [button5, button6],
+		selectedButton: button5,
+		selectionChange: function(oEvent) {
+			Log.info('press event segmented: ' + oEvent.getSource().getSelectedButton());
+		}
 	});
-
 	page.addContent(oSegmented3);
 
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "oSegmentedIcons", {
-		configurable: "false",
-		writable: "true",
-
-		value: new SegmentedButton('SegmentedIcons', {
-			buttons: [
-				new Button('buttonIcon1', {
-					type: ButtonType.Default,
-					icon: sAddIconURI,
-					enabled: true
-				}),
-				new Button('buttonIcon2', {
-					type: ButtonType.Default,
-					icon: sAddIconURI,
-					enabled: true
-				}),
-				new Button('buttonIcon3', {
-					type: ButtonType.Default,
-					icon: sAddIconURI,
-					enabled: true
-				}),
-				new Button('buttonIcon4', {
-					type: ButtonType.Default,
-					icon: sAddIconURI,
-					enabled: true
-				})
-			],
-			selectionChange: function(oEvent) {
-				Log.info('press event segmented: ' + oEvent.getSource().getSelectedButton());
-			}
-		})
+	var oSegmentedIcons = new SegmentedButton('SegmentedIcons', {
+		buttons: [
+			new Button('buttonIcon1', {
+				type: ButtonType.Default,
+				icon: sAddIconURI,
+				enabled: true
+			}),
+			new Button('buttonIcon2', {
+				type: ButtonType.Default,
+				icon: sAddIconURI,
+				enabled: true
+			}),
+			new Button('buttonIcon3', {
+				type: ButtonType.Default,
+				icon: sAddIconURI,
+				enabled: true
+			}),
+			new Button('buttonIcon4', {
+				type: ButtonType.Default,
+				icon: sAddIconURI,
+				enabled: true
+			})
+		],
+		selectionChange: function(oEvent) {
+			Log.info('press event segmented: ' + oEvent.getSource().getSelectedButton());
+		}
 	});
-
 	page.addContent(oSegmentedIcons);
 
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "oButton1", {
-		configurable: "false",
-		writable: "true",
-		value: new Button("segbtn1", {text:"first button"})
-	}), Object.defineProperty(globalThis, "oButton2", {
-		configurable: "false",
-		writable: "true",
-		value: new Button("segbtn2", {text:"disabled button"})
-	}), Object.defineProperty(globalThis, "oButton3", {
-		configurable: "false",
-		writable: "true",
-		value: new Button("segbtn3", {text:"third button"})
-	}), Object.defineProperty(globalThis, "Segmented5", {
-		configurable: "false",
-		writable: "true",
-		value: new SegmentedButton()
-	});
+	var oButton1 = new Button("segbtn1", {text:"first button"}),
+			oButton2 = new Button("segbtn2", {text:"disabled button"}),
+			oButton3 = new Button("segbtn3", {text:"third button"}),
+			Segmented5 = new SegmentedButton();
 
 	page.addContent(Segmented5);
 	Segmented5.addButton(oButton1);
@@ -490,34 +269,17 @@ sap.ui.define([
 		oButton2.setEnabled(false);
 	},1000);
 
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "Segmented4", {
-		configurable: "false",
-		writable: "true",
-
-		value: new SegmentedButton('SegmentedFooter', {
-			buttons: [button13, button14,button15],
-			selectedButton: button14,
-			selectionChange: function(oEvent) {
-				Log.info('press event segmented: ' + oEvent.getSource().getSelectedButton());
-			}
-		})
+	var Segmented4 = new SegmentedButton('SegmentedFooter', {
+		buttons: [button13, button14,button15],
+		selectedButton: button14,
+		selectionChange: function(oEvent) {
+			Log.info('press event segmented: ' + oEvent.getSource().getSelectedButton());
+		}
 	});
-
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "footer", {
-		configurable: "false",
-		writable: "true",
-
-		value: new Bar({
-			contentLeft: [],
-			contentMiddle: [Segmented4],
-			contentRight: []
-		})
+	var footer = new Bar({
+		contentLeft: [],
+		contentMiddle: [Segmented4],
+		contentRight: []
 	});
 
 	page.setFooter(footer);

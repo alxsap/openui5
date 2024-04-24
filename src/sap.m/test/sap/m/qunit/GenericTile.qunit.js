@@ -3585,6 +3585,13 @@ sap.ui.define([
 		assert.ok(document.getElementById("generic-tile-actionButtons"), "Action Buttons Container is rendered in Action Mode");
 	});
 
+	QUnit.test("Value Color should not be applied to header text", async function(assert) {
+		this.oGenericTile.setValueColor(ValueColor.Critical);
+		await nextUIUpdate();
+		var oHeader = document.querySelector(".sapMGTHdrTxt");
+		assert.notOk(oHeader.classList.contains("sapMGTCriticalHdrTxt"),"The color has been removed from the text");
+	});
+
 
 	QUnit.module("Generic Tile in s4 Homes Tests", {
 		beforeEach: async function() {
