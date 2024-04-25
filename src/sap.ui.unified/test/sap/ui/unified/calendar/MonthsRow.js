@@ -104,7 +104,6 @@ sap.ui.define([
 		value: new MonthsRow("MR1",{
 			focus: function(oEvent){
 				var oTF = Element.getElementById("TF2");
-				oEvent.oSource;
 				var oDate = oEvent.getParameter("date");
 				if (oDate) {
 					oTF.setValue(oFormatYyyymmdd.format(oDate));
@@ -205,7 +204,6 @@ sap.ui.define([
 		editable: true,
 		placeholder: "yyyyMMdd",
 		change: function(oEvent){
-			oEvent.oSource;
 			var sValue = oEvent.getParameter('newValue');
 			var oMonthsRow = Element.getElementById("MR1");
 			if(sValue.length == 8 && !isNaN(sValue)){

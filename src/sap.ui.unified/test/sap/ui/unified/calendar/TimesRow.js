@@ -103,7 +103,6 @@ sap.ui.define([
 		value: new TimesRow("TR1",{
 			focus: function(oEvent){
 				var oTF = Element.getElementById("TF2");
-				oEvent.oSource;
 				var oDate = oEvent.getParameter("date");
 				if (oDate) {
 					oTF.setValue(oFormatYyyyMMddHHmmss.format(oDate));
@@ -204,7 +203,6 @@ sap.ui.define([
 		editable: true,
 		placeholder: "yyyymmddHHmmss",
 		change: function(oEvent){
-			oEvent.oSource;
 			var sValue = oEvent.getParameter('newValue');
 			var oTimesRow = Element.getElementById("TR1");
 			var oDate = oFormatYyyyMMddHHmmss.parse(sValue);

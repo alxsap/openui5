@@ -764,79 +764,8 @@ sap.ui.define([
 	 * @private
 	 */
 	ODataTreeBinding.prototype._getCountForCollection = function () {
-
-		if (!this.bHasTreeAnnotations || true) {
-			Log.error("The Count for the collection can only be retrieved with Hierarchy Annotations and in OperationMode.Auto.");
-			return;
-		}
-
-		// create a request object for the data request
-		var aParams = [];
-
-		function _handleSuccess(oData) {
-			// $inlinecount is in oData.__count, the $count is just oData
-			var iCount = oData.__count ? parseInt(oData.__count) : parseInt(oData);
-
-			this.iTotalCollectionCount = iCount;
-		}
-
-		function _handleError(oError) {
-			// Only perform error handling if the request was not aborted intentionally
-			if (oError && oError.statusCode === 0 && oError.statusText === "abort") {
-				return;
-			}
-			var sErrorMsg = "Request for $count failed: " + oError.message;
-			if (oError.response){
-				sErrorMsg += ", " + oError.response.statusCode + ", " + oError.response.statusText + ", " + oError.response.body;
-			}
-			Log.warning(sErrorMsg);
-		}
-
-		var sAbsolutePath = this.getResolvedPath();
-
-		// default filter is on the rootLevel
-		var sLevelFilter = "";
-		if (this.iRootLevel > 0) {
-			sLevelFilter = this._getLevelFilterParams("GE", this.getRootLevel());
-		}
-
-		// if necessary we add all other filters to the count request
-		var sFilterParams = "";
-		if (this.bUseServersideApplicationFilters) {
-			sFilterParams = this.getFilterParams();
-		}
-
-		//only build filter statement if necessary
-		if (sLevelFilter || sFilterParams) {
-			//if we have a level filter AND an application filter, we need to add an escaped "AND" to between
-			if (sFilterParams && sLevelFilter) {
-				sFilterParams = "%20and%20" + sFilterParams;
-			}
-			aParams.push("$filter=" + sLevelFilter + sFilterParams);
-		}
-
-		// figure out how to request the count
-		var sCountType = "";
-		let oHeaders;
-		if (this.sCountMode == CountMode.Request) {
-			sCountType = "/$count";
-			// this.bTransitionMessagesOnly is not relevant for $count requests -> no sap-messages header
-		} else if (this.sCountMode == CountMode.Inline || this.sCountMode == CountMode.InlineRepeat) {
-			aParams.push("$top=0");
-			aParams.push("$inlinecount=allpages");
-			oHeaders = this._getHeaders();
-		}
-
-		// send the counting request
-		if (sAbsolutePath) {
-			this.oModel.read(sAbsolutePath + sCountType, {
-				headers: oHeaders,
-				urlParameters: aParams,
-				success: _handleSuccess.bind(this),
-				error: _handleError.bind(this),
-				groupId: this.sRefreshGroupId ? this.sRefreshGroupId : this.sGroupId
-			});
-		}
+		Log.error("The Count for the collection can only be retrieved with Hierarchy Annotations and in OperationMode.Auto.");
+		return;
 	};
 
 	/**

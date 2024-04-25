@@ -106,15 +106,6 @@ InputRenderer.writeDecorations = function (oRm, oControl) {
 	if (oControl.getDescription()) {
 		this.writeDescription(oRm, oControl);
 	}
-
-	if (ControlBehavior.isAccessibilityEnabled()) {
-		if (oControl.getShowSuggestion() && oControl.getEnabled() && oControl.getEditable()) {
-			oRm.openStart("span", oControl.getId() + "-SuggDescr").class("sapUiPseudoInvisibleText")
-				.attr("role", "status").attr("aria-live", "polite")
-				.openEnd()
-				.close("span");
-		}
-	}
 };
 
 /**

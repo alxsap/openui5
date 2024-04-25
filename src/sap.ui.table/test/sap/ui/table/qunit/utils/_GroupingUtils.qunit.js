@@ -30,7 +30,6 @@ sap.ui.define([
 	const getRowHeader = window.getRowHeader;
 	const getRowAction = window.getRowAction;
 	const getSelectAll = window.getSelectAll;
-	window.iNumberOfRows;
 	const fakeSumRow = window.fakeSumRow;
 	const fakeGroupRow = window.fakeGroupRow;
 	const Grouping = TableUtils.Grouping;

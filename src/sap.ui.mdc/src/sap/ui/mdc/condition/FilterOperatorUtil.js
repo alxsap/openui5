@@ -224,7 +224,19 @@ sap.ui.define([
 						oCondition.validated = ConditionValidated.NotValidated;
 					}
 				},
-				validateInput: true
+				validateInput: true,
+				getTextForCopy: function(oCondition, oType, sDisplay, bHideOperator, aCompositeTypes, oAdditionalType, aAdditionalCompositeTypes) {
+					if (oCondition.validated !== ConditionValidated.Validated) {
+						// for not validated condition just return the output as description and let it be parsed on paste
+						return Operator.prototype.getTextForCopy.apply(this, arguments);
+					} else {
+						const [vKey, vDescription] = oCondition.values;
+						const sKey = this._formatValue(vKey, oType, aCompositeTypes);
+						const sDescription = vDescription === undefined ? "" : this._formatValue(vDescription, oAdditionalType, aAdditionalCompositeTypes);
+
+						return sKey + "\t" + sDescription;
+					}
+				}
 			}),
 			/*
 			 * "Between" operator
@@ -264,8 +276,8 @@ sap.ui.define([
 			notBetween: new Operator({
 				name: OperatorName.NOTBT,
 				filterOperator: ModelOperator.NB,
-				tokenTest: "^!(.+)\\.\\.\\.(.+)$",
-				tokenParse: "^!(.*)\\.\\.\\.(.*)$|^(.+)$",
+				tokenTest: ["^!\\((.+)\\.\\.\\.(.+)\\)$", "^!(.+)\\.\\.\\.(.+)$"].join("|"),
+				tokenParse: ["^!\\((.*)\\.\\.\\.(.*)\\)$", "^!(.*)\\.\\.\\.(.*)$", "^(.+)$"].join("|"),
 				tokenFormat: "!({0}...{1})",
 				valueTypes: [OperatorValueType.Self, OperatorValueType.Self],
 				exclude: true,
@@ -292,8 +304,8 @@ sap.ui.define([
 				name: OperatorName.NOTLT,
 				filterOperator: ModelOperator.GE,
 				// tokenParse: "^!<([^=].*)$",
-				tokenTest: "^!<([^=].*)?$",
-				tokenParse: "^(!<)?(.+)?$",
+				tokenTest: ["^!\\(<([^=].*)?\\)$", "^!<([^=].*)?$"].join("|"),
+				tokenParse: ["^!\\(<?(.+)?\\)$", "^(!<)?(.+)?$"].join("|"),
 				tokenFormat: "!(<{0})",
 				valueTypes: [OperatorValueType.Self],
 				exclude: true
@@ -317,8 +329,8 @@ sap.ui.define([
 				name: OperatorName.NOTGT,
 				filterOperator: ModelOperator.LE,
 				// tokenParse: "^!>([^=].*)$",
-				tokenTest: "^!>([^=].*)?$",
-				tokenParse: "^(!>)?(.+)?$",
+				tokenTest: ["^!\\(>([^=].*)?\\)$","^!>([^=].*)?$"].join("|"),
+				tokenParse: ["^!\\(>(.+)?\\)$", "^(!>)?(.+)?$"].join("|") ,
 				tokenFormat: "!(>{0})",
 				valueTypes: [OperatorValueType.Self],
 				exclude: true
@@ -343,8 +355,8 @@ sap.ui.define([
 				name: OperatorName.NOTLE,
 				filterOperator: ModelOperator.GT,
 				// tokenParse: "^!<=(.+)$",
-				tokenTest: "^!<=(.+)?$",
-				tokenParse: "^(!<=)?(.+)?$",
+				tokenTest: ["^!\\(<=(.+)?\\)$", "^!<=(.+)?$"].join("|"),
+				tokenParse: ["^!\\(<=(.+)?\\)$", "^(!<=)?(.+)?$"].join("|"),
 				tokenFormat: "!(<={0})",
 				valueTypes: [OperatorValueType.Self],
 				exclude: true
@@ -369,8 +381,8 @@ sap.ui.define([
 				name: OperatorName.NOTGE,
 				filterOperator: ModelOperator.LT,
 				// tokenParse: "^!>=(.+)$",
-				tokenTest: "^!>=(.+)?$",
-				tokenParse: "^(!>=)?(.+)?$",
+				tokenTest: ["^!\\(>=(.+)?\\)$", "^!>=(.+)?$"].join("|"),
+				tokenParse: ["^!\\(>=(.+)?\\)$", "^(!>=)?(.+)?$"].join("|"),
 				tokenFormat: "!(>={0})",
 				valueTypes: [OperatorValueType.Self],
 				exclude: true
@@ -394,8 +406,8 @@ sap.ui.define([
 				name: OperatorName.NotStartsWith,
 				filterOperator: ModelOperator.NotStartsWith,
 				// tokenParse: "^!([^\\*].*)\\*$",
-				tokenTest: "^!([^\\*].*)\\*$",
-				tokenParse: "^!?(.+)\\*$|^(.*[^\\*])$",
+				tokenTest: ["^!\\(([^\\*].*)\\*\\)$", "^!([^\\*].*)\\*$"].join("|"),
+				tokenParse: ["^!\\((.+)\\*\\)$", "^!?(.+)\\*$", "^(.*[^\\*])$"].join("|"),
 				tokenFormat: "!({0}*)",
 				valueTypes: [OperatorValueType.SelfNoParse],
 				exclude: true
@@ -419,8 +431,8 @@ sap.ui.define([
 				name: OperatorName.NotEndsWith,
 				filterOperator: ModelOperator.NotEndsWith,
 				// tokenParse: "^!\\*(.*[^\\*])$",
-				tokenTest: "^!\\*(.*[^\\*])$",
-				tokenParse: "^(!\\*)?(.+)?$",
+				tokenTest: ["^!\\(\\*(.*[^\\*])\\)$", "^!\\*(.*[^\\*])$"].join("|"),
+				tokenParse: ["^!\\(\\*(.+)?\\)$", "^(!\\*)?(.+)?$"].join("|"),
 				tokenFormat: "!(*{0})",
 				valueTypes: [OperatorValueType.SelfNoParse],
 				exclude: true
@@ -444,8 +456,8 @@ sap.ui.define([
 				name: OperatorName.NotContains,
 				filterOperator: ModelOperator.NotContains,
 				// tokenParse: "^!\\*(.*)\\*$",
-				tokenTest: "^!\\*(.*)\\*$",
-				tokenParse: "^!\\*(.+)?\\*$|^!?(.+)$",
+				tokenTest: ["^!\\(\\*(.*)\\*\\)$", "^!\\*(.*)\\*$"].join("|"),
+				tokenParse: ["^!\\(\\*(.+)?\\*\\)$", "^!\\*(.+)?\\*$", "^!?(.+)$"].join("|"),
 				tokenFormat: "!(*{0}*)",
 				valueTypes: [OperatorValueType.SelfNoParse],
 				exclude: true
@@ -457,8 +469,8 @@ sap.ui.define([
 				name: OperatorName.NE,
 				filterOperator: ModelOperator.NE,
 				// tokenParse: "^!=(.+)$",
-				tokenTest: "^!=(.+)?$",
-				tokenParse: "^(!=)?(.+)?$",
+				tokenTest: ["^!\\(=(.+)?\\)$", "^!=(.+)?$"].join("|"),
+				tokenParse: ["^!\\(=(.+)?\\)$", "^(!=)?(.+)?$"].join("|"),
 				tokenFormat: "!(={0})",
 				valueTypes: [OperatorValueType.Self],
 				exclude: true
@@ -499,7 +511,7 @@ sap.ui.define([
 			notEmpty: new Operator({
 				name: OperatorName.NotEmpty,
 				filterOperator: ModelOperator.NE,
-				tokenParse: "^!<#tokenText#>$",
+				tokenParse: ["^!\\(<#tokenText#>\\)$", "^!<#tokenText#>$"].join("|"),
 				tokenFormat: "!(<#tokenText#>)",
 				valueTypes: [],
 				exclude: true,

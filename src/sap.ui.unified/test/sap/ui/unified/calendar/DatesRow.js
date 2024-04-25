@@ -104,7 +104,6 @@ sap.ui.define([
 		value: new DatesRow("DR1",{
 			focus: function(oEvent){
 				var oTF = Element.getElementById("TF2");
-				oEvent.oSource;
 				var oDate = oEvent.getParameter("date");
 				if (oDate) {
 					oTF.setValue(oFormatYyyymmdd.format(oDate));
@@ -152,7 +151,6 @@ sap.ui.define([
 			editable: true,
 			placeholder: "yyyyMMdd",
 			change: function(oEvent){
-				oEvent.oSource;
 				var sValue = oEvent.getParameter('newValue');
 				var oDatesRow = Element.getElementById("DR1");
 				var oDate = oFormatYyyymmdd.parse(sValue);
@@ -180,7 +178,6 @@ sap.ui.define([
 		editable: true,
 		placeholder: "yyyyMMdd",
 		change: function(oEvent){
-			oEvent.oSource;
 			var sValue = oEvent.getParameter('newValue');
 			var oDatesRow = Element.getElementById("DR1");
 			if(sValue.length == 8 && !isNaN(sValue)){

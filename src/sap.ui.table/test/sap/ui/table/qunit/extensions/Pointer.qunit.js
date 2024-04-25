@@ -28,7 +28,6 @@ sap.ui.define([
 	const createTables = window.createTables;
 	const destroyTables = window.destroyTables;
 	const getCell = window.getCell;
-	window.getColumnHeader;
 	const getRowHeader = window.getRowHeader;
 	const getRowAction = window.getRowAction;
 	const iNumberOfRows = window.iNumberOfRows;

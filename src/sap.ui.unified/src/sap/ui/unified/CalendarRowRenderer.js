@@ -8,7 +8,6 @@ sap.ui.define([
 	'sap/ui/core/date/UniversalDate',
 	'sap/ui/unified/CalendarAppointment',
 	'sap/ui/unified/CalendarLegendRenderer',
-	'sap/ui/Device',
 	'sap/ui/unified/library',
 	'sap/ui/core/InvisibleText',
 	"sap/ui/core/date/UI5Date",
@@ -21,7 +20,6 @@ sap.ui.define([
 	UniversalDate,
 	CalendarAppointment,
 	CalendarLegendRenderer,
-	Device,
 	library,
 	InvisibleText,
 	UI5Date,
@@ -64,10 +62,6 @@ CalendarRowRenderer.render = function(oRm, oRow){
 	oRm.openStart("div", oRow);
 	oRm.class("sapUiCalendarRow");
 
-	if (!Device.system.phone && false) {
-		oRm.class("sapUiCalendarRowAppsRedHeight");
-	}
-
 	if (sVisualisation != CalendarAppointmentVisualization.Standard) {
 		oRm.class("sapUiCalendarRowVis" + sVisualisation);
 	}
@@ -86,7 +80,7 @@ CalendarRowRenderer.render = function(oRm, oRow){
 		oRm.style("height", sHeight);
 	}
 
-//		var rb = sap.ui.getCore().getLibraryResourceBundle("sap.ui.unified");
+	//		var rb = sap.ui.getCore().getLibraryResourceBundle("sap.ui.unified");
 	oRm.openEnd(); // div element
 
 	this.renderAppointmentsRow(oRm, oRow, aTypes);

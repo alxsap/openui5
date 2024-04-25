@@ -32,7 +32,6 @@ sap.ui.define([
 	var oInput = new TextField("TF1",{
 		editable: true,
 		change: function(oEvent){
-			oEvent.oSource;
 			var sValue = oEvent.getParameter('newValue');
 			var oHeader = Element.getElementById("H1");
 			oHeader.setTextButton1(sValue);
@@ -43,7 +42,6 @@ sap.ui.define([
 	var oInput = new TextField("TF2",{
 		editable: true,
 		change: function(oEvent){
-			oEvent.oSource;
 			var sValue = oEvent.getParameter('newValue');
 			var oHeader = Element.getElementById("H1");
 			oHeader.setAdditionalTextButton1(sValue);
@@ -54,7 +52,6 @@ sap.ui.define([
 	var oInput = new TextField("TF3",{
 		editable: true,
 		change: function(oEvent){
-			oEvent.oSource;
 			var sValue = oEvent.getParameter('newValue');
 			var oHeader = Element.getElementById("H1");
 			oHeader.setTextButton2(sValue);
@@ -65,7 +62,6 @@ sap.ui.define([
 	var oInput = new TextField("TF4",{
 		editable: true,
 		change: function(oEvent){
-			oEvent.oSource;
 			var sValue = oEvent.getParameter('newValue');
 			var oHeader = Element.getElementById("H1");
 			oHeader.setAdditionalTextButton2(sValue);

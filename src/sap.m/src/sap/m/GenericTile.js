@@ -1070,7 +1070,7 @@ sap.ui.define([
 		oLineBreakPosition = $LineBreak.position();
 
 		var oStyleHelperPosition = oLineBreakPosition;
-		if (!(Device.browser.mozilla || false || false) && oLineBreakPosition.left < oEndMarkerPosition.left) {
+		if (!(Device.browser.mozilla) && oLineBreakPosition.left < oEndMarkerPosition.left) {
 			//if the line break is positioned left of the end marker (RTL), the end marker's position
 			//is used by the browser to determine the origin of the tile
 			oStyleHelperPosition = oEndMarkerPosition;

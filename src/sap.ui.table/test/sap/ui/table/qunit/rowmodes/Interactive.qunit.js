@@ -21,8 +21,6 @@ sap.ui.define([
 ) {
 	"use strict";
 
-	TableQUnitUtils.HeightTestControl;
-
 	TableQUnitUtils.setDefaultSettings({
 		rowMode: new InteractiveRowMode(),
 		rows: {path: "/"}

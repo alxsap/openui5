@@ -77,6 +77,7 @@ sap.ui.define([
 	"sap/ui/core/date/UI5Date",
 	"sap/ui/core/date/Japanese",
 	"./FieldBaseDelegateODataDefaultTypes",
+	"test-resources/sap/m/qunit/plugins/ClipboardUtils",
 	/* jQuery Plugin "cursorPos"*/
 	"sap/ui/dom/jquery/cursorPos"
 ], function(
@@ -152,7 +153,8 @@ sap.ui.define([
 	KeyCodes,
 	UI5Date,
 	Japanese,
-	FieldBaseDelegateODataDefaultTypes
+	FieldBaseDelegateODataDefaultTypes,
+	ClipboardUtils
 ) {
 	"use strict";
 
@@ -2943,6 +2945,39 @@ sap.ui.define([
 		assert.equal(iSubmitCount, 0, "submit event not fired");
 		const aConditions = oField.getConditions();
 		assert.equal(aConditions.length, 0, "No conditions returned");
+
+	});
+
+	QUnit.test("copy multiple values", async function(assert) {
+
+		ClipboardUtils.stub();
+		oField.setDisplay(FieldDisplay.DescriptionValue);
+		oField.setConditions([Condition.createItemCondition(1, "Test"), Condition.createCondition(OperatorName.LT, [10])]);
+		await nextUIUpdate();
+
+		const aContent = oField.getAggregation("_content");
+		const oContent = aContent?.length > 0 && aContent[0];
+		const oTokenizer = oContent?.getAggregation("tokenizer");
+		const aTokens = oTokenizer?.getTokens();
+
+		for (let i = 0; i < aTokens.length; i++) {
+			aTokens[i].setSelected(true);
+		}
+
+		oTokenizer.focus();
+		qutils.triggerKeydown(oTokenizer.getFocusDomRef().id, KeyCodes.C, false, false, true);
+		ClipboardUtils.triggerCopy(oTokenizer.getFocusDomRef());
+
+		const aClipboardContents = await navigator.clipboard.read();
+		let oBlob = await aClipboardContents[0]?.getType("text/plain");
+		let sText = await oBlob.text();
+		assert.equal(sText, "1\tTest\r\n\t<10", "Clipboard filled");
+
+		oBlob = await aClipboardContents[0]?.getType("text/html");
+		sText = await oBlob.text();
+		assert.equal(sText, "<table><tr><td>Test (1)</td></tr><tr><td><10</td></tr></table>", "Clipboard filled for HTML");
+
+		ClipboardUtils.restore();
 
 	});
 

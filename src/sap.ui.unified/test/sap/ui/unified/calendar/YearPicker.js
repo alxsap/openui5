@@ -61,7 +61,6 @@
 					value: new TextField("TF1",{
 						editable: true,
 						change: function(oEvent){
-							oEvent.oSource;
 							var sValue = oEvent.getParameter('newValue');
 							var oYP = Element.getElementById("YP1");
 							if(sValue && !isNaN(sValue)){
@@ -105,7 +104,6 @@
 				oInput = new TextField("TF2",{
 					editable: true,
 					change: function(oEvent){
-						oEvent.oSource;
 						var sValue = oEvent.getParameter('newValue');
 						var oYP = Element.getElementById("YP2");
 						if(sValue && !isNaN(sValue)){

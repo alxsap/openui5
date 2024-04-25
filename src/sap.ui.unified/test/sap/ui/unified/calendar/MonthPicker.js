@@ -18,7 +18,6 @@ sap.ui.define([
 	var oInput = new TextField("TF1",{
 		editable: true,
 		change: function(oEvent){
-			oEvent.oSource;
 			var sValue = oEvent.getParameter('newValue');
 			var oMP = Element.getElementById("MP1");
 			if(sValue && !isNaN(sValue)){
@@ -49,7 +48,6 @@ sap.ui.define([
 	oInput = new TextField("TF2",{
 		editable: true,
 		change: function(oEvent){
-			oEvent.oSource;
 			var sValue = oEvent.getParameter('newValue');
 			var oMP = Element.getElementById("MP2");
 			if(sValue && !isNaN(sValue)){

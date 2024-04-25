@@ -33,8 +33,6 @@ sap.ui.define([
 								iYear,
 								oDate;
 
-							oEvent.oSource;
-
 							if (sValue && !isNaN(sValue)){
 								iYear = parseInt(sValue),
 								oDate = new UniversalDate();

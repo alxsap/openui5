@@ -9,6 +9,7 @@ sap.ui.define([
 	'sap/ui/core/Item',
 	'sap/ui/core/LabelEnablement',
 	'sap/ui/core/AccessKeysEnablement',
+	'sap/ui/core/library',
 	'./ColumnListItem',
 	'./GroupHeaderListItem',
 	'sap/ui/core/SeparatorItem',
@@ -46,6 +47,7 @@ function(
 	Item,
 	LabelEnablement,
 	AccessKeysEnablement,
+	CoreLibrary,
 	ColumnListItem,
 	GroupHeaderListItem,
 	SeparatorItem,
@@ -1880,7 +1882,6 @@ function(
 			oList.addStyleClass("sapMInputSuggestionTableHidden");
 		}
 
-		this.$("SuggDescr").text(""); // clear suggestion text
 		this.$("inner").removeAttr("aria-activedescendant");
 	};
 
@@ -1923,10 +1924,6 @@ function(
 		// In that case the second DOM update of the invisible text element
 		// do not occur if it is synchronous. BCP #2070466087
 		setTimeout(function () {
-			if (!this.getSuggestionItems().length && !this._hasTabularSuggestions()) {
-				return this.$("SuggDescr").text("");
-			}
-
 			// add items to list
 			if (iNumItems === 1) {
 				sAriaText = oRb.getText("INPUT_SUGGESTIONS_ONE_HIT");
@@ -1937,7 +1934,7 @@ function(
 			}
 
 			// update Accessibility text for suggestion
-			this.$("SuggDescr").text(sAriaText);
+			this._oInvisibleMessage?.announce(sAriaText, CoreLibrary.InvisibleMessageMode.Polite);
 		}.bind(this), 0);
 	};
 
@@ -2093,7 +2090,6 @@ function(
 		if (!this.isMobileDevice() && this.$().hasClass("sapMInputFocused")) {
 			this.openValueStateMessage();
 		}
-		this.$("SuggDescr").text(""); // initialize suggestion ARIA text
 		this.$("inner").removeAttr("aria-activedescendant");
 
 		this._sPrevSuggValue = null;
@@ -2378,7 +2374,6 @@ function(
 	Input.prototype.onfocusout = function (oEvent) {
 		InputBase.prototype.onfocusout.apply(this, arguments);
 		this.removeStyleClass("sapMInputFocused");
-		this.$("SuggDescr").text(""); // clear suggestion text, if any
 	};
 
 	/**

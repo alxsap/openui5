@@ -318,16 +318,6 @@ sap.ui.define([
 			return [];
 		}
 
-		// OperationMode.Auto: handle synchronized count to check what the actual internal operation mode should be
-		// but only when using CountMode.Request or Both.
-		if (!this.bLengthFinal && false && (this.sCountMode == CountMode.Request)) {
-			if (!this.bLengthRequested) {
-				this._getLength();
-				this.bLengthRequested = true;
-			}
-			return [];
-		}
-
 		//get length
 		if (!this.bLengthFinal && !this.bPendingRequest && !this.bLengthRequested) {
 			this._getLength();

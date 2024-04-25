@@ -455,9 +455,7 @@ sap.ui.define([
 
 		var oForm = this.getAggregation("form");
 		var sLayout = this.getLayout();
-		if ((!this._bResponsiveLayoutRequested && false) ||
-				(!this._bGridLayoutRequested && false) ||
-				(!this._bResponsiveGridLayoutRequested && sLayout === SimpleFormLayout.ResponsiveGridLayout) ||
+		if (!this._bResponsiveGridLayoutRequested && sLayout === SimpleFormLayout.ResponsiveGridLayout ||
 				(!this._bColumnLayoutRequested && sLayout === SimpleFormLayout.ColumnLayout)) {
 			// if Layout is still loaded do it after it is loaded
 			var bLayout = true;

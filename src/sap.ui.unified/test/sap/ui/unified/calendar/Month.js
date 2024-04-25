@@ -280,7 +280,6 @@ sap.ui.define([
 								editable: true,
 								placeholder: "yyyyMMdd",
 								change: function(oEvent){
-									oEvent.oSource;
 									var sValue = oEvent.getParameter('newValue');
 									var oMonth = Element.getElementById("Month1");
 									if(sValue.length == 8 && !isNaN(sValue)){
@@ -313,7 +312,6 @@ sap.ui.define([
 												new ListItem({text: CalendarType.Japanese, key: CalendarType.Japanese}),
 												],
 								change: function(oEvent){
-									oEvent.oSource;
 									var oItem = oEvent.getParameter('selectedItem');
 									var oMonth = Element.getElementById("Month1");
 									var sKey = "";
@@ -337,7 +335,6 @@ sap.ui.define([
 												new ListItem({text: CalendarType.Japanese, key: CalendarType.Japanese}),
 												],
 								change: function(oEvent){
-									oEvent.oSource;
 									var oItem = oEvent.getParameter('selectedItem');
 									var oMonth = Element.getElementById("Month1");
 									var sKey = "";

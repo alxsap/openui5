@@ -298,7 +298,6 @@ sap.ui.define([
 			width: "9em",
 			placeholder: "yyyyMMdd",
 			change: function(oEvent){
-				oEvent.oSource;
 				var sValue = oEvent.getParameter('newValue');
 				var oCalendar = Element.getElementById("Cal1");
 				if(sValue.length == 8 && !isNaN(sValue)){
@@ -344,7 +343,6 @@ sap.ui.define([
 				template: new ListItem({text:"{}", key:"{}"})
 			},
 			change: function(oEvent){
-				oEvent.oSource;
 				var oItem = oEvent.getParameter('selectedItem');
 				var oCal = Element.getElementById("Cal1");
 				var sKey = "";
@@ -369,7 +367,6 @@ sap.ui.define([
 				template: new ListItem({text:"{}", key:"{}"})
 			},
 			change: function(oEvent){
-				oEvent.oSource;
 				var oItem = oEvent.getParameter('selectedItem');
 				var oCal = Element.getElementById("Cal1");
 				var sKey = "";
@@ -389,7 +386,6 @@ sap.ui.define([
 			editable: true,
 			width: "9em",
 			change: function(oEvent){
-				oEvent.oSource;
 				var sValue = oEvent.getParameter('newValue');
 				var oCalendar = Element.getElementById("Cal1");
 				oCalendar.setWidth(sValue);
@@ -406,7 +402,6 @@ sap.ui.define([
 			width: "9em",
 			placeholder: "yyyyMMdd",
 			change: function(oEvent){
-				oEvent.oSource;
 				var sValue = oEvent.getParameter('newValue');
 				var oCalendar = Element.getElementById("Cal1");
 				var oDate;
@@ -427,7 +422,6 @@ sap.ui.define([
 			width: "9em",
 			placeholder: "yyyyMMdd",
 			change: function(oEvent){
-				oEvent.oSource;
 				var sValue = oEvent.getParameter('newValue');
 				var oCalendar = Element.getElementById("Cal1");
 				var oDate;
@@ -589,7 +583,6 @@ sap.ui.define([
 			editable: true,
 			placeholder: "yyyyMMdd",
 			change: function(oEvent){
-				oEvent.oSource;
 				var sValue = oEvent.getParameter('newValue');
 				var oCalendar = Element.getElementById("Cal4");
 				if(sValue.length == 8 && !isNaN(sValue)){
@@ -648,7 +641,6 @@ sap.ui.define([
 			editable: true,
 			width: "9em",
 			change: function(oEvent){
-				oEvent.oSource;
 				var sValue = oEvent.getParameter('newValue');
 				var oCalendar = Element.getElementById("Cal4");
 				oCalendar.setWidth(sValue);
