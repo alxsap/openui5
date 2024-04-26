@@ -31,6 +31,9 @@ HeaderContainerRenderer.render = function(oRm, oControl) {
 		oRm.attr("title", sTooltip);
 	}
 	oRm.class("sapMHdrCntr");
+	if (oControl.getSnapToRow()) {
+		oRm.class("sapMHdrCntrSnapToRow");
+	}
 	oRm.class(sOrientationClass);
 	if (oControl.getShowDividers()) {
 		oRm.class("sapMHrdrCntrDvdrs");

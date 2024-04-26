@@ -5,26 +5,14 @@
  * Defines Application related support rules.
  */
 sap.ui.define([
-	"sap/ui/support/library",
-	"sap/ui/thirdparty/jquery"
-], function(SupportLib, jQuery) {
+	"sap/ui/support/library"
+], function(SupportLib) {
 	"use strict";
 
 	// shortcuts
 	var Categories = SupportLib.Categories; // Accessibility, Performance, Memory, ...
 	var Severity = SupportLib.Severity; // Hint, Warning, Error
 	var Audiences = SupportLib.Audiences; // Control, Internal, Application
-
-	var aObsoleteFunctionNames = ["jQuery.sap.require", "$.sap.require", "sap.ui.requireSync", "jQuery.sap.sjax"];
-
-	// avoid spoiling the globalAPIRule by using Object.getOwnPropertyDescriptor
-	if (jQuery && jQuery.sap && Object.getOwnPropertyDescriptor(jQuery.sap, "sjax").value) {
-		aObsoleteFunctionNames.push("jQuery.sap.syncHead",
-			"jQuery.sap.syncGet",
-			"jQuery.sap.syncPost",
-			"jQuery.sap.syncGetText",
-			"jQuery.sap.syncGetJSON");
-	}
 
 	//**********************************************************
 	// Rule Definitions

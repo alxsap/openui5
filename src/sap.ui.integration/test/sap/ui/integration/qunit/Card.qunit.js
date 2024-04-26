@@ -650,6 +650,77 @@ sap.ui.define([
 			oCard.destroy();
 		});
 
+		QUnit.test("Attribute data-help-id with sap.app/id", async function (assert) {
+			// Arrange
+			const oCard = new Card({
+				manifest: oManifest_ListCard
+			});
+
+			// Act
+			oCard.placeAt(DOM_RENDER_LOCATION);
+			await nextCardReadyEvent(oCard);
+
+			// Assert
+			assert.strictEqual(oCard.getDomRef().dataset["helpId"], "my.card.qunit.test.ListCard", "Attribute data-help-id is correct");
+
+			// Clean up
+			oCard.destroy();
+		});
+
+		QUnit.test("Attribute data-help-id with sap.app/id", async function (assert) {
+			// Arrange
+			const oCard = new Card({
+				manifest: oManifest_ListCard
+			});
+
+			oCard.data("help-id", "test-host-help-id", true);
+
+			// Act
+			oCard.placeAt(DOM_RENDER_LOCATION);
+			await nextCardReadyEvent(oCard);
+
+			// Assert
+			assert.strictEqual(oCard.getDomRef().dataset["helpId"], "test-host-help-id", "Attribute data-help-id is correct");
+
+			// Clean up
+			oCard.destroy();
+		});
+
+		QUnit.test("Attribute data-help-id with sap.card/configuration/helpId", async function (assert) {
+			// Arrange
+			const oCard = new Card({
+				manifest: {
+					"sap.app": {
+						"id": "my.card.qunit.test.helpId"
+					},
+					"sap.card": {
+						"type": "List",
+						"configuration": {
+							"helpId": "test-config-help-id"
+						},
+						"header": {
+							"title": "Test"
+						},
+						"content": {
+							"item": {
+								"title": "item1"
+							}
+						}
+					}
+				}
+			});
+
+			// Act
+			oCard.placeAt(DOM_RENDER_LOCATION);
+			await nextCardReadyEvent(oCard);
+
+			// Assert
+			assert.strictEqual(oCard.getDomRef().dataset["helpId"], "test-config-help-id", "Attribute data-help-id is correct");
+
+			// Clean up
+			oCard.destroy();
+		});
+
 		QUnit.test("Card with manifest as object, without baseUrl", async function (assert) {
 			// Arrange
 			var oCard = new Card({
@@ -1351,6 +1422,7 @@ sap.ui.define([
 			// Assert Card Container
 			assert.strictEqual(oCardDomRef.getAttribute("role"), "region", "Card container should have a role - region");
 			assert.strictEqual(oCardDomRef.getAttribute("aria-labelledby"), this.oCard._getAriaLabelledIds(), "Card container should have aria-lebelledby - pointing to the static text '[Type of Card] Card' id and title id");
+			assert.notOk(oCardDomRef.hasAttribute("tabindex"), "Card container should NOT have 'tabindex'");
 
 			// Assert Card Header
 			assert.notOk(oHeaderDomRef.getAttribute("role"), "Card header should not have a role");
@@ -1416,6 +1488,33 @@ sap.ui.define([
 			assert.strictEqual(oHeaderFocusDomRef.getAttribute("aria-labelledby"), sAriaLabelledByIds, "Card header's focusable element should have aria-lebelledby - pointing to an element describing the card type, title, subtitle, status text and avatar ids if there is one");
 			assert.strictEqual(oHeaderFocusDomRef.getAttribute("tabindex"), "0", "Card header's focusable element should have tabindex=0");
 			assert.strictEqual(oHeaderFocusDomRef.getAttribute("role"), "button", "Card header's focusable element should have role=button");
+		});
+
+		QUnit.test("Generic when card has dataMode is set to 'Inactive'", async function (assert) {
+			this.oCard.setDataMode(CardDataMode.Inactive);
+			this.oCard.setManifest(oManifest_ListCard);
+
+			await nextUIUpdate();
+
+			const oCardDomRef = this.oCard.getDomRef();
+
+			// Assert
+			assert.strictEqual(oCardDomRef.getAttribute("tabindex"), "0", "Card container should have 'tabindex'");
+
+			// Act
+			this.oCard.focus();
+
+			// Assert
+			assert.strictEqual(document.activeElement, oCardDomRef);
+
+			// Act
+			this.oCard.setDataMode(CardDataMode.Active);
+			await nextCardReadyEvent(this.oCard);
+			await nextUIUpdate();
+
+			// Assert
+			assert.notOk(oCardDomRef.hasAttribute("tabindex"), "Card container should NOT have 'tabindex'");
+			assert.strictEqual(document.activeElement, this.oCard.getCardHeader().getFocusDomRef(), "Active element has been changed correctly after data mode change");
 		});
 
 		QUnit.test("Numeric Header", async function (assert) {

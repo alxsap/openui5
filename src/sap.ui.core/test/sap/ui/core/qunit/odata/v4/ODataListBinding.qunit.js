@@ -30,8 +30,8 @@ sap.ui.define([
 	/*eslint no-sparse-arrays: 0 */
 	"use strict";
 
-	var aAllowedBindingParameters = ["$$aggregation", "$$canonicalPath", "$$getKeepAliveContext",
-			"$$groupId", "$$keepSelectOnFilter", "$$operationMode", "$$ownRequest",
+	var aAllowedBindingParameters = ["$$aggregation", "$$canonicalPath", "$$clearSelectionOnFilter",
+			"$$getKeepAliveContext", "$$groupId", "$$operationMode", "$$ownRequest",
 			"$$patchWithoutSideEffects", "$$sharedRequest", "$$updateGroupId"],
 		sClassName = "sap.ui.model.odata.v4.ODataListBinding",
 		oContextPrototype = Object.getPrototypeOf(Context.create(null, null, "/foo")),
@@ -303,7 +303,6 @@ sap.ui.define([
 			mParameters = {/*see clone below for actual content*/},
 			mParametersClone = {
 				$$groupId : "group",
-				$$keepSelectOnFilter : "keep select",
 				$$operationMode : OperationMode.Server,
 				$$sharedRequest : "sharedRequest",
 				$$updateGroupId : "update group"
@@ -785,6 +784,7 @@ sap.ui.define([
 			},
 			bSideEffectsRefresh = !aChangedParameters.includes("foo");
 
+		oBinding.mParameters = {$$clearSelectionOnFilter : true};
 		if (bAggregation) {
 			mParameters.$$aggregation = oAggregation;
 		}
@@ -1039,47 +1039,37 @@ sap.ui.define([
 		const oContextMock = this.mock(oBinding.oHeaderContext);
 
 		oContextMock.expects("setSelected").never();
-
 		delete oBinding.mParameters; // call from constructor
 
-		// code under test
+		// code under test - no reset
 		oBinding.applyParameters({});
 
 		oBinding.mParameters = {};
 
-		// code under test
+		// code under test - no reset
 		oBinding.applyParameters({});
 
-		oBinding.mParameters = {$$keepSelectOnFilter : true};
-
-		// code under test
-		oBinding.applyParameters({});
+		oBinding.mParameters = {$$clearSelectionOnFilter : true};
 
 		const oSetSelectedExpectation = oContextMock.expects("setSelected").withExactArgs(false);
 		const oRemoveCacheExpectation = oBindingMock.expects("removeCachesAndMessages")
 			.withExactArgs("");
 
 		// code under test
-		oBinding.applyParameters({}, undefined, ["$filter"]);
+		oBinding.applyParameters({$$clearSelectionOnFilter : true}, undefined, ["$filter"]);
 
 		assert.ok(oSetSelectedExpectation.calledBefore(oRemoveCacheExpectation));
 
 		oContextMock.expects("setSelected").exactly(2).withExactArgs(false);
-		oBindingMock.expects("removeCachesAndMessages").exactly(3).withExactArgs("");
+		oBindingMock.expects("removeCachesAndMessages").exactly(2).withExactArgs("");
 
 		// code under test
-		oBinding.applyParameters({}, undefined, ["$search"]);
+		oBinding.applyParameters({$$clearSelectionOnFilter : true}, undefined, ["$search"]);
 
-		oBinding.mParameters = {$$aggregation : {search : "foo"}};
+		oBinding.mParameters = {$$aggregation : {search : "foo"}, $$clearSelectionOnFilter : true};
 
 		// code under test
 		oBinding.applyParameters({$$aggregation : {search : "bar"}});
-
-		oBinding.oHeaderContext = undefined;
-		oContextMock.expects("setSelected").never();
-
-		// code under test - no header context
-		oBinding.applyParameters({$$aggregation : {search : "foo"}});
 	});
 
 	//*********************************************************************************************
@@ -3565,6 +3555,7 @@ sap.ui.define([
 
 				oBinding = this.bindList("/EMPLOYEES", undefined, undefined, undefined, {
 					$filter : sStaticFilter,
+					$$clearSelectionOnFilter : true,
 					$$operationMode : OperationMode.Server
 				});
 				assert.ok(oBinding.oQueryOptionsPromise);
@@ -3736,22 +3727,6 @@ sap.ui.define([
 		assert.throws(function () {
 			oBinding.filter();
 		}, new Error("Cannot filter due to pending changes"));
-	});
-
-	//*********************************************************************************************
-	QUnit.test("filter: $$keepSelectOnFilter", function () {
-		const oBinding = this.bindList("/EMPLOYEES", undefined, undefined, undefined, {
-			$$operationMode : OperationMode.Server
-		});
-		const oContextMock = this.mock(oBinding.oHeaderContext);
-
-		oBinding.mParameters = {$$keepSelectOnFilter : true};
-		this.mock(_Helper).expects("deepEqual").withExactArgs([], oBinding.aFilters)
-			.returns(false);
-		oContextMock.expects("setSelected").never();
-
-		// code under test
-		oBinding.filter();
 	});
 
 	//*********************************************************************************************
@@ -8126,10 +8101,11 @@ sap.ui.define([
 	});
 
 	//*********************************************************************************************
-	QUnit.test("resumeInternal: deselect header context", function (assert) {
+	QUnit.test("resumeInternal: reset selection", function (assert) {
 		var oBinding = this.bindList("/EMPLOYEES");
 
 		oBinding.sResumeChangeReason = ChangeReason.Filter;
+		oBinding.mParameters = {$$clearSelectionOnFilter : true};
 
 		const oSetSelectedExpectation = this.mock(oBinding.oHeaderContext).expects("setSelected")
 			.withExactArgs(false);
@@ -8141,9 +8117,9 @@ sap.ui.define([
 
 		assert.ok(oSetSelectedExpectation.calledBefore(oRemoveCacheExpectation));
 
-		oBinding.mParameters = {$$keepSelectOnFilter : true};
+		oBinding.mParameters = {};
 
-		// code under test
+		// code under test - no reset
 		oBinding.resumeInternal();
 	});
 
@@ -11087,7 +11063,8 @@ sap.ui.define([
 		};
 		oBinding.oCache = oCache;
 		const oMoveExpectation = this.mock(oCache).expects("move")
-			.withExactArgs("~oGroupLock~", "~child~", bMakeRoot ? undefined : "~parent~")
+			.withExactArgs("~oGroupLock~", "~child~", bMakeRoot ? null : "~parent~", undefined,
+				undefined)
 			.returns({promise : new SyncPromise((resolve) => {
 				setTimeout(() => {
 					if (oParentContext) {
@@ -11142,21 +11119,35 @@ sap.ui.define([
 	//*********************************************************************************************
 [false, true].forEach((bIsExpanded) => {
 	[false, true].forEach((bMakeRoot) => {
-		const sTitle = `move: refresh; expanded=${bIsExpanded}, make root=${bMakeRoot}`;
+		[undefined, null, {}].forEach((oSiblingContext) => {
+			const sTitle = `move: refresh; expanded=${bIsExpanded}, make root=${bMakeRoot},
+with sibling=${oSiblingContext}`;
 
-	QUnit.test(sTitle, function (assert) {
+	QUnit.test(sTitle, async function (assert) {
 		const oChildContext = {
 			getCanonicalPath : mustBeMocked,
-			isExpanded : mustBeMocked
+			getPath : mustBeMocked,
+			isExpanded : mustBeMocked,
+			iIndex : 23
 		};
 		this.mock(oChildContext).expects("isExpanded").withExactArgs().returns(bIsExpanded);
 		this.mock(oChildContext).expects("getCanonicalPath").withExactArgs().returns("/~child~");
+		const bHasSibling = oSiblingContext !== undefined;
+		this.mock(oChildContext).expects("getPath").exactly(bHasSibling ? 1 : 0)
+			.withExactArgs().returns("/~childNonCanonical~");
 		const oParentContext = bMakeRoot ? null : {
 			getCanonicalPath : mustBeMocked
 		};
 		if (oParentContext) {
 			this.mock(oParentContext).expects("getCanonicalPath").withExactArgs()
 				.returns("/~parent~");
+		}
+		let sSiblingPath = oSiblingContext;
+		if (oSiblingContext) {
+			sSiblingPath = "~sibling~";
+			oSiblingContext.getCanonicalPath = mustBeMocked;
+			this.mock(oSiblingContext).expects("getCanonicalPath").withExactArgs()
+				.returns("/~sibling~");
 		}
 		const oBinding = this.bindList("/EMPLOYEES");
 		// Note: autoExpandSelect at model would be required for hierarchyQualifier, but that leads
@@ -11172,18 +11163,20 @@ sap.ui.define([
 		};
 		oBinding.oCache = oCache;
 		const oMoveExpectation = this.mock(oCache).expects("move")
-			.withExactArgs("~oGroupLock~", "~child~", bMakeRoot ? undefined : "~parent~")
-			.returns({promise : Promise.resolve("X"), refresh : true});
+			.withExactArgs("~oGroupLock~", "~child~", bMakeRoot ? null : "~parent~", sSiblingPath,
+				bHasSibling ? "~childNonCanonical~" : undefined)
+			.returns({promise : Promise.resolve([undefined, undefined, 42]), refresh : true});
 		const oExpandExpectation = this.mock(oBinding).expects("expand")
 			.exactly(bIsExpanded ? 1 : 0).withExactArgs(sinon.match.same(oChildContext), true)
 			.returns(SyncPromise.resolve());
 		const oRequestSideEffectsExpectation = this.mock(oBinding).expects("requestSideEffects")
-			.withExactArgs("~group~", [""]).returns(SyncPromise.resolve("Y"));
+			.withExactArgs("~group~", [""]).returns(SyncPromise.resolve("~sideEffectsResult~"));
 		this.mock(oBinding).expects("insertGap").never();
 		this.mock(oBinding).expects("_fireChange").never();
 
 		// code under test
-		const oSyncPromise = oBinding.move(oChildContext, bMakeRoot ? null : oParentContext);
+		const oSyncPromise = oBinding.move(oChildContext, bMakeRoot ? null : oParentContext,
+			oSiblingContext);
 
 		assert.strictEqual(oSyncPromise.isPending(), true);
 		if (bIsExpanded) {
@@ -11191,10 +11184,12 @@ sap.ui.define([
 				oRequestSideEffectsExpectation);
 		}
 
-		return oSyncPromise.then(function (vResult) {
-			assert.deepEqual(vResult, ["X", "Y"], "without a defined result, but...");
-		});
+		const [, vSideEffectsResult] = await oSyncPromise;
+		// iIndex===42 can only have been set after waiting for the move promise
+		assert.strictEqual(oChildContext.iIndex, oSiblingContext === undefined ? 23 : 42);
+		assert.strictEqual(vSideEffectsResult, "~sideEffectsResult~");
 	});
+		});
 	});
 });
 
@@ -11231,7 +11226,8 @@ sap.ui.define([
 			move : mustBeMocked
 		};
 		oBinding.oCache = oCache;
-		this.mock(oCache).expects("move").withExactArgs("~oGroupLock~", "~child~", "~parent~")
+		this.mock(oCache).expects("move")
+			.withExactArgs("~oGroupLock~", "~child~", "~parent~", undefined, undefined)
 			.returns({promise : SyncPromise.reject("~error~"), refresh : false});
 		this.mock(oBinding).expects("expand").exactly(bIsExpanded ? 1 : 0)
 			.withExactArgs(sinon.match.same(oChildContext), true)
@@ -11271,7 +11267,8 @@ sap.ui.define([
 			move : mustBeMocked
 		};
 		oBinding.oCache = oCache;
-		this.mock(oCache).expects("move").withExactArgs("~oGroupLock~", "~child~", undefined)
+		this.mock(oCache).expects("move")
+			.withExactArgs("~oGroupLock~", "~child~", null, undefined, undefined)
 			.returns({promise : SyncPromise.resolve([1, 43]), refresh : false});
 		this.mock(oBinding).expects("requestSideEffects").never();
 		this.mock(oBinding).expects("insertGap").never();
@@ -11311,7 +11308,8 @@ sap.ui.define([
 			move : mustBeMocked
 		};
 		oBinding.oCache = oCache;
-		this.mock(oCache).expects("move").withExactArgs("~oGroupLock~", "~child~", undefined)
+		this.mock(oCache).expects("move")
+			.withExactArgs("~oGroupLock~", "~child~", null, undefined, undefined)
 			.returns({promise : SyncPromise.resolve(), refresh : true});
 		const oError = new Error("This call intentionally failed");
 		this.mock(oBinding).expects("expand")

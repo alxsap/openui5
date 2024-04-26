@@ -15,6 +15,7 @@ sap.ui.define([
 	// delegate further initialization of this library to the Core
 	return Library.init({
 		name : "sap.ui.testlib",
+		apiVersion:2,
 		dependencies : ["sap.ui.core"],
 		types: [
 		],
