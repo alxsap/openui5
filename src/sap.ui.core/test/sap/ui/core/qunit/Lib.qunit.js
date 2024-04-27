@@ -68,6 +68,7 @@ sap.ui.define([
 		sap.ui.predefine('testlibs/scenario1/lib3/library', ["sap/ui/core/Lib"], function(Library) {
 			return Library.init({
 				name: 'testlibs.scenario1.lib3',
+				apiVersion: 2,
 				noLibraryCSS: true
 			});
 		});
@@ -296,6 +297,7 @@ sap.ui.define([
 		sap.ui.predefine('testlibs/scenario2/lib3/library', ["sap/ui/core/Lib"], function(Library) {
 			return Library.init({
 				name: 'testlibs.scenario2.lib3',
+				apiVersion: 2,
 				noLibraryCSS: true
 			});
 		});

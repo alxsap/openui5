@@ -2015,6 +2015,7 @@ sap.ui.define([
 			sPropertyKey = oMDCColumn && oMDCColumn.getPropertyKey();
 			if (sPropertyKey) {
 				aProperties.push({
+					key: sPropertyKey,
 					name: sPropertyKey
 				});
 			}

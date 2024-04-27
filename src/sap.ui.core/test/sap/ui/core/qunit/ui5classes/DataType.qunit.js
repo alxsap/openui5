@@ -356,6 +356,7 @@ sap.ui.define([
 		], function(Library) {
 			const thisLib = Library.init({
 				name: "sap.test.enumlib"
+				// apiVersion: 1 - legacy scenario
 			});
 			thisLib.LibColor = {
 				Red: "Red",
@@ -391,6 +392,7 @@ sap.ui.define([
 		], function(Library) {
 			const thisLib = Library.init({
 				name: "sap.test.otherlib"
+				// apiVersion: 1 - legacy scenario
 			});
 			thisLib.deeply ??= {};
 			thisLib.deeply.nested ??= {};
