@@ -32,18 +32,6 @@ sap.ui.define(['./ComponentMetadata', 'sap/ui/core/mvc/ViewType'], function(Comp
 	UIComponentMetadata.prototype = Object.create(ComponentMetadata.prototype);
 	UIComponentMetadata.prototype.constructor = UIComponentMetadata;
 
-	UIComponentMetadata.preprocessClassInfo = function(oClassInfo) {
-		// if the component is a string we convert this into a "_src" metadata entry
-		// the specific metadata object can decide to support this or gracefully ignore it
-		// basically the ComponentMetadata makes use of this feature
-		if (oClassInfo && typeof oClassInfo.metadata === "string") {
-			oClassInfo.metadata = {
-				_src: oClassInfo.metadata
-			};
-		}
-		return oClassInfo;
-	};
-
 
 	/**
 	 * Converts the legacy metadata into the new manifest format

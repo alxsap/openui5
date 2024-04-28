@@ -1159,16 +1159,15 @@ sap.ui.define([
 	}
 
 	/**
-		 * Returns a Promise representing the state of the view initialization.
-		 *
-		 * For views that are loading asynchronously (by setting async=true) this Promise is created by view
-		 * initialization. Synchronously loading views get wrapped in an immediately resolving Promise.
-		 *
-		 * @since 1.30
-		 * @return {Promise<sap.ui.core.mvc.View>} resolves with the complete view instance, rejects with any thrown error
-		 * @private
-		 * @ui5-restricted sap.ui.core
-		 */
+	 * Returns a Promise representing the state of the view initialization.
+	 *
+	 * For views that are loading asynchronously (by setting async=true) this Promise is created by view
+	 * initialization. Synchronously loading views get wrapped in an immediately resolving Promise.
+	 *
+	 * @since 1.30
+	 * @public
+	 * @return {Promise<sap.ui.core.mvc.View>} resolves with the complete view instance, rejects with any thrown error
+	 */
 	View.prototype.loaded = function() {
 		if (this.oAsyncState && this.oAsyncState.promise) {
 			return this.oAsyncState.promise;

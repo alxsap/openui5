@@ -564,24 +564,6 @@ sap.ui.define([
 			}
 		});
 
-		QUnit.test("Async loading of manifests with component.json", function(assert) {
-			return fnComponentFactory("./testdata/inherit/manifest.json", "sap.ui.test.inherit").then(function(oComponent) {
-				assert.ok(oComponent instanceof Component, "Component has been created.");
-
-				assert.equal(
-					oComponent.getManifest().name,
-					"sap.ui.test.inherit.Component",
-					"Check name of the the main component"
-				);
-				assert.equal(
-					oComponent.getMetadata().getParent().getName(),
-					"sap.ui.test.inherit.parent.Component",
-					"Check name of the inherited parent component"
-				);
-				oComponent.destroy();
-			});
-		});
-
 		QUnit.test("Async loading of manifests", function(assert) {
 			return fnComponentFactory("./testdata/inheritAsync/manifest.json", "sap.ui.test.inheritAsync").then(function(oComponent) {
 				assert.ok(oComponent instanceof Component, "Component has been created.");

@@ -1539,20 +1539,20 @@ sap.ui.define([
 		});
 	});
 
-
 	QUnit.test("Check the loading of i18n of a component and its inheriting parent", function(assert) {
 		var oProcessI18nSpy = this.spy(Manifest.prototype, "_processI18n");
 
 		return Component.create({
-			name: "sap.ui.test.inherit"
+			name: "sap.ui.test.inheritAsync"
 		}).then(function(oComponent) {
 			assert.ok(oComponent, "Component instance is created");
 
-			// _processI18n are called 3 times:
+			// _processI18n are called 4 times:
 			//  1. for the oComponent instance itself
-			//  2. for the sap.ui.test.inherit ComponentMetadata
-			//  3. for the inheriting parent sap.ui.test.inherit.parent ComponentMetadata
-			assert.equal(oProcessI18nSpy.callCount, 3, "_processI18n is called for the expected times");
+			//  2. for the sap.ui.test.inheritAsync ComponentMetadata
+			//  3. for the inheriting parent sap.ui.test.inheritAsync.parentB ComponentMetadata
+			//  4. for the inheriting parent sap.ui.test.inheritAsync.parentA ComponentMetadata
+			assert.equal(oProcessI18nSpy.callCount, 4, "_processI18n is called for the expected times");
 
 			var iSyncCall = oProcessI18nSpy.getCalls().reduce(function(acc, oCall) {
 				if (oCall.args.length === 0 || !oCall.args[0]) {

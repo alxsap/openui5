@@ -6,12 +6,12 @@
 sap.ui.define([
 	'sap/ui/base/ManagedObjectMetadata',
 	'sap/ui/core/Manifest',
+	'sap/base/future',
 	'sap/base/Log',
-	'sap/base/util/extend',
 	'sap/base/util/deepExtend',
 	'sap/base/util/isPlainObject',
 	'sap/base/util/LoaderExtensions'
-], function(ManagedObjectMetadata, Manifest, Log, extend, deepExtend, isPlainObject, LoaderExtensions) {
+], function(ManagedObjectMetadata, Manifest, future, Log, deepExtend, isPlainObject, LoaderExtensions) {
 	"use strict";
 
 	var syncCallBehavior = sap.ui.loader._.getSyncCallBehavior();
@@ -43,44 +43,14 @@ sap.ui.define([
 	ComponentMetadata.prototype = Object.create(ManagedObjectMetadata.prototype);
 	ComponentMetadata.prototype.constructor = ComponentMetadata;
 
-	ComponentMetadata.preprocessClassInfo = function(oClassInfo) {
-		// if the component is a string we convert this into a "_src" metadata entry
-		// the specific metadata object can decide to support this or gracefully ignore it
-		// basically the ComponentMetadata makes use of this feature
-		if (oClassInfo && typeof oClassInfo.metadata === "string") {
-			oClassInfo.metadata = {
-				_src: oClassInfo.metadata
-			};
-		}
-		return oClassInfo;
-	};
-
 	ComponentMetadata.prototype.applySettings = function(oClassInfo) {
-
 		var oStaticInfo = this._oStaticInfo = oClassInfo.metadata;
 
-		// if the component metadata loadFromFile feature is active then
-		// the component metadata will be loaded from the specified file
-		// which needs to be located next to the Component.js file.
 		var sName = this.getName(),
 		    sPackage = sName.replace(/\.\w+?$/, "");
-		if (oStaticInfo._src) {
-			if (oStaticInfo._src == "component.json") {
-				Log.warning("Usage of declaration \"metadata: 'component.json'\" is deprecated (component " + sName + "). Use \"metadata: 'json'\" instead.");
-			} else if (oStaticInfo._src != "json") {
-				throw new Error("Invalid metadata declaration for component " + sName + ": \"" + oStaticInfo._src + "\"! Use \"metadata: 'json'\" to load metadata from component.json.");
-			}
 
-			var sResource = sPackage.replace(/\./g, "/") + "/component.json";
-			Log.info("The metadata of the component " + sName + " is loaded from file " + sResource + ".");
-			try {
-				var oResponse = LoaderExtensions.loadResource(sResource, {
-					dataType: "json"
-				});
-				extend(oStaticInfo, oResponse);
-			} catch (err) {
-				Log.error("Failed to load component metadata from \"" + sResource + "\" (component " + sName + ")! Reason: " + err);
-			}
+		if (oClassInfo && typeof oClassInfo.metadata === "string") {
+			future.errorThrows("Component Metadata must not be a string. Please use \"metadata: { manifest: 'json' }\" instead.");
 		}
 
 		ManagedObjectMetadata.prototype.applySettings.call(this, oClassInfo);

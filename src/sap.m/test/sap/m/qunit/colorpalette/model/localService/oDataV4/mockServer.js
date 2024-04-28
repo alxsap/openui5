@@ -1,8 +1,7 @@
 sap.ui.define([
 	"sap/ui/core/util/MockServer",
-	"sap/base/Log",
-	"jquery.sap.sjax"
-], function (MockServer, Log, jQuery) {
+	"sap/base/Log"
+], function(MockServer, Log) {
 	"use strict";
 	var oMockServer,
 		_sAppModulePath = "cp/opa/test/app/",
@@ -17,14 +16,13 @@ sap.ui.define([
 		 * @public
 		 */
 		init : function () {
-			// TODO: migration not possible. jQuery.sap.syncGetJSON is deprecated. Please use <code>fetch</code> API or native <code>XMLHttpRequest</code>
 			var oUriParameters = new URLSearchParams(window.location.search),
 				sJsonFilesUrl = sap.ui.require.toUrl((_sJsonFilesModulePath).replace(/\./g, "/")),
 				sManifestUrl = sap.ui.require.toUrl((_sAppModulePath + "manifest").replace(/\./g, "/")) + ".json",
 				sEntity = "Objects",
 				sErrorParam = oUriParameters.get("errorType"),
 				iErrorCode = sErrorParam === "badRequest" ? 400 : 500,
-				oManifest = jQuery.sap.syncGetJSON(sManifestUrl).data,
+				oManifest = undefined/*jQuery*/.sap.syncGetJSON(sManifestUrl).data,
 				oMainDataSource = oManifest["sap.app"].dataSources.oDataV4,
 				sMetadataUrl = sap.ui.require.toUrl(
 				    (_sAppModulePath + oMainDataSource.settings.localUri.replace(".xml", "")).replace(/\./g, "/")

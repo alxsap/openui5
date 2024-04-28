@@ -19,12 +19,6 @@
 		},
 
 		"resources": {
-			"js": [
-				{
-					"uri": "script.js"
-				},
-				{}
-			],
 			"css": [
 				{
 					"uri": "style.css",

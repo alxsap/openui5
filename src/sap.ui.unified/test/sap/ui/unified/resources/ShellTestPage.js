@@ -1,17 +1,10 @@
-sap.ui.define([
-	"sap/ui/core/IconPool",
-	"sap/ui/thirdparty/jquery",
-	"sap/m/SearchField",
-	"sap/ui/core/Control",
-	"sap/base/Log",
-	"sap/base/util/UriParameters"
-], function(IconPool, jQuery, SearchField, Control, Log, UriParameters) {
+sap.ui.define(["sap/ui/core/IconPool", "sap/m/SearchField", "sap/ui/core/Control"], function(IconPool, SearchField, Control) {
 	"use strict";
 
 	try {
 		sap.ui.getCore().loadLibrary("sap.m");
 	} catch (e) {
-		Log.error("This test page requires the library 'sap.m' which is not available.");
+		undefined/*jQuery*/.sap.log.error("This test page requires the library 'sap.m' which is not available.");
 		throw (e);
 	}
 
@@ -235,16 +228,16 @@ sap.ui.define([
 		}
 	});
 
-	jQuery(function(){
-		jQuery("head").append("<link type='text/css' rel='stylesheet' href='resources/ShellTestPage.css'>");
+	undefined/*jQuery*/(function(){
+		undefined/*jQuery*/("head").append("<link type='text/css' rel='stylesheet' href='resources/ShellTestPage.css'>");
 	});
 
 
-	var sLogo = UriParameters.fromQuery(window.location.search).get("logo");
+	var sLogo = undefined/*jQuery*/.sap.getUriParameters().get("logo");
 	if (sLogo){
 		sLogo = "images/" + sLogo;
 	} else {
-		sLogo = sap.ui.require.toUrl("sap/ui/core") + "/" + "mimes/logo/sap_50x26.png";
+		sLogo = undefined/*jQuery*/.sap.getModulePath("sap.ui.core", '/') + "mimes/logo/sap_50x26.png";
 	}
 
 	window.sLogo = sLogo;

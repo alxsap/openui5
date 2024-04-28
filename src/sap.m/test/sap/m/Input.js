@@ -21,8 +21,7 @@ sap.ui.define([
 	"sap/m/HBox",
 	"sap/ui/core/library",
 	"sap/m/List",
-	"sap/m/InputListItem",
-	"sap/base/Log"
+	"sap/m/InputListItem"
 ], function(
 	MessageBox,
 	JSONModel,
@@ -46,8 +45,7 @@ sap.ui.define([
 	HBox,
 	coreLibrary,
 	List,
-	InputListItem,
-	Log
+	InputListItem
 ) {
 	"use strict";
 
@@ -80,7 +78,7 @@ sap.ui.define([
 			showSuggestion: true,
 			suggestionItemSelected: function(oEvent){
 				var oItem = oEvent.getParameter("selectedItem");
-				Log.info("sap.m.Input id " + this.getId() + " with suggestion: selected item text is " + oItem.getText());
+				undefined/*jQuery*/.sap.log.info("sap.m.Input id " + this.getId() + " with suggestion: selected item text is " + oItem.getText());
 			},
 			suggest: loadData
 		}).setModel(jsonModel)
@@ -110,7 +108,7 @@ sap.ui.define([
 			valueState: "Error",
 			suggestionItemSelected: function(oEvent){
 				var oItem = oEvent.getParameter("selectedItem");
-				Log.info("sap.m.Input id " + this.getId() + " with suggestion: selected item text is " + oItem.getText());
+				undefined/*jQuery*/.sap.log.info("sap.m.Input id " + this.getId() + " with suggestion: selected item text is " + oItem.getText());
 			},
 			suggest: loadData
 		}).setModel(jsonModel)
@@ -250,7 +248,7 @@ sap.ui.define([
 			suggest: function(oEvent){
 				var sValue = oEvent.getParameter("suggestValue");
 				for(var i=0; i<aData.length; i++){
-					if(aAlreadyAddedUsers && Array.prototype.indexOf.call(aAlreadyAddedUsers, aData[i].userid) < 0 && (typeof sValue == "string" && sValue && aData[i].name.toLowerCase().startsWith(sValue.toLowerCase()))){
+					if(undefined/*jQuery*/.inArray(aData[i].userid, aAlreadyAddedUsers) < 0 && undefined/*jQuery*/.sap.startsWithIgnoreCase(aData[i].name, sValue)){
 						oSuggestInput3.addSuggestionItem(new Item({text: aData[i].name}));
 						aAlreadyAddedUsers.push(aData[i].userid);
 					}
@@ -445,7 +443,7 @@ sap.ui.define([
 			showSuggestion: true,
 			suggestionItemSelected: function(oEvent){
 				var oItem = oEvent.getParameter("selectedRow");
-				Log.info("sap.m.Input id " + this.getId() + " with suggestion: selected item text is " + oItem.getCells()[0].getText());
+				undefined/*jQuery*/.sap.log.info("sap.m.Input id " + this.getId() + " with suggestion: selected item text is " + oItem.getCells()[0].getText());
 			},
 			suggest: loadData,
 			suggestionColumns: [
@@ -538,7 +536,7 @@ sap.ui.define([
 			},
 			suggestionItemSelected: function(oEvent){
 				var oItem = oEvent.getParameter("selectedRow");
-				Log.info("sap.m.Input id " + this.getId() + " with suggestion: selected item text is " + oItem.getCells()[0].getText());
+				undefined/*jQuery*/.sap.log.info("sap.m.Input id " + this.getId() + " with suggestion: selected item text is " + oItem.getCells()[0].getText());
 			},
 			suggestionColumns : [
 				new Column({
@@ -628,7 +626,7 @@ sap.ui.define([
 					oSuggestionRow;
 
 				for(var i=0; i<oSuggestionData.tabularSuggestionItems.length; i++){
-					if(aAlreadyAddedProducts && Array.prototype.indexOf.call(aAlreadyAddedProducts, oSuggestionData.tabularSuggestionItems[i].name) < 0 && (typeof sValue == "string" && sValue && oSuggestionData.tabularSuggestionItems[i].name.toLowerCase().startsWith(sValue.toLowerCase()))){
+					if(undefined/*jQuery*/.inArray(oSuggestionData.tabularSuggestionItems[i].name, aAlreadyAddedProducts) < 0 && undefined/*jQuery*/.sap.startsWithIgnoreCase(oSuggestionData.tabularSuggestionItems[i].name, sValue)){
 						oSuggestionRow = oTableItemTemplate.clone();
 						oSuggestionRow.getCells()[0].setText(oSuggestionData.tabularSuggestionItems[i].name);
 						oSuggestionRow.getCells()[1].setText(oSuggestionData.tabularSuggestionItems[i].qty);
@@ -641,7 +639,7 @@ sap.ui.define([
 			},
 			suggestionItemSelected: function(oEvent){
 				var oItem = oEvent.getParameter("selectedRow");
-				Log.info("sap.m.Input id " + this.getId() + " with suggestion: selected item text is " + oItem.getCells()[0].getText());
+				undefined/*jQuery*/.sap.log.info("sap.m.Input id " + this.getId() + " with suggestion: selected item text is " + oItem.getCells()[0].getText());
 			},
 			suggestionColumns : [
 				new Column({
@@ -712,7 +710,7 @@ sap.ui.define([
 			},
 			suggestionItemSelected: function(oEvent){
 				var oItem = oEvent.getParameter("selectedRow");
-				Log.info("sap.m.Input id " + this.getId() + " with suggestion: selected item text is " + oItem.getCells()[0].getText());
+				undefined/*jQuery*/.sap.log.info("sap.m.Input id " + this.getId() + " with suggestion: selected item text is " + oItem.getCells()[0].getText());
 			},
 			suggestionColumns : [
 				new Column({
@@ -793,7 +791,7 @@ sap.ui.define([
 			},
 			suggestionItemSelected: function(oEvent){
 				var oItem = oEvent.getParameter("selectedRow");
-				Log.info("sap.m.Input id " + this.getId() + " with suggestion: selected item text is " + oItem.getCells()[0].getText());
+				undefined/*jQuery*/.sap.log.info("sap.m.Input id " + this.getId() + " with suggestion: selected item text is " + oItem.getCells()[0].getText());
 			},
 			suggestionColumns : [
 				new Column({
@@ -874,7 +872,7 @@ sap.ui.define([
 			},
 			suggestionItemSelected: function(oEvent){
 				var oItem = oEvent.getParameter("selectedRow");
-				Log.info("sap.m.Input id " + this.getId() + " with suggestion: selected item text is " + oItem.getCells()[0].getText());
+				undefined/*jQuery*/.sap.log.info("sap.m.Input id " + this.getId() + " with suggestion: selected item text is " + oItem.getCells()[0].getText());
 			},
 			suggestionColumns : [
 				new Column({
@@ -962,7 +960,7 @@ sap.ui.define([
 			},
 			suggestionItemSelected: function(oEvent){
 				var oItem = oEvent.getParameter("selectedRow");
-				Log.info("sap.m.Input id " + this.getId() + " with suggestion: selected item text is " + oItem.getCells()[0].getText());
+				undefined/*jQuery*/.sap.log.info("sap.m.Input id " + this.getId() + " with suggestion: selected item text is " + oItem.getCells()[0].getText());
 			},
 			suggest: function(oEvent){
 				var sValue = oEvent.getParameter("suggestValue"),
@@ -1013,7 +1011,7 @@ sap.ui.define([
 					}));
 
 					for(var i=0; i<oSuggestionData.tabularSuggestionItems.length; i++){
-						if(aAlreadyAddedProducts7 && Array.prototype.indexOf.call(aAlreadyAddedProducts7, oSuggestionData.tabularSuggestionItems[i].name) < 0 && (typeof sValue == "string" && sValue && oSuggestionData.tabularSuggestionItems[i].name.toLowerCase().startsWith(sValue.toLowerCase()))){
+						if(undefined/*jQuery*/.inArray(oSuggestionData.tabularSuggestionItems[i].name, aAlreadyAddedProducts7) < 0 && undefined/*jQuery*/.sap.startsWithIgnoreCase(oSuggestionData.tabularSuggestionItems[i].name, sValue)){
 							oSuggestionRow = oTableItemTemplate.clone();
 							oSuggestionRow.getCells()[0].setText(oSuggestionData.tabularSuggestionItems[i].name);
 							oSuggestionRow.getCells()[1].setText(oSuggestionData.tabularSuggestionItems[i].qty);

@@ -396,11 +396,7 @@ sap.ui.define([
 		assert(!oClassInfo || typeof oClassInfo === "object");
 		assert(!FNMetaImpl || isFunction(FNMetaImpl));
 
-		// allow metadata class to preprocess
 		FNMetaImpl = FNMetaImpl || Metadata;
-		if ( isFunction(FNMetaImpl.preprocessClassInfo) ) {
-			oClassInfo = FNMetaImpl.preprocessClassInfo(oClassInfo);
-		}
 
 		// normalize oClassInfo
 		oClassInfo = oClassInfo || {};

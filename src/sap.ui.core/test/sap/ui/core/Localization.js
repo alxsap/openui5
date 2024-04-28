@@ -1,14 +1,12 @@
 sap.ui.define([
-		"sap/ui/thirdparty/jquery",
 		"sap/ui/core/Supportability",
 		"sap/base/i18n/Localization",
 		"sap/ui/commons/layout/MatrixLayout",
 		"sap/ui/commons/TextView",
 		"sap/ui/commons/Label",
 		"sap/ui/commons/TextField",
-		"sap/ui/model/resource/ResourceModel",
-		"sap/base/i18n/ResourceBundle"
-], function(jQuery, Supportability, Localization, MatrixLayout, TextView, Label, TextField, ResourceModel, ResourceBundle) {
+		"sap/ui/model/resource/ResourceModel"
+], function(Supportability, Localization, MatrixLayout, TextView, Label, TextField, ResourceModel) {
 		"use strict";
 		try{
 			sap.ui.getCore().loadLibrary("sap.ui.commons");
@@ -22,7 +20,7 @@ sap.ui.define([
 				sText = "Info:\n";
 
 			if (mInfo) {
-				jQuery.each(mInfo, function(key, value) {
+				undefined/*jQuery*/.each(mInfo, function(key, value) {
 					sText += key + ": " + value + "\n";
 				});
 			} else {
@@ -46,7 +44,7 @@ sap.ui.define([
 		Object.defineProperty(globalThis, "oBundle", {
 				configurable: "false",
 				writable: "true",
-				value: ResourceBundle.create({url : "resources/i18n.properties", locale: sLocale, includeInfo: Supportability.collectOriginInfo()})
+				value: undefined/*jQuery*/.sap.resources({url : "resources/i18n.properties", locale: sLocale, includeInfo: Supportability.collectOriginInfo()})
 		});
 
 		/* TODO: Consider replacing this
@@ -131,9 +129,9 @@ sap.ui.define([
 		);
 		oMatrixLayout.placeAt("resourcemodel");
 
-		jQuery(function(){
-			var url = sap.ui.require.toUrl("sap/ui/commons") + "/" + "messagebundle.properties";
-			var oBundle = ResourceBundle.create({url:url});
-			jQuery("#locale").html(oBundle ? oBundle.sLocale : "--");
+		undefined/*jQuery*/(function(){
+			var url = undefined/*jQuery*/.sap.getModulePath("sap.ui.commons", '/') + "messagebundle.properties";
+			var oBundle = undefined/*jQuery*/.sap.resources({url:url});
+			undefined/*jQuery*/("#locale").html(oBundle ? oBundle.sLocale : "--");
 		});
 });
