@@ -1269,25 +1269,38 @@ sap.ui.define([
 	};
 
 	/**
-	 * Moves this node to the given new parent (in case of a recursive hierarchy, see
-	 * {@link sap.ui.model.odata.v4.ODataListBinding#setAggregation}). No other
+	 * In a {@link sap.ui.model.odata.v4.ODataListBinding#setAggregation recursive hierarchy}, this
+	 * method moves a node to the given new parent, just before the given next sibling. No other
 	 * {@link sap.ui.model.odata.v4.ODataListBinding#create creation}, {@link #delete deletion}, or
-	 * move must be pending, and no other modification (including collapse of some ancestor node)
-	 * must happen while this move is pending! Omitting a new parent turns this node into a root
-	 * node (since 1.121.0).
+	 * move must be pending, and no other modification (including the collapse of an ancestor node)
+	 * must happen while this move is pending!
 	 *
 	 * The move changes the {@link #getIndex index} of this context, of all of its descendants, and
 	 * of all other nodes affected by the move.
 	 *
-	 * If this node is created, it becomes simply "persisted", with {@link #isTransient} returning
-	 * <code>undefined</code> etc. In this case, all descendants of this node are created themselves
-	 * and also become "persisted" - otherwise, they remain unaffected. If the new parent is
-	 * created, then its lowest-level {@link #getParent ancestor} is determined which is created as
-	 * well (this may be the new parent itself). All descendants of that node are created themselves
-	 * and also become "persisted" - otherwise, they remain unaffected.
+	 * The move changes the
+	 * {@link topic:c9723f8265f644af91c0ed941e114d46/section_CST context states} of the nodes as
+	 * follows:
+	 * <ul>
+	 *   <li> If the moved node is in the "created" state, it becomes simply "persisted", with
+	 *     {@link #isTransient} returning <code>undefined</code>. In this case, any descendants of
+	 *     this node are themselves in the "created" state and also become "persisted"; otherwise,
+	 *     their states remain unaffected by the move.
+	 *   <li> If the moved node's new parent node is in the "created" state, the parent's
+	 *     lowest-level {@link getParent ancestor} is determined that is also in the "created" state
+	 *     (if no ancestor nodes are in "created" state, this will be the new parent itself). Any
+	 *     descendants of that node are then themselves in the "created" state and also become
+	 *     "persisted"; otherwise, their states remain unaffected by the move.
+	 * </ul>
 	 *
-	 * @param {object} [oParameters] - A parameter object
-	 * @param {sap.ui.model.odata.v4.Context} [oParameters.parent=null] - The new parent's context
+	 * @param {object} oParameters - A parameter object
+	 * @param {sap.ui.model.odata.v4.Context|null} [oParameters.nextSibling]
+	 *   The next sibling's context, or <code>null</code> to turn this node into the last sibling
+	 *   (since 1.124.0). Omitting the sibling moves this node to a position determined by the
+	 *   server.
+	 * @param {sap.ui.model.odata.v4.Context|null} oParameters.parent
+	 *   The new parent's context, or (since 1.121.0) <code>null</code> to turn this node into a
+	 *   root node
 	 * @returns {Promise<void>}
 	 *   A promise which is resolved without a defined result when the move is finished, or
 	 *   rejected in case of an error

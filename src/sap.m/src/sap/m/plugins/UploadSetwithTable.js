@@ -686,6 +686,11 @@ sap.ui.define([
 	 * @public
 	 */
 	UploadSetwithTable.prototype.openFilePreview = function (oBindingContext) {
+		const oRowConfiguration = this.getRowConfiguration();
+		if (!oRowConfiguration) {
+			Log.error("Row configuration is not set for the plugin. File preview is not possible.");
+			return;
+		}
 		this.getConfig("openFilePreview", oBindingContext);
 	};
 
@@ -696,6 +701,11 @@ sap.ui.define([
 	 * @public
 	 */
 	UploadSetwithTable.prototype.download = function (oBindingContext, bAskForLocation) {
+		const oRowConfiguration = this.getRowConfiguration();
+		if (!oRowConfiguration) {
+			Log.error("Row configuration is not set for the plugin. Download is not possible.");
+			return;
+		}
 		this.getConfig("download", {
 			oBindingContext: oBindingContext,
 			bAskForLocation: bAskForLocation
@@ -708,6 +718,11 @@ sap.ui.define([
 	 * @public
 	 */
 	UploadSetwithTable.prototype.renameItem = function (oBindingContext) {
+		const oRowConfiguration = this.getRowConfiguration();
+		if (!oRowConfiguration) {
+			Log.error("Row configuration is not set for the plugin. Rename action is not possible.");
+			return;
+		}
 		if (oBindingContext) {
 			const oItem = this.getConfig("getItemForContext", oBindingContext);
 			const oDialog = this._getFileRenameDialog(oItem);
@@ -1403,12 +1418,14 @@ sap.ui.define([
 	};
 
 	UploadSetwithTable.prototype._getDefaultNoDataIllustration = function() {
-		return new IllustratedMessage({
+		const oIllustratedMessage =  new IllustratedMessage({
 			illustrationType: IllustratedMessageType.UploadCollection,
 			illustrationSize: IllustratedMessageSize.Spot,
 			title: this._oRb.getText("UPLOADSET_WITH_TABLE_NO_DATA_TEXT"),
 			description: this._oRb.getText("UPLOADSET_WITH_TABLE_NO_DATA_DESCRIPTION")
 		});
+		oIllustratedMessage.addStyleClass("sapMUSTP-IllustratedMessage-container");
+		return oIllustratedMessage;
 	};
 
 
@@ -1584,42 +1601,42 @@ sap.ui.define([
 			}
 
 			// BindProperties only if the types are valid else skip the binding to default value
-			if (oRowConfiguration._fileNameValidator(oBindingContext)) {
+			if (oRowConfiguration?._fileNameValidator(oBindingContext)) {
 				this.bindItemProperty(oUploadSetItem, {
 					property: "fileName",
 					propertyPath: oRowConfiguration.getFileNamePath(),
 					modelName: sModelName
 				});
 			}
-			if (oRowConfiguration._urlValidator(oBindingContext)) {
+			if (oRowConfiguration?._urlValidator(oBindingContext)) {
 				this.bindItemProperty(oUploadSetItem, {
 					property: "url",
 					propertyPath: oRowConfiguration.getUrlPath(),
 					modelName: sModelName
 				});
 			}
-			if (oRowConfiguration._mediaTypeValidator(oBindingContext)) {
+			if (oRowConfiguration?._mediaTypeValidator(oBindingContext)) {
 				this.bindItemProperty(oUploadSetItem, {
 					property: "mediaType",
 					propertyPath: oRowConfiguration.getMediaTypePath(),
 					modelName: sModelName
 				});
 			}
-			if (oRowConfiguration._uploadUrlValidator(oBindingContext)) {
+			if (oRowConfiguration?._uploadUrlValidator(oBindingContext)) {
 				this.bindItemProperty(oUploadSetItem, {
 					property: "uploadUrl",
 					propertyPath: oRowConfiguration.getUploadUrlPath(),
 					modelName: sModelName
 				});
 			}
-			if (oRowConfiguration._previewableValidator(oBindingContext)) {
+			if (oRowConfiguration?._previewableValidator(oBindingContext)) {
 				this.bindItemProperty(oUploadSetItem, {
 					property: "previewable",
 					propertyPath: oRowConfiguration.getPreviewablePath(),
 					modelName: sModelName
 				});
 			}
-			if (oRowConfiguration._fileSizeValidator(oBindingContext)) {
+			if (oRowConfiguration?._fileSizeValidator(oBindingContext)) {
 				this.bindItemProperty(oUploadSetItem, {
 					property: "fileSize",
 					propertyPath: oRowConfiguration.getFileSizePath(),
@@ -1791,42 +1808,42 @@ sap.ui.define([
 			}
 
 			// BindProperties only if the types are valid else skip the binding to default value
-			if (oRowConfiguration._fileNameValidator(oBindingContext)) {
+			if (oRowConfiguration?._fileNameValidator(oBindingContext)) {
 				this.bindItemProperty(oUploadSetItem, {
 					property: "fileName",
 					propertyPath: oRowConfiguration.getFileNamePath(),
 					modelName: sModelName
 				});
 			}
-			if (oRowConfiguration._urlValidator(oBindingContext)) {
+			if (oRowConfiguration?._urlValidator(oBindingContext)) {
 				this.bindItemProperty(oUploadSetItem, {
 					property: "url",
 					propertyPath: oRowConfiguration.getUrlPath(),
 					modelName: sModelName
 				});
 			}
-			if (oRowConfiguration._mediaTypeValidator(oBindingContext)) {
+			if (oRowConfiguration?._mediaTypeValidator(oBindingContext)) {
 				this.bindItemProperty(oUploadSetItem, {
 					property: "mediaType",
 					propertyPath: oRowConfiguration.getMediaTypePath(),
 					modelName: sModelName
 				});
 			}
-			if (oRowConfiguration._uploadUrlValidator(oBindingContext)) {
+			if (oRowConfiguration?._uploadUrlValidator(oBindingContext)) {
 				this.bindItemProperty(oUploadSetItem, {
 					property: "uploadUrl",
 					propertyPath: oRowConfiguration.getUploadUrlPath(),
 					modelName: sModelName
 				});
 			}
-			if (oRowConfiguration._previewableValidator(oBindingContext)) {
+			if (oRowConfiguration?._previewableValidator(oBindingContext)) {
 				this.bindItemProperty(oUploadSetItem, {
 					property: "previewable",
 					propertyPath: oRowConfiguration.getPreviewablePath(),
 					modelName: sModelName
 				});
 			}
-			if (oRowConfiguration._fileSizeValidator(oBindingContext)) {
+			if (oRowConfiguration?._fileSizeValidator(oBindingContext)) {
 				this.bindItemProperty(oUploadSetItem, {
 					property: "fileSize",
 					propertyPath: oRowConfiguration.getFileSizePath(),
@@ -1998,42 +2015,42 @@ sap.ui.define([
 			}
 
 			// BindProperties only if the types are valid else skip the binding to default value
-			if (oRowConfiguration._fileNameValidator(oBindingContext)) {
+			if (oRowConfiguration?._fileNameValidator(oBindingContext)) {
 				this.bindItemProperty(oUploadSetItem, {
 					property: "fileName",
 					propertyPath: oRowConfiguration.getFileNamePath(),
 					modelName: sModelName
 				});
 			}
-			if (oRowConfiguration._urlValidator(oBindingContext)) {
+			if (oRowConfiguration?._urlValidator(oBindingContext)) {
 				this.bindItemProperty(oUploadSetItem, {
 					property: "url",
 					propertyPath: oRowConfiguration.getUrlPath(),
 					modelName: sModelName
 				});
 			}
-			if (oRowConfiguration._mediaTypeValidator(oBindingContext)) {
+			if (oRowConfiguration?._mediaTypeValidator(oBindingContext)) {
 				this.bindItemProperty(oUploadSetItem, {
 					property: "mediaType",
 					propertyPath: oRowConfiguration.getMediaTypePath(),
 					modelName: sModelName
 				});
 			}
-			if (oRowConfiguration._uploadUrlValidator(oBindingContext)) {
+			if (oRowConfiguration?._uploadUrlValidator(oBindingContext)) {
 				this.bindItemProperty(oUploadSetItem, {
 					property: "uploadUrl",
 					propertyPath: oRowConfiguration.getUploadUrlPath(),
 					modelName: sModelName
 				});
 			}
-			if (oRowConfiguration._previewableValidator(oBindingContext)) {
+			if (oRowConfiguration?._previewableValidator(oBindingContext)) {
 				this.bindItemProperty(oUploadSetItem, {
 					property: "previewable",
 					propertyPath: oRowConfiguration.getPreviewablePath(),
 					modelName: sModelName
 				});
 			}
-			if (oRowConfiguration._fileSizeValidator(oBindingContext)) {
+			if (oRowConfiguration?._fileSizeValidator(oBindingContext)) {
 				this.bindItemProperty(oUploadSetItem, {
 					property: "fileSize",
 					propertyPath: oRowConfiguration.getFileSizePath(),

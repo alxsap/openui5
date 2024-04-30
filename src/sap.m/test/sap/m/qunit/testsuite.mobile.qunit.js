@@ -2470,11 +2470,20 @@ sap.ui.define([
 				module: "test-resources/sap/m/qunit/plugins/CellSelector.qunit"
 			},
 
-			"plugins/opa/CellSelector": {
-				title: "Opa tests for CellSelector",
-				module: "test-resources/sap/m/qunit/plugins/opa/CellSelector/test/CellSelectorOPA.qunit",
+			"plugins/opa/CellSelector/GridTable": {
+				title: "Opa tests for CellSelector with GridTable",
+				module: "test-resources/sap/m/qunit/plugins/opa/CellSelector/GridTable/test/CellSelectorOPA.qunit",
 				ui5: {
 					libs: ["sap.m", "sap.ui.table"],
+					language: "en"
+				}
+			},
+
+			"plugins/opa/CellSelector/ResponsiveTable": {
+				title: "Opa tests for CellSelector with ResponsiveTable",
+				module: "test-resources/sap/m/qunit/plugins/opa/CellSelector/ResponsiveTable/test/CellSelectorOPA.qunit",
+				ui5: {
+					libs: ["sap.m"],
 					language: "en"
 				}
 			},

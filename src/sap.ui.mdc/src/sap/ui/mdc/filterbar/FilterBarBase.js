@@ -94,7 +94,6 @@ sap.ui.define([
 					 * }</code></pre>
 					 * <b>Note:</b> Ensure that the related file can be requested (any required library has to be loaded before that).<br>
 					 * Do not bind or modify the module. This property can only be configured during control initialization.
-					 * @experimental
 					 */
 					delegate: {
 						type: "object",
@@ -188,6 +187,7 @@ sap.ui.define([
 
 					/**
 					 * Contains all the displayed {@link sap.ui.mdc.FilterField filter fields} of the <code>FilterBarBase</code> control.
+					 *
 					 * <b>Note:</b>
 					 * This aggregation is managed by the control, can only be populated during the definition in the XML view, and is not bindable.
 					 * Any changes of the initial aggregation content might result in undesired effects.

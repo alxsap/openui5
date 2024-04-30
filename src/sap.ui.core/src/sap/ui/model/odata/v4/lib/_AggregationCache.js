@@ -1248,8 +1248,10 @@ sap.ui.define([
 
 	/**
 	 * Moves the (child) node with the given path to the parent node with the given path by sending
-	 * a PATCH request for "<parent navigation>@odata.bind". The (child) node may be a leaf or a
-	 * collapsed node, but not expanded! Omitting a new parent turns the child into a root.
+	 * a PATCH request for "<parent navigation>@odata.bind". A <code>null</code> parent turns the
+	 * child into a root. The optional sibling path invokes an action for moving the (child) node
+	 * before the given sibling (or with <code>null</code> to the last sibling position) by sending
+	 * a POST request for the "ChangeNextSiblingAction".
 	 *
 	 * @param {sap.ui.model.odata.v4.lib._GroupLock} oGroupLock
 	 *   A lock for the group to associate the requests with
@@ -1260,13 +1262,18 @@ sap.ui.define([
 	 * @param {string|null} [sSiblingPath]
 	 *   The next sibling's path relative to the cache
 	 * @param {string} [sNonCanonicalChildPath]
-	 *   The (child) node's non-canonical path (relative to the service)
+	 *   The (child) node's non-canonical path (relative to the service); only used when
+	 *   <code>sSiblingPath</code> is given
 	 * @returns {{promise : sap.ui.base.SyncPromise<number[]>, refresh : boolean}}
 	 *   An object with two properties:
-	 *   - <code>promise</code>: A promise which is resolved with the number of child nodes added
-	 *     (normally one, but maybe more in case parent node was collapsed before) and the new index
-	 *     when the move is finished, or rejected in case of an error. In case a refresh is needed,
-	 *     the promise is resolved without a defined result.
+	 *   - <code>promise</code>: A promise which is resolved with an array of numbers when the move
+	 *     is finished, or rejected in case of an error. In case a refresh is needed, the promise is
+	 *     resolved without a defined result. Those numbers are:
+	 *     - the number of child nodes added (normally one, but maybe more in case parent node was
+	 *       collapsed before),
+	 *     - the new index of the (child) node,
+	 *     - the number of descendant nodes that were affected by the collapse of the (child) node
+	 *       (<code>undefined</code> in case the (child) node was not expanded)
 	 *   - <code>refresh</code>: A flag indicating whether a side-effects refresh is needed
 	 *
 	 * @public
@@ -1311,7 +1318,7 @@ sap.ui.define([
 				let oSiblingNode = this.aElements.$byPredicate[sSiblingPredicate];
 				if (oSiblingNode) {
 					const oNextSiblingType = this.oAggregation.$fetchMetadata(
-						_Helper.getMetaPath("/" + sActionPath + "/@$ui5.overload/NextSibling/")
+						_Helper.getMetaPath("/" + sActionPath + "/NextSibling/")
 					).getResult();
 					const aKeys = Object.keys(oNextSiblingType).filter((sKey) => sKey[0] !== "$");
 					oSiblingNode = aKeys.reduce((oKeys, sKey) => {
@@ -1341,6 +1348,10 @@ sap.ui.define([
 
 		if (!bRefreshNeeded) {
 			oPromise = oPromise.then(([oPatchResult,, iPreorderRank]) => {
+				const iCount = oChildNode["@$ui5.node.isExpanded"]
+					? this.collapse(sChildPredicate)
+					: undefined;
+
 				let iResult = 1;
 				switch (oParentNode ? oParentNode["@$ui5.node.isExpanded"] : true) {
 					case false:
@@ -1373,7 +1384,7 @@ sap.ui.define([
 				this.aElements.splice(iNewIndex, 0, oChildNode);
 				this.adjustDescendantCount(oChildNode, iNewIndex, +iOffset);
 
-				return [iResult, iNewIndex];
+				return [iResult, iNewIndex, iCount];
 			});
 		} // else: side-effects refresh needed, nothing to do here!
 

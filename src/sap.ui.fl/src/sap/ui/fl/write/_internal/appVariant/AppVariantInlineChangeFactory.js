@@ -753,7 +753,7 @@ sap.ui.define([
 	 * @ui5-restricted sap.ui.rta, smart business
 	 */
 	AppVariantInlineChangeFactory.create_ui5_setMinUI5Version = function(mPropertyBag) {
-		Utils.checkParameterAndType(mPropertyBag.content, "minUI5Version", "string");
+		Utils.checkParameterAndType(mPropertyBag.content, "minUI5Version", ["string", "array"]);
 		return _createAppVariantInlineChange(mPropertyBag);
 	};
 
