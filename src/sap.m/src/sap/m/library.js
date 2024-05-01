@@ -176,6 +176,7 @@ sap.ui.define([
 		  "sap.m.SwitchType",
 		  "sap.m.TabsOverflowMode",
 		  "sap.m.ContentConfigType",
+		  "sap.m.TileInfoColor",
 		  "sap.m.TileSizeBehavior",
 		  "sap.m.TimePickerMaskMode",
 		  "sap.m.TitleAlignment",
@@ -418,7 +419,6 @@ sap.ui.define([
 		  "sap.m.ImageCustomData",
 		  "sap.m.LightBoxItem",
 		  "sap.m.LinkTileContent",
-		  "sap.m.Badge",
 		  "sap.m.OverflowToolbarLayoutData",
 		  "sap.m.MaskInputRule",
 		  "sap.m.MenuItem",
@@ -444,6 +444,7 @@ sap.ui.define([
 		  "sap.m.TabContainerItem",
 		  "sap.m.TabStripItem",
 		  "sap.m.ToolbarLayoutData",
+		  "sap.m.TileInfo",
 		  "sap.m.upload.FilePreviewDialog",
 		  "sap.m.upload.Uploader",
 		  "sap.m.upload.UploaderTableItem",
@@ -1899,6 +1900,110 @@ sap.ui.define([
 		  * @experimental Since 1.96
 		  */
 		 IconMode : "IconMode"
+	 };
+
+	 /**
+	  * Colors to highlight certain UI elements.
+	  *
+	  * In contrast to the <code>ValueState</code>, the semantic meaning must be defined by the application.
+	  *
+	  * @enum {string}
+	  * @public
+	  * @since 1.124
+	  * @see {@link fiori:/how-to-use-semantic-colors/ Semantic Colors}
+	  */
+	 thisLib.TileInfoColor = {
+
+		 /**
+		  * Indication Color 1
+		  * @public
+		  */
+		 Indication1 : "Indication1",
+
+		 /**
+		  * Indication Color 2
+		  * @public
+		  */
+		 Indication2 : "Indication2",
+
+		 /**
+		  * Indication Color 3
+		  * @public
+		  */
+		 Indication3 : "Indication3",
+
+		 /**
+		  * Indication Color 4
+		  * @public
+		  */
+		 Indication4 : "Indication4",
+
+		 /**
+		  * Indication Color 5
+		  * @public
+		  */
+		 Indication5 : "Indication5",
+
+		 /**
+		  * Indication Color 6
+		  * @public
+		  */
+		 Indication6 : "Indication6",
+
+		 /**
+		  * Indication Color 7
+		  * @public
+		  */
+		 Indication7 : "Indication7",
+
+		 /**
+		  * Indication Color 8
+		  * @public
+		  */
+		 Indication8 : "Indication8",
+
+		 /**
+		  * Indication Color 9
+		  * @public
+		  */
+		 Indication9 : "Indication9",
+
+		 /**
+		  * Indication Color 10
+		  * @public
+		  */
+		 Indication10 : "Indication10",
+		 /**
+		  * Critical Text Color
+		  * @public
+		  */
+		 CriticalTextColor: "CriticalTextColor",
+		 /**
+		  * Warning Background Color
+		  * @public
+		  */
+		 WarningBackground: "WarningBackground",
+		 /**
+		  * Warning Border Color
+		  * @public
+		  */
+		 WarningBorderColor: "WarningBorderColor",
+		 /**
+		  * SAP Brand Color
+		  * @public
+		  */
+		 BrandColor: "BrandColor",
+		 /**
+		  * Information Border Color
+		  * @public
+		  */
+		 InformationBorderColor: "InformationBorderColor",
+		 /**
+		  * Information Background Color
+		  * @public
+		  */
+		 InformationBackgroundColor: "InformationBackgroundColor"
+
 	 };
 
 	 /**
@@ -5842,6 +5947,7 @@ sap.ui.define([
 	 DataType.registerEnum("sap.m.table.columnmenu.Category", thisLib.table.columnmenu.Category);
 	 DataType.registerEnum("sap.m.upload.UploaderHttpRequestMethod", thisLib.upload.UploaderHttpRequestMethod);
 	 DataType.registerEnum("sap.m.UploadSetwithTableActionPlaceHolder", thisLib.UploadSetwithTableActionPlaceHolder);
+	 DataType.registerEnum("sap.m.TileInfoColor", thisLib.TileInfoColor);
 
 	 return thisLib;
 	});

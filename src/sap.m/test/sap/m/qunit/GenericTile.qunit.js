@@ -32,7 +32,7 @@ sap.ui.define([
 	"sap/f/dnd/GridDropInfo",
 	"sap/ui/core/Theming",
 	"sap/m/LinkTileContent",
-	"sap/m/Badge",
+	"sap/m/TileInfo",
 	"sap/ui/qunit/utils/nextUIUpdate",
 	/* jQuery custom selectors ":sapTabbable"*/
 	"sap/ui/dom/jquery/Selectors",
@@ -5402,7 +5402,7 @@ sap.ui.define([
 				subheader: "Test Subheader",
 				frameType: FrameType.TwoByOne,
 				badge:[
-					new Badge({src:"sap-icon://ai",text:"SAP",textColor: "sapCriticalTextColor",backgroundColor: "sapWarningBackground", borderColor: "sapWarningBorderColor"})
+					new Badge({src:"sap-icon://ai",text:"SAP",textColor: "CriticalTextColor",backgroundColor: "WarningBackground", borderColor: "WarningBorderColor"})
 				]
 			}).placeAt("qunit-fixture");
 			await nextUIUpdate();
