@@ -266,15 +266,14 @@ sap.ui.define([
 	}
 
 	/**
-	 * Loads a controller class or a controller-extension
-	 *
-	 * @param {string} sName the controller name
-	 * @param {string} sViewId the ID of the View to which the loaded controller/extensions should be connected
-	 * @param {boolean} bAsync Load async or not
-	 * @return {sap.ui.core.mvc.Controller | Promise} oController <code>Promise</code> in case of asynchronous loading
-	 *           or <code>undefined</code> in case of synchronous loading
-	 */
-	function loadControllerClass(sName, sViewId, bAsync) {
+			 * Loads a controller class or a controller-extension
+			 *
+			 * @param {string} sName the controller name
+			 * @param {string} sViewId the ID of the View to which the loaded controller/extensions should be connected
+			 * @return {sap.ui.core.mvc.Controller | Promise} oController <code>Promise</code> in case of asynchronous loading
+			 *           or <code>undefined</code> in case of synchronous loading
+			 */
+	function loadControllerClass(sName, sViewId) {
 		if (!sName) {
 			throw new Error("Controller name ('sName' parameter) is required");
 		}
@@ -293,15 +292,12 @@ sap.ui.define([
 		});
 	}
 
-	/*
+	/**
 	 * Instantiation of a controller
 	 *
 	 * @param {function} ControllerClass The controller constructor
 	 * @param {string} sName the controller name
-	 * @param {boolean} bAsync Load async or not
-	 * @return {sap.ui.core.mvc.Controller|Promise} A <code>Promise</code> in case of asynchronous extend
-	 *           or the <code>controller</code> in case of synchronous extend
-	 *
+	 * @return {sap.ui.core.mvc.Controller} The created controller instance
 	 */
 	function instantiateController(ControllerClass, sName) {
 		var oController;
@@ -321,13 +317,11 @@ sap.ui.define([
 	 *
 	 * @param {sap.ui.core.mvc.Controller} oController The controller instance
 	 * @param {boolean} bAsync Wether extend async or not
-	 * @returns {Promise|sap.ui.core.mvc.Controller} If <code>bAsync</code> is <code>true</code> a promise which resolves with the extended <code>oController</code>, otherwise the extended <code>oController</code>
 	 * @private
 	 */
-	Controller.extendByMember = function(oController, bAsync) {
-		var sMember;
+	Controller.extendByMember = function(oController) {
 		//create all member extension instances first
-		for (sMember in oController) {
+		for (const sMember in oController) {
 			if (oController[sMember] &&
 				oController[sMember].getMetadata &&
 				oController[sMember].getMetadata().getStereotype() == "controllerextension") {
@@ -335,122 +329,76 @@ sap.ui.define([
 			}
 		}
 		//apply the extensions
-		for (sMember in oController) {
+		for (const sMember in oController) {
 			if (oController[sMember] &&
 				oController[sMember].getMetadata &&
 				oController[sMember].getMetadata().getStereotype() == "controllerextension") {
 				mixinControllerDefinition(oController, oController[sMember], sMember);
 			}
 		}
-		if (bAsync) {
-			return Promise.resolve(oController);
-		} else {
-			return oController;
-		}
 	};
 
-	/*
-	* This function can be used to extend a controller with controller
-	* extensions returned by controller extension provider.
-	*
-	* @param {object|sap.ui.core.mvc.Controller} oController Controller to extend
-	* @param {string} sName Name of the controller
-	* @param {sap.ui.core.ID|undefined} sOwnerId the ID of the owner component to which this controller belongs,
-	*                                            or undefined if the controller is not associated to a component
-	* @param {sap.ui.core.ID|undefined} sViewId the ID of the corresponding View for <code>oController</code>, or undefined if the controller is created via the the factory
-	* @param {boolean} bAsync If set to true, extension will be run in async mode
-	* @return {sap.ui.core.mvc.Controller|Promise} A <code>Promise</code> in case of asynchronous extend
-	*           or the <code>controller</code> in case of synchronous extend
-	* @private
-	*/
-	Controller.applyExtensions = function(oController, sName, sOwnerId, sViewId, bAsync) {
+	/**
+			 * This function can be used to extend a controller with controller
+			 * extensions returned by controller extension provider.
+			 *
+			 * @param {object|sap.ui.core.mvc.Controller} oController Controller to extend
+			 * @param {string} sName Name of the controller
+			 * @param {sap.ui.core.ID|undefined} sOwnerId the ID of the owner component to which this controller belongs,
+			 *                                            or undefined if the controller is not associated to a component
+			 * @param {sap.ui.core.ID|undefined} sViewId the ID of the corresponding View for <code>oController</code>, or undefined if the controller is created via the the factory
+			 * @return {sap.ui.core.mvc.Controller|Promise} A <code>Promise</code> in case of asynchronous extend
+			 *           or the <code>controller</code> in case of synchronous extend
+			 * @private
+			 */
+	Controller.applyExtensions = function(oController, sName, sOwnerId, sViewId) {
 		/**
-		 * Retrieves the controller-extension with the given name
-		 * @param {boolean} bAsync whether to retrieve the controller extension async or sync
+		 * Retrieves the controller-extension with the given name asynchronously.
 		 * @param {string} sControllerName the extension controller class name
+		 * @returns {Promise<Object>} Promise on the loaded controller extension
 		 */
-		function fnGetExtensionController(bAsync, sControllerName) {
-			if (bAsync) {
-				return loadControllerClass(sControllerName, sViewId, true).then(function(oExtControllerDef) {
-					// loadControllerClass resolves with the base sap/ui/core/mvc/Controller class,
-					// in case 'sControllerName' is not a module but was defined with sap.ui.controller("...", {})
-					oExtControllerDef = mRegistry[sControllerName] || oExtControllerDef;
-					if (oExtControllerDef !== undefined) {
-						if (oExtControllerDef.getMetadata && oExtControllerDef.getMetadata().isA("sap.ui.core.mvc.Controller")) {
-							future.fatalThrows("Attempt to load Extension Controller " + sControllerName + " was not successful", "Controller extension should be a plain object.", null, function() {
-								return {
-									type: "ControllerExtension",
-									name: sControllerName
-								};
-							});
-						}
-						return oExtControllerDef;
+		function fnGetExtensionControllerAsync(sControllerName) {
+			return loadControllerClass(sControllerName, sViewId, true).then(function(oExtControllerDef) {
+				// loadControllerClass resolves with the base sap/ui/core/mvc/Controller class,
+				// in case 'sControllerName' is not a module but was defined with sap.ui.controller("...", {})
+				oExtControllerDef = mRegistry[sControllerName] || oExtControllerDef;
+				if (oExtControllerDef !== undefined) {
+					if (oExtControllerDef.getMetadata && oExtControllerDef.getMetadata().isA("sap.ui.core.mvc.Controller")) {
+						future.fatalThrows("Attempt to load Extension Controller " + sControllerName + " was not successful", "Controller extension should be a plain object.", null, function() {
+							return {
+								type: "ControllerExtension",
+								name: sControllerName
+							};
+						});
+					}
+					return oExtControllerDef;
+				}
+
+			}, function(err) {
+				future.errorThrows("Attempt to load Extension Controller " + sControllerName + " was not successful - is the Controller correctly defined in its file?");
+			});
+		}
+
+		return ControllerExtensionProvider.getControllerExtensions(sName, sOwnerId, sViewId, true)
+			.then(function (mControllers) {
+				// load customizing controllers async
+				var aCustomizingControllerPromises = mControllers.customizingControllerNames.map(fnGetExtensionControllerAsync);
+
+				return Promise.all(aCustomizingControllerPromises).then(function(aCustomizingControllers) {
+					// order of extensions: 1. customizing, 2. provider
+					// the order is fixed as defined in the manifest, and as returned by the external provider
+					var aAllExtensions = aCustomizingControllers.concat(mControllers.providerControllers);
+
+					for (var i = 0, l = aAllExtensions.length; i < l; i++) {
+						mixinControllerDefinition(oController, aAllExtensions[i]);
 					}
 
-				}, function(err) {
-					future.errorThrows("Attempt to load Extension Controller " + sControllerName + " was not successful - is the Controller correctly defined in its file?");
-				});
-			} else {
-				// sync load Controller extension if necessary
-				if (!mRegistry[sControllerName] && !sap.ui.require(sControllerName)) {
-					loadControllerClass(sControllerName, sViewId);
-				}
-
-				// retrieve legacy controller from registry
-				if (mRegistry[sControllerName] !== undefined) {
-					return mRegistry[sControllerName];
-				} else {
-					/* eslint-disable no-loop-func */
-					Log.error("Attempt to load Extension Controller " + sControllerName + " was not successful - is the Controller correctly defined in its file?", null, function() {
-						return {
-							type: "ControllerExtension",
-							name: sControllerName
-						};
-					});
-					/* eslint-enable no-loop-func */
-					return {};
-				}
-			}
-		}
-
-
-		if (bAsync) {
-			return ControllerExtensionProvider.getControllerExtensions(sName, sOwnerId, sViewId, bAsync)
-				.then(function (mControllers) {
-					// load customizing controllers async
-					var aCustomizingControllerPromises = mControllers.customizingControllerNames.map(function(sControllerName) {
-						return fnGetExtensionController(true, sControllerName);
-					});
-
-					return Promise.all(aCustomizingControllerPromises).then(function(aCustomizingControllers) {
-						// order of extensions: 1. customizing, 2. provider
-						// the order is fixed as defined in the manifest, and as returned by the external provider
-						var aAllExtensions = aCustomizingControllers.concat(mControllers.providerControllers);
-
-						for (var i = 0, l = aAllExtensions.length; i < l; i++) {
-							mixinControllerDefinition(oController, aAllExtensions[i]);
-						}
-
-						return oController;
-					});
-				}, function(err){
-					future.errorThrows("Controller Extension Provider: Error '" + err + "' thrown in " + Controller._sExtensionProvider + "; extension provider ignored.");
 					return oController;
 				});
-		} else {
-			var mControllers = ControllerExtensionProvider.getControllerExtensions(sName, sOwnerId, sViewId, bAsync);
-
-			// load and apply customizing controllers
-			var aCustomizingControllers = mControllers.customizingControllerNames.map(fnGetExtensionController.bind(null, false));
-
-			// apply controller-extensions from the external provider
-			var aAllExtensions = aCustomizingControllers.concat(mControllers.providerControllers);
-			for (var i = 0, l = aAllExtensions.length; i < l; i++) {
-				mixinControllerDefinition(oController, aAllExtensions[i]);
-			}
-		}
-
-		return oController;
+			}, function(err){
+				future.errorThrows("Controller Extension Provider: Error '" + err + "' thrown in " + Controller._sExtensionProvider + "; extension provider ignored.");
+				return oController;
+			});
 	};
 
 	/**
@@ -465,43 +413,34 @@ sap.ui.define([
 	 * @since 1.56.0
 	 */
 	Controller.create = function (mOptions) {
-		return controllerFactory(mOptions.name, undefined, true, mOptions._viewId);
+		return controllerFactory(mOptions.name, undefined, mOptions._viewId, true);
 	};
 
-	/*
-	 * Old controller factory implementation
-	 */
-	function controllerFactory(sName, oControllerImpl, bAsync, sViewId) {
-		var oController,
-			ControllerClass,
-			sOwnerId = ManagedObject._sOwnerId;
+	/**
+			 * Old controller factory implementation
+			 * @param {string} sName
+			 * @param {Object|undefined} oControllerImpl
+			 * @param {string|undefined} sViewId
+			 */
+	function controllerFactory(sName, oControllerImpl, sViewId) {
+		var sOwnerId = ManagedObject._sOwnerId;
 
 		if (typeof oControllerImpl === "boolean") {
 			oControllerImpl = undefined;
 		}
 
 		if (!oControllerImpl) {
-			// controller *instantiation*
-			if (bAsync) {
-				return loadControllerClass(sName, sViewId, bAsync)
-					.then(function(ControllerClass) {
-						return instantiateController(ControllerClass, sName);
-					})
-					.then(function(oController) {
-						return Controller.applyExtensions(oController, sName, sOwnerId, sViewId, bAsync);
-					})
-					.then(function(oController) {
-						oController._sapui_isExtended = true;
-						return oController;
-					});
-			} else {
-				ControllerClass = loadControllerClass(sName, sViewId, bAsync);
-				oController = instantiateController(ControllerClass, sName);
-				oController = Controller.applyExtensions(oController, sName, sOwnerId, sViewId, bAsync);
-				//if controller is created via the factory all extensions are already mixed in
-				oController._sapui_isExtended = true;
-			}
-			return oController;
+			return loadControllerClass(sName, sViewId, true)
+				.then(function(ControllerClass) {
+					return instantiateController(ControllerClass, sName);
+				})
+				.then(function(oController) {
+					return Controller.applyExtensions(oController, sName, sOwnerId, sViewId, true);
+				})
+				.then(function(oController) {
+					oController._sapui_isExtended = true;
+					return oController;
+				});
 		} else {
 			// controller *definition*
 			mRegistry[sName] = oControllerImpl;
