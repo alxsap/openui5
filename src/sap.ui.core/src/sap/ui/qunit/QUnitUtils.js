@@ -643,7 +643,7 @@ sap.ui.define('sap/ui/qunit/QUnitUtils', [
 				// rendering test
 				oControl.placeAt(sUIArea);
 				info("before explicit rerender");
-				oControl.getUIArea().rerender();
+				oControl.getUIArea().invalidate();
 				info("after explicit rerender");
 
 				info("info");

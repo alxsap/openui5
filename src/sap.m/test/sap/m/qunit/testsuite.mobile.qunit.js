@@ -711,7 +711,7 @@ sap.ui.define([
 			LightBoxMemoryLeak: {
 				title: "QUnit Page for sap.m.LightBox Memory Leaks",
 				qunit: {
-					version: 1 // MemoryLeakCheck loads QUnit 1
+					version: 2 // MemoryLeakCheck loads QUnit 1
 				}
 			},
 

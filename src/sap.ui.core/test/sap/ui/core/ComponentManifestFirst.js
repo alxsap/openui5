@@ -1,5 +1,11 @@
 sap.ui.define([
-], function() {
+	"sap/ui/model/json/JSONModel",
+	"sap/ui/core/ComponentContainer",
+	"sap/ui/base/Object",
+	"sap/ui/thirdparty/jquery",
+	"sap/ui/core/Component",
+	"sap/ui/core/mvc/XMLView"
+], function(JSONModel, ComponentContainer, BaseObject, jQuery) {
 	"use strict";
 	sap.ui.localResources("samples");
 
@@ -88,7 +94,7 @@ sap.ui.define([
 	//************* Config UI & LOGIC *******************************************
 
 	// View Creation
-	var oManifestModel = new sap.ui.model.json.JSONModel(mModel);
+	var oManifestModel = new JSONModel(mModel);
 	var oMainView = new sap.ui.xmlview({
 		viewContent: jQuery("#viewSource").html()
 	});
@@ -184,7 +190,7 @@ sap.ui.define([
 	}
 
 	function placeComponent(oComponentForPlacement) {
-		oCompCont = new sap.ui.core.ComponentContainer({
+		oCompCont = new ComponentContainer({
 				component: oComponentForPlacement
 			});
 		oMainView.byId("ResultPanel").addContent(oCompCont);

@@ -19,7 +19,9 @@ sap.ui.define([
 	"./EnabledPropagator",
 	"./ElementRegistry",
 	"./Theming",
-	"sap/ui/core/util/_LocalizationHelper"
+	"sap/ui/core/util/_LocalizationHelper",
+	/* jQuery custom selectors ":sapFocusable"*/
+	"sap/ui/dom/jquery/Selectors"
 ],
 	function(
 		DataType,
@@ -922,6 +924,7 @@ sap.ui.define([
 				return false;
 			}
 
+			// jQuery custom selectors ":sapFocusable"
 			return jQuery(oFocusDomRef).is(":sapFocusable");
 		};
 

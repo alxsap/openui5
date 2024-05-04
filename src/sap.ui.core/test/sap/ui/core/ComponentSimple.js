@@ -1,5 +1,7 @@
 sap.ui.define([
-], function() {
+	"sap/ui/core/ComponentContainer",
+	"sap/ui/core/Component"
+], function(ComponentContainer) {
 	"use strict";
 	sap.ui.localResources("samples");
 	
@@ -11,7 +13,7 @@ sap.ui.define([
 		}
 	});
 	
-	var oCompCont = new sap.ui.core.ComponentContainer("CompCont1", {
+	var oCompCont = new ComponentContainer("CompCont1", {
 		component: oComp
 	});
 	oCompCont.placeAt("target1");
@@ -24,12 +26,12 @@ sap.ui.define([
 			text: "Hello World 2"
 		}
 	});
-	var oCompCont2 = new sap.ui.core.ComponentContainer("CompCont2", {
+	var oCompCont2 = new ComponentContainer("CompCont2", {
 		component: oComp2
 	});
 	oCompCont2.placeAt("target2");
 	
-	var oCompCont3 = new sap.ui.core.ComponentContainer("CompCont3", {
+	var oCompCont3 = new ComponentContainer("CompCont3", {
 		name: "samples.components.button",
 		settings: {
 			text: "Hello World 3"
@@ -37,7 +39,7 @@ sap.ui.define([
 	});
 	oCompCont3.placeAt("target3");
 	
-	var oCompCont4 = new sap.ui.core.ComponentContainer("CompCont4", {
+	var oCompCont4 = new ComponentContainer("CompCont4", {
 		name: "samples.components.button",
 		url: "samples/components/button",
 		settings: {

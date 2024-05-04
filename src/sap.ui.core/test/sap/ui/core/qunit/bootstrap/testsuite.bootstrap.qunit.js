@@ -67,7 +67,7 @@ sap.ui.define(function() {
 				group: "Bootstrap",
 				title: "Test Page for the SAPUI5 Bootstrap functionality with custom boot task and preload lib css",
 				qunit: {
-					version: 1,
+					version: 2,
 					reorder: false
 				},
 				loader: {

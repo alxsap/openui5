@@ -22,6 +22,7 @@ sap.ui.define([
 			TestUtils.retrieveData("sap.ui.core.sample.odata.v2.AutoExpand.sandbox").restore();
 			// ensure the sandbox module is reloaded so that sandbox initialization takes place
 			// again the next time the component used
+			// TODO: migration not possible. jQuery.sap.unloadResources is deprecated and private.
 			jQuery.sap.unloadResources(
 				"sap/ui/core/sample/odata/v2/AutoExpand/Sandbox.js",
 				/*bPreloadGroup*/false, /*bUnloadAll*/true, /*bDeleteExports*/true);

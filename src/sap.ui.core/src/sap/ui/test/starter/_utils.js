@@ -115,7 +115,7 @@ sap.ui.define([
 			versions: {
 				1: {
 					module: "sap/ui/thirdparty/qunit",
-					css: "sap/ui/thirdparty/qunit.css"
+					css: "sap/ui/thirdparty/qunit-2.css"
 				},
 				2: {
 					module: "sap/ui/thirdparty/qunit-2",

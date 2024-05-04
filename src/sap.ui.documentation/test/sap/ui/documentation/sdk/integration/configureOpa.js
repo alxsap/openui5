@@ -2,7 +2,7 @@ sap.ui.define([
 	"sap/ui/test/Opa5",
 	"sap/ui/documentation/sdk/test/arrangement/Arrangement",
 	// QUnit additions
-	"sap/ui/qunit/qunit-css",
+	"sap/ui/qunit/qunit-2-css",
 	"sap/ui/qunit/qunit-junit",
 	// Page Objects
 	"sap/ui/documentation/sdk/test/pageobjects/App",

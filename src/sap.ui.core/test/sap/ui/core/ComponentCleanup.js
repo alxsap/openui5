@@ -1,4 +1,4 @@
-sap.ui.define(["sap/ui/core/Core"],function(Core) {
+sap.ui.define(["sap/ui/core/Core", "sap/ui/thirdparty/jquery", "sap/ui/core/Component"],function(Core, jQuery) {
 	"use strict";
 
 	Core.ready().then(function() {

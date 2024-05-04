@@ -1,5 +1,7 @@
 sap.ui.define([
-], function() {
+	"sap/ui/core/ComponentContainer",
+	"sap/ui/core/Component"
+], function(ComponentContainer) {
 	"use strict";
 	sap.ui.localResources("samples");
 	
@@ -7,7 +9,7 @@ sap.ui.define([
 		manifestUrl: "samples/components/sample/manifest.json"
 	});
 	
-	var oContainer = new sap.ui.core.ComponentContainer({
+	var oContainer = new ComponentContainer({
 		component : oComponent
 	});
 	oContainer.placeAt("target");

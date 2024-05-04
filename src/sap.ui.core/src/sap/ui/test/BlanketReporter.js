@@ -433,6 +433,7 @@ sap.ui.define([
 	function convertToFile(sModule) {
 		var aMatches = rModule.exec(sModule);
 
+		// TODO: migration not possible. jQuery.sap.getResourceName is deprecated and private.
 		return !aMatches || aMatches[2] === ".integration"
 			? undefined // "all"
 			: jQuery.sap.getResourceName(aMatches[1]);

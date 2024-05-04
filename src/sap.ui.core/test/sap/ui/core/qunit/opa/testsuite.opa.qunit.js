@@ -452,7 +452,7 @@ sap.ui.define([
 	};
 
 	Object.keys(oCommonTests).forEach(function (name) {
-		oTestSuite.tests[name + "1"] = merge({}, oCommonTests[name], {qunit: { version: 1 }});
+		oTestSuite.tests[name + "1"] = merge({}, oCommonTests[name], {qunit: { version: 2 }});
 		oTestSuite.tests[name + "2"] = merge({}, oCommonTests[name], {qunit: { version: 2 }});
 
 		// temporary solution to run Press suite with both qunit 1 and 2: press.qunit.html should be part of opa testsuite but nested suites are not supported

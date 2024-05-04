@@ -16,7 +16,6 @@ sap.ui.define([
 	"sap/base/util/isEmptyObject",
 	"sap/base/future",
 	"sap/base/Log",
-	"sap/ui/thirdparty/jquery",
 	"./RouterHashChanger",
 	"sap/ui/core/Component"
 ],
@@ -34,7 +33,6 @@ sap.ui.define([
 		isEmptyObject,
 		future,
 		Log,
-		jQuery,
 		RouterHashChanger,
 		Component
 	) {

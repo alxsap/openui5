@@ -527,6 +527,21 @@ sap.ui.define([
 		},
 
 		/**
+		 * Sets "@$ui5.context.isSelected" in <code>oTarget</code> to true if it is true in
+		 * <code>oSource</code>.
+		 *
+		 * @param {object} oSource - The source object
+		 * @param {object} oTarget - The target object
+		 *
+		 * @public
+		 */
+		copySelected : function (oSource, oTarget) {
+			if (oSource["@$ui5.context.isSelected"] === true) {
+				oTarget["@$ui5.context.isSelected"] = true;
+			}
+		},
+
+		/**
 		 * Returns an <code>Error</code> instance from a jQuery XHR wrapper.
 		 *
 		 * @param {object} jqXHR
@@ -958,6 +973,32 @@ sap.ui.define([
 		},
 
 		/**
+		 * Extracts the mergeable query options "$expand" and "$select" from the given ones, returns
+		 * them as a new map while replacing their value with "~" in the old map.
+		 *
+		 * @param {object} mQueryOptions
+		 *   The original query options, will be modified
+		 * @returns {object}
+		 *   The extracted query options
+		 *
+		 * @public
+		 */
+		extractMergeableQueryOptions : function (mQueryOptions) {
+			var mExtractedQueryOptions = {};
+
+			if ("$expand" in mQueryOptions) {
+				mExtractedQueryOptions.$expand = mQueryOptions.$expand;
+				mQueryOptions.$expand = "~";
+			}
+			if ("$select" in mQueryOptions) {
+				mExtractedQueryOptions.$select = mQueryOptions.$select;
+				mQueryOptions.$select = "~";
+			}
+
+			return mExtractedQueryOptions;
+		},
+
+		/**
 		 * Extracts all (top and detail) messages from the given error instance.
 		 *
 		 * @param {Error} oError
@@ -1041,32 +1082,6 @@ sap.ui.define([
 				addMessage(oError, 4 /*Error*/, true);
 			}
 			return aMessages;
-		},
-
-		/**
-		 * Extracts the mergeable query options "$expand" and "$select" from the given ones, returns
-		 * them as a new map while replacing their value with "~" in the old map.
-		 *
-		 * @param {object} mQueryOptions
-		 *   The original query options, will be modified
-		 * @returns {object}
-		 *   The extracted query options
-		 *
-		 * @public
-		 */
-		extractMergeableQueryOptions : function (mQueryOptions) {
-			var mExtractedQueryOptions = {};
-
-			if ("$expand" in mQueryOptions) {
-				mExtractedQueryOptions.$expand = mQueryOptions.$expand;
-				mQueryOptions.$expand = "~";
-			}
-			if ("$select" in mQueryOptions) {
-				mExtractedQueryOptions.$select = mQueryOptions.$select;
-				mQueryOptions.$select = "~";
-			}
-
-			return mExtractedQueryOptions;
 		},
 
 		/**
@@ -1569,6 +1584,27 @@ sap.ui.define([
 		},
 
 		/**
+		 * Returns the index of the key predicate in the last segment of the given path.
+		 *
+		 * @param {string} sPath - The path
+		 * @returns {number} The index of the key predicate
+		 * @throws {Error} If no path is given or the last segment contains no key predicate
+		 *
+		 * @public
+		 */
+		getPredicateIndex : function (sPath) {
+			var iPredicateIndex = sPath
+				? sPath.indexOf("(", sPath.lastIndexOf("/"))
+				: -1;
+
+			if (iPredicateIndex < 0 || !sPath.endsWith(")")) {
+				throw new Error("Not a list context path to an entity: " + sPath);
+			}
+
+			return iPredicateIndex;
+		},
+
+		/**
 		 * Returns the list of predicates corresponding to the given list of contexts, or
 		 * <code>null</code if at least one predicate is missing.
 		 *
@@ -1591,27 +1627,6 @@ sap.ui.define([
 			}
 
 			return bMissingPredicate ? null : aPredicates;
-		},
-
-		/**
-		 * Returns the index of the key predicate in the last segment of the given path.
-		 *
-		 * @param {string} sPath - The path
-		 * @returns {number} The index of the key predicate
-		 * @throws {Error} If no path is given or the last segment contains no key predicate
-		 *
-		 * @public
-		 */
-		getPredicateIndex : function (sPath) {
-			var iPredicateIndex = sPath
-				? sPath.indexOf("(", sPath.lastIndexOf("/"))
-				: -1;
-
-			if (iPredicateIndex < 0 || !sPath.endsWith(")")) {
-				throw new Error("Not a list context path to an entity: " + sPath);
-			}
-
-			return iPredicateIndex;
 		},
 
 		/**
@@ -1828,6 +1843,24 @@ sap.ui.define([
 					oTarget[sSegment] = oSource[sSegment];
 				}
 			});
+		},
+
+		/**
+		 * Inserts the given element into the given array at the given index, even it is beyond the
+		 * array's current length.
+		 *
+		 * @param {any[]} aElements - Some array
+		 * @param {number} iIndex - Some index
+		 * @param {any} vElement - Some element
+		 *
+		 * @public
+		 */
+		insert : function (aElements, iIndex, vElement) {
+			if (iIndex >= aElements.length) { // Note: #splice ignores iIndex then!
+				aElements[iIndex] = vElement;
+			} else {
+				aElements.splice(iIndex, 0, vElement);
+			}
 		},
 
 		/**
@@ -3019,21 +3052,6 @@ sap.ui.define([
 					mMap[sPath.replace(sTransientPredicate, sPredicate)] = mMap[sPath];
 					delete mMap[sPath];
 				}
-			}
-		},
-
-		/**
-		 * Sets "@$ui5.context.isSelected" in <code>oTarget</code> to true if it is true in
-		 * <code>oSource</code>.
-		 *
-		 * @param {object} oSource - The source object
-		 * @param {object} oTarget - The target object
-		 *
-		 * @public
-		 */
-		copySelected : function (oSource, oTarget) {
-			if (oSource["@$ui5.context.isSelected"] === true) {
-				oTarget["@$ui5.context.isSelected"] = true;
 			}
 		},
 
