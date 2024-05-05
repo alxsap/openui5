@@ -391,7 +391,7 @@ sap.ui.define([
 					selected : "{selected}"
 				})
 			},
-			"select": function(oEvent){
+			selectionChange: function(oEvent){
 				select(oList.indexOfItem(oEvent.getParameter("listItem")));
 			}
 		});

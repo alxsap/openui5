@@ -1,6 +1,5 @@
 sap.ui.define([
 	"sap/m/ImageRenderer",
-	"sap/ui/qunit/utils/nextUIUpdate",
 	"sap/ui/core/mvc/XMLView",
 	"sap/ui/core/Element",
 	"sap/m/List",
@@ -23,6 +22,7 @@ sap.ui.define([
 	"sap/m/Page",
 	"sap/m/VBox",
 	"sap/m/SegmentedButton",
+	"sap/m/SegmentedButtonItem",
 	"sap/m/Image",
 	"sap/ui/Device",
 	"sap/m/Carousel",
@@ -32,7 +32,6 @@ sap.ui.define([
 	"sap/ui/core/mvc/Controller"
 ], async function(
 	ImageRenderer,
-	nextUIUpdate,
 	XMLView,
 	Element,
 	List,
@@ -55,6 +54,7 @@ sap.ui.define([
 	Page,
 	VBox,
 	SegmentedButton,
+	SegmentedButtonItem,
 	Image,
 	Device,
 	Carousel,
@@ -161,14 +161,14 @@ sap.ui.define([
 			content : [ new HTML({
 				content : "<p>Do you want to start a new world domination campaign?</p>"
 			}) ],
-			leftButton : new Button({
+			beginButton : new Button({
 				text : "Reject",
 				type : ButtonType.Reject,
 				press : function() {
 					oDialog1.close();
 				}
 			}),
-			rightButton : new Button({
+			endButton : new Button({
 				text : "Accept",
 				type : ButtonType.Accept,
 				press : function() {
@@ -257,7 +257,7 @@ sap.ui.define([
 
 		new SearchField({
 			placeholder : "Search for...",
-			showMagnifier : true
+			showSearchButton : true
 		}),
 
 		createAList(true, "lins").setHeaderText("This is an inset List").setFooterText("This was an inset List") ];
@@ -286,14 +286,14 @@ sap.ui.define([
 
 			footer : new Bar({
 				contentMiddle : new SegmentedButton('SegmentedBar', {
-					buttons : [ new Button("sb1", {
+					items : [ new SegmentedButtonItem("sb1", {
 						text : "Seg-"
-					}), new Button({
+					}), new SegmentedButtonItem({
 						text : "-men-"
-					}), new Button({
+					}), new SegmentedButtonItem({
 						text : "-ted"
 					}) ],
-					selectedButton : "sb1"
+					selectedItem : "sb1"
 				})
 			})
 		})
@@ -645,7 +645,7 @@ sap.ui.define([
 		writable: "true",
 
 		value: new SegmentedButton({
-			buttons:[new Button({text:'Label'}), new Button({text:'Label'}), new Button({text:'Label'})]
+			items:[new SegmentedButtonItem({text:'Label'}), new SegmentedButtonItem({text:'Label'}), new SegmentedButtonItem({text:'Label'})]
 		})
 	});
 
@@ -657,7 +657,7 @@ sap.ui.define([
 		writable: "true",
 
 		value: new SegmentedButton({
-			buttons:[new Button({text:'Label'}), new Button({text:'Label'}), new Button({text:'Label'})]
+			items:[new SegmentedButtonItem({text:'Label'}), new SegmentedButtonItem({text:'Label'}), new SegmentedButtonItem({text:'Label'})]
 		})
 	});
 
@@ -666,6 +666,4 @@ sap.ui.define([
 	carouselPage.addContent(oSegmentedButton2);
 	appCarousel.addPage(carouselPage);
 	appCarousel.placeAt("body");
-
-	await nextUIUpdate();
 });

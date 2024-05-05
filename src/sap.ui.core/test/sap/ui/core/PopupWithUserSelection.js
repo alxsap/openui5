@@ -7,7 +7,7 @@ sap.ui.define([
 	"sap/m/Input"
 ], function(Button, Dialog, Text, Popover, VBox, Input) {
 	"use strict";
-	/* Non-modal popup --> sap.m.Popover*/
+	/* Non-modal popup ==> sap.m.Popover*/
 	var fnOpenPopover = function(){
 		oPopoverStandalone.openBy(oOpenPopoverButton);
 	};
@@ -65,7 +65,7 @@ sap.ui.define([
 	var oDialogInnerPopover = new Dialog({
 		title: "Inner Dialog of Popover",
 		content: [new Text({ text: "Inner Dialog of Popover Lorem ipsum" })],
-		leftButton: oCloseDialogInnerPopoverButton
+		beginButton: oCloseDialogInnerPopoverButton
 	});
 	
 	var oPopoverStandalone = new Popover({
@@ -121,12 +121,12 @@ sap.ui.define([
 	var oDialogInner = new Dialog({
 		title: "Inner Dialog Title",
 		content: new Text({ text:"Inner Dialog Lorem ipsum"}),
-		rightButton: oCloseBtnInner
+		endButton: oCloseBtnInner
 	});
 	
 	var oDialog = new Dialog({
 		title: "Dialog Title",
-		leftButton: oCloseBtn
+		beginButton: oCloseBtn
 	});
 	
 	var oBusyButton = new Button({

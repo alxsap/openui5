@@ -88,7 +88,7 @@ sap.ui.define([
 			})
 			that.dialog = new Dialog({
 				horizontalScrolling: false, verticalScrolling: false,
-				contentHeight: '100%', contentWidth: '100%', stretch: true, stretchOnPhone: true,
+				contentHeight: '100%', contentWidth: '100%', stretch: true,
 				customHeader: new Bar({contentMiddle: [new Title({text: "title}"})]}),
 				content: [carousel],
 				buttons: new Button({

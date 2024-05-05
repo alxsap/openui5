@@ -7,8 +7,9 @@ sap.ui.define([
 	"sap/m/List",
 	"sap/m/ObjectListItem",
 	"sap/m/ObjectStatus",
+	"sap/m/ObjectMarker",
 	"sap/m/ObjectHeader"
-], function(IconPool, coreLibrary, ObjectAttribute, App, Page, List, ObjectListItem, ObjectStatus, ObjectHeader) {
+], function(IconPool, coreLibrary, ObjectAttribute, App, Page, List, ObjectListItem, ObjectStatus, ObjectMarker, ObjectHeader) {
 	"use strict";
 
 	// shortcut for sap.ui.core.ValueState
@@ -175,9 +176,10 @@ sap.ui.define([
 			attributes: aAttrs1,
 			firstStatus: new ObjectStatus({text: "Positive Ñagçyfox", state: "Success", tooltip: "Status tip"}),
 			secondStatus: new ObjectStatus({text: "Negative Ñagçyfox", state: "Error"}),
-			showMarkers: true,
-			markFlagged: true,
-			markFavorite: true
+			markers: [
+				new ObjectMarker({type: "Flagged"}),
+				new ObjectMarker({type: "Favorite"})
+			]
 		})
 	});
 

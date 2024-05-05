@@ -105,7 +105,6 @@ sap.ui.define([
 		var oGenericTile = new GenericTile({
 			frameType : "{frameType}",
 			header : "{header}",
-			size : "{size}",
 			tileContent : {
 				template : oTileContent,
 				path : "tileContent",

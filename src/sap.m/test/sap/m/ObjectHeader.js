@@ -10,13 +10,13 @@
 		"sap/m/library",
 		"sap/m/Label",
 		"sap/m/Switch",
+		"sap/m/ObjectMarker",
 		"sap/m/ProgressIndicator",
 		"sap/m/Popover",
 		"sap/m/List",
 		"sap/m/StandardListItem",
 		"sap/m/ActionListItem",
 		"sap/m/ObjectNumber",
-		"sap/m/ObjectMarker",
 		"sap/m/SplitApp",
 		"sap/m/Button",
 		"sap/m/Page",
@@ -35,13 +35,13 @@
 		mobileLibrary,
 		Label,
 		Switch,
+		ObjectMarker,
 		ProgressIndicator,
 		Popover,
 		List,
 		StandardListItem,
 		ActionListItem,
 		ObjectNumber,
-		ObjectMarker,
 		SplitApp,
 		Button,
 		Page,
@@ -51,14 +51,14 @@
 	) {
 		"use strict";
 
-		// shortcut for sap.m.ObjectMarkerType
-		const ObjectMarkerType = mobileLibrary.ObjectMarkerType;
-
 		// shortcut for sap.m.BackgroundDesign
 		const BackgroundDesign = mobileLibrary.BackgroundDesign;
 
 		// shortcut for sap.m.PlacementType
 		const PlacementType = mobileLibrary.PlacementType;
+
+		// shortcut for sap.m.ObjectMarkerType
+		const ObjectMarkerType = mobileLibrary.ObjectMarkerType;
 
 		// shortcut for sap.m.FlexAlignContent
 		const FlexAlignContent = mobileLibrary.FlexAlignContent;
@@ -379,8 +379,9 @@
 						number : "999.999.999.999.999.999,00",
 						numberUnit : "EUR",
 						attributes : attrs2,
-						markFlagged : true,
-						showMarkers : true
+						markers: [
+							new ObjectMarker({type: ObjectMarkerType.Flagged})
+						]
 					})
 		});
 
@@ -435,8 +436,9 @@
 				icon : IconPool.getIconURI("attachment"),
 				iconActive : true,
 				iconPress : oh7PressHandler,
-				markFlagged : true,
-				showMarkers : true
+				markers: [
+					new ObjectMarker({type: ObjectMarkerType.Flagged})
+				]
 			})
 		});
 
@@ -451,8 +453,9 @@
 				number : "3,00",
 				numberUnit : "EUR",
 				numberState : ValueState.Success,
-				markFavorite : true,
-				showMarkers : true
+				markers: [
+					new ObjectMarker({type: ObjectMarkerType.Favorite})
+				]
 			})
 		});
 
@@ -474,8 +477,9 @@
 				attributes : [ new ObjectAttribute({
 					text : "First Attribute"
 				}), new ObjectAttribute({}), new ObjectAttribute({}), ],
-				markFavorite : true,
-				showMarkers : true
+				markers: [
+					new ObjectMarker({type: ObjectMarkerType.Favorite})
+				]
 			})
 		});
 
@@ -529,8 +533,9 @@
 				}), new ObjectAttribute({
 					text : "Progress Indicator 2 with 80% witdh"
 				})],
-				markFlagged : true,
-				showMarkers : true
+				markers: [
+					new ObjectMarker({type: ObjectMarkerType.Flagged})
+				]
 			})
 		});
 
@@ -546,9 +551,10 @@
 				number : "3.628.000",
 				numberUnit : "EUR",
 				numberState : ValueState.Success,
-				markFavorite : true,
-				markFlagged : true,
-				showMarkers : true
+				markers: [
+					new ObjectMarker({type: ObjectMarkerType.Favorite}),
+					new ObjectMarker({type: ObjectMarkerType.Flagged})
+				]
 			})
 		});
 
@@ -564,8 +570,9 @@
 				number : "3.628.000",
 				numberUnit : "EUR",
 				numberState : ValueState.Success,
-				markFavorite : true,
-				showMarkers : true
+				markers: [
+					new ObjectMarker({type: ObjectMarkerType.Favorite})
+				]
 			})
 		});
 
@@ -581,8 +588,9 @@
 				number : "3.628.000",
 				numberUnit : "EUR",
 				numberState : ValueState.Error,
-				markFlagged : true,
-				showMarkers : true
+				markers: [
+					new ObjectMarker({type: ObjectMarkerType.Flagged})
+				]
 			})
 		});
 
@@ -603,8 +611,9 @@
 				}), new ObjectAttribute({
 					text : "Attribute number 2"
 				}) ],
-				markFlagged : true,
-				showMarkers : true
+				markers: [
+					new ObjectMarker({type: ObjectMarkerType.Flagged})
+				]
 			})
 		});
 
@@ -620,9 +629,10 @@
 				number : "3.628.000",
 				numberUnit : "EUR",
 				numberState : ValueState.Error,
-				markFavorite : true,
-				markFlagged : true,
-				showMarkers : true
+				markers: [
+					new ObjectMarker({type: ObjectMarkerType.Favorite}),
+					new ObjectMarker({type: ObjectMarkerType.Flagged})
+				]
 			})
 		});
 
@@ -697,9 +707,10 @@
 				number : "1.000",
 				numberUnit : "EUR",
 				numberState : ValueState.Error,
-				markFavorite : true,
-				markFlagged : true,
-				showMarkers : true,
+				markers: [
+					new ObjectMarker({type: ObjectMarkerType.Favorite}),
+					new ObjectMarker({type: ObjectMarkerType.Flagged})
+				],
 				icon : IconPool.getIconURI("attachment"),
 				iconActive : true,
 				iconPress : oh7PressHandler
@@ -777,9 +788,10 @@
 					text : "Status # 15",
 					state : ValueState.None
 				}) ],
-				markFavorite : true,
-				markFlagged : true,
-				showMarkers : true
+				markers: [
+					new ObjectMarker({type: ObjectMarkerType.Favorite}),
+					new ObjectMarker({type: ObjectMarkerType.Flagged})
+				]
 			})
 		});
 
@@ -831,8 +843,9 @@
 				}), new ObjectAttribute({
 					text : "Productivity Progress Indicator"
 				}), ],
-				markFlagged : true,
-				showMarkers : true
+				markers: [
+					new ObjectMarker({type: ObjectMarkerType.Flagged})
+				]
 			})
 		});
 
@@ -1284,7 +1297,7 @@
 		}));
 		detail.addContent(new Button({
 			id : "favorite-button",
-			text : "Favorite",
+			text : ObjectMarkerType.Favorite,
 			press : function() {
 
 				oh15.setMarkFavorite(!oh15.getMarkFavorite());
