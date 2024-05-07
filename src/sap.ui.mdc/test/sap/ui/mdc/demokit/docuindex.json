@@ -60,9 +60,18 @@
 				]
 			},
 			{
+				"id": "sap.ui.mdc",
+				"name": "Overview",
+				"category": "Metadata-Driven Controls (sap.ui.mdc)",
+				"since": "1.116",
+				"samples": [
+					"sap.ui.mdc.demokit.sample.TableFilterBarJson"
+				]
+			},
+			{
 				"id": "sap.ui.mdc.Link",
 				"name": "Link",
-				"category": "Metadata-Driven Controls",
+				"category": "Metadata-Driven Controls (sap.ui.mdc)",
 				"since": "1.116",
 				"samples": [
 					"sap.ui.mdc.demokit.sample.LinkPayloadJson"
@@ -71,7 +80,7 @@
 			{
 				"id": "sap.ui.mdc.Field",
 				"name": "Field",
-				"category": "Metadata-Driven Controls",
+				"category": "Metadata-Driven Controls (sap.ui.mdc)",
 				"since": "1.116",
 				"samples": [
 					"sap.ui.mdc.demokit.sample.FieldTypes",
@@ -83,7 +92,7 @@
 			{
 				"id": "sap.ui.mdc.MultiValueField",
 				"name": "Multi-Value Field",
-				"category": "Metadata-Driven Controls",
+				"category": "Metadata-Driven Controls (sap.ui.mdc)",
 				"since": "1.116",
 				"samples": [
 					"sap.ui.mdc.demokit.sample.MultiValueField"
@@ -92,7 +101,7 @@
 			{
 				"id": "sap.ui.mdc.FilterBar",
 				"name": "Filter Bar",
-				"category": "Metadata-Driven Controls",
+				"category": "Metadata-Driven Controls (sap.ui.mdc)",
 				"since": "1.116",
 				"samples": [
 					"sap.ui.mdc.demokit.sample.FilterbarTypes",
@@ -103,11 +112,10 @@
 			{
 				"id": "sap.ui.mdc.Table",
 				"name": "Table",
-				"category": "Metadata-Driven Controls",
+				"category": "Metadata-Driven Controls (sap.ui.mdc)",
 				"since": "1.116",
 				"samples": [
 					"sap.ui.mdc.demokit.sample.TableJson",
-					"sap.ui.mdc.demokit.sample.TableFilterBarJson",
 					"sap.ui.mdc.demokit.sample.UploadSetwithTablePlugin"
 				]
 			}

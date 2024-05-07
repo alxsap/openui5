@@ -513,6 +513,16 @@ sap.ui.define([
 				}
 			},
 
+			"apply/_internal/flexState/FlexObjectState": {
+				group: "Apply Internal",
+				coverage: {
+					only: ["sap/ui/fl/apply/_internal/flexState/FlexObjectState"]
+				},
+				ui5: {
+					flexibilityServices: '[{"connector": "SessionStorageConnector"}]'
+				}
+			},
+
 			"apply/_internal/flexState/FlexState": {
 				group: "Apply Internal",
 				coverage: {

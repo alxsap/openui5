@@ -167,10 +167,7 @@ sap.ui.define([
 			},
 
 			Column: {
-				title: "Column - sap.m",
-				sinon: {
-					useFakeTimers: true
-				}
+				title: "Column - sap.m"
 			},
 
 			ColumnHeaderPopover: {
@@ -731,9 +728,6 @@ sap.ui.define([
 
 			ListBase: {
 				title: "Test Page for sap.m.ListBase",
-				sinon: {
-					useFakeTimers: true
-				},
 				ui5: {
 					theme: "sap_horizon",
 					language: "en-US",

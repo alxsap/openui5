@@ -1,45 +1,45 @@
 /*global QUnit, sinon */
 sap.ui.define([
-	"sap/ui/core/Element",
-	"sap/ui/core/Lib",
-	"sap/ui/qunit/utils/createAndAppendDiv",
-	"sap/ui/qunit/utils/nextUIUpdate",
-	"sap/ui/thirdparty/jquery",
-	"sap/ui/qunit/QUnitUtils",
-	"sap/ui/events/KeyCodes",
-	"sap/ui/model/json/JSONModel",
-	"sap/ui/model/Sorter",
-	"sap/ui/model/Filter",
-	"sap/ui/model/FilterOperator",
-	"sap/ui/Device",
-	"sap/ui/core/library",
-	"sap/ui/core/Theming",
-	"sap/m/library",
-	"sap/m/StandardListItem",
 	"sap/m/App",
-	"sap/m/Page",
-	"sap/m/ListBase",
-	"sap/m/List",
-	"sap/m/Toolbar",
-	"sap/m/ToolbarSpacer",
-	"sap/m/GrowingEnablement",
-	"sap/m/Input",
-	"sap/m/CustomListItem",
-	"sap/m/InputListItem",
-	"sap/m/GroupHeaderListItem",
 	"sap/m/Button",
-	"sap/m/VBox",
-	"sap/m/Text",
+	"sap/m/CustomListItem",
+	"sap/m/GroupHeaderListItem",
+	"sap/m/GrowingEnablement",
+	"sap/m/IllustratedMessage",
+	"sap/m/Input",
+	"sap/m/InputListItem",
+	"sap/m/library",
+	"sap/m/List",
+	"sap/m/ListBase",
 	"sap/m/Menu",
 	"sap/m/MenuItem",
 	"sap/m/MessageToast",
+	"sap/m/Page",
 	"sap/m/ScrollContainer",
+	"sap/m/StandardListItem",
+	"sap/m/Text",
 	"sap/m/Title",
+	"sap/m/Toolbar",
+	"sap/m/ToolbarSpacer",
+	"sap/m/VBox",
 	"sap/m/plugins/DataStateIndicator",
+	"sap/ui/Device",
+	"sap/ui/core/Element",
+	"sap/ui/core/InvisibleMessage",
+	"sap/ui/core/Lib",
+	"sap/ui/core/library",
+	"sap/ui/core/Theming",
+	"sap/ui/events/KeyCodes",
 	"sap/ui/layout/VerticalLayout",
-	"sap/m/IllustratedMessage",
-	"sap/ui/core/InvisibleMessage"
-], function(Element, Library, createAndAppendDiv, nextUIUpdate, jQuery, qutils, KeyCodes, JSONModel, Sorter, Filter, FilterOperator, Device, coreLibrary, Theming, library, StandardListItem, App, Page, ListBase, List, Toolbar, ToolbarSpacer, GrowingEnablement, Input, CustomListItem, InputListItem, GroupHeaderListItem, Button, VBox, Text, Menu, MenuItem, MessageToast, ScrollContainer, Title, DataStateIndicator, VerticalLayout, IllustratedMessage, InvisibleMessage) {
+	"sap/ui/model/Filter",
+	"sap/ui/model/FilterOperator",
+	"sap/ui/model/Sorter",
+	"sap/ui/model/json/JSONModel",
+	"sap/ui/qunit/QUnitUtils",
+	"sap/ui/qunit/utils/createAndAppendDiv",
+	"sap/ui/qunit/utils/nextUIUpdate",
+	"sap/ui/thirdparty/jquery"
+], function(App, Button, CustomListItem, GroupHeaderListItem, GrowingEnablement, IllustratedMessage, Input, InputListItem, library, List, ListBase, Menu, MenuItem, MessageToast, Page, ScrollContainer, StandardListItem, Text, Title, Toolbar, ToolbarSpacer, VBox, DataStateIndicator, Device, Element, InvisibleMessage, Library, coreLibrary, Theming, KeyCodes, VerticalLayout, Filter, FilterOperator, Sorter, JSONModel, qutils, createAndAppendDiv, nextUIUpdate, jQuery) {
 	"use strict";
 	jQuery("#qunit-fixture").attr("data-sap-ui-fastnavgroup", "true");
 
@@ -48,10 +48,17 @@ sap.ui.define([
 	 * Helper variables & functions
 	 *******************************************************************************/
 
+	async function timeout(iDuration) {
+		await new Promise(function(resolve) {
+			window.setTimeout(resolve, iDuration);
+		});
+	}
+
 	// helper variables
-	var oList = null, oScrollContainer;
-	var iItemCount = 0,
-		data1 = { // 0 items
+	let oScrollContainer;
+	let iItemCount = 0;
+	let oList = null;
+	const data1 = { // 0 items
 			items : [ ]
 		},
 		data2 = { // 3 items
@@ -195,7 +202,7 @@ sap.ui.define([
 
 	// bind list with data
 	function bindListData(oList, oData, sPath, oItemTemplate) {
-		var oModel = new JSONModel();
+		const oModel = new JSONModel();
 		// set the data for the model
 		oModel.setData(oData);
 		// set the model to the list
@@ -204,23 +211,22 @@ sap.ui.define([
 		oList.bindAggregation("items", sPath, oItemTemplate);
 	}
 
-	function testRemeberSelections(oList, oRenderSpy, assert) {
-		var oSorterAsc = new Sorter("Title", false, function(oContext){
+	async function testRemeberSelections(oList, oRenderSpy, assert) {
+		const oSorterAsc = new Sorter("Title", false, function(oContext){
 			return oContext.getProperty("Title").charAt(0); // sort ascending by first letter of title
 		}),
 		oSorterDesc = new Sorter("Title", true, function(oContext){
 			return oContext.getProperty("Title").charAt(0); // sort descending by first letter of title
-		}),
-		vSelectionMode,
-		vSelectedItemsNumber;
+		});
+		let vSelectedItemsNumber;
 
 		bindListData(oList, data3, "/items", createTemplateListItem());
 
 		// add item to page & render
 		oPage.addContent(oList);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
-		vSelectionMode = oList.getMode();
+		const vSelectionMode = oList.getMode();
 		// call method & do tests
 		if (vSelectionMode == "SingleSelect") {
 			oList.getItems()[0].setSelected(true);
@@ -272,7 +278,7 @@ sap.ui.define([
 
 		bindListData(oList, data4, "/items", createTemplateListItem());
 		// remember the selected items in oListSelected
-		var oListSelected;
+		let oListSelected;
 		if (vSelectionMode == "SingleSelect") {
 			oList.getItems()[5].setSelected(true);
 			oListSelected = oList.getItems()[5].getTitle();
@@ -287,7 +293,7 @@ sap.ui.define([
 			oListSelected.sort();
 		}
 
-		var aSelectedContextPaths = oList.getSelectedContextPaths();
+		const aSelectedContextPaths = oList.getSelectedContextPaths();
 
 		assert.strictEqual(aSelectedContextPaths.length, vSelectedItemsNumber, 'The internal selection array has length of' + vSelectedItemsNumber + ' on ' + oList);
 		assert.strictEqual(oList.getSelectedItems().length, vSelectedItemsNumber, 'The selection contains ' + vSelectedItemsNumber + ' items ' + oList);
@@ -298,7 +304,7 @@ sap.ui.define([
 		// sort ascending
 		oList.getBinding("items").sort([new Sorter("Title", false, oSorterAsc) ] );
 
-		var oListSelectedAfterSorting;
+		let oListSelectedAfterSorting;
 		if (vSelectionMode == "SingleSelect") {
 			oListSelectedAfterSorting = oList.getSelectedItems()[0].getTitle();
 			assert.strictEqual(oListSelected, oListSelectedAfterSorting, "the same item should be selected after sorting" );
@@ -360,7 +366,7 @@ sap.ui.define([
 	}
 
 	// app
-	var oRB = Library.getResourceBundleFor("sap.m"),
+	const oRB = Library.getResourceBundleFor("sap.m"),
 		oApp = new App("myApp", { initialPage: "myFirstPage" }),
 		oPage = new Page("myFirstPage", {
 			title : "ListBase Test Page"
@@ -381,7 +387,7 @@ sap.ui.define([
 	/********************************************************************************/
 
 	QUnit.test("Properties", function(assert) {
-		var oProperties = oList.getMetadata().getAllProperties();
+		const oProperties = oList.getMetadata().getAllProperties();
 
 		assert.ok(oProperties.inset, 'Property "inset" exists');
 		assert.ok(oProperties.visible, 'Property "visible" exists');
@@ -403,8 +409,8 @@ sap.ui.define([
 		assert.ok(oProperties.growingScrollToLoad, 'Property "growingScrollToLoad" exists');
 	});
 
-	QUnit.test("Events", function(assert) {
-		var oEvents = oList.getMetadata().getAllEvents();
+	QUnit.test("Events", async function(assert) {
+		const oEvents = oList.getMetadata().getAllEvents();
 		bindListData(oList, data2, "/items", createTemplateListItem());
 
 		assert.ok(oEvents.selectionChange, 'Event "selectionChange" exists');
@@ -416,7 +422,7 @@ sap.ui.define([
 
 		oList.setMode("MultiSelect");
 		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.strictEqual(oList.getItems().length, 3, "List has exactly 3 items");
 
@@ -463,7 +469,7 @@ sap.ui.define([
 	});
 
 	QUnit.test("Aggregations", function(assert) {
-		var oAggregations = oList.getMetadata().getAllAggregations();
+		const oAggregations = oList.getMetadata().getAllAggregations();
 
 		assert.ok(oAggregations.items, 'Aggregation "items" exists');
 		assert.ok(oAggregations.swipeContent, 'Aggregation "swipeContent" exists');
@@ -502,9 +508,9 @@ sap.ui.define([
 		assert.strictEqual(oList._oGrowingDelegate, undefined, "Internal growingDelegate is null after initialization of " + oList);
 	});
 
-	QUnit.test("Default values", function(assert) {
-		var sAddText = " (state: before rendering)",
-			fnAssertions = function(sAddText) {
+	QUnit.test("Default values", async function(assert) {
+		let sAddText = " (state: before rendering)";
+		const fnAssertions = function(sAddText) {
 				assert.strictEqual(oList.getInset(), false, 'The default value of property "inset" should be "false" on ' + oList + sAddText);
 				assert.strictEqual(oList.getVisible(), true, 'The default value of property "visible" should be "true" on ' + oList + sAddText);
 				assert.strictEqual(oList.getHeaderText(), "", 'The default value of property "headerText" should be "" on ' + oList + sAddText);
@@ -530,7 +536,7 @@ sap.ui.define([
 
 		// add item to page & render
 		oPage.addContent(oList);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		// check again after rendering
 		sAddText = " (state: after rendering)";
@@ -551,15 +557,15 @@ sap.ui.define([
 	});
 	/********************************************************************************/
 
-	QUnit.test("Destructor behaviour", function(assert) {
+	QUnit.test("Destructor behaviour", async function(assert) {
 
 		// add item to page & render
 		oPage.addContent(oList);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		// call destructor
 		oList.destroy();
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		// assertions
 		assert.strictEqual(oList.getItems().length, 0, "Items aggregation is empty after destroying " + oList.getId());
@@ -590,17 +596,13 @@ sap.ui.define([
 	});
 	/********************************************************************************/
 
-	QUnit.test("HTML Tags & CSS Classes for a list with default values and no items", function(assert) {
-		var $list,
-			$listUl,
-			$listLi;
-
+	QUnit.test("HTML Tags & CSS Classes for a list with default values and no items", async function(assert) {
 		// add item to page & render
 		oPage.addContent(oList);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
-		$list = oList.$();
-		$listUl = $list.children("ul");
-		$listLi = $list.children("ul").children("li");
+		await nextUIUpdate();
+		const $list = oList.$();
+		const $listUl = $list.children("ul");
+		const $listLi = $list.children("ul").children("li");
 
 		// HTML & DOM checks
 		assert.ok($list.length, "The HTML div container element exists on " + oList.getId());
@@ -622,13 +624,13 @@ sap.ui.define([
 		oPage.removeAllContent();
 	});
 
-	QUnit.test("Toolbar has style classes sapMTBHeader-CTX and sapMListHdrTBar", function(assert) {
-		var oToolbar = new Toolbar();
+	QUnit.test("Toolbar has style classes sapMTBHeader-CTX and sapMListHdrTBar", async function(assert) {
+		const oToolbar = new Toolbar();
 		oList.setHeaderToolbar(oToolbar);
 
 		// add item to page & render
 		oPage.addContent(oList);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.ok(oToolbar.hasStyleClass("sapMTBHeader-CTX"), "Toolbar has style class sapMTBHeader-CTX");
 		assert.ok(oToolbar.hasStyleClass("sapMListHdrTBar"), "Toolbar has style class sapMListHdrTBar");
@@ -637,12 +639,12 @@ sap.ui.define([
 		oPage.removeAllContent();
 	});
 
-	QUnit.test("Header Text & Header Level", function(assert) {
+	QUnit.test("Header Text & Header Level", async function(assert) {
 		oList.setHeaderText("Header Text");
 
 		// add item to page & render
 		oPage.addContent(oList);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.ok(oList.$("header").hasClass("sapMListHdr"), "Header has style class sapMListHdr");
 		assert.ok(oList.$("header").hasClass("sapMListHdrText"), "Header has style class sapMListHdrText");
@@ -651,37 +653,40 @@ sap.ui.define([
 		assert.ok(!oList.$("header").attr("aria-level"),  "Header has no ARIA level");
 
 		oList.setHeaderLevel(coreLibrary.TitleLevel.H3);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
+
 		assert.strictEqual(oList.$("header").attr("aria-level"), "3", "Header has ARIA level 3");
 
 		oList.setHeaderLevel(coreLibrary.TitleLevel.H1);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
+
 		assert.strictEqual(oList.$("header").attr("aria-level"), "1", "Header has ARIA level 1");
 
 		oList.setHeaderLevel(coreLibrary.TitleLevel.Auto);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
+
 		assert.ok(!oList.$("header").attr("aria-level"),  "Header has no ARIA level");
 
 		// cleanup
 		oPage.removeAllContent();
 	});
 
-	QUnit.test("Show noDataText when no item is visible", function(assert) {
+	QUnit.test("Show noDataText when no item is visible", async function(assert) {
 		bindListData(oList, data2, "/items", createTemplateListItem());
 
 		// add item to page & render
 		oPage.addContent(oList);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
-		var aVisibleItems = oList.getVisibleItems();
+		let aVisibleItems = oList.getVisibleItems();
 		assert.ok(aVisibleItems.length > 0, "List has visible items.");
 		assert.strictEqual(oList.$("nodata-text")[0], undefined, "NoDataText is not visible");
 
 		aVisibleItems.forEach(function(oItem) {
 			oItem.setVisible(false);
 		});
+		await nextUIUpdate();
 
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
 		aVisibleItems = oList.getVisibleItems();
 		assert.strictEqual(aVisibleItems.length, 0, "List has no visible items.");
 		assert.ok(oList.$("nodata-text")[0], "NoDataText is visible");
@@ -692,13 +697,14 @@ sap.ui.define([
 		oPage.removeAllContent();
 	});
 
-	QUnit.test("List DOM should not be focusable when showNoData=false & there are no items", function(assert) {
-		var oList = new List({
+	QUnit.test("List DOM should not be focusable when showNoData=false & there are no items", async function(assert) {
+		const oList = new List({
 			showNoData: false
 		});
 
 		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
+
 		oList.focus();
 		assert.notOk(oList.getItemNavigation(), "ItemNavigation is not available");
 		assert.ok(oList.getDomRef().classList.contains("sapMListPreventFocus"), "sapMListPreventFocus class added");
@@ -706,17 +712,17 @@ sap.ui.define([
 		oList.destroy();
 	});
 
-	QUnit.test("List should be focusable when it contains items", function(assert) {
-		var oList = new List({
+	QUnit.test("List should be focusable when it contains items", async function(assert) {
+		const oList = new List({
 			showNoData: false
 		});
 
 		oList.placeAt("qunit-fixture");
-		var oListItem = new StandardListItem({
+		const oListItem = new StandardListItem({
 			title: "Title"
 		});
 		oList.addItem(oListItem);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		oList.focus();
 		assert.ok(oList.getItemNavigation(), "ItemNavigation is available");
@@ -725,27 +731,28 @@ sap.ui.define([
 		oList.destroy();
 	});
 
-	QUnit.test("List focus handling behavior with growing and showNoData=false", function(assert) {
-		var clock = sinon.useFakeTimers();
+	QUnit.test("List focus handling behavior with growing and showNoData=false", async function(assert) {
 		bindListData(oList, data2, "/items", createTemplateListItem());
 		oList.setGrowing(true);
 		oList.setGrowingThreshold(1);
 		oList.setShowNoData(false);
 		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		oList.focus();
 		assert.ok(oList.getItemNavigation(), "ItemNavigation is available");
 		assert.notOk(oList.getDomRef().classList.contains("sapMListPreventFocus"), "sapMListPreventFocus class not present");
 
 		oList.getBinding("items").filter(new Filter("Title", "EQ", "FooBar"));
-		clock.tick(1);
+		await timeout();
+
 		oList.focus();
 		assert.notOk(oList.getItemNavigation(), "ItemNavigation is not available");
 		assert.ok(oList.getDomRef().classList.contains("sapMListPreventFocus"), "sapMListPreventFocus class added");
 
 		oList.getBinding("items").filter();
-		clock.tick(1);
+		await timeout();
+
 		oList.focus();
 		assert.ok(oList.getItemNavigation(), "ItemNavigation is available");
 		assert.notOk(oList.getDomRef().classList.contains("sapMListPreventFocus"), "sapMListPreventFocus class not present");
@@ -766,10 +773,9 @@ sap.ui.define([
 
 	/* setter */
 
-	QUnit.test("setInset", function(assert) {
-		var sAddText = " (state: before rendering)",
-			oRenderSpy = this.spy(oList.getRenderer(), "render"),
-			$list;
+	QUnit.test("setInset", async function(assert) {
+		let $list, sAddText = " (state: before rendering)";
+		const oRenderSpy = this.spy(oList.getRenderer(), "render");
 
 		// check before rendering
 		oList.setInset(); // default
@@ -783,18 +789,18 @@ sap.ui.define([
 
 		// add item to page & render
 		oPage.addContent(oList);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		// check again after rendering
 		sAddText = " (state: after rendering)";
 		oList.setInset(true);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		$list = oList.$();
 		assert.strictEqual(oList.getInset(), true, 'The property "inset" is "true" on ' + oList + sAddText);
 		assert.ok($list.hasClass("sapMListInsetBG"), 'The HTML div container for the list has class "sapMListInsetBG" on ' + oList + sAddText);
 
 		oList.setInset(false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		$list = oList.$();
 		assert.strictEqual(oList.getInset(), false, 'The property "inset" is "false" on ' + oList + sAddText);
 		assert.ok(!$list.hasClass("sapMListInsetBG"), 'The HTML div container for the list has no class "sapMListInsetBG" on ' + oList + sAddText);
@@ -808,14 +814,14 @@ sap.ui.define([
 		oRenderSpy.restore();
 	});
 
-	QUnit.test("setMode", function(assert) {
-		var oListItem = createListItem().setSelected(true),
+	QUnit.test("setMode", async function(assert) {
+		const oListItem = createListItem().setSelected(true),
 			oRenderSpy = this.spy(oList.getRenderer(), "render");
 
 		// add item to page & render
 		oList.addItem(oListItem);
 		oPage.addContent(oList);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		// call method & do tests
 		assert.strictEqual(oList.setMode(library.ListMode.None).getMode(), library.ListMode.None, 'The property "mode" is "None" on ' + oList);
@@ -839,7 +845,7 @@ sap.ui.define([
 		// TODO: decide if check on internal variables is needed (Cahit)
 		assert.strictEqual(oList._bSelectionMode, true, 'Internal selection mode is true for list mode "SingleSelectLeft" on ' + oList);
 
-		assert.throws(function () {
+		assert.throws(function() {
 			oList.setMode("DoesNotExist");
 		}, "Throws a type exception");
 		assert.strictEqual(oList.getMode(), library.ListMode.SingleSelectLeft, 'The property "mode" is still "SingleSelectLeft" after setting mode "DoesNotExist" on ' + oList);
@@ -853,24 +859,23 @@ sap.ui.define([
 		oRenderSpy.restore();
 	});
 
-	QUnit.test("setWidth", function(assert) {
-		var $list,
-			oRenderSpy = this.spy(oList.getRenderer(), "render"),
+	QUnit.test("setWidth", async function(assert) {
+		const oRenderSpy = this.spy(oList.getRenderer(), "render");
+		let $list,
 			sWidth,
-			sWidthPx,
-			iWidth100Percent;
+			sWidthPx;
 
 		// add item to page & render
 		oPage.addContent(oList);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		$list = oList.$();
-		iWidth100Percent = $list.width();
+		const iWidth100Percent = $list.width();
 
 		// call method & do tests
 		sWidth = "0px";
 		sWidthPx = 0;
 		oList.setWidth(sWidth);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		$list = oList.$();
 		assert.strictEqual(oList.getWidth(), sWidth, 'The control property "width" is now "' + sWidth + '" on ' + oList);
 		assert.strictEqual($list.css("width"), sWidth, 'The CSS property "width" is now "' + sWidth + '" on ' + oList);
@@ -879,29 +884,29 @@ sap.ui.define([
 		sWidth = "500px";
 		sWidthPx = 500;
 		oList.setWidth(sWidth);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		$list = oList.$();
 		assert.strictEqual(oList.getWidth(), sWidth, 'The control property "width" is now "' + sWidth + '" on ' + oList);
 		assert.strictEqual($list.css("width"), sWidth, 'The CSS property "width" is now "' + sWidth + '" on ' + oList);
 		assert.strictEqual($list.width(), sWidthPx, 'The px width is now "' + sWidthPx + '" on ' + oList);
 
-		assert.throws(function () {
+		assert.throws(function() {
 			oList.setWidth("NotaCSSSize");
 		}, "Throws a type exception");
 		assert.strictEqual(oList.getWidth(), sWidth, 'The control property "width" is still "' + sWidth + '" after setting value "NotACSSSize"  on ' + oList);
 
-		assert.throws(function () {
+		assert.throws(function() {
 			oList.setWidth(-666);
 		}, "Throws a type exception");
 		assert.strictEqual(oList.getWidth(), sWidth, 'The control property "width" is still "' + sWidth + '" after setting value "-666"  on ' + oList);
 
-		assert.throws(function () {
+		assert.throws(function() {
 			oList.setWidth(false);
 		}, "Throws a type exception");
 		assert.strictEqual(oList.getWidth(), sWidth, 'The control property "width" is still "' + sWidth + '" after setting value "false" on ' + oList);
 
 		oList.setWidth("");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		$list = oList.$();
 		assert.strictEqual(oList.getWidth(), "", 'The control property "width" is now "" after setting value "" on ' + oList);
 		assert.strictEqual($list.width(), iWidth100Percent, 'The CSS property "width" is now 100% after setting value "" on ' + oList);
@@ -909,7 +914,7 @@ sap.ui.define([
 		sWidth = "20rem";
 		sWidthPx = "320px";
 		oList.setWidth(sWidth);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		$list = oList.$();
 		assert.strictEqual(oList.getWidth(), sWidth, 'The control property "width" is now "' + sWidth + '" on ' + oList);
 		assert.strictEqual($list.css("width"), sWidthPx, 'The CSS property "width" is now "' + sWidth + '" on ' + oList);
@@ -918,20 +923,20 @@ sap.ui.define([
 		sWidth = "50%";
 		sWidthPx = Math.ceil(parseInt($list.parent().css("width")) / 2.0) + "px";
 		oList.setWidth(sWidth);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		$list = oList.$();
 		assert.strictEqual(oList.getWidth(), sWidth, 'The property "width" is now "' + sWidth + '" on ' + oList);
 
 		sWidth = "auto";
 		oList.setWidth(sWidth);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		$list = oList.$();
 		assert.strictEqual(oList.getWidth(), sWidth, 'The control property "width" is now "' + sWidth + '" on ' + oList);
 		assert.strictEqual($list.css("width"), $list.parent().css("width"), 'The CSS property "width" is now "' + $list.parent().css("width") + '" on ' + oList);
 
 		sWidth = "inherit";
 		oList.setWidth(sWidth);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		$list = oList.$();
 		assert.strictEqual(oList.getWidth(), sWidth, 'The control property "width" is now "' + sWidth + '" on ' + oList);
 		assert.strictEqual($list.css("width"), $list.parent().css("width"), 'The CSS property "width" is now "' + $list.parent().css("width") + '" on ' + oList);
@@ -945,13 +950,13 @@ sap.ui.define([
 		oRenderSpy.restore();
 	});
 
-	QUnit.test("setNoDataText", function(assert) {
-		var oRenderSpy = this.spy(oList.getRenderer(), "render"),
-			sText;
+	QUnit.test("setNoDataText", async function(assert) {
+		const oRenderSpy = this.spy(oList.getRenderer(), "render");
+		let sText;
 
 		// add item to page & render
 		oPage.addContent(oList);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		// call method & do tests
 		sText = "Test1234567890!\"§$%&/()=?`´@€-_.:,;#'+*~1²³456{[]}\\";
@@ -971,9 +976,9 @@ sap.ui.define([
 		oRenderSpy.restore();
 	});
 
-	QUnit.test("setGrowing", function(assert) {
-		var oRenderSpy = this.spy(oList.getRenderer(), "render"),
-			bGrowing;
+	QUnit.test("setGrowing", async function(assert) {
+		const oRenderSpy = this.spy(oList.getRenderer(), "render");
+		let bGrowing;
 
 		oList.setGrowing(true);
 		oList.setGrowingThreshold(5);
@@ -982,7 +987,7 @@ sap.ui.define([
 
 		// add item to page & render
 		oPage.addContent(oList);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		// call method & do tests
 		bGrowing = true;
@@ -1000,7 +1005,8 @@ sap.ui.define([
 
 		bGrowing = true;
 		oList.setGrowing(bGrowing);
-		this.clock.tick(5); // wait for rerendering
+		await nextUIUpdate();
+
 		assert.strictEqual(oList.getGrowing(), bGrowing, 'The control property "growing" is "' + bGrowing + '" on ' + oList);
 		assert.strictEqual(oList.getItems().length, 5, 'The displayed item size is "5" after setting property "growing" to "true" again ' + oList.getId());
 		// TODO: decide if check on internal variables is needed (Cahit)
@@ -1008,7 +1014,7 @@ sap.ui.define([
 		assert.strictEqual(oRenderSpy.callCount, 2, 'The list should be rerendered after setting growing to "true"');
 
 		// TODO: this should fire an exception because type is boolean
-		//assert.throws(function () {
+		//assert.throws(function() {
 			oList.setGrowing("WrongType");
 		//}, "Throws a type exception");
 		assert.strictEqual(oList.getGrowing(), true, 'The control property "growing" is now "true" after setting value "WrongType" on ' + oList);
@@ -1024,9 +1030,9 @@ sap.ui.define([
 		oRenderSpy.restore();
 	});
 
-	QUnit.test("setGrowingThreshold", function(assert) {
-		var oRenderSpy = this.spy(oList.getRenderer(), "render"),
-			iThreshold;
+	QUnit.test("setGrowingThreshold", async function(assert) {
+		const oRenderSpy = this.spy(oList.getRenderer(), "render");
+		let iThreshold;
 
 		oList.setGrowing(true);
 		oList.setGrowingThreshold(5);
@@ -1035,7 +1041,7 @@ sap.ui.define([
 
 		// add item to page & render
 		oPage.addContent(oList);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		// call method & do tests
 		iThreshold = 5;
@@ -1050,7 +1056,7 @@ sap.ui.define([
 		//assert.strictEqual(oList.setGrowingThreshold(0).getGrowingThreshold(), iThreshold, 'The control property "growingThreshold" is still "' + iThreshold + '" after setting value "0" on ' + oList);
 		//assert.strictEqual(oList.setGrowingThreshold(-99).getGrowingThreshold(), iThreshold, 'The control property "growingThreshold" is still "' + iThreshold + '" after setting value "-99" on ' + oList);
 
-		assert.throws(function () {
+		assert.throws(function() {
 			oList.setGrowingThreshold("WrongType");
 		}, "Throws a type exception");
 		assert.strictEqual(oList.getGrowingThreshold(), iThreshold, 'The control property "growingThreshold" is still "' + iThreshold + '" after setting value "wrongType" on ' + oList);
@@ -1063,9 +1069,9 @@ sap.ui.define([
 		oRenderSpy.restore();
 	});
 
-	QUnit.test("setGrowingTriggerText", function(assert) {
-		var oRenderSpy = this.spy(oList.getRenderer(), "render"),
-			sText;
+	QUnit.test("setGrowingTriggerText", async function(assert) {
+		const oRenderSpy = this.spy(oList.getRenderer(), "render");
+		let sText;
 
 		oList.setGrowing(true);
 		oList.setGrowingThreshold(5);
@@ -1074,22 +1080,22 @@ sap.ui.define([
 
 		// add item to page & render
 		oPage.addContent(oList);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		// call method & do tests
 		sText = "Test1234567890!\"§$%&/()=?`´@€-_.:,;#'+*~1²³456{[]}\\";
 		assert.strictEqual(oList.setGrowingTriggerText(sText).getGrowingTriggerText(), sText, 'The control property "growingTriggerText" is "' + sText + '" on ' + oList);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.strictEqual(oList.$("trigger").find(".sapMSLITitle").text(), sText, 'The dom element has the text "' + sText + '" on ' + oList);
 
 		sText = "~!@#$%^&*()_+{}:\"|<>?\'\"><script>alert('xss')<\/script>";
 		assert.strictEqual(oList.setGrowingTriggerText(sText).getGrowingTriggerText(), sText, 'Javascript code injection is not possible on ' + oList);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.strictEqual(oList.$("trigger").find(".sapMSLITitle").text(), sText, 'The dom element has the text "' + sText + '" on ' + oList);
 
 		sText = "";
 		assert.strictEqual(oList.setGrowingTriggerText(sText).getGrowingTriggerText(), sText, 'The control property "growingTriggerText" is "' + sText + '" on ' + oList);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.strictEqual(oList.$("trigger").find(".sapMSLITitle").text(), oRB.getText("LOAD_MORE_DATA"), 'The dom element has the text "' + sText + '" on ' + oList);
 
 		// standard setter tests
@@ -1101,24 +1107,24 @@ sap.ui.define([
 		oRenderSpy.restore();
 	});
 
-	QUnit.test("setEnableBusyIndicator", function(assert) {
+	QUnit.test("setEnableBusyIndicator", async function(assert) {
 		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
-		var oRenderSpy = this.spy(oList.getRenderer(), "render");
+		await nextUIUpdate();
+		const oRenderSpy = this.spy(oList.getRenderer(), "render");
 
 		oList.setEnableBusyIndicator(false);
 		oList.setEnableBusyIndicator(true);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.strictEqual(oRenderSpy.callCount, 0, "The list should not be rerendered when enableBusyIndicator is changed");
 	});
 
-	QUnit.test("setBusy method test enableBusyIndicator property", function(assert) {
+	QUnit.test("setBusy method test enableBusyIndicator property", async function(assert) {
 		oList.setEnableBusyIndicator(false);
 		// simulate List is busy
 		oList._bBusy = true;
 		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
-		var fSetBusy = sinon.spy(oList, "setBusy");
+		await nextUIUpdate();
+		const fSetBusy = sinon.spy(oList, "setBusy");
 		oList._hideBusyIndicator();
 		assert.notOk(oList._bBusy, "_bBusy was reset");
 		assert.notOk(fSetBusy.called, "setBusy function not called, since enableBusyIndicator=false");
@@ -1127,65 +1133,64 @@ sap.ui.define([
 		oList.setEnableBusyIndicator(true);
 		// simulate List is busy
 		oList._bBusy = true;
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		oList._hideBusyIndicator();
 		assert.ok(fSetBusy.calledWith(false , "listUl"));
 		assert.notOk(oList._bBusy, "_bBusy is false");
 	});
 
-	window.IntersectionObserver && QUnit.test("BusyIndicator in the middle", function(assert) {
-		this.clock.restore();
-		createAndAppendDiv("uiArea1");
+	if (window.IntersectionObserver) {
+		QUnit.test("BusyIndicator in the middle", async function(assert) {
+			createAndAppendDiv("uiArea1");
 
-		var $qunitFixture = jQuery("#qunit-fixture"),
-			sPosition = $qunitFixture.css("position"),
-			sTop = $qunitFixture.css("top"),
-			sLeft = $qunitFixture.css("left"),
-			sWidth = $qunitFixture.css("width");
+			const $qunitFixture = jQuery("#qunit-fixture"),
+				sPosition = $qunitFixture.css("position"),
+				sTop = $qunitFixture.css("top"),
+				sLeft = $qunitFixture.css("left"),
+				sWidth = $qunitFixture.css("width");
 
-		$qunitFixture.css("position", "inherit");
-		$qunitFixture.css("top", "inherit");
-		$qunitFixture.css("left", "inherit");
-		$qunitFixture.css("width", "inherit");
+			$qunitFixture.css("position", "inherit");
+			$qunitFixture.css("top", "inherit");
+			$qunitFixture.css("left", "inherit");
+			$qunitFixture.css("width", "inherit");
 
-		var oMutationObserver, observedDomRef;
-		var done = assert.async();
-		oScrollContainer = new ScrollContainer({
-			vertical: true,
-			height: "300px",
-			content: [oList, new Toolbar({height: "100px"})]
-		});
-
-		oList.setBusyIndicatorDelay(0);
-		oScrollContainer.placeAt("uiArea1");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
-
-		oList.getDomRef().style.height = "500px";
-
-		new Promise(function(fnResolve) {
-			oList.setBusy(true);
-
-			observedDomRef = oList.getDomRef("busyIndicator").firstChild;
-			oMutationObserver = new MutationObserver(function(aMutations) {
-				aMutations.forEach(function(oMutation) {
-					if (oMutation.attributeName == "style") {
-						assert.strictEqual(oList.getDomRef("busyIndicator").firstChild.style.position, "sticky", "Position sticky was applied correctly");
-
-						oList.setBusy(false);
-						oMutationObserver.disconnect();
-						fnResolve();
-					}
-				});
+			let oMutationObserver, observedDomRef;
+			const done = assert.async();
+			oScrollContainer = new ScrollContainer({
+				vertical: true,
+				height: "300px",
+				content: [oList, new Toolbar({height: "100px"})]
 			});
-			oMutationObserver.observe(observedDomRef, { attributes: true, childList: false, subtree: false });
-		}).then(function() {
-			oScrollContainer.scrollTo(0, 400);
-			oList.setBusy(true);
 
-			observedDomRef = oList.getDomRef("busyIndicator").firstChild;
-			oMutationObserver = new MutationObserver(function(aMutations) {
-				aMutations.forEach(function(oMutation) {
-					if (oMutation.attributeName == "style") {
+			oList.setBusyIndicatorDelay(0);
+			oScrollContainer.placeAt("uiArea1");
+			await nextUIUpdate();
+
+			oList.getDomRef().style.height = "500px";
+
+			new Promise(function(fnResolve) {
+				oList.setBusy(true);
+
+				observedDomRef = oList.getDomRef("busyIndicator").firstChild;
+				oMutationObserver = new MutationObserver(function(aMutations) {
+					aMutations.forEach(function(oMutation) {
+						if (oMutation.attributeName == "style") {
+							assert.strictEqual(oList.getDomRef("busyIndicator").firstChild.style.position, "sticky", "Position sticky was applied correctly");
+
+							oList.setBusy(false);
+							oMutationObserver.disconnect();
+							fnResolve();
+						}
+					});
+				});
+				oMutationObserver.observe(observedDomRef, { attributes: true, attributeFilter: ["style"] });
+			}).then(function() {
+				oScrollContainer.scrollTo(0, 400);
+				oList.setBusy(true);
+
+				observedDomRef = oList.getDomRef("busyIndicator").firstChild;
+				oMutationObserver = new MutationObserver(function(aMutations) {
+					aMutations.forEach(function(oMutation) {
 						// safari returns top: "20.000000298023224%", hence the parseInt to remove the floating point values
 						assert.strictEqual(parseInt(oList.getDomRef("busyIndicator").firstChild.style.top) + "%", "20%", "Style top 20% was applied correctly");
 
@@ -1198,27 +1203,28 @@ sap.ui.define([
 						$qunitFixture.css("left", sLeft);
 						$qunitFixture.css("width", sWidth);
 						done();
-					}
+					});
 				});
+				oMutationObserver.observe(observedDomRef, { attributes: true, attributeFilter: ["style"] });
 			});
-			oMutationObserver.observe(observedDomRef, { attributes: true, childList: false, subtree: false });
 		});
-	});
+	}
 
-	QUnit.test("setShowSeparators", function(assert) {
-		var oListItem = createListItem().setSelected(true),
+
+	QUnit.test("setShowSeparators", async function(assert) {
+		const oListItem = createListItem().setSelected(true),
 			oList = new List({
 				showSeparators: library.ListSeparators.All,
 				items: [
 					oListItem
 				]
 			}),
-			$listUl,
 			oRenderSpy = this.spy(oList.getRenderer(), "render");
+		let $listUl;
 
 		// add item to page & render
 		oPage.addContent(oList);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		$listUl = jQuery(oList.$().children("ul")[0]);
 
 		// call method & do tests
@@ -1228,20 +1234,20 @@ sap.ui.define([
 		assert.ok(!$listUl.hasClass("sapMListShowSeparatorsNone"), 'The HTML div container for the list does not have class "sapMListShowSeparatorsNone" on ' + oList);
 
 		assert.strictEqual(oList.setShowSeparators(library.ListSeparators.Inner).getShowSeparators(), library.ListSeparators.Inner, 'The property "showSeparators" is "Inner" on ' + oList);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		$listUl = jQuery(oList.$().children("ul")[0]);
 		assert.ok(!$listUl.hasClass("sapMListShowSeparatorsAll"), 'The HTML div container for the list does not have class "sapMListShowSeparatorsAll" on ' + oList);
 		assert.ok($listUl.hasClass("sapMListShowSeparatorsInner"), 'The HTML div container for the list has class "sapMListShowSeparatorsInner" on ' + oList);
 		assert.ok(!$listUl.hasClass("sapMListShowSeparatorsNone"), 'The HTML div container for the list does not have class "sapMListShowSeparatorsNone" on ' + oList);
 
 		assert.strictEqual(oList.setShowSeparators(library.ListSeparators.None).getShowSeparators(), library.ListSeparators.None, 'The property "showSeparators" is "None" on ' + oList);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		$listUl = jQuery(oList.$().children("ul")[0]);
 		assert.ok(!$listUl.hasClass("sapMListShowSeparatorsAll"), 'The HTML div container for the list does not have class "sapMListShowSeparatorsAll" on ' + oList);
 		assert.ok(!$listUl.hasClass("sapMListShowSeparatorsInner"), 'The HTML div container for the list does not have class "sapMListShowSeparatorsInner" on ' + oList);
 		assert.ok($listUl.hasClass("sapMListShowSeparatorsNone"), 'The HTML div container for the list has class "sapMListShowSeparatorsNone" on ' + oList);
 
-		assert.throws(function () {
+		assert.throws(function() {
 			oList.setshowSeparators("DoesNotExist");
 		}, "Throws a type exception");
 		assert.strictEqual(oList.getShowSeparators(), library.ListSeparators.None, 'The property "showSeparators" is still "sap.m.showSeparators.None" after setting mode "DoesNotExist" on ' + oList);
@@ -1255,8 +1261,8 @@ sap.ui.define([
 		oList.destroy();
 	});
 
-	QUnit.test("setIncludeItemInSelection", function(assert) {
-		var oListItemTemplate = createListItem(),
+	QUnit.test("setIncludeItemInSelection", async function(assert) {
+		const oListItemTemplate = createListItem(),
 			oList = new List({
 				includeItemInSelection: false,
 				mode: library.ListMode.MultiSelect,
@@ -1264,9 +1270,8 @@ sap.ui.define([
 					oListItemTemplate
 				]
 			}),
-			oRenderSpy = this.spy(oList.getRenderer(), "render"),
-			oSelectionItem,
-			bIncludeItemInSelection;
+			oRenderSpy = this.spy(oList.getRenderer(), "render");
+		let bIncludeItemInSelection;
 
 		// let the item navigation run for testing
 		this.stub(Device.system, "desktop").value(true);
@@ -1275,14 +1280,14 @@ sap.ui.define([
 
 		// add item to page & render
 		oPage.addContent(oList);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
-		oSelectionItem = oList.getItems()[3];
+		await nextUIUpdate();
+		const oSelectionItem = oList.getItems()[3];
 
 		// call method & do tests
 		bIncludeItemInSelection = true;
 		assert.strictEqual(oList.setIncludeItemInSelection(bIncludeItemInSelection).getIncludeItemInSelection(), bIncludeItemInSelection, 'The control property "includeItemInSelection" is "' + bIncludeItemInSelection + '" on ' + oList);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
-		oList.getItems().forEach(function (oItem) {
+		await nextUIUpdate();
+		oList.getItems().forEach(function(oItem) {
 			assert.strictEqual(oItem.$().hasClass("sapMLIBActionable"), true, 'Each item has css class "sapMLIBActionable" on ' + oList);
 		});
 
@@ -1293,8 +1298,8 @@ sap.ui.define([
 
 		bIncludeItemInSelection = false;
 		assert.strictEqual(oList.setIncludeItemInSelection(bIncludeItemInSelection).getIncludeItemInSelection(), bIncludeItemInSelection, 'The control property "includeItemInSelection" is "' + bIncludeItemInSelection + '" on ' + oList);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
-		oList.getItems().forEach(function (oItem) {
+		await nextUIUpdate();
+		oList.getItems().forEach(function(oItem) {
 			assert.strictEqual(oItem.$().hasClass("sapMLIBActionable"), false, 'Each item does not have has css class "sapMLIBCursor" on ' + oList);
 		});
 
@@ -1304,7 +1309,7 @@ sap.ui.define([
 		oSelectionItem.setSelected(false);
 
 		// TODO: this should fire an exception because type is boolean
-		assert.throws(function () {
+		assert.throws(function() {
 			oList.setIncludeItemInSelection("WrongType");
 		}, "Throws a type exception");
 		assert.strictEqual(oList.getIncludeItemInSelection(), false, 'The control property "includeItemInSelection" is still "false" after setting value "WrongType" on ' + oList);
@@ -1320,8 +1325,8 @@ sap.ui.define([
 
 
 
-	QUnit.test("setRememberSelectionsForMultiSelect", function(assert) {
-		var oListItemTemplate = createListItem().setSelected(true),
+	QUnit.test("setRememberSelectionsForMultiSelect", async function(assert) {
+		const oListItemTemplate = createListItem().setSelected(true),
 			oList = new List({
 				includeItemInSelection: false,
 				mode: library.ListMode.MultiSelect,
@@ -1331,11 +1336,11 @@ sap.ui.define([
 			}),
 			oRenderSpy = this.spy(oList.getRenderer(), "render");
 
-		testRemeberSelections(oList, oRenderSpy, assert);
+		await testRemeberSelections(oList, oRenderSpy, assert);
 	});
 
-	QUnit.test("setRememberSelectionsForSingleSelect", function(assert) {
-		var oListItemTemplate = createListItem().setSelected(true),
+	QUnit.test("setRememberSelectionsForSingleSelect", async function(assert) {
+		const oListItemTemplate = createListItem().setSelected(true),
 			oList = new List({
 				includeItemInSelection: false,
 				mode: library.ListMode.SingleSelect,
@@ -1345,7 +1350,7 @@ sap.ui.define([
 			}),
 			oRenderSpy = this.spy(oList.getRenderer(), "render");
 
-		testRemeberSelections(oList, oRenderSpy, assert);
+		await testRemeberSelections(oList, oRenderSpy, assert);
 
 	});
 
@@ -1353,7 +1358,7 @@ sap.ui.define([
 	/* getter */
 
 	QUnit.test("getId", function(assert) {
-		var id = "testId",
+		const id = "testId",
 			suffix = "testSuffix",
 			oList = new List(id, {}),
 			oRenderSpy = this.spy(oList.getRenderer(), "render");
@@ -1367,17 +1372,17 @@ sap.ui.define([
 		assert.strictEqual(oRenderSpy.callCount, 0, "The list should not be rerendered in this method");
 	});
 
-	QUnit.test("getNoDataText", function(assert) {
-		var oList = new List({
+	QUnit.test("getNoDataText", async function(assert) {
+		const oList = new List({
 				noDataText: ""
 			}),
-			oRenderSpy = this.spy(oList.getRenderer(), "render"),
-			sText = oRB.getText("LIST_NO_DATA");
+			oRenderSpy = this.spy(oList.getRenderer(), "render");
+		let sText = oRB.getText("LIST_NO_DATA");
 
 		// add item to page & render
 		oList.setNoDataText();
 		oPage.addContent(oList);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		// call method & do tests
 		assert.strictEqual(oList.getNoDataText(), sText, 'The control property "noDataText" is "' + sText + '" when the property value is empty on ' + oList);
@@ -1394,14 +1399,14 @@ sap.ui.define([
 		oList.destroy();
 	});
 
-	QUnit.test("getMaxItemsCount", function(assert) {
-		var oRenderSpy = this.spy(oList.getRenderer(), "render"),
-			iCounter;
+	QUnit.test("getMaxItemsCount", async function(assert) {
+		const oRenderSpy = this.spy(oList.getRenderer(), "render");
+		let iCounter;
 
 		// add item to page & render
 		oList.setMode(library.ListMode.None);
 		oPage.addContent(oList);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		// no binding
 		iCounter = 0;
@@ -1445,10 +1450,10 @@ sap.ui.define([
 
 	/********************************************************************************/
 	QUnit.module("Other API methods", {
-		beforeEach: function() {
-			var aListItems = [], i;
+		beforeEach: async function() {
+			const aListItems = [];
 
-			for (i = 0; i < 50; i++) {
+			for (let i = 0; i < 50; i++) {
 				aListItems.push(createListItem());
 			}
 
@@ -1462,8 +1467,7 @@ sap.ui.define([
 			});
 
 			oScrollContainer.placeAt("qunit-fixture");
-
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			oScrollContainer.destroy();
@@ -1472,10 +1476,10 @@ sap.ui.define([
 	});
 	/********************************************************************************/
 
-	QUnit.test("Function scrollToIndex", function(assert) {
-		var done = assert.async();
+	QUnit.test("Function scrollToIndex", async function(assert) {
+		const done = assert.async();
 
-		var oHeaderToolbar = new Toolbar({
+		const oHeaderToolbar = new Toolbar({
 			content: [
 				new Title({
 					text : "Keyboard Handling Test Page"
@@ -1488,7 +1492,7 @@ sap.ui.define([
 			]
 		});
 
-		var oInfoToolbar = new Toolbar({
+		const oInfoToolbar = new Toolbar({
 			active: true,
 			content: [
 				new Text({
@@ -1501,12 +1505,10 @@ sap.ui.define([
 		oList.setHeaderToolbar(oHeaderToolbar);
 		oList.setInfoToolbar(oInfoToolbar);
 
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
-		var oScrollDelegate = library.getScrollDelegate(oList, true),
+		const oScrollDelegate = library.getScrollDelegate(oList, true),
 			oSpy = sinon.spy(oScrollDelegate, "scrollToElement");
-
-		this.clock.restore();
 
 		function testScroll(iIndex) {
 			return new Promise(function(resolve) {
@@ -1544,11 +1546,11 @@ sap.ui.define([
 	});
 
 	QUnit.test("Function requestItems", function(assert) {
-		var oNewList = new List({
+		let oNewList = new List({
 			growing: false
 		});
 
-		var fRequestNewPageSpy =  sinon.spy(GrowingEnablement.prototype, "requestNewPage");
+		const fRequestNewPageSpy =  sinon.spy(GrowingEnablement.prototype, "requestNewPage");
 		bindListData(oNewList, data4, "/items", createTemplateListItem());
 		assert.strictEqual(oNewList.getItems().length, 10, "List has 10 items");
 
@@ -1556,8 +1558,6 @@ sap.ui.define([
 		assert.ok(fRequestNewPageSpy.notCalled, "GrowingDelegate#requestNewPage not called");
 
 		oNewList.destroy();
-		oNewList = null;
-
 		oNewList = new List({
 			growing: true,
 			growingThreshold: 2
@@ -1576,7 +1576,7 @@ sap.ui.define([
 		oNewList.destroy();
 	});
 
-	QUnit.test("Function _setFocus", function(assert) {
+	QUnit.test("Function _setFocus", async function(assert) {
 		function testFocus(iIndex, bFirstInteractiveElement) {
 			return new Promise(function(resolve) {
 				if (iIndex === -1) {
@@ -1586,8 +1586,8 @@ sap.ui.define([
 				iIndex = Math.min(iIndex, oList.getVisibleItems().length - 1);
 
 				oList._setFocus(iIndex, bFirstInteractiveElement).then(function() {
-					var oItem = oList.getVisibleItems()[iIndex];
-					var $Elem = (bFirstInteractiveElement && oItem.getTabbables(true).length) ? oItem.getTabbables(true)[0] : oItem.getDomRef();
+					const oItem = oList.getVisibleItems()[iIndex];
+					const $Elem = (bFirstInteractiveElement && oItem.getTabbables(true).length) ? oItem.getTabbables(true)[0] : oItem.getDomRef();
 					assert.deepEqual(document.activeElement, $Elem, "The focus was set correctly");
 					resolve();
 				});
@@ -1598,29 +1598,18 @@ sap.ui.define([
 			oItem.getTabbables(true).first().attr("tabindex", 0);
 		}
 
-		return new Promise(function(resolve) {
-			oList.setMode("MultiSelect");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
-			resolve();
-		}).then(function() {
-			return testFocus(100, false);
-		}).then(function() {
-			return testFocus(0, false);
-		}).then(function() {
-			return testFocus(oList.getVisibleItems().length / 2, false);
-		}).then(function() {
-			return testFocus(-1, false);
-		}).then(function() {
-			return testFocus(100, true);
-		}).then(function() {
-			setItemFocusable(oList.getVisibleItems()[0]);
-			return testFocus(0, true);
-		}).then(function() {
-			setItemFocusable(oList.getVisibleItems()[oList.getVisibleItems().length / 2]);
-			return testFocus(oList.getVisibleItems().length / 2, true);
-		}).then(function() {
-			return testFocus(-1, true);
-		});
+		oList.setMode("MultiSelect");
+		await nextUIUpdate();
+		await testFocus(100, false);
+		await testFocus(0, false);
+		await testFocus(oList.getVisibleItems().length / 2, false);
+		await testFocus(-1, false);
+		await testFocus(100, true);
+		setItemFocusable(oList.getVisibleItems()[0]);
+		await testFocus(0, true);
+		setItemFocusable(oList.getVisibleItems()[oList.getVisibleItems().length / 2]);
+		await testFocus(oList.getVisibleItems().length / 2, true);
+		await testFocus(-1, true);
 	});
 
 	/********************************************************************************/
@@ -1643,8 +1632,8 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("Basics", function (assert) {
-		var fnDetailPressSpy = this.spy(),
+	QUnit.test("Basics", async function(assert) {
+		const fnDetailPressSpy = this.spy(),
 			fnItemPressSpy = this.spy(),
 			fnDeleteSpy = this.spy(),
 			fnPressSpy = this.spy(),
@@ -1671,7 +1660,8 @@ sap.ui.define([
 		this.stub(Device.system, "desktop").value(true);
 
 		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
+
 		oList.focus();
 
 		assert.strictEqual(oList.getDomRef("before").getAttribute("tabindex"), "-1", "Before dummy element is not at the tab chain");
@@ -1720,7 +1710,8 @@ sap.ui.define([
 		fnSelectionChangeSpy.resetHistory();
 
 		qutils.triggerKeydown(document.activeElement, "ENTER");
-		this.clock.tick(0);
+		await timeout();
+
 		assert.strictEqual(fnItemPressSpy.callCount, 1, "ItemPress event is fired async when enter is pressed while focus is at the item");
 		assert.strictEqual(fnPressSpy.callCount, 1, "Press event is fired async when enter is pressed while focus is at the item");
 		fnItemPressSpy.resetHistory();
@@ -1736,7 +1727,7 @@ sap.ui.define([
 		assert.equal(oListItem1.getTabbables(true)[0], oInput.getFocusDomRef(), "the first tabbable element in the content is input");
 
 		oList.setMode("Delete");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		oList.focus();
 
 		qutils.triggerKeydown(document.activeElement, "DELETE");
@@ -1747,7 +1738,8 @@ sap.ui.define([
 		assert.strictEqual(fnSelectionChangeSpy.callCount, 0, "SelectionChange event is not fired when space is pressed while focus is not at the item");
 
 		qutils.triggerKeydown(document.activeElement, "ENTER");
-		this.clock.tick(0);
+		await timeout();
+
 		assert.strictEqual(fnItemPressSpy.callCount, 0, "ItemPress event is not fired when enter is pressed while focus is not at the item");
 		assert.strictEqual(fnPressSpy.callCount, 0, "Press event is not fired when enter is pressed while focus is not at the item");
 
@@ -1758,18 +1750,18 @@ sap.ui.define([
 		oList.destroy();
 	});
 
-	QUnit.test("Test Tab/ShiftTab/F6/ShiftF6 handling", function(assert) {
-		var fnSpy = this.spy();
-		var oPage = new Page();
-		var oBeforeList = new Input();
-		var oAfterList = new Input();
-		var oInput = new Input();
-		var oListItem = new InputListItem({
+	QUnit.test("Test Tab/ShiftTab/F6/ShiftF6 handling", async function(assert) {
+		const fnSpy = this.spy();
+		const oPage = new Page();
+		const oBeforeList = new Input();
+		const oAfterList = new Input();
+		const oInput = new Input();
+		const oListItem = new InputListItem({
 			label: "Input",
 			content : oInput,
 			type: "Navigation"
 		});
-		var oList = new List({
+		const oList = new List({
 			mode: "MultiSelect",
 			items : [oListItem]
 		});
@@ -1778,7 +1770,7 @@ sap.ui.define([
 		oPage.addContent(oList);
 		oPage.addContent(oAfterList);
 		oPage.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		oList.forwardTab = fnSpy;
 
 		// tab key
@@ -1808,57 +1800,60 @@ sap.ui.define([
 	});
 
 	// in case of testrunner does not put the focus to the document it is not neccessary to make this test
-	document.hasFocus() && QUnit.test("Focusing an item in the ListItemBase should change the focus index of item navigation", function(assert) {
-		var oInput = new Input();
-		var oListItem0 = new InputListItem({
-			label: "Input",
-			content : oInput,
-			type: "Navigation"
+	if (document.hasFocus()) {
+		QUnit.test("Focusing an item in the ListItemBase should change the focus index of item navigation", async function(assert) {
+			const oInput = new Input();
+			const oListItem0 = new InputListItem({
+				label: "Input",
+				content : oInput,
+				type: "Navigation"
+			});
+			const oListItem1 = oListItem0.clone();
+			const oListItem2 = oListItem0.clone();
+
+			oList.addItem(oListItem0).addItem(oListItem1).addItem(oListItem2);
+
+			// let the item navigation run for testing
+			this.stub(Device.system, "desktop").value(true);
+
+			oList.placeAt("qunit-fixture");
+			await nextUIUpdate();
+
+			const oFocusedInput = oListItem1.getTabbables()[0];
+			oFocusedInput.focus();
+			await timeout(1);
+
+			assert.strictEqual(oList.getItemNavigation().getFocusedIndex(), 1, "Focus index is set correctly");
+
+			// cleanup
+			oList.destroy();
 		});
-		var oListItem1 = oListItem0.clone();
-		var oListItem2 = oListItem0.clone();
+	}
 
-		oList.addItem(oListItem0).addItem(oListItem1).addItem(oListItem2);
-
-		// let the item navigation run for testing
-		this.stub(Device.system, "desktop").value(true);
-
-		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
-
-		var oFocusedInput = oListItem1.getTabbables()[0];
-		oFocusedInput.focus();
-		this.clock.tick(1);
-		assert.strictEqual(oList.getItemNavigation().getFocusedIndex(), 1, "Focus index is set correctly");
-
-		// cleanup
-		oList.destroy();
-	});
-
-	QUnit.test("Item visible changes should inform the List", function(assert) {
-		var fnSpy = this.spy();
-		var oListItem = new StandardListItem({
+	QUnit.test("Item visible changes should inform the List", async function(assert) {
+		const fnSpy = this.spy();
+		const oListItem = new StandardListItem({
 			title: "Title"
 		});
-		var oList = new List({
+		const oList = new List({
 			items : oListItem
 		});
 
 		oPage.addContent(oList);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		// act
 		oList.onItemDOMUpdate = fnSpy;
 
 		oListItem.setVisible(false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.strictEqual(fnSpy.callCount, 1, "List is informed when item visibility is changed from visible to invisible");
 		assert.strictEqual(fnSpy.args[0][0], oListItem, "Correct list item is informed");
 		fnSpy.resetHistory();
 
 		oListItem.setVisible(true);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.strictEqual(fnSpy.callCount, 1, "List is informed when item visibility is changed from invisible to visible");
 		assert.strictEqual(fnSpy.args[0][0], oListItem, "Correct list item is informed");
@@ -1866,7 +1861,7 @@ sap.ui.define([
 		fnSpy.resetHistory();
 
 		oListItem.invalidate();
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.strictEqual(fnSpy.callCount, 0, "Visibility did not changed and list is not informed");
 
@@ -1875,8 +1870,8 @@ sap.ui.define([
 		oList.destroy();
 	});
 
-	QUnit.test("ListItem visibility change should not rerender the list", function(assert) {
-		var oListItem1 = new StandardListItem({
+	QUnit.test("ListItem visibility change should not rerender the list", async function(assert) {
+		const oListItem1 = new StandardListItem({
 				title: "Title1"
 			}),
 			oListItem2 = new StandardListItem({
@@ -1887,18 +1882,18 @@ sap.ui.define([
 			});
 
 		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		// let the item navigation run for testing
 		this.stub(Device.system, "desktop").value(true);
 
-		var fnRenderSpy = this.spy(oList.getRenderer(), "render");
+		const fnRenderSpy = this.spy(oList.getRenderer(), "render");
 
 		oListItem1.setVisible(false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		oListItem2.focus();
-		this.clock.tick(1);
+		await timeout(1);
 
 		/* make it sure document has focus in case of testrunner */
 		if (document.hasFocus()) {
@@ -1906,10 +1901,10 @@ sap.ui.define([
 		}
 
 		oListItem1.setVisible(true);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		oListItem1.focus();
-		this.clock.tick(1);
+		await timeout(1);
 
 		/* make it sure document has focus in case of testrunner */
 		if (document.hasFocus()) {
@@ -1917,17 +1912,16 @@ sap.ui.define([
 		}
 
 		oListItem1.setVisible(false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.strictEqual(fnRenderSpy.callCount, 0, "The list should not be rerendered with item visibility changes");
 
 		oList.destroy();
 	});
 
-	QUnit.test("Container Padding Classes", function (assert) {
+	QUnit.test("Container Padding Classes", async function(assert) {
 		// System under Test + Act
-		var sResponsiveSize,
-			$containerContent;
+		let sResponsiveSize;
 
 		if (Device.resize.width <= 599) {
 			sResponsiveSize = "0px";
@@ -1936,13 +1930,13 @@ sap.ui.define([
 		} else {
 			sResponsiveSize = "16px 32px";
 		}
-		var aResponsiveSize = sResponsiveSize.split(" ");
+		const aResponsiveSize = sResponsiveSize.split(" ");
 
 		// Act
 		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		oList.addStyleClass("sapUiNoContentPadding");
-		$containerContent = oList.$();
+		const $containerContent = oList.$();
 
 		// Assert
 		assert.strictEqual($containerContent.css("padding-left"), "0px", "The container has no left content padding when class \"sapUiNoContentPadding\" is set");
@@ -1972,109 +1966,111 @@ sap.ui.define([
 
 	});
 
-	document.hasFocus() && QUnit.test("KeybordMode", function (assert) {
-		var fnDetailPressSpy = this.spy(),
-			fnItemPressSpy = this.spy(),
-			fnPressSpy = this.spy(),
-			oInput1 = new Input(),
-			oInput2 = new Input(),
-			oButton1 = new Button(),
-			oButton2 = new Button(),
-			oListItem1 = new CustomListItem({
-				content: oInput1,
-				type: "Detail",
-				detailPress: fnDetailPressSpy
-			}),
-			oListItem2 = new CustomListItem({
-				content: oInput2,
-				type: "Navigation",
-				press: fnPressSpy
-			}),
-			oList = new List({
-				mode: "MultiSelect",
-				itemPress: fnItemPressSpy
-			}).addItem(oListItem1).addItem(oListItem2),
-			oContainer = new VBox({
-				items: [oButton1, oList, oButton2]
-			});
+	if (document.hasFocus()) {
+		QUnit.test("KeybordMode", async function(assert) {
+			const fnDetailPressSpy = this.spy(),
+				fnItemPressSpy = this.spy(),
+				fnPressSpy = this.spy(),
+				oInput1 = new Input(),
+				oInput2 = new Input(),
+				oButton1 = new Button(),
+				oButton2 = new Button(),
+				oListItem1 = new CustomListItem({
+					content: oInput1,
+					type: "Detail",
+					detailPress: fnDetailPressSpy
+				}),
+				oListItem2 = new CustomListItem({
+					content: oInput2,
+					type: "Navigation",
+					press: fnPressSpy
+				}),
+				oList = new List({
+					mode: "MultiSelect",
+					itemPress: fnItemPressSpy
+				}).addItem(oListItem1).addItem(oListItem2),
+				oContainer = new VBox({
+					items: [oButton1, oList, oButton2]
+				});
 
-		oContainer.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
-		oList.focus();
+			oContainer.placeAt("qunit-fixture");
+			await nextUIUpdate();
+			oList.focus();
 
-		qutils.triggerKeydown(oListItem1.getFocusDomRef(), "TAB", true, false, false);
-		assert.strictEqual(document.activeElement, oList.getDomRef('before'), "Focus is forwarded before the table");
+			qutils.triggerKeydown(oListItem1.getFocusDomRef(), "TAB", true, false, false);
+			assert.strictEqual(document.activeElement, oList.getDomRef('before'), "Focus is forwarded before the table");
 
-		oListItem1.focus();
-		qutils.triggerKeydown(document.activeElement, "TAB");
-		assert.strictEqual(document.activeElement, oList.getDomRef("after"), "Focus is forwarded after the table");
+			oListItem1.focus();
+			qutils.triggerKeydown(document.activeElement, "TAB");
+			assert.strictEqual(document.activeElement, oList.getDomRef("after"), "Focus is forwarded after the table");
 
-		oInput1.focus();
-		qutils.triggerKeydown(document.activeElement, "ARROW_UP");
-		assert.strictEqual(document.activeElement, oInput1.getFocusDomRef(), "Arrow up has no effect");
+			oInput1.focus();
+			qutils.triggerKeydown(document.activeElement, "ARROW_UP");
+			assert.strictEqual(document.activeElement, oInput1.getFocusDomRef(), "Arrow up has no effect");
 
-		oInput1.focus();
-		qutils.triggerKeydown(document.activeElement, "ARROW_DOWN");
-		assert.strictEqual(document.activeElement, oInput1.getFocusDomRef(), "Arrow up has no effect");
+			oInput1.focus();
+			qutils.triggerKeydown(document.activeElement, "ARROW_DOWN");
+			assert.strictEqual(document.activeElement, oInput1.getFocusDomRef(), "Arrow up has no effect");
 
-		oInput1.focus();
-		qutils.triggerKeydown(document.activeElement, "ENTER");
-		assert.strictEqual(fnPressSpy.callCount, 0, "Enter has no effect");
+			oInput1.focus();
+			qutils.triggerKeydown(document.activeElement, "ENTER");
+			assert.strictEqual(fnPressSpy.callCount, 0, "Enter has no effect");
 
-		oListItem1.focus();
-		qutils.triggerEvent("keydown", document.activeElement, {code: "KeyE", ctrlKey: true});
-		assert.strictEqual(fnDetailPressSpy.callCount, 1, "Detail press event is fired while focus is on the row");
-		fnDetailPressSpy.resetHistory();
+			oListItem1.focus();
+			qutils.triggerEvent("keydown", document.activeElement, {code: "KeyE", ctrlKey: true});
+			assert.strictEqual(fnDetailPressSpy.callCount, 1, "Detail press event is fired while focus is on the row");
+			fnDetailPressSpy.resetHistory();
 
-		oInput1.focus();
-		qutils.triggerKeydown(document.activeElement, "TAB");
-		assert.notStrictEqual(document.activeElement, oList.getDomRef("after"), "Focus is not forwarded after the table");
+			oInput1.focus();
+			qutils.triggerKeydown(document.activeElement, "TAB");
+			assert.notStrictEqual(document.activeElement, oList.getDomRef("after"), "Focus is not forwarded after the table");
 
-		oInput1.focus();
-		qutils.triggerEvent("keydown", document.activeElement, {code: "F2"});
-		assert.strictEqual(document.activeElement, oListItem1.getFocusDomRef(), "Focus is moved to the row");
+			oInput1.focus();
+			qutils.triggerEvent("keydown", document.activeElement, {code: "F2"});
+			assert.strictEqual(document.activeElement, oListItem1.getFocusDomRef(), "Focus is moved to the row");
 
-		oListItem1.detachDetailPress(fnDetailPressSpy);
-		qutils.triggerEvent("keydown", document.activeElement, {code: "F2"});
-		assert.strictEqual(document.activeElement, oListItem1.getModeControl().getFocusDomRef(), "Focus is moved to the Input again");
+			oListItem1.detachDetailPress(fnDetailPressSpy);
+			qutils.triggerEvent("keydown", document.activeElement, {code: "F2"});
+			assert.strictEqual(document.activeElement, oListItem1.getModeControl().getFocusDomRef(), "Focus is moved to the Input again");
 
-		qutils.triggerKeydown(document.activeElement, "ARROW_DOWN");
-		assert.strictEqual(document.activeElement, oListItem2.getModeControl().getFocusDomRef(), "Focus is moved to the next items selection control");
+			qutils.triggerKeydown(document.activeElement, "ARROW_DOWN");
+			assert.strictEqual(document.activeElement, oListItem2.getModeControl().getFocusDomRef(), "Focus is moved to the next items selection control");
 
-		qutils.triggerKeydown(document.activeElement, "ARROW_UP");
-		assert.strictEqual(document.activeElement, oListItem1.getModeControl().getFocusDomRef(), "Focus is moved to the previous items selection control");
+			qutils.triggerKeydown(document.activeElement, "ARROW_UP");
+			assert.strictEqual(document.activeElement, oListItem1.getModeControl().getFocusDomRef(), "Focus is moved to the previous items selection control");
 
-		oInput1.focus();
-		qutils.triggerKeydown(document.activeElement, "ARROW_DOWN", false, false, true);
-		assert.strictEqual(document.activeElement, oInput2.getFocusDomRef(), "Focus is moved to the second input with CTRL held");
+			oInput1.focus();
+			qutils.triggerKeydown(document.activeElement, "ARROW_DOWN", false, false, true);
+			assert.strictEqual(document.activeElement, oInput2.getFocusDomRef(), "Focus is moved to the second input with CTRL held");
 
-		qutils.triggerKeydown(document.activeElement, "ARROW_UP", false, false, true);
-		assert.strictEqual(document.activeElement, oInput1.getFocusDomRef(), "Focus is moved to the first input with CTRL held");
+			qutils.triggerKeydown(document.activeElement, "ARROW_UP", false, false, true);
+			assert.strictEqual(document.activeElement, oInput1.getFocusDomRef(), "Focus is moved to the first input with CTRL held");
 
-		oInput2.setEnabled(false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
-		qutils.triggerKeydown(document.activeElement, "ARROW_DOWN", false, false, true);
-		assert.strictEqual(document.activeElement, oListItem2.getModeControl().getFocusDomRef(), "Focus is moved to the selection control of 2nd item since the input is disabled");
+			oInput2.setEnabled(false);
+			await nextUIUpdate();
+			qutils.triggerKeydown(document.activeElement, "ARROW_DOWN", false, false, true);
+			assert.strictEqual(document.activeElement, oListItem2.getModeControl().getFocusDomRef(), "Focus is moved to the selection control of 2nd item since the input is disabled");
 
-		qutils.triggerKeydown(document.activeElement, "TAB", true, false, false);
-		assert.notStrictEqual(document.activeElement, oList.getItemsContainerDomRef(), "Focus is not forwarded before the table");
+			qutils.triggerKeydown(document.activeElement, "TAB", true, false, false);
+			assert.notStrictEqual(document.activeElement, oList.getItemsContainerDomRef(), "Focus is not forwarded before the table");
 
-		oInput2.setEnabled(true);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
-		oListItem2.focus();
-		qutils.triggerEvent("keydown", document.activeElement, {code: "F7"});
-		assert.strictEqual(document.activeElement, oListItem2.getModeControl().getFocusDomRef(), "Focus is moved to the selection control");
+			oInput2.setEnabled(true);
+			await nextUIUpdate();
+			oListItem2.focus();
+			qutils.triggerEvent("keydown", document.activeElement, {code: "F7"});
+			assert.strictEqual(document.activeElement, oListItem2.getModeControl().getFocusDomRef(), "Focus is moved to the selection control");
 
-		qutils.triggerKeydown(document.activeElement, "ENTER");
-		assert.strictEqual(fnItemPressSpy.callCount, 0, "Item press event is not called");
-		assert.strictEqual(fnPressSpy.callCount, 0, "Press event is not called");
+			qutils.triggerKeydown(document.activeElement, "ENTER");
+			assert.strictEqual(fnItemPressSpy.callCount, 0, "Item press event is not called");
+			assert.strictEqual(fnPressSpy.callCount, 0, "Press event is not called");
 
-		oContainer.destroy();
-	});
+			oContainer.destroy();
+		});
+	}
 
-	QUnit.test("Keyboard range selection", function (assert) {
+	QUnit.test("Keyboard range selection", async function(assert) {
 
-		var oListItemTemplate = createListItem(),
+		const oListItemTemplate = createListItem(),
 			oList = new List({
 				mode: library.ListMode.MultiSelect,
 				includeItemInSelection: true,
@@ -2087,12 +2083,12 @@ sap.ui.define([
 		bindListData(oList, data3, "/items", createTemplateListItem());
 
 		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		oList.getVisibleItems()[0].focus();
 		// select the item
 		qutils.triggerKeydown(document.activeElement, "SPACE", false, false, false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.equal(fnFireSelectionChangeEvent.callCount, 1, "selectionChange event fired");
 
 		// trigger shift keydown so that oList._mRangeSelectionIndex object is available
@@ -2108,7 +2104,7 @@ sap.ui.define([
 		// select the item again
 		oList.getVisibleItems()[0].focus();
 		qutils.triggerKeydown(document.activeElement, "SPACE", false, false, false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.equal(fnFireSelectionChangeEvent.callCount, 1, "selectionChange event fired");
 
 		// trigger shift keydown so that oList._mRangeSelectionIndex object is available
@@ -2117,11 +2113,11 @@ sap.ui.define([
 
 		// trigger SHIFT + Arrow Down to perform range selection
 		qutils.triggerKeydown(document.activeElement, "ARROW_DOWN", true, false, false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(oList.getVisibleItems()[1].getSelected(), "Item at position 1 is selected via keyboard range selection");
 		assert.equal(fnFireSelectionChangeEvent.callCount, 2, "selectionChange event fired");
 		qutils.triggerKeydown(document.activeElement, "ARROW_DOWN", true, false, false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(oList.getVisibleItems()[2].getSelected(), "Item at position 2 is selected via keyboard range selection");
 		assert.equal(fnFireSelectionChangeEvent.callCount, 3, "selectionChange event fired");
 
@@ -2139,7 +2135,7 @@ sap.ui.define([
 		oList.getVisibleItems()[5].focus();
 		// select the item
 		qutils.triggerKeydown(document.activeElement, "SPACE", false, false, false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.equal(fnFireSelectionChangeEvent.callCount, 1, "selectionChange event fired");
 
 		// trigger shift keydown so that oList._mRangeSelection object is available
@@ -2179,10 +2175,10 @@ sap.ui.define([
 		assert.ok(!oList._mRangeSelection, "Range selection mode cleared");
 
 		// test for invisible items
-		var oListItem = oList.getVisibleItems()[5];
+		const oListItem = oList.getVisibleItems()[5];
 		oListItem.setSelected(false);
 		oListItem.setVisible(false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		oList.getVisibleItems()[4].focus();
 		// trigger shift keydown so that oList._mRangeSelection object is available
@@ -2197,8 +2193,8 @@ sap.ui.define([
 		oList.destroy();
 	});
 
-	QUnit.test("Keyboard range selection for non-selectable items", function (assert) {
-		var oListItemTemplate = createListItem(),
+	QUnit.test("Keyboard range selection for non-selectable items", async function(assert) {
+		const oListItemTemplate = createListItem(),
 			oList = new List({
 				mode: library.ListMode.MultiSelect,
 				includeItemInSelection: true,
@@ -2212,15 +2208,15 @@ sap.ui.define([
 		bindListData(oList, data3, "/items", createTemplateListItem());
 
 		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		oList.insertItem(oGroupHeaderListItem, 3);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		oList.getVisibleItems()[1].focus();
 		// select the item
 		qutils.triggerKeydown(document.activeElement, "SPACE", false, false, false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.equal(fnFireSelectionChangeEvent.callCount, 1, "selectionChange event fired");
 
 		// trigger shift keydown so that oList._mRangeSelectionIndex object is available
@@ -2228,27 +2224,27 @@ sap.ui.define([
 		assert.ok(oList._mRangeSelection, "Range selection mode enabled");
 		// trigger SHIFT + Arrow Down to perform range selection
 		qutils.triggerKeydown(document.activeElement, "ARROW_DOWN", true, false, false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(oList.getVisibleItems()[2].getSelected(), "Item at position 2 is selected via keyboard range selection");
 		assert.equal(fnFireSelectionChangeEvent.callCount, 2, "selectionChange event fired");
 
 		// trigger SHIFT + Arrow Down to perform range selection
 		qutils.triggerKeydown(document.activeElement, "ARROW_DOWN", true, false, false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(!oList.getVisibleItems()[3].getSelected(), "Item at position 3 is not selected via keyboard range selection as it is a sap.m.GroupHeaderListItem control");
 		assert.equal(fnFireSelectionChangeEvent.callCount, 2, "selectionChange event not fired");
 
 		// trigger SHIFT + Arrow Down to perform range selection
 		qutils.triggerKeydown(document.activeElement, "ARROW_DOWN", true, false, false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(oList.getVisibleItems()[4].getSelected(), "Item at position 4 is selected via keyboard range selection");
 		assert.equal(fnFireSelectionChangeEvent.callCount, 3, "selectionChange event fired");
 
 		oList.destroy();
 	});
 
-	QUnit.test("Keyboard range selection - when range selection starts from a selected item, deselection should happen when direction changes", function (assert) {
-		var oListItemTemplate = createListItem(),
+	QUnit.test("Keyboard range selection - when range selection starts from a selected item, deselection should happen when direction changes", async function(assert) {
+		const oListItemTemplate = createListItem(),
 			oList = new List({
 				mode: library.ListMode.MultiSelect,
 				includeItemInSelection: true,
@@ -2261,7 +2257,7 @@ sap.ui.define([
 		bindListData(oList, data3, "/items", createTemplateListItem());
 
 		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		oList.getVisibleItems()[1].focus();
 		// select the item
@@ -2279,7 +2275,7 @@ sap.ui.define([
 		// select the item
 		qutils.triggerKeydown(document.activeElement, "SPACE", false, false, false);
 
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.equal(oList.getSelectedItems().length, 4, "4 items are selected");
 
 		fnFireSelectionChangeEvent.resetHistory();
@@ -2295,30 +2291,30 @@ sap.ui.define([
 
 		// trigger SHIFT + Arrow Down to perform range selection
 		qutils.triggerKeydown(document.activeElement, "ARROW_DOWN", true, false, false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(fnFireSelectionChangeEvent.notCalled, "action is selection and the item is already selected, then selectionChange event should not be fired");
 		assert.equal(oList._mRangeSelection.direction, 1, "Direction of index stored in _mRangeSelection object");
 
 		// trigger SHIFT + Arrow Down to perform range selection
 		qutils.triggerKeydown(document.activeElement, "ARROW_DOWN", true, false, false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(fnFireSelectionChangeEvent.notCalled, "action is selection and the item is already selected, then selectionChange event should not be fired");
 
 		// trigger SHIFT + Arrow Up to perform range selection
 		qutils.triggerKeydown(document.activeElement, "ARROW_UP", true, false, false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.equal(fnFireSelectionChangeEvent.callCount, 1, "direction changed, so selectionChange event should be fired");
 		assert.ok(!oList.getVisibleItems()[4].getSelected(), "Item at position 4 is deselected");
 
 		// trigger SHIFT + Arrow Up to perform range selection
 		qutils.triggerKeydown(document.activeElement, "ARROW_UP", true, false, false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.equal(fnFireSelectionChangeEvent.callCount, 2, "direction changed, so selectionChange event should be fired");
 		assert.ok(!oList.getVisibleItems()[3].getSelected(), "Item at position 3 is deselected");
 
 		// trigger SHIFT + Arrow Up to perform range selection
 		qutils.triggerKeydown(document.activeElement, "ARROW_UP", true, false, false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.equal(fnFireSelectionChangeEvent.callCount, 2, "index of item and range selection item index matched, selection Cange no fired, item is already selected");
 		assert.equal(oList._mRangeSelection.direction, -1, "Direction change updated in _mRangeSelection object");
 
@@ -2327,8 +2323,8 @@ sap.ui.define([
 		oList.destroy();
 	});
 
-	QUnit.test("Mouse range selection", function (assert) {
-		var oListItemTemplate = createListItem(),
+	QUnit.test("Mouse range selection", async function(assert) {
+		const oListItemTemplate = createListItem(),
 			oList = new List({
 				mode: library.ListMode.MultiSelect,
 				includeItemInSelection: true,
@@ -2341,19 +2337,19 @@ sap.ui.define([
 		bindListData(oList, data3, "/items", createTemplateListItem());
 
 		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		oList.getVisibleItems()[0].focus();
 		// select the item
 		qutils.triggerKeydown(document.activeElement, "SPACE", false, false, false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.equal(fnFireSelectionChangeEvent.callCount, 1, "selectionChange event fired");
 
 		// trigger shift keydown so that oList._mRangeSelection object is available
 		qutils.triggerKeydown(document.activeElement, "", true, false, false);
 		assert.ok(oList._mRangeSelection, "Range selection mode enabled");
 
-		var oCheckboxDomRef = oList.getVisibleItems()[9].getDomRef("selectMulti");
+		let oCheckboxDomRef = oList.getVisibleItems()[9].getDomRef("selectMulti");
 		qutils.triggerMouseEvent(oCheckboxDomRef, "tap");
 		assert.equal(fnFireSelectionChangeEvent.callCount, 2, "selectionChange event fired");
 		assert.equal(oList.getSelectedItems().length, 10, "10 items are selected using mouse range selection");
@@ -2368,8 +2364,8 @@ sap.ui.define([
 		oList.destroy();
 	});
 
-	QUnit.test("Mouse range selection with hidden items", function(assert) {
-		var oListItemTemplate = createListItem(),
+	QUnit.test("Mouse range selection with hidden items", async function(assert) {
+		const oListItemTemplate = createListItem(),
 			oList = new List({
 				mode: library.ListMode.MultiSelect,
 				items: [
@@ -2379,29 +2375,29 @@ sap.ui.define([
 
 		bindListData(oList, data3, "/items", createTemplateListItem());
 
-		var aItems = oList.getItems();
-		for (var i = 5; i <= 7; i++) {
+		const aItems = oList.getItems();
+		for (let i = 5; i <= 7; i++) {
 			aItems[i].setVisible(false);
 		}
 		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		aItems[4].focus();
 		// select the item
 		qutils.triggerKeydown(document.activeElement, "SPACE", false, false, false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		// trigger shift keydown so that oList._mRangeSelection object is available
 		qutils.triggerKeydown(document.activeElement, "", true, false, false);
-		var oCheckboxDomRef = aItems[8].getDomRef("selectMulti");
+		const oCheckboxDomRef = aItems[8].getDomRef("selectMulti");
 		qutils.triggerMouseEvent(oCheckboxDomRef, "tap");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.strictEqual(oList.getSelectedItems().length, 2, "Invisible items are no selected");
 		oList.destroy();
 	});
 
-	QUnit.test("Mouse range selection with hidden items with includeItemInSelection=true", function(assert) {
-		var oListItemTemplate = createListItem(),
+	QUnit.test("Mouse range selection with hidden items with includeItemInSelection=true", async function(assert) {
+		const oListItemTemplate = createListItem(),
 			oList = new List({
 				mode: library.ListMode.MultiSelect,
 				includeItemInSelection: true,
@@ -2411,14 +2407,14 @@ sap.ui.define([
 			});
 
 		bindListData(oList, data3, "/items", createTemplateListItem());
-		var aItems = oList.getItems();
+		const aItems = oList.getItems();
 		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		aItems[4].focus();
 		// select the item
 		qutils.triggerMouseEvent(document.activeElement, "tap");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		// trigger shift keydown so that oList._mRangeSelection object is available
 		qutils.triggerKeydown(document.activeElement, "", true, false, false);
@@ -2427,8 +2423,8 @@ sap.ui.define([
 		oList.destroy();
 	});
 
-	QUnit.test("Do not create range seletion object when CTRL + SHIFT is pressed", function(assert) {
-		var oListItemTemplate = createListItem(),
+	QUnit.test("Do not create range seletion object when CTRL + SHIFT is pressed", async function(assert) {
+		const oListItemTemplate = createListItem(),
 			oList = new List({
 				mode: library.ListMode.MultiSelect,
 				includeItemInSelection: true,
@@ -2440,12 +2436,12 @@ sap.ui.define([
 		bindListData(oList, data3, "/items", createTemplateListItem());
 
 		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		oList.getVisibleItems()[0].focus();
 		// select the item
 		qutils.triggerKeydown(document.activeElement, "SPACE", false, false, false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(oList.getVisibleItems()[0].getSelected(), "First item selected");
 
 		// trigger shift + ctrlKey keydown
@@ -2476,25 +2472,25 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("Highlight should be rendered", function (assert) {
-		var oLI = new StandardListItem({
+	QUnit.test("Highlight should be rendered", async function(assert) {
+		const oLI = new StandardListItem({
 			title: "Title of the item"
 		}).placeAt("qunit-fixture");
 
-		var fnTestHighlight = function(sHighlight) {
+		const fnTestHighlight = async function(sHighlight) {
 			oLI.setHighlight(sHighlight);
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 			assert.ok(oLI.getDomRef().firstChild.classList.contains("sapMLIBHighlight"), "Highlight is rendered");
 			assert.ok(oLI.getDomRef().firstChild.classList.contains("sapMLIBHighlight" + sHighlight), sHighlight + " Highlight is rendered");
 		};
 
-		var aHighlightColors = ["Error", "Warning", "Success", "Information", "Indication01", "Indication02", "Indication03", "Indication04", "Indication05"];
-		for (var i = 0; i < aHighlightColors.length; i++) {
-			fnTestHighlight(aHighlightColors[i]);
+		const aHighlightColors = ["Error", "Warning", "Success", "Information", "Indication01", "Indication02", "Indication03", "Indication04", "Indication05"];
+		for (let i = 0; i < aHighlightColors.length; i++) {
+			await fnTestHighlight(aHighlightColors[i]);
 		}
 
 		oLI.setHighlight("None");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(!oLI.getDomRef().firstChild.classList.contains("sapMLIBHighlight"), "Highlight is not rendered");
 		assert.ok(!oLI.getDomRef().firstChild.classList.contains("sapMLIBHighlightNone"), "No highlight class for None");
 
@@ -2512,9 +2508,9 @@ sap.ui.define([
 		oLI.destroy();
 	});
 
-	QUnit.test("List should respect highlight changes", function (assert) {
+	QUnit.test("List should respect highlight changes", async function(assert) {
 
-		var oListItem1 = new StandardListItem({
+		const oListItem1 = new StandardListItem({
 				title: "oListItem1"
 			}),
 			oListItem2 = new CustomListItem({
@@ -2525,35 +2521,35 @@ sap.ui.define([
 			});
 
 		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.ok(oList.getDomRef("listUl").classList.contains("sapMListHighlight"), "Highlight class is added");
 
 		oListItem2.setHighlight("None");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(!oList.getDomRef("listUl").classList.contains("sapMListHighlight"), "Highlight class is removed");
 
 		oListItem1.setHighlight("Information");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(oList.getDomRef("listUl").classList.contains("sapMListHighlight"), "Highlight class is added");
 
 		oListItem1.setVisible(false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(!oList.getDomRef("listUl").classList.contains("sapMListHighlight"), "Highlight class is removed");
 
 		oListItem1.setVisible(true);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(oList.getDomRef("listUl").classList.contains("sapMListHighlight"), "Highlight class is removed");
 
 		oListItem1.destroy();
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(!oList.getDomRef("listUl").classList.contains("sapMListHighlight"), "Highlight class is removed");
 
 		oList.destroy();
 	});
 
 	QUnit.module("Theming", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.oListItem = new StandardListItem({
 				title: "ListItem"
 			});
@@ -2562,7 +2558,7 @@ sap.ui.define([
 			});
 
 			this.oList.placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 
 			this._iThreshold = QUnit.config.testTimeout;
 			QUnit.config.testTimeout = 120000; // 2 min timeout to prevent issues with the multiple theme changes
@@ -2576,16 +2572,15 @@ sap.ui.define([
 
 	QUnit.test("Delete Icon", function(assert) {
 		const done = assert.async();
-		this.clock.restore();
 
-		var aThemes = ["sap_fiori_3", "sap_horizon", "sap_horizon_dark", "sap_horizon_hcb", "sap_horizon_hcw"];
+		const aThemes = ["sap_fiori_3", "sap_horizon", "sap_horizon_dark", "sap_horizon_hcb", "sap_horizon_hcw"];
 
 		assert.expect(aThemes.length + 1);
 		assert.ok(this.oListItem.getDeleteControl(true), "Delete Control exists.");
 
-		var fnThemeChanged = (oEvent) => {
-			var sTheme = oEvent.theme;
-			var sExpectedIconType;
+		const fnThemeChanged = (oEvent) => {
+			const sTheme = oEvent.theme;
+			let sExpectedIconType;
 
 			switch (sTheme) {
 				case "sap_horizon" :
@@ -2622,24 +2617,24 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("Navigated indicator should be rendered", function(assert) {
-		var oLI = new StandardListItem({
+	QUnit.test("Navigated indicator should be rendered", async function(assert) {
+		const oLI = new StandardListItem({
 			title: "Title of the item"
 		}).placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.notOk(oLI.$().find(".sapMLIBNavigated").length > 0, "navigated property is not enabled, hence class is not rendered");
 		assert.equal(oLI.$().attr("aria-current"), undefined, "ARIA attribute aria-current is not set");
 
 		oLI.setNavigated(true);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(oLI.$().find(".sapMLIBNavigated").length > 0, "navigated property is set correctly and class is also rendered");
 		assert.ok(oLI.$().attr("aria-current"), "ARIA attribute aria-current is set");
 
 		oLI.destroy();
 	});
 
-	QUnit.test("List should respect navigated changes", function(assert) {
-		var oListItem1 = new StandardListItem({
+	QUnit.test("List should respect navigated changes", async function(assert) {
+		const oListItem1 = new StandardListItem({
 			title: "oListItem1"
 		}),
 		oListItem2 = new CustomListItem({
@@ -2650,17 +2645,17 @@ sap.ui.define([
 		});
 
 		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.notOk(oList.getDomRef("listUl").classList.contains("sapMListNavigated"), "Navigated class is not added as navigated property is not enabled");
 		assert.equal(oListItem1.$().attr("aria-current"), undefined, "ARIA attribute aria-current is not set");
 
 		oListItem2.setNavigated(true);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(oList.getDomRef("listUl").classList.contains("sapMListNavigated"), "List informed to add navigated class");
 		assert.ok(oListItem2.$().attr("aria-current"), "ARIA attribute aria-current is set");
 
 		oListItem2.setNavigated(false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.notOk(oList.getDomRef("listUl").classList.contains("sapMListNavigated"), "Navigated class is removed, as non of the items are navigated");
 		assert.equal(oListItem2.$().attr("aria-current"), undefined, "ARIA attribute aria-current is not set");
 
@@ -2676,27 +2671,27 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("aria-labelledby association should only be in the DOM", function(assert) {
+	QUnit.test("aria-labelledby association should only be in the DOM", async function(assert) {
 		oList.placeAt("qunit-fixture");
-		var oText1 = new Text({
+		const oText1 = new Text({
 			text: "text1"
 		}).placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		oList.addAriaLabelledBy(oText1);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.ok(oList.getNavigationRoot().getAttribute("aria-labelledby") == oText1.getId(), "Accessibility info of text1 is in the list dom");
 
 		oList.removeAriaLabelledBy(oText1);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(oList.getNavigationRoot().getAttribute("aria-labelledby") == null, "Accessibility info of text1 is removed from the dom");
 
 		oText1.destroy();
 	});
 
-	QUnit.test("aria-labelledby should not contain same id multiple times",function(assert) {
-		var oHeaderToolbar = new Toolbar({
+	QUnit.test("aria-labelledby should not contain same id multiple times", async function(assert) {
+		const oHeaderToolbar = new Toolbar({
 			content: [
 				new Title({
 					id: "titleId",
@@ -2704,7 +2699,7 @@ sap.ui.define([
 				})
 			]
 		});
-		var oText = new Text({
+		const oText = new Text({
 			id: "textId",
 			text: "Text"
 		}).placeAt("qunit-fixture");
@@ -2713,15 +2708,15 @@ sap.ui.define([
 		oList.addAriaLabelledBy("textId");
 		oList.setHeaderToolbar(oHeaderToolbar);
 		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
-		var aAriaLabelledBy = oList.getNavigationRoot().getAttribute("aria-labelledby").split(" ");
+		const aAriaLabelledBy = oList.getNavigationRoot().getAttribute("aria-labelledby").split(" ");
 		assert.strictEqual(aAriaLabelledBy.length, 2, "correct aria-labelledby ids added to the control DOM root");
 		oText.destroy();
 	});
 
-	QUnit.test("group headers info of the item", function(assert) {
-		var oGroupHeader1 = new GroupHeaderListItem({
+	QUnit.test("group headers info of the item", async function(assert) {
+		const oGroupHeader1 = new GroupHeaderListItem({
 				title: "Group Header 1"
 			}),
 			oListItem1 = new StandardListItem({
@@ -2737,7 +2732,7 @@ sap.ui.define([
 				items: [oGroupHeader1, oListItem1, oGroupHeader2, oListItem2]
 			}).placeAt("qunit-fixture");
 
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		oListItem1.focus();
 		assert.ok(oListItem1.getAccessibilityInfo().description.indexOf(oGroupHeader1.getTitle()) > -1, "group headers info exist in the accessibility info of the item");
@@ -2748,32 +2743,32 @@ sap.ui.define([
 		oList.destroy();
 	});
 
-	QUnit.test("highlight text of the item", function(assert) {
-		var oListItem1 = new StandardListItem({
+	QUnit.test("highlight text of the item", async function(assert) {
+		const oListItem1 = new StandardListItem({
 			title: "Title of the item"
 		}).placeAt("qunit-fixture");
 
-		var fnTestHighlight = function(sHighlight, sHighlightText, sExpectedHighlightText) {
+		const fnTestHighlight = async function(sHighlight, sHighlightText, sExpectedHighlightText) {
 			oListItem1.setHighlight(sHighlight);
 			oListItem1.setHighlightText(sHighlightText);
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 			assert.ok(oListItem1.getAccessibilityInfo().description.indexOf(sExpectedHighlightText) > -1,
 				"highlight text exists in the accessibility info of the item");
 		};
 
-		var aMessageTypes = ["Error", "Warning", "Success", "Information"];
-		var aIndicationColors = ["Indication01", "Indication02", "Indication03", "Indication04", "Indication05"];
+		const aMessageTypes = ["Error", "Warning", "Success", "Information"];
+		const aIndicationColors = ["Indication01", "Indication02", "Indication03", "Indication04", "Indication05"];
 
 		// Default text
-		aMessageTypes.forEach(function(sHighlight) {
-			var sDefaultText = Library.getResourceBundleFor("sap.m").getText("LIST_ITEM_STATE_" + sHighlight.toUpperCase());
-			fnTestHighlight(sHighlight, undefined, sDefaultText);
-		});
+		for (const sMessageType of aMessageTypes) {
+			const sDefaultText = Library.getResourceBundleFor("sap.m").getText("LIST_ITEM_STATE_" + sMessageType.toUpperCase());
+			await fnTestHighlight(sMessageType, undefined, sDefaultText);
+		}
 
 		// Custom text
-		aMessageTypes.concat(aIndicationColors).forEach(function(sHighlight) {
-			fnTestHighlight(sHighlight, "custom highlight text", "custom highlight text");
-		});
+		for (const sIndicationColor of aMessageTypes.concat(aIndicationColors)) {
+			await fnTestHighlight(sIndicationColor, "custom highlight text", "custom highlight text");
+		}
 
 		oListItem1.setHighlight("None");
 		oListItem1.setHighlightText("custom highlight text");
@@ -2783,8 +2778,8 @@ sap.ui.define([
 		oListItem1.destroy();
 	});
 
-	QUnit.test("Internal control created by the ListBase should not be disabled by the EnabledPropagator", function(assert) {
-		var oListItem = new StandardListItem({
+	QUnit.test("Internal control created by the ListBase should not be disabled by the EnabledPropagator", async function(assert) {
+		const oListItem = new StandardListItem({
 				title: "Foo",
 				description: "Bar"
 			}),
@@ -2798,40 +2793,40 @@ sap.ui.define([
 			});
 
 		oVerticalLayout.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.strictEqual(oListItem.getMultiSelectControl().getEnabled(), true, "MultiSelect Checkbox was not disabled by the EnabledPropagator");
 
 		oList.setMode("SingleSelect");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.strictEqual(oListItem.getSingleSelectControl().getEnabled(), true, "SingleSelect RadioButton was not disabled by the EnabledPropagator");
 
 		oList.setMode("SingleSelectLeft");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.strictEqual(oListItem.getSingleSelectControl().getEnabled(), true, "SingleSelectLeft RadioButton was not disabled by the EnabledPropagator");
 
 		oList.setMode("Delete");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.strictEqual(oListItem.getDeleteControl().getEnabled(), true, "Delete button was not disabled by the EnabledPropagator");
 
 		oListItem.setType("Detail");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.strictEqual(oListItem.getDetailControl().getEnabled(), true, "Detail button was not disabled by the EnabledPropagator");
 
 		oVerticalLayout.destroy();
 	});
 
 	QUnit.test("Accessibility Text for Standard List Item", function(assert) {
-		var oListItem = new StandardListItem({
+		const oListItem = new StandardListItem({
 			title: "Title",
 			description: "Description"
 		});
 
 		bindListData(oList, data3, "/items", oListItem);
-		var oBundle = Library.getResourceBundleFor("sap.m");
+		const oBundle = Library.getResourceBundleFor("sap.m");
 
 		oList.setMode("None");
-		var sStates = oList.getAccessibilityStates();
+		let sStates = oList.getAccessibilityStates();
 		assert.strictEqual(sStates, "", "No Punctuation added since no text available");
 
 		oList.setMode("MultiSelect");
@@ -2845,7 +2840,7 @@ sap.ui.define([
 		oList.setMode("SingleSelect");
 		assert.strictEqual(oList.getAccessibilityStates(), oBundle.getText("LIST_SELECTABLE") + " . ", "Punctuation added to mode None");
 
-		var oSorter = new Sorter("items", false, function(oContext){
+		const oSorter = new Sorter("items", false, function(oContext){
 			return oContext.getProperty("items"); // group by first letter of Name
 		});
 
@@ -2862,8 +2857,8 @@ sap.ui.define([
 		assert.strictEqual(oListItem.getAccessibilityInfo().description,oBundle.getText("LIST_ITEM_SELECTED") + " . " + oListItem.getHighlight() + " . " + oBundle.getText("LIST_ITEM_ACTIVE") + " . " + "Title . Description",  "Content announcement for Standard List Item with Punctuation" );
 	});
 
-	QUnit.test("ListItem aria-labelledby reference to Accessibility Text", function(assert) {
-		var oList = new List({
+	QUnit.test("ListItem aria-labelledby reference to Accessibility Text", async function(assert) {
+		const oList = new List({
 			items: [
 				new StandardListItem({
 					title: "Title",
@@ -2874,10 +2869,10 @@ sap.ui.define([
 		});
 
 		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
-		var oItem = oList.getItems()[0];
-		var oInvisibleText = ListBase.getInvisibleText();
+		const oItem = oList.getItems()[0];
+		const oInvisibleText = ListBase.getInvisibleText();
 
 		assert.equal(oItem.getDomRef().getAttribute("aria-labelledby"), "test", "aria-labelledby is correct");
 		oItem.$().trigger("focusin");
@@ -2887,14 +2882,14 @@ sap.ui.define([
 	});
 
 	QUnit.test("Accessibility Text for Input List Item", function(assert) {
-		var oInputListItem = new InputListItem({
+		const oInputListItem = new InputListItem({
 			title: "Title",
 			label: "Label",
 			content : new Input({
 				value: "Content"
 			})
 		});
-		var oBundle = Library.getResourceBundleFor("sap.m");
+		const oBundle = Library.getResourceBundleFor("sap.m");
 
 		oInputListItem.setSelected(true);
 		oInputListItem.setHighlight("Information");
@@ -2903,8 +2898,8 @@ sap.ui.define([
 		assert.strictEqual(oInputListItem.getAccessibilityInfo().description,oBundle.getText("LIST_ITEM_SELECTED") + " . " + oInputListItem.getHighlight() + " . " + oBundle.getText("LIST_ITEM_ACTIVE") + " . " + "Label . Input Content",  "Content announcement for Standard List Item with Punctuation" );
 	});
 
-	QUnit.test("test content announcement update after selection changes", function(assert) {
-		var oList = new List({
+	QUnit.test("test content announcement update after selection changes", async function(assert) {
+		const oList = new List({
 			mode: "MultiSelect",
 			items: [
 				new StandardListItem({
@@ -2915,9 +2910,9 @@ sap.ui.define([
 		});
 
 		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
-		var oItem = oList.getItems()[0],
+		const oItem = oList.getItems()[0],
 			oRb = Library.getResourceBundleFor("sap.m"),
 			fnInvisibleMessageAnnounce = sinon.spy(InvisibleMessage.prototype, "announce");
 
@@ -2925,7 +2920,7 @@ sap.ui.define([
 		oItem.focus();
 		assert.ok(document.getElementById(document.activeElement.getAttribute("aria-labelledby")).innerHTML.indexOf(oRb.getText("LIST_ITEM_NOT_SELECTED")) > -1, "'Not Selected', is added to the acc text");
 		qutils.triggerKeydown(document.activeElement, KeyCodes.SPACE);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(fnInvisibleMessageAnnounce.calledWith(oRb.getText("LIST_ITEM_SELECTED"), "Assertive"), "InvisibleMessage#announce method called with 'Selected' & 'Assertive'");
 
 		fnInvisibleMessageAnnounce.resetHistory();
@@ -2933,15 +2928,15 @@ sap.ui.define([
 		// selection control is focused
 		oItem._oMultiSelectControl.focus();
 		qutils.triggerKeydown(document.activeElement, KeyCodes.SPACE);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(fnInvisibleMessageAnnounce.notCalled, "InvisibleMessage#announce method not called, since focused element is the selection control");
 
 		fnInvisibleMessageAnnounce.restore();
 		oList.destroy();
 	});
 
-	QUnit.test("InputListItem: inner control should have ariaLabelledBy association", function(assert) {
-		var oInputListItem = new InputListItem({
+	QUnit.test("InputListItem: inner control should have ariaLabelledBy association", async function(assert) {
+		const oInputListItem = new InputListItem({
 			label: "Label",
 			content : [
 				new Input({
@@ -2959,9 +2954,9 @@ sap.ui.define([
 
 		oList.addItem(oInputListItem);
 		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
-		var oControl = oInputListItem.getContent()[0];
-		var oControl1 = oInputListItem.getContent()[1];
+		await nextUIUpdate();
+		const oControl = oInputListItem.getContent()[0];
+		const oControl1 = oInputListItem.getContent()[1];
 
 		assert.ok(oControl.addAriaLabelledBy, "Control has ariaLabelledBy association");
 		assert.strictEqual(oControl.getDomRef("inner").getAttribute("aria-labelledby"), oInputListItem.getId() + "-label", "aria-lablledBy is added to the control");
@@ -2969,8 +2964,8 @@ sap.ui.define([
 		assert.notOk(oControl1.getDomRef().getAttribute("aria-labelledby"), "aria-lablledBy is not added to the control" );
 	});
 
-	QUnit.test("CustomListItem - custom accessibility annoucement", function(assert) {
-		var oCLI = new CustomListItem({
+	QUnit.test("CustomListItem - custom accessibility annoucement", async function(assert) {
+		const oCLI = new CustomListItem({
 			content: new Text({
 				text: "Hello world"
 			})
@@ -2978,7 +2973,7 @@ sap.ui.define([
 
 		oList.addItem(oCLI);
 		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.notOk(oCLI.getAccDescription(), "accDescription is not defined by default");
 		assert.strictEqual(oCLI.getContentAnnouncement(), "Hello world", "Default accessibility annoucement returned");
@@ -2988,8 +2983,8 @@ sap.ui.define([
 		assert.strictEqual(oCLI.getContentAnnouncement(), "Foo Bar", "custom accessilbility announcement returned");
 	});
 
-	QUnit.test("Aria-LabelledBy to selection control", function(assert) {
-		var oListItem = new StandardListItem({
+	QUnit.test("Aria-LabelledBy to selection control", async function(assert) {
+		const oListItem = new StandardListItem({
 			type: "Active",
 			title: "Hello World"
 		});
@@ -2997,22 +2992,22 @@ sap.ui.define([
 		oList.setMode("MultiSelect");
 		oList.addItem(oListItem);
 		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
-		var sSelectionItemId = oListItem._oMultiSelectControl.getAriaLabelledBy();
+		let sSelectionItemId = oListItem._oMultiSelectControl.getAriaLabelledBy();
 		assert.strictEqual(Element.getElementById(sSelectionItemId).getText(), "Item Selection", "MultiSelect associated with aria-labelledBy");
 
 		oList.setMode("SingleSelectLeft");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		sSelectionItemId = oListItem._oMultiSelectControl.getAriaLabelledBy();
 		assert.strictEqual(Element.getElementById(sSelectionItemId).getText(), "Item Selection", "Invisible text added to Static area");
 	});
 
-	QUnit.test("Events when multiSelectMode property is changed", function(assert) {
+	QUnit.test("Events when multiSelectMode property is changed", async function(assert) {
 		bindListData(oList, data2, "/items", createTemplateListItem());
 		oList.setMode("MultiSelect");
 		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.strictEqual(oList.getItems().length, 3, "List has exactly 3 items");
 		oList.selectAll();
@@ -3027,7 +3022,7 @@ sap.ui.define([
 
 		oList.setMultiSelectMode("ClearAll");
 		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		oList.getItems()[0].focus();
 		qutils.triggerEvent("keydown", document.activeElement, {code: "KeyA", ctrlKey: true});
@@ -3039,45 +3034,45 @@ sap.ui.define([
 		assert.notOk(oList.getSelectedItems().length, "multiSelectMode: ClearAll, selectAll API is disabled");
 	});
 
-	QUnit.test("Accessibility announcement for role='list'", function(assert) {
-		var oSLI = new StandardListItem({
+	QUnit.test("Accessibility announcement for role='list'", async function(assert) {
+		const oSLI = new StandardListItem({
 			title: "Title",
 			description: "Description"
 		});
 		oList.addItem(oSLI);
 		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		oSLI.focus();
-		var $SLI = oSLI.$();
-		var oRb = Library.getResourceBundleFor("sap.m");
-		var oCustomAnnouncement = document.getElementById($SLI.attr("aria-labelledby")),
+		const $SLI = oSLI.$();
+		const oRb = Library.getResourceBundleFor("sap.m");
+		const oCustomAnnouncement = document.getElementById($SLI.attr("aria-labelledby")),
 			aTexts = oCustomAnnouncement.innerText.split(" . ");
 		assert.ok(aTexts.indexOf(oRb.getText("ACC_CTR_TYPE_LISTITEM")) !== -1, "Type info is added to custom announcement for compatibility reasons");
 	});
 
-	QUnit.test("Accessibility announcement for role='listbox'", function(assert) {
-		var oSLI = new StandardListItem({
+	QUnit.test("Accessibility announcement for role='listbox'", async function(assert) {
+		const oSLI = new StandardListItem({
 			title: "Title",
 			description: "Description"
 		});
 		oList.addItem(oSLI);
 		oList.applyAriaRole("listbox");
 		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		oSLI.focus();
-		var $SLI = oSLI.$();
-		var oRb = Library.getResourceBundleFor("sap.m");
-		var oCustomAnnouncement = document.getElementById($SLI.attr("aria-labelledby")),
+		const $SLI = oSLI.$();
+		const oRb = Library.getResourceBundleFor("sap.m");
+		const oCustomAnnouncement = document.getElementById($SLI.attr("aria-labelledby")),
 			aTexts = oCustomAnnouncement.innerText.split(" . ");
 		assert.ok(aTexts.indexOf(oRb.getText("ACC_CTR_TYPE_LISTITEM")) === -1, "Type info is not added to custom announcement since Jaws also does not announce the role option");
 	});
 
-	QUnit.test("Grouping behavior with role='list'", function(assert) {
-		var oList = new List();
+	QUnit.test("Grouping behavior with role='list'", async function(assert) {
+		const oList = new List();
 		bindListData(oList, data5, "/items", createListItem);
-		var oSorter = new Sorter({
+		const oSorter = new Sorter({
 			path: "Key",
 			descending: false,
 			group: function(oContext) {
@@ -3086,19 +3081,19 @@ sap.ui.define([
 		});
 		oList.placeAt("qunit-fixture");
 
-		var oBinding = oList.getBinding("items");
+		const oBinding = oList.getBinding("items");
 		oBinding.sort(oSorter);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(oBinding.isGrouped(), "list is grouped");
 
-		var aGroupHeaderListItems = oList.getVisibleItems().filter(function(oItem) {
+		const aGroupHeaderListItems = oList.getVisibleItems().filter(function(oItem) {
 			return oItem.isGroupHeader();
 		});
 
-		var oRb = Library.getResourceBundleFor("sap.m");
+		const oRb = Library.getResourceBundleFor("sap.m");
 
 		aGroupHeaderListItems.forEach(function(oGroupItem) {
-			var $GroupItem = oGroupItem.$();
+			const $GroupItem = oGroupItem.$();
 			assert.strictEqual($GroupItem.attr("role"), "group", "Group header has role='group'");
 			assert.strictEqual($GroupItem.attr("aria-label"), oGroupItem.getTitle(), "correct aria-label is set");
 			assert.strictEqual($GroupItem.attr("aria-roledescription"), oRb.getText("LIST_ITEM_GROUP_HEADER"), "correct aria-roledescription assigned");
@@ -3123,8 +3118,8 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("Context Menu", function(assert) {
-		var fnInvalidate = this.spy(oList, "invalidate");
+	QUnit.test("Context Menu", async function(assert) {
+		const fnInvalidate = this.spy(oList, "invalidate");
 
 		// list should not be invalidated for setContextMenu
 		fnInvalidate.resetHistory();
@@ -3134,16 +3129,16 @@ sap.ui.define([
 		]}));
 		assert.ok(!fnInvalidate.called, "List is not invalidated when the contextMenu aggregation is set");
 
-		var oMenu = oList.getContextMenu();
-		var fnOpenAsContextMenu = this.spy(oMenu, "openAsContextMenu");
+		const oMenu = oList.getContextMenu();
+		const fnOpenAsContextMenu = this.spy(oMenu, "openAsContextMenu");
 
 
 		bindListData(oList, data4, "/items", createTemplateListItem());
 		oPage.addContent(oList);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		assert.ok(oList.getContextMenu(), "ContextMenu was set correctly");
 
-		var oItem = oList.getItems()[0];
+		const oItem = oList.getItems()[0];
 		oItem.focus();
 		oItem.$().trigger("contextmenu");
 		assert.equal(fnOpenAsContextMenu.callCount, 1, "Menu#OpenAsContextMenu is called");
@@ -3158,14 +3153,14 @@ sap.ui.define([
 		oMenu.destroy();
 	});
 
-	QUnit.test("Test context menu on interactive control", function(assert) {
-		var oInput = new Input();
-		var oListItem = new InputListItem({
+	QUnit.test("Test context menu on interactive control", async function(assert) {
+		const oInput = new Input();
+		const oListItem = new InputListItem({
 			label: "Input",
 			content : oInput,
 			type: "Navigation"
 		});
-		var oList = new List({
+		const oList = new List({
 			mode: "MultiSelect",
 			items : [oListItem],
 			contextMenu : new Menu({
@@ -3175,13 +3170,13 @@ sap.ui.define([
 			})
 		});
 
-		var oMenu = oList.getContextMenu();
-		var fnOpenAsContextMenu = this.spy(oMenu, "openAsContextMenu");
+		const oMenu = oList.getContextMenu();
+		const fnOpenAsContextMenu = this.spy(oMenu, "openAsContextMenu");
 
 		oPage.addContent(oList);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
-		var $input = oInput.$("inner").trigger("focus");
+		const $input = oInput.$("inner").trigger("focus");
 		$input.trigger("contextmenu");
 		assert.equal(fnOpenAsContextMenu.callCount, 0, "Menu#OpenAsContextMenu is not called");
 
@@ -3191,7 +3186,7 @@ sap.ui.define([
 		oMenu.close();
 
 		oList.setMode("SingleSelectLeft");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		oListItem.getSingleSelectControl().focus();
 		oListItem.getSingleSelectControl().$().trigger("contextmenu");
@@ -3212,8 +3207,8 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("No press event on text selection", function(assert) {
-		var oListItem = new StandardListItem({
+	QUnit.test("No press event on text selection", async function(assert) {
+		const oListItem = new StandardListItem({
 			type: "Active",
 			title: "Hello World",
 			press: function(e) {
@@ -3223,11 +3218,11 @@ sap.ui.define([
 
 		oList.addItem(oListItem);
 		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
-		var fnPress = this.spy(oListItem, "firePress");
+		const fnPress = this.spy(oListItem, "firePress");
 		oListItem.focus();
-		var bHasSelection;
+		let bHasSelection;
 		this.stub(window, "getSelection").callsFake(function() {
 			return {
 				toString: function() {
@@ -3245,7 +3240,8 @@ sap.ui.define([
 		bHasSelection = false;
 		assert.equal(window.getSelection().toString(), "");
 		oListItem.$().trigger("tap");
-		this.clock.tick(0);
+		await timeout();
+
 		assert.ok(fnPress.called, "Press event fired");
 	});
 
@@ -3258,20 +3254,20 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("Sticky support", function(assert) {
+	QUnit.test("Sticky support", async function(assert) {
 		// stub for Chrome
-		var oStdLI = new StandardListItem({
+		const oStdLI = new StandardListItem({
 			title : "Title",
 			info : "+359 1234 567",
 			infoTextDirection: coreLibrary.TextDirection.LTR
 		});
-		var oList = new List({
+		const oList = new List({
 			headerText: "List Header",
 			sticky: ["HeaderToolbar"],
 			items: [oStdLI]
 		});
 		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.ok(oList.getDomRef().classList.contains("sapMSticky"), "Sticky style class added");
 		assert.ok(oList.getDomRef().classList.contains("sapMSticky1"), "Sticky style class added");
@@ -3279,48 +3275,47 @@ sap.ui.define([
 		oList.destroy();
 	});
 
-	QUnit.test("Sticky ColumnHeaders should not be possible with List", function(assert) {
-		var oStdLI = new StandardListItem({
+	QUnit.test("Sticky ColumnHeaders should not be possible with List", async function(assert) {
+		const oStdLI = new StandardListItem({
 			title : "Title",
 			info : "+359 1234 567",
 			infoTextDirection: coreLibrary.TextDirection.LTR
 		});
-		var oList = new List({
+		const oList = new List({
 			headerText: "List Header",
 			sticky: ["ColumnHeaders"],
 			items: [oStdLI]
 		});
 		oList.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
-		var aClassList = oList.getDomRef().classList;
+		const aClassList = oList.getDomRef().classList;
 		assert.ok(!aClassList.contains("sapMSticky") && !aClassList.contains("sapMSticky4"), "Sticky column headers is not supported with List");
 
 		oList.destroy();
 	});
 
-	QUnit.test("Focus and scroll handling with sticky infoToolbar", function(assert) {
+	QUnit.test("Focus and scroll handling with sticky infoToolbar", async function(assert) {
 		this.stub(Device.system, "desktop").value(false);
-		this.clock = sinon.useFakeTimers();
 
-		var oStdLI = new StandardListItem({
+		const oStdLI = new StandardListItem({
 			title : "Title",
 			info : "+359 1234 567",
 			infoTextDirection: coreLibrary.TextDirection.LTR
 		});
 
-		var oStdLI2 = new StandardListItem({
+		const oStdLI2 = new StandardListItem({
 			title : "Title",
 			info : "+359 1234 567",
 			infoTextDirection: coreLibrary.TextDirection.LTR
 		});
 
-		var sut = new List({
+		const sut = new List({
 			headerText: "List Header",
 			items: [oStdLI, oStdLI2]
 		});
 
-		var oInfoToolbar = new Toolbar({
+		const oInfoToolbar = new Toolbar({
 			active: true,
 			content: [
 				new Text({
@@ -3337,22 +3332,22 @@ sap.ui.define([
 		});
 		sut.setSticky(["InfoToolbar"]);
 		oScrollContainer.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
-		var aClassList = sut.$()[0].classList;
+		let aClassList = sut.$()[0].classList;
 		assert.ok(aClassList.contains("sapMSticky") && aClassList.contains("sapMSticky2"), "Sticky class added for sticky infoToolbar only");
 
 		sut.getInfoToolbar().setVisible(false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		aClassList = sut.$()[0].classList;
 		assert.ok(!aClassList.contains("sapMSticky") && !aClassList.contains("sapMSticky2"), "Sticky classes removed");
 
 		sut.getInfoToolbar().setVisible(true);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		aClassList = sut.$()[0].classList;
 		assert.ok(aClassList.contains("sapMSticky") && aClassList.contains("sapMSticky2"), "Sticky classes added");
 
-		var oInfoToolbarContainer = oInfoToolbar.$().parent()[0];
+		const oInfoToolbarContainer = oInfoToolbar.$().parent()[0];
 
 		assert.ok(oInfoToolbarContainer.classList.contains("sapMListInfoTBarContainer"), "infoToolbar container div rendered");
 
@@ -3363,9 +3358,9 @@ sap.ui.define([
 			};
 		});
 
-		var oFocusedItem = sut.getItems()[1];
-		var oFocusedItemDomRef = oFocusedItem.getDomRef();
-		var fnScrollToElementSpy = sinon.spy(oScrollContainer.getScrollDelegate(), "scrollToElement");
+		const oFocusedItem = sut.getItems()[1];
+		const oFocusedItemDomRef = oFocusedItem.getDomRef();
+		const fnScrollToElementSpy = sinon.spy(oScrollContainer.getScrollDelegate(), "scrollToElement");
 
 		this.stub(window, "requestAnimationFrame").callsFake(window.setTimeout);
 		this.stub(oFocusedItemDomRef, "getBoundingClientRect").callsFake(function() {
@@ -3375,34 +3370,33 @@ sap.ui.define([
 		});
 
 		oFocusedItemDomRef.focus();
-		this.clock.tick(0);
+		await timeout();
+
 		assert.ok(fnScrollToElementSpy.calledWith(oFocusedItemDomRef, 0, [0, -32], true), "scrollToElement function called");
 
 		oScrollContainer.destroy();
-		this.clock.restore();
 	});
 
-	QUnit.test("Focus and scroll handling with sticky headerToolbar", function(assert) {
+	QUnit.test("Focus and scroll handling with sticky headerToolbar", async function(assert) {
 		this.stub(Device.system, "desktop").value(false);
-		this.clock = sinon.useFakeTimers();
 
-		var oStdLI = new StandardListItem({
+		const oStdLI = new StandardListItem({
 			title : "Title",
 			info : "+359 1234 567",
 			infoTextDirection: coreLibrary.TextDirection.LTR
 		});
 
-		var oStdLI2 = new StandardListItem({
+		const oStdLI2 = new StandardListItem({
 			title : "Title",
 			info : "+359 1234 567",
 			infoTextDirection: coreLibrary.TextDirection.LTR
 		});
 
-		var sut = new List({
+		const sut = new List({
 			items: [oStdLI, oStdLI2]
 		});
 
-		var oHeaderToolbar = new Toolbar({
+		const oHeaderToolbar = new Toolbar({
 			content: [
 				new Title({
 					text : "Keyboard Handling Test Page"
@@ -3422,23 +3416,23 @@ sap.ui.define([
 		});
 		sut.setSticky(["HeaderToolbar"]);
 		oScrollContainer.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
-		var aClassList = sut.$()[0].classList;
+		let aClassList = sut.$()[0].classList;
 		assert.ok(aClassList.contains("sapMSticky") && aClassList.contains("sapMSticky1"), "Sticky class added for sticky headerToolbar only");
 
 		sut.getHeaderToolbar().setVisible(false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		aClassList = sut.$()[0].classList;
 		assert.ok(!aClassList.contains("sapMSticky") && !aClassList.contains("sapMSticky1"), "Sticky classes removed as no element is sticky");
 
 		sut.getHeaderToolbar().setVisible(true);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		aClassList = sut.$()[0].classList;
 		assert.ok(aClassList.contains("sapMSticky") && aClassList.contains("sapMSticky1"), "Sticky classes added");
 
-		var oHeaderDomRef = sut.getDomRef().querySelector(".sapMListHdr");
-		var fnGetDomRef = sut.getDomRef;
+		const oHeaderDomRef = sut.getDomRef().querySelector(".sapMListHdr");
+		const fnGetDomRef = sut.getDomRef;
 		this.stub(oHeaderDomRef, "getBoundingClientRect").callsFake(function() {
 			return {
 				bottom: 88,
@@ -3454,9 +3448,9 @@ sap.ui.define([
 			};
 		});
 
-		var oFocusedItem = sut.getItems()[1];
-		var oFocusedItemDomRef = oFocusedItem.getDomRef();
-		var fnScrollToElementSpy = sinon.spy(oScrollContainer.getScrollDelegate(), "scrollToElement");
+		const oFocusedItem = sut.getItems()[1];
+		const oFocusedItemDomRef = oFocusedItem.getDomRef();
+		const fnScrollToElementSpy = sinon.spy(oScrollContainer.getScrollDelegate(), "scrollToElement");
 
 		this.stub(window, "requestAnimationFrame").callsFake(window.setTimeout);
 		this.stub(oFocusedItemDomRef, "getBoundingClientRect").callsFake(function() {
@@ -3466,37 +3460,36 @@ sap.ui.define([
 		});
 
 		oFocusedItemDomRef.focus();
-		this.clock.tick(0);
+		await timeout();
+
 		assert.ok(fnScrollToElementSpy.calledWith(oFocusedItemDomRef, 0, [0, -48], true), "scrollToElement function called");
 
 		// restore getDomRef() to avoid error caused when oScrollContainer is destroyed
 		sut.getDomRef = fnGetDomRef;
 
 		oScrollContainer.destroy();
-		this.clock.restore();
 	});
 
-	QUnit.test("Focus and scroll handling with sticky headerToolbar and infoToolbar", function(assert) {
+	QUnit.test("Focus and scroll handling with sticky headerToolbar and infoToolbar", async function(assert) {
 		this.stub(Device.system, "desktop").value(false);
-		this.clock = sinon.useFakeTimers();
 
-		var oStdLI = new StandardListItem({
+		const oStdLI = new StandardListItem({
 			title : "Title",
 			info : "+359 1234 567",
 			infoTextDirection: coreLibrary.TextDirection.LTR
 		});
 
-		var oStdLI2 = new StandardListItem({
+		const oStdLI2 = new StandardListItem({
 			title : "Title",
 			info : "+359 1234 567",
 			infoTextDirection: coreLibrary.TextDirection.LTR
 		});
 
-		var sut = new List({
+		const sut = new List({
 			items: [oStdLI, oStdLI2]
 		});
 
-		var oHeaderToolbar = new Toolbar({
+		const oHeaderToolbar = new Toolbar({
 			content: [
 				new Title({
 					text : "Keyboard Handling Test Page"
@@ -3511,7 +3504,7 @@ sap.ui.define([
 
 		sut.setHeaderToolbar(oHeaderToolbar);
 
-		var oInfoToolbar = new Toolbar({
+		const oInfoToolbar = new Toolbar({
 			active: true,
 			content: [
 				new Text({
@@ -3529,29 +3522,29 @@ sap.ui.define([
 		});
 		sut.setSticky(["HeaderToolbar", "InfoToolbar"]);
 		oScrollContainer.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
-		var aClassList = sut.$()[0].classList;
+		let aClassList = sut.$()[0].classList;
 		assert.ok(aClassList.contains("sapMSticky") && aClassList.contains("sapMSticky3"), "Sticky class added for sticky headerToolbar and infoToolbar");
 
 		sut.getHeaderToolbar().setVisible(false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		aClassList = sut.$()[0].classList;
 		assert.ok(aClassList.contains("sapMSticky") && aClassList.contains("sapMSticky2"), "Sticky class updated for sticky infoToolbar");
 
 		sut.getInfoToolbar().setVisible(false);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		aClassList = sut.$()[0].classList;
 		assert.ok(!aClassList.contains("sapMSticky") && !aClassList.contains("sapMSticky1") && !aClassList.contains("sapMSticky2"), "No sticky classes present");
 
 		sut.getHeaderToolbar().setVisible(true);
 		sut.getInfoToolbar().setVisible(true);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 		aClassList = sut.$()[0].classList;
 		assert.ok(aClassList.contains("sapMSticky") && aClassList.contains("sapMSticky3"), "Sticky class added for sticky headerToolbar, infoToolbar and column headers");
 
-		var oHeaderDomRef = sut.getDomRef().querySelector(".sapMListHdr");
-		var fnGetDomRef = sut.getDomRef;
+		const oHeaderDomRef = sut.getDomRef().querySelector(".sapMListHdr");
+		const fnGetDomRef = sut.getDomRef;
 		this.stub(oHeaderDomRef, "getBoundingClientRect").callsFake(function() {
 			return {
 				bottom: 48,
@@ -3559,7 +3552,7 @@ sap.ui.define([
 			};
 		});
 
-		var oInfoToolbarContainer = oInfoToolbar.$().parent()[0];
+		const oInfoToolbarContainer = oInfoToolbar.$().parent()[0];
 		this.stub(oInfoToolbarContainer, "getBoundingClientRect").callsFake(function() {
 			return {
 				bottom: 80,
@@ -3567,9 +3560,9 @@ sap.ui.define([
 			};
 		});
 
-		var oFocusedItem = sut.getItems()[1];
-		var oFocusedItemDomRef = oFocusedItem.getDomRef();
-		var fnScrollToElementSpy = sinon.spy(oScrollContainer.getScrollDelegate(), "scrollToElement");
+		const oFocusedItem = sut.getItems()[1];
+		const oFocusedItemDomRef = oFocusedItem.getDomRef();
+		const fnScrollToElementSpy = sinon.spy(oScrollContainer.getScrollDelegate(), "scrollToElement");
 
 		this.stub(window, "requestAnimationFrame").callsFake(window.setTimeout);
 		this.stub(oFocusedItemDomRef, "getBoundingClientRect").callsFake(function() {
@@ -3579,28 +3572,28 @@ sap.ui.define([
 		});
 
 		oFocusedItemDomRef.focus();
-		this.clock.tick(0);
+		await timeout();
+
 		assert.ok(fnScrollToElementSpy.calledWith(oFocusedItemDomRef, 0, [0, -80], true), "scrollToElement function called");
 
 		// restore getDomRef() to avoid error caused when oScrollContainer is destroyed
 		sut.getDomRef = fnGetDomRef;
 
 		oScrollContainer.destroy();
-		this.clock.restore();
 	});
 
-	QUnit.test("Function _getStickyAreaHeight", function(assert) {
-		var aListItems = [], i;
+	QUnit.test("Function _getStickyAreaHeight", async function(assert) {
+		const aListItems = [];
 
-		for (i = 0; i < 25; i++) {
+		for (let i = 0; i < 25; i++) {
 			aListItems.push(createListItem());
 		}
 
-		var oList = new List({
+		const oList = new List({
 			items: aListItems
 		});
 
-		var oHeaderToolbar = new Toolbar({
+		const oHeaderToolbar = new Toolbar({
 			content: [
 				new Title({
 					text : "Keyboard Handling Test Page"
@@ -3613,7 +3606,7 @@ sap.ui.define([
 			]
 		});
 
-		var oInfoToolbar = new Toolbar({
+		const oInfoToolbar = new Toolbar({
 			active: true,
 			content: [
 				new Text({
@@ -3632,10 +3625,10 @@ sap.ui.define([
 		});
 
 		oScrollContainer.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
-		var iHeaderToolbarHeight = (oList.getHeaderToolbar() && oList.getHeaderToolbar().getDomRef() || this.getDomRef("header")).offsetHeight;
-		var iInfoToolbarHeight = oList.getInfoToolbar().getDomRef().offsetHeight;
+		const iHeaderToolbarHeight = (oList.getHeaderToolbar() && oList.getHeaderToolbar().getDomRef() || this.getDomRef("header")).offsetHeight;
+		const iInfoToolbarHeight = oList.getInfoToolbar().getDomRef().offsetHeight;
 
 		assert.notOk((oList.getSticky() && oList.getSticky().length), "No sticky applied");
 		assert.equal(oList._getStickyAreaHeight(), 0, "Zero height for no sticky elements");
@@ -3677,10 +3670,10 @@ sap.ui.define([
 	});
 
 	QUnit.module("No data aggregation", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			oList = new List({});
 			oPage.addContent(oList);
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		},
 		afterEach: function() {
 			oPage.removeAllContent();
@@ -3688,34 +3681,34 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("No Data Illustrated Message", function(assert) {
-		var oMessage = new IllustratedMessage("nodataIllustratedMessage", {
+	QUnit.test("No Data Illustrated Message", async function(assert) {
+		const oMessage = new IllustratedMessage("nodataIllustratedMessage", {
 			illustrationType: library.IllustratedMessageType.NoSearchResults,
 			title: "Custom Title",
 			description: "This is a custom description."
 		});
 		oList.setNoData(oMessage);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
-		var $noDataText = oList.$("nodata-text");
-		var $noData = oList.$("nodata");
+		const $noDataText = oList.$("nodata-text");
+		const $noData = oList.$("nodata");
 
 		assert.ok(oList.getNoData().isA("sap.m.IllustratedMessage"));
 		assert.strictEqual($noDataText.children().get(0), Element.getElementById("nodataIllustratedMessage").getDomRef(), "List contains figure's DOM element");
 
 		$noData.focus();
-		var sLabelledBy = $noData.attr("aria-labelledby");
+		const sLabelledBy = $noData.attr("aria-labelledby");
 		assert.equal(Element.getElementById(sLabelledBy).getText(), "Illustrated Message Custom Title. This is a custom description.", "Accessbility text is set correctly");
 
 		oList.setEnableBusyIndicator(true);
 		oList._showBusyIndicator();
-		this.clock.tick(1000);
+		await timeout(1000);
 
 		assert.ok(oList.getBusy(), "List is set to busy");
 		assert.strictEqual($noDataText.children().get(0), Element.getElementById("nodataIllustratedMessage").getDomRef(), "Busy indicator does not clear illustrated message");
 
 		oList._hideBusyIndicator();
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.notOk(oList.getBusy(), "List is not set to busy");
 		assert.strictEqual($noDataText.children().get(0), Element.getElementById("nodataIllustratedMessage").getDomRef(), "List contains figure's DOM element after busy indicator hidden");
@@ -3726,39 +3719,39 @@ sap.ui.define([
 		oMessage.destroy();
 	});
 
-	QUnit.test("No Data String", function(assert) {
-		var sNoData = "No data Example";
+	QUnit.test("No Data String", async function(assert) {
+		const sNoData = "No data Example";
 		oList.setNoData(sNoData);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
-		var $noDataText = oList.$("nodata-text");
-		var $noData = oList.$("nodata");
+		const $noDataText = oList.$("nodata-text");
+		const $noData = oList.$("nodata");
 
 		assert.strictEqual(typeof oList.getNoData(), "string", "No data aggregation is of type string");
 		assert.strictEqual($noDataText.text(), sNoData, "List contains correct no data string");
 
 		$noData.focus();
-		var sLabelledBy = $noData.attr("aria-labelledby");
+		const sLabelledBy = $noData.attr("aria-labelledby");
 		assert.equal(Element.getElementById(sLabelledBy).getText(), sNoData, "Accessbility text is set correctly");
 
 		oList.setNoDataText("Test");
 		assert.strictEqual($noDataText.text(), sNoData, "List contains correct button");
 	});
 
-	QUnit.test("No Data Control", function(assert) {
-		var oControl = new Button({text: "Button 1"});
+	QUnit.test("No Data Control", async function(assert) {
+		let oControl = new Button({text: "Button 1"});
 		oList.setNoData(oControl);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
-		var $noDataText = oList.$("nodata-text");
-		var $noData = oList.$("nodata");
+		const $noDataText = oList.$("nodata-text");
+		const $noData = oList.$("nodata");
 
 		assert.ok(oList.getNoData().isA("sap.m.Button"), "No data aggregation is a sap.m.Button");
 		assert.equal(oList.getNoData().getText(), "Button 1", "Correct button text");
 		assert.strictEqual($noDataText.children().get(0), oControl.getDomRef(), "List contains correct button");
 
 		$noData.focus();
-		var sLabelledBy = $noData.attr("aria-labelledby");
+		let sLabelledBy = $noData.attr("aria-labelledby");
 		assert.equal(Element.getElementById(sLabelledBy).getText(), "Button Button 1", "Accessbility text is set correctly");
 
 		oList.setNoDataText("Test");
@@ -3766,24 +3759,24 @@ sap.ui.define([
 
 		oControl = new Text({text: "Text 1"});
 		oList.setNoData(oControl);
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.ok(oList.getNoData().isA("sap.m.Text"), "No data aggregation is a sap.m.Text");
 		assert.equal(oList.getNoData().getText(), "Text 1", "Text control's text is set correctly");
 		assert.strictEqual($noDataText.children().get(0), oControl.getDomRef(), "List contains correct text control");
 
 		$noData.focus();
-		var sLabelledBy = $noData.attr("aria-labelledby");
+		sLabelledBy = $noData.attr("aria-labelledby");
 		assert.equal(Element.getElementById(sLabelledBy).getText(), "Text 1", "Accessbility text is set correctly");
 
 		oList.setNoData();
-		nextUIUpdate.runSync()/*fake timer is used in module*/;
+		await nextUIUpdate();
 
 		assert.notOk(oList.getNoData(), "No data aggregation is empty");
 		assert.strictEqual($noDataText.text(), "Test", "List contains correct text");
 
 		$noData.focus();
-		var sLabelledBy = $noData.attr("aria-labelledby");
+		sLabelledBy = $noData.attr("aria-labelledby");
 		assert.equal(Element.getElementById(sLabelledBy).getText(), "Test", "Accessbility text is set correctly");
 	});
 }

@@ -5,8 +5,9 @@
 // Provides class sap.ui.core.ElementMetadata
 sap.ui.define([
 	'sap/ui/base/ManagedObjectMetadata',
+	'sap/ui/core/Lib',
 	'sap/ui/core/Renderer'
-], function(ManagedObjectMetadata, Renderer) {
+], function(ManagedObjectMetadata, Library, Renderer) {
 "use strict";
 
 /**
@@ -159,7 +160,7 @@ ElementMetadata.prototype.applySettings = function(oClassInfo) {
 
 ElementMetadata.prototype.afterApplySettings = function() {
 	ManagedObjectMetadata.prototype.afterApplySettings.apply(this, arguments);
-	this.register && this.register(this);
+	Library._registerElement(this);
 };
 
 ElementMetadata.prototype.isHidden = function() {
