@@ -344,7 +344,7 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("[Simple Binding] Async loading of data types (future=false)", async function(assert) {
+	QUnit.test("[Simple Binding] Async loading of data types (future=true)", async function(assert) {
 		future.active = true;
 		var oModel = new JSONModel({
 			value: 1234,

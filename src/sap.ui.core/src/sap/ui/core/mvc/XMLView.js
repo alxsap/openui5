@@ -121,7 +121,6 @@ sap.ui.define([
 				library : "sap.ui.core",
 
 				specialSettings : {
-
 					/**
 					 * If an XMLView instance is used to represent an HTML subtree of another XMLView,
 					 * then that other XMLView is provided with this setting to be able to delegate
@@ -143,19 +142,7 @@ sap.ui.define([
 					/**
 					 * The processing mode of the XMLView.
 					 */
-					processingMode: { type: "sap.ui.core.mvc.XMLProcessingMode", visibility: "hidden" },
-
-					/**
-					 * legacy-relevant:
-					 *
-					 * A map containing references to modules loaded via a 'core:require' statement
-					 * in an XMLView.
-					 *
-					 * Only used for HTML embedded in an XMLView. This kind of HTML is processed synchronously only
-					 * and needs access to 'core:require' modules from outside.
-					 * Normally 'core:require' modules are NOT passed into nested Views and Fragments.
-					 */
-					requireContext : 'Object'
+					processingMode: { type: "sap.ui.core.mvc.XMLProcessingMode", visibility: "hidden" }
 				},
 
 				designtime: "sap/ui/core/designtime/mvc/XMLView.designtime"

@@ -198,12 +198,6 @@ sap.ui.define([
 	var VIEW_SPECIAL_ATTRIBUTES = ['controllerName', 'resourceBundleName', 'resourceBundleUrl', 'resourceBundleLocale', 'resourceBundleAlias'];
 
 	/**
-	 * Pattern that matches the names of all HTML void tags.
-	 * @private
-	 */
-	var rVoidTags = /^(?:area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)$/;
-
-	/**
 		 * Creates a function based on the passed mode and callback which applies a callback to each child of a node.
 		 * @param {function} fnCallback The callback to apply
 		 * @returns {function} The created function
@@ -528,52 +522,7 @@ sap.ui.define([
 		var aResult = [],
 			sInternalPrefix = findNamespacePrefix(xmlNode, UI5_INTERNAL_NAMESPACE, "__ui5"),
 			pResultChain = parseAndLoadRequireContext(xmlNode, true) || SyncPromise.resolve(),
-			rm = {
-				openStart: function(tagName, sId) {
-					aResult.push(["openStart", [tagName, sId]]);
-				},
-				voidStart: function(tagName, sId) {
-					aResult.push(["voidStart", [tagName, sId]]);
-				},
-				style: function(name, value) {
-					aResult.push(["style", [name, value]]);
-				},
-				"class": function(clazz) {
-					aResult.push(["class", [clazz]]);
-				},
-				attr: function(name, value) {
-					aResult.push(["attr", [name, value]]);
-				},
-				openEnd: function() {
-					aResult.push(["openEnd"]);
-				},
-				voidEnd: function() {
-					aResult.push(["voidEnd"]);
-				},
-				text: function(str) {
-					aResult.push(["text", [str]]);
-				},
-				unsafeHtml: function(str) {
-					aResult.push(["unsafeHtml", [str]]);
-				},
-				close: function(tagName) {
-					aResult.push(["close", [tagName]]);
-				},
-				renderControl: function(pContent) {
-					aResult.push(pContent);
-				}
-			};
-
-		// We might have a set of already resolved "core:require" modules given from outside.
-		// This only happens when a new XMLView instance is used as a wrapper for HTML nodes, in this case
-		// the "core:require" modules need to be propagated down into the nested XMLView.
-		// We now need to merge the set of passed "core:require" modules with the ones defined on our root element,
-		// with our own modules having priority in case of duplicate aliases.
-		if (oParseConfig?.settings?.requireContext) {
-			pResultChain = pResultChain.then((mRequireContext) => {
-				return Object.assign({}, oParseConfig.settings.requireContext, mRequireContext);
-			});
-		}
+			collectControl = (pContent) => aResult.push(pContent);
 
 		Log.debug("XML processing mode is " + (oView._sProcessingMode || "default") + ".", "", "XMLTemplateProcessor");
 		Log.debug("XML will be processed " + ("asynchronously") + ".", "", "XMLTemplateProcessor");
@@ -660,13 +609,7 @@ sap.ui.define([
 			var sNodeName = localName(node),
 				oWrapper;
 
-			// Normalize the view content by wrapping it with either a "View" tag or a "FragmentDefinition" tag to
-			// simplify the parsing process
-			if (oView.isA("sap.ui.core.mvc.XMLView") && (node.namespaceURI === XHTML_NAMESPACE || node.namespaceURI === SVG_NAMESPACE)) {
-				// XHTML or SVG nodes are placed into a sub view without having "View" as root tag
-				// Wrap the content into a "View" node
-				oWrapper = node.ownerDocument.createElementNS(CORE_MVC_NAMESPACE, "View");
-			} else if (oView.isA("sap.ui.core.Fragment") && (sNodeName !== "FragmentDefinition" || node.namespaceURI !== CORE_NAMESPACE)) {
+			if (oView.isA("sap.ui.core.Fragment") && (sNodeName !== "FragmentDefinition" || node.namespaceURI !== CORE_NAMESPACE)) {
 				// Wrap the content into a "FragmentDefinition" node for single control node
 				oWrapper = node.ownerDocument.createElementNS(CORE_NAMESPACE, "FragmentDefinition");
 			}
@@ -807,187 +750,25 @@ sap.ui.define([
 		 */
 		function createControls(node, pRequireContext, oClosestBinding, oAggregation, oConfig) {
 			var bRootArea = oConfig && oConfig.rootArea,
-				bRootNodeInSubView = oConfig && oConfig.rootNode && oView.isSubView(),
-				sLocalName = localName(node),
 				bRenderingRelevant = bRootArea && (oView.isA("sap.ui.core.Fragment") || (oAggregation && oAggregation.name === "content")),
-				pResult, i;
+				pResult;
 
-			if ( node.nodeType === 1 /* ELEMENT_NODE */ ) {
-				// differentiate between SAPUI5 and plain-HTML children
-				if (node.namespaceURI === XHTML_NAMESPACE || node.namespaceURI === SVG_NAMESPACE ) {
-					if (bRootArea) {
-						if (oAggregation && oAggregation.name !== "content") {
-							Log.error(createErrorInfo(node, "XHTML nodes can only be added to the 'content' aggregation and not to the '" + oAggregation.name + "' aggregation."));
-							return SyncPromise.resolve([]);
-						}
+			localName(node);
+			oConfig && oConfig.rootNode && oView.isSubView();
 
-						if (oConfig && oConfig.contentBound) {
-							throw new Error(createErrorInfo(node, "No XHTML or SVG node is allowed because the 'content' aggregation is bound."));
-						}
-
-						var bXHTML = node.namespaceURI === XHTML_NAMESPACE;
-
-						// determine ID
-						var sId = node.getAttribute("id");
-						if ( sId != null ) {
-							sId = getId(oView, node);
-						} else {
-							sId = bRootNodeInSubView ? oView.getId() : undefined;
-						}
-
-						if ( sLocalName === "style" ) {
-							// We need to remove the namespace prefix from style nodes
-							// otherwise the style element's content will be output as text and not evaluated as CSS
-							// We do this by manually 'cloning' the style without the namespace prefix
-
-							// original node values
-							var aAttributes = node.attributes; // array-like 'NamedNodeMap'
-							var sTextContent = node.textContent;
-
-							// 'clone'
-							node = document.createElement(sLocalName);
-							node.textContent = sTextContent;
-
-							// copy all non-prefixed attributes
-							//    -> prefixed attributes are invalid HTML
-							for (i = 0; i < aAttributes.length; i++) {
-								var oAttr = aAttributes[i];
-								if (!oAttr.prefix) {
-									node.setAttribute(oAttr.name, oAttr.value);
-								}
-							}
-							// avoid encoding of style content by writing the whole tag as unsafeHtml
-							// for compatibility reasons, apply the same ID rewriting as for other tags
-							if ( sId != null ) {
-								node.setAttribute("id", sId);
-							}
-							if ( bRootNodeInSubView ) {
-								node.setAttribute("data-sap-ui-preserve", oView.getId());
-							}
-							rm.unsafeHtml(node.outerHTML);
-							return SyncPromise.resolve([]);
-						}
-						// write opening tag
-						var bVoid = rVoidTags.test(sLocalName);
-						if ( bVoid ) {
-							rm.voidStart(sLocalName, sId);
-						} else {
-							rm.openStart(sLocalName, sId);
-						}
-						// write attributes
-						for (i = 0; i < node.attributes.length; i++) {
-							var attr = node.attributes[i];
-							// id and core:require should not be output to DOM
-							if ( attr.name !== "id" && (attr.localName !== "require" || attr.namespaceURI !== CORE_NAMESPACE)) {
-								rm.attr(bXHTML ? attr.name.toLowerCase() : attr.name, attr.value);
-							}
-						}
-						if ( bRootNodeInSubView ) {
-							rm.attr("data-sap-ui-preserve", oView.getId());
-						}
-						if ( bVoid ) {
-							rm.voidEnd();
-							if ( node.firstChild ) {
-								Log.error("Content of void HTML element '" + sLocalName + "' will be ignored");
-							}
-						} else {
-							rm.openEnd();
-
-							var pSelfRequireContext = parseAndLoadRequireContext(node, true);
-
-							if (pSelfRequireContext) {
-								pRequireContext = SyncPromise.all([pRequireContext, pSelfRequireContext])
-									.then(function(aContexts) {
-										return Object.assign({}, ...aContexts);
-									});
-							}
-
-							// write children
-							// For HTMLTemplateElement nodes, skip the associated DocumentFragment node
-							var oContent = node instanceof HTMLTemplateElement ? node.content : node;
-
-							var handleChildren = getHandleChildrenStrategy(function (node, childNode, mOptions) {
-								return createControls(childNode, mOptions.chain, mOptions.closestBinding, mOptions.aggregation, mOptions.config);
-							}, true);
-
-							pResult = handleChildren(oContent, {
-								chain: pRequireContext,
-								closestBinding: oClosestBinding,
-								aggregation: oAggregation,
-								config: { rootArea: bRootArea }
-							});
-
-
-							return pResult.then(function(aResults) {
-								rm.close(sLocalName);
-
-								// aResults can contain the following elements:
-								//  * require context object
-								//  * array of control instance(s)
-								//  * undefined
-								return aResults.reduce(function(acc, vControls) {
-									if (Array.isArray(vControls)) {
-										vControls.forEach(function(oControl) {
-											acc.push(oControl);
-										});
-									}
-									return acc;
-								}, []);
-							});
-						}
-					} else {
-						var id = node.attributes['id'] ? node.attributes['id'].textContent || node.attributes['id'].text : null;
-
-						if (bEnrichFullIds) {
-							return XMLTemplateProcessor.enrichTemplateIdsPromise(node, oView, true).then(function(){
-								// do not create controls
-								return [];
-							});
-						} else {
-							// plain HTML node - create a new View control
-							// creates a view instance, but makes sure the new view receives the correct owner component
-							var fnCreateView = function (oViewClass, oRequireContext) {
-								var mViewParameters = {
-									id: id ? getId(oView, node, id) : undefined,
-									xmlNode: node,
-									requireContext: oRequireContext,
-									containingView: oView._oContainingView,
-									processingMode: oView._sProcessingMode // add processing mode, so it can be propagated to subviews inside the HTML block
-								};
-
-								// running with owner component
-								return scopedRunWithOwner(function() {
-									return new oViewClass(mViewParameters);
-								});
-							};
-
-							return pRequireContext.then(function(oRequireContext) {
-								return new Promise(function (resolve, reject) {
-									sap.ui.require(["sap/ui/core/mvc/XMLView"], function(XMLView) {
-										resolve([fnCreateView(XMLView, oRequireContext)]);
-									}, reject);
-								});
-							});
-						}
-					}
-
-				} else  {
-					pResult = createControlOrExtension(node, pRequireContext, oClosestBinding);
-					if (bRenderingRelevant) {
-						rm.renderControl(pResult);
-					}
-					// non-HTML (SAPUI5) control
-					// we must return the result in either bRootArea=true or the bRootArea=false case because we use the result
-					// to add the control to the aggregation of its parent control
-					return pResult;
+			if (node.nodeType === 1 /* ELEMENT_NODE */) {
+				// Using native HTML in future is not allowed. We need to check explicitely in order to throw
+				if (node.namespaceURI === XHTML_NAMESPACE || node.namespaceURI === SVG_NAMESPACE) {
+					future.warningThrows(`Using native HTML content in XMLViews is deprecated.`, oView.getId());
 				}
-			} else if (node.nodeType === 3 /* TEXT_NODE */ && bRenderingRelevant) {
-				if (!oConfig || !oConfig.contentBound) {
-					// content aggregation isn't bound
-					rm.text(node.textContent);
-				} else if (node.textContent.trim()) {
-					throw new Error(createErrorInfo(node, "Text node isn't allowed because the 'content' aggregation is bound."));
+				pResult = createControlOrExtension(node, pRequireContext, oClosestBinding);
+				if (bRenderingRelevant) {
+					collectControl(pResult);
 				}
+				// non-HTML (SAPUI5) control
+				// we must return the result in either bRootArea=true or the bRootArea=false case because we use the result
+				// to add the control to the aggregation of its parent control
+				return pResult;
 			}
 
 			return SyncPromise.resolve([]);
@@ -1798,5 +1579,4 @@ sap.ui.define([
 	};
 
 	return XMLTemplateProcessor;
-
 });

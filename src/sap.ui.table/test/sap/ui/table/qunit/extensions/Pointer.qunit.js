@@ -1,10 +1,11 @@
-/*global QUnit, oTable, oTreeTable */
+/*global QUnit, sinon, oTable, oTreeTable */
 
 sap.ui.define([
 	"sap/ui/table/qunit/TableQUnitUtils",
 	"sap/ui/qunit/QUnitUtils",
 	"sap/ui/qunit/utils/nextUIUpdate",
 	"sap/ui/table/extensions/Pointer",
+	"sap/ui/table/Row",
 	"sap/ui/table/utils/TableUtils",
 	"sap/ui/table/library",
 	"sap/ui/table/rowmodes/Fixed",
@@ -15,8 +16,9 @@ sap.ui.define([
 	qutils,
 	nextUIUpdate,
 	PointerExtension,
+	Row,
 	TableUtils,
-	tableLibrary,
+	library,
 	FixedRowMode,
 	jQuery,
 	Device
@@ -32,7 +34,6 @@ sap.ui.define([
 	const getRowAction = window.getRowAction;
 	const iNumberOfRows = window.iNumberOfRows;
 	const checkFocus = window.checkFocus;
-	const fakeSumRow = window.fakeSumRow;
 
 	function createPointerEvent(sEventType) {
 		return new window.PointerEvent(sEventType, {
@@ -457,25 +458,6 @@ sap.ui.define([
 		qutils.triggerMouseEvent(oGroupHeader, "tap");
 	});
 
-	QUnit.test("Analytical Table Sum", function(assert) {
-		const oExtension = oTreeTable._getPointerExtension();
-		oExtension._debug();
-
-		let bSelected = false;
-		oExtension._ExtensionHelper.__handleClickSelection = oExtension._ExtensionHelper._handleClickSelection;
-		oExtension._ExtensionHelper._handleClickSelection = function() {
-			bSelected = true;
-		};
-
-		return fakeSumRow(0, oTreeTable).then(function() {
-			qutils.triggerMouseEvent(oTreeTable.getDomRef("rowsel0"), "tap");
-			assert.ok(!bSelected, "Selection was not performed");
-
-			oExtension._ExtensionHelper._handleClickSelection = oExtension._ExtensionHelper.__handleClickSelection;
-			oExtension._ExtensionHelper.__handleClickSelection = null;
-		});
-	});
-
 	QUnit.test("Mobile Group Menu Button", function(assert) {
 		const oExtension = oTreeTable._getPointerExtension();
 		oExtension._debug();
@@ -604,8 +586,8 @@ sap.ui.define([
 
 	QUnit.test("Single Selection", async function(assert) {
 		oTable.clearSelection();
-		oTable.setSelectionBehavior(tableLibrary.SelectionBehavior.Row);
-		oTable.setSelectionMode(tableLibrary.SelectionMode.Single);
+		oTable.setSelectionBehavior(library.SelectionBehavior.Row);
+		oTable.setSelectionMode(library.SelectionMode.Single);
 		oTable.setRowActionTemplate(TableQUnitUtils.createRowAction(null));
 		oTable.setRowActionCount(1);
 		await nextUIUpdate();
@@ -627,7 +609,7 @@ sap.ui.define([
 
 	QUnit.test("MultiToggle Selection - Range", async function(assert) {
 		oTable.clearSelection();
-		oTable.setSelectionBehavior(tableLibrary.SelectionBehavior.Row);
+		oTable.setSelectionBehavior(library.SelectionBehavior.Row);
 		oTable.setRowActionTemplate(TableQUnitUtils.createRowAction(null));
 		oTable.setRowActionCount(1);
 		await nextUIUpdate();
@@ -650,7 +632,7 @@ sap.ui.define([
 
 	QUnit.test("MultiToggle Selection - Toggle", async function(assert) {
 		oTable.clearSelection();
-		oTable.setSelectionBehavior(tableLibrary.SelectionBehavior.Row);
+		oTable.setSelectionBehavior(library.SelectionBehavior.Row);
 		oTable.setRowActionTemplate(TableQUnitUtils.createRowAction(null));
 		oTable.setRowActionCount(1);
 		await nextUIUpdate();
@@ -665,112 +647,179 @@ sap.ui.define([
 		assert.deepEqual(oTable.getSelectedIndices(), [1], "Click on selected row with index 0");
 	});
 
-	QUnit.module("Selection plugin", {
+	QUnit.module("Selection plugin integration", {
 		beforeEach: function() {
+			this.oSelectionPlugin = new TableQUnitUtils.TestSelectionPlugin();
 			this.oTable = TableQUnitUtils.createTable({
 				rowMode: new FixedRowMode({
 					rowCount: 5
 				}),
 				rows: {path: "/"},
-				models: TableQUnitUtils.createJSONModel(8),
+				models: TableQUnitUtils.createJSONModel(4),
 				columns: [
 					TableQUnitUtils.createTextColumn(),
-					TableQUnitUtils.createTextColumn()
+					TableQUnitUtils.createInputColumn()
 				],
-				dependents: [new TableQUnitUtils.TestSelectionPlugin()]
+				rowActionTemplate: TableQUnitUtils.createRowAction(null),
+				rowActionCount: 1,
+				dependents: [this.oSelectionPlugin]
 			});
+			this.oSetSelected = this.spy(this.oSelectionPlugin, "setSelected");
 
 			return this.oTable.qunit.whenRenderingFinished();
 		},
 		afterEach: function() {
 			this.oTable.destroy();
-		}
-	});
+		},
+		testRowSelection: function(oTarget, mSettings = {}) {
+			const oRow = this.oTable.getRows()[TableUtils.getCellInfo(TableUtils.getCell(this.oTable, oTarget)).rowIndex];
+			const bExpectSelected = !this.oSelectionPlugin.isSelected(oRow);
+			let bCellClickFired = false;
+			const onCellClick = (oEvent) => {
+				oEvent.preventDefault();
+				bCellClickFired = true;
+			};
 
-	QUnit.test("Single Selection", function(assert) {
-		const oTable = this.oTable;
-		const oSelectionPlugin = oTable.getDependents()[0];
-		const oSpyIsSelected = this.spy(oSelectionPlugin, "isSelected");
-		const oSpySetSelected = this.spy(oSelectionPlugin, "setSelected");
+			if (mSettings.cellClickPreventDefault) {
+				this.oTable.attachCellClick(onCellClick);
+			}
 
-		function testSelection(oRow, oTarget) {
+			this.oSetSelected.resetHistory();
+
+			sinon.assert.pass("Test: " + JSON.stringify({
+				selectionBehavior: this.oTable.getSelectionBehavior(),
+				target: oTarget.id,
+				...mSettings
+			}));
+
 			qutils.triggerMouseEvent(oTarget, "tap");
-			assert.ok(oSpyIsSelected.calledOnceWithExactly(oRow), "isSelected is called once with the correct parameter");
-			assert.ok(oSpySetSelected.calledOnceWithExactly(oRow, !oSpyIsSelected.returnValues[0]),
-					"setSelected is called once with the correct parameters");
-			oSpyIsSelected.resetHistory();
-			oSpySetSelected.resetHistory();
+
+			if (mSettings.cellClickPreventDefault && !bCellClickFired) {
+				sinon.assert.fail("cellClick was expected to be fired, but was not fired");
+			}
+
+			if (mSettings.cellClickPreventDefault || mSettings.shouldNotCallPlugin) {
+				sinon.assert.notCalled(this.oSetSelected);
+			} else {
+				sinon.assert.alwaysCalledWithExactly(this.oSetSelected, oRow, bExpectSelected);
+				sinon.assert.callCount(this.oSetSelected, 1);
+			}
+
+			this.oTable.detachCellClick(onCellClick);
 		}
-
-		// default selectionBehavior is RowSelection
-		testSelection(oTable.getRows()[0], oTable.qunit.getRowHeaderCell(0));
-		testSelection(oTable.getRows()[0], oTable.qunit.getRowHeaderCell(0));
-		testSelection(oTable.getRows()[1], oTable.qunit.getRowHeaderCell(1));
-
-		oTable.setSelectionBehavior("Row");
-		testSelection(oTable.getRows()[1], oTable.qunit.getDataCell(1, 0));
-		testSelection(oTable.getRows()[2], oTable.qunit.getRowHeaderCell(2));
-
-		oTable.setSelectionBehavior("RowOnly");
-		testSelection(oTable.getRows()[2], oTable.qunit.getDataCell(2, 1));
-		testSelection(oTable.getRows()[3], oTable.qunit.getDataCell(3, 1));
-
-		oSpyIsSelected.restore();
-		oSpySetSelected.restore();
 	});
 
-	QUnit.test("Range Selection", function(assert) {
-		const oTable = this.oTable;
-let bSelected;
-		const oSelectionPlugin = oTable.getDependents()[0];
-		const oSpySetSelected = this.spy(oSelectionPlugin, "setSelected");
+	QUnit.test("Row selection", function(assert) {
+		// selectionBehavior = RowSelector
+		this.testRowSelection(this.oTable.qunit.getRowHeaderCell(0));
+		this.testRowSelection(this.oTable.qunit.getDataCell(0, 0), {shouldNotCallPlugin: true});
+		this.testRowSelection(this.oTable.qunit.getRowActionCell(0), {shouldNotCallPlugin: true});
 
-		function testSelectRow(oRow, oTarget) {
-			qutils.triggerEvent("tap", oTarget);
-			assert.ok(oSpySetSelected.calledOnceWithExactly(oRow, true),
-					"setSelected is called once with the correct parameters");
-			oSpySetSelected.resetHistory();
-		}
+		this.oTable.setSelectionBehavior(library.SelectionBehavior.Row);
+		this.testRowSelection(this.oTable.qunit.getRowHeaderCell(0));
+		this.testRowSelection(this.oTable.qunit.getDataCell(0, 0));
+		this.testRowSelection(this.oTable.qunit.getDataCell(0, 0), {cellClickPreventDefault: true});
+		this.testRowSelection(this.oTable.qunit.getRowActionCell(0));
 
-		function testRangeSelection(oRow, oTarget) {
-			bSelected = oSelectionPlugin.isSelected(oRow);
+		this.oTable.setSelectionBehavior(library.SelectionBehavior.RowOnly);
+		this.testRowSelection(this.oTable.qunit.getRowHeaderCell(0), {shouldNotCallPlugin: true});
+		this.testRowSelection(this.oTable.qunit.getDataCell(0, 0));
+		this.testRowSelection(this.oTable.qunit.getDataCell(0, 0), {cellClickPreventDefault: true});
+		this.testRowSelection(this.oTable.qunit.getRowActionCell(0));
+	});
+
+	QUnit.test("Cell in group header row", async function(assert) {
+		TableUtils.Grouping.setHierarchyMode(TableUtils.Grouping.HierarchyMode.Group);
+		await this.oTable.qunit.setRowStates([{type: Row.prototype.Type.GroupHeader}]);
+
+		// selectionBehavior = RowSelector
+		this.testRowSelection(this.oTable.qunit.getRowHeaderCell(0));
+		this.testRowSelection(this.oTable.qunit.getDataCell(0, 0), {shouldNotCallPlugin: true});
+		this.testRowSelection(this.oTable.qunit.getRowActionCell(0), {shouldNotCallPlugin: true});
+
+		this.oTable.setSelectionBehavior(library.SelectionBehavior.Row);
+		this.testRowSelection(this.oTable.qunit.getRowHeaderCell(0));
+		this.testRowSelection(this.oTable.qunit.getDataCell(0, 0));
+		this.testRowSelection(this.oTable.qunit.getDataCell(0, 0), {cellClickPreventDefault: true});
+		this.testRowSelection(this.oTable.qunit.getRowActionCell(0));
+
+		this.oTable.setSelectionBehavior(library.SelectionBehavior.RowOnly);
+		this.testRowSelection(this.oTable.qunit.getRowHeaderCell(0), {shouldNotCallPlugin: true});
+		this.testRowSelection(this.oTable.qunit.getDataCell(0, 0));
+		this.testRowSelection(this.oTable.qunit.getDataCell(0, 0), {cellClickPreventDefault: true});
+		this.testRowSelection(this.oTable.qunit.getRowActionCell(0));
+	});
+
+	QUnit.test("Cell in summary row", async function(assert) {
+		await this.oTable.qunit.setRowStates([{type: Row.prototype.Type.Summary}]);
+
+		// selectionBehavior = RowSelector
+		this.testRowSelection(this.oTable.qunit.getRowHeaderCell(0), {shouldNotCallPlugin: true});
+		this.testRowSelection(this.oTable.qunit.getDataCell(0, 0), {shouldNotCallPlugin: true});
+		this.testRowSelection(this.oTable.qunit.getRowActionCell(0), {shouldNotCallPlugin: true});
+
+		this.oTable.setSelectionBehavior(library.SelectionBehavior.Row);
+		this.testRowSelection(this.oTable.qunit.getRowHeaderCell(0), {shouldNotCallPlugin: true});
+		this.testRowSelection(this.oTable.qunit.getDataCell(0, 0), {shouldNotCallPlugin: true});
+		this.testRowSelection(this.oTable.qunit.getRowActionCell(0), {shouldNotCallPlugin: true});
+
+		this.oTable.setSelectionBehavior(library.SelectionBehavior.RowOnly);
+		this.testRowSelection(this.oTable.qunit.getRowHeaderCell(0), {shouldNotCallPlugin: true});
+		this.testRowSelection(this.oTable.qunit.getDataCell(0, 0), {shouldNotCallPlugin: true});
+		this.testRowSelection(this.oTable.qunit.getRowActionCell(0), {shouldNotCallPlugin: true});
+	});
+
+	QUnit.test("Cell in empty row", function(assert) {
+		this.oTable.setSelectionBehavior(library.SelectionBehavior.Row);
+		this.testRowSelection(this.oTable.qunit.getRowHeaderCell(-1), {shouldNotCallPlugin: true});
+		this.testRowSelection(this.oTable.qunit.getDataCell(-1, -1), {shouldNotCallPlugin: true});
+		this.testRowSelection(this.oTable.qunit.getRowActionCell(-1), {shouldNotCallPlugin: true});
+	});
+
+	QUnit.test("Range selection", function(assert) {
+		const testRangeSelection = (oTarget, bExpectPluginCall = true) => {
+			this.oSetSelected.resetHistory();
+
+			sinon.assert.pass("Test: " + JSON.stringify({
+				selectionBehavior: this.oTable.getSelectionBehavior(),
+				target: oTarget.id
+			}));
+
 			qutils.triggerEvent("tap", oTarget, {shiftKey: true});
-			assert.ok(oSpySetSelected.calledOnceWithExactly(oRow, !bSelected, {range: true}),
-					"setSelected is called once with the correct parameters");
-			oSpySetSelected.resetHistory();
-		}
 
-		// default selectionBehavior is RowSelector
-		testSelectRow(oTable.getRows()[0], oTable.qunit.getRowHeaderCell(0));
-		testRangeSelection(oTable.getRows()[2], oTable.qunit.getRowHeaderCell(2));
-		testSelectRow(oTable.getRows()[4], oTable.qunit.getRowHeaderCell(4));
-		testRangeSelection(oTable.getRows()[3], oTable.qunit.getRowHeaderCell(3));
+			if (bExpectPluginCall) {
+				const oRow = this.oTable.getRows()[TableUtils.getCellInfo(TableUtils.getCell(this.oTable, oTarget)).rowIndex];
+				sinon.assert.alwaysCalledWithExactly(this.oSetSelected, oRow, true, {range: true});
+				sinon.assert.callCount(this.oSetSelected, 1);
+			} else {
+				sinon.assert.notCalled(this.oSetSelected);
+			}
+		};
 
-		oTable.setSelectionBehavior("Row");
-		oSelectionPlugin.clearSelection();
-		testSelectRow(oTable.getRows()[1], oTable.qunit.getDataCell(1, 0));
-		testRangeSelection(oTable.getRows()[2], oTable.qunit.getRowHeaderCell(2));
-		testSelectRow(oTable.getRows()[4], oTable.qunit.getRowHeaderCell(4));
-		testRangeSelection(oTable.getRows()[0], oTable.qunit.getDataCell(0, 0));
+		// selectionBehavior = RowSelector
+		testRangeSelection(this.oTable.qunit.getRowHeaderCell(0));
+		testRangeSelection(this.oTable.qunit.getRowHeaderCell(4), false); // Empty row
+		testRangeSelection(this.oTable.qunit.getRowHeaderCell(1));
+		testRangeSelection(this.oTable.qunit.getDataCell(0, 0), false);
+		testRangeSelection(this.oTable.qunit.getRowActionCell(0), false);
 
-		oTable.setSelectionBehavior("RowOnly");
-		oSelectionPlugin.clearSelection();
-		testSelectRow(oTable.getRows()[3], oTable.qunit.getDataCell(3, 0));
-		testRangeSelection(oTable.getRows()[2], oTable.qunit.getDataCell(2, 0));
-		testSelectRow(oTable.getRows()[0], oTable.qunit.getDataCell(0, 0));
-		testRangeSelection(oTable.getRows()[4], oTable.qunit.getDataCell(4, 0));
+		this.oTable.setSelectionBehavior(library.SelectionBehavior.Row);
+		testRangeSelection(this.oTable.qunit.getRowHeaderCell(0));
+		testRangeSelection(this.oTable.qunit.getDataCell(0, 0));
+		testRangeSelection(this.oTable.qunit.getRowActionCell(0));
 
-		oSpySetSelected.restore();
+		this.oTable.setSelectionBehavior(library.SelectionBehavior.RowOnly);
+		testRangeSelection(this.oTable.qunit.getRowHeaderCell(0), false);
+		testRangeSelection(this.oTable.qunit.getDataCell(0, 0));
+		testRangeSelection(this.oTable.qunit.getRowActionCell(0));
 	});
 
-	QUnit.test("SelectAll/DeselectAll", function(assert) {
-		const oTable = this.oTable;
-		const oSelectionPlugin = oTable._getSelectionPlugin();
-		const oSpyHeaderSelectorPress = this.spy(oSelectionPlugin, "onHeaderSelectorPress");
+	QUnit.test("Header selector press", function(assert) {
+		const oHeaderSelectorPress = this.spy(this.oSelectionPlugin, "onHeaderSelectorPress");
 
-		qutils.triggerMouseEvent(oTable.qunit.getSelectAllCell(), "tap");
-		assert.ok(oSpyHeaderSelectorPress.calledOnce, "onHeaderSelectorPress is called once");
-		oSpyHeaderSelectorPress.restore();
+		qutils.triggerMouseEvent(this.oTable.qunit.getSelectAllCell(), "tap");
+		sinon.assert.alwaysCalledWithExactly(oHeaderSelectorPress);
+		sinon.assert.callCount(oHeaderSelectorPress, 1);
 	});
 
 	QUnit.module("Column Reordering", {
@@ -1000,7 +1049,7 @@ let bSelected;
 	QUnit.module("Row Hover Effect", {
 		beforeEach: async function() {
 			createTables();
-			oTable.setSelectionBehavior("Row");
+			oTable.setSelectionBehavior(library.SelectionBehavior.Row);
 			oTable.invalidate();
 			await nextUIUpdate();
 		},
@@ -1060,7 +1109,7 @@ let bSelected;
 		assert.ok(!getCell(0, 0).parent().hasClass("sapUiTableRowHvr"), "No hover effect on fixed part of row");
 		assert.ok(!getCell(0, 2).parent().hasClass("sapUiTableRowHvr"), "No hover effect on scroll part of row");
 		getCell(0, 2).trigger("mouseout");
-		oTable.setSelectionBehavior("RowOnly");
+		oTable.setSelectionBehavior(library.SelectionBehavior.RowOnly);
 		oTable.invalidate();
 		await nextUIUpdate();
 		getCell(0, 2).trigger("mouseover");
@@ -1069,7 +1118,7 @@ let bSelected;
 		assert.ok(!getCell(0, 2).parent().hasClass("sapUiTableRowHvr"), "No hover effect on scroll part of row");
 		getCell(0, 2).trigger("mouseout");
 		oTable.setSelectionMode("MultiToggle");
-		oTable.setSelectionBehavior("Row");
+		oTable.setSelectionBehavior(library.SelectionBehavior.Row);
 		oTable.invalidate();
 		await nextUIUpdate();
 		getCell(0, 2).trigger("mouseover");
@@ -1077,7 +1126,7 @@ let bSelected;
 		assert.ok(getCell(0, 0).parent().hasClass("sapUiTableRowHvr"), "Hover effect on fixed part of row");
 		assert.ok(getCell(0, 2).parent().hasClass("sapUiTableRowHvr"), "Hover effect on scroll part of row");
 		getCell(0, 2).trigger("mouseout");
-		oTable.setSelectionBehavior("RowOnly");
+		oTable.setSelectionBehavior(library.SelectionBehavior.RowOnly);
 		oTable.invalidate();
 		await nextUIUpdate();
 		getCell(0, 2).trigger("mouseover");
@@ -1086,7 +1135,7 @@ let bSelected;
 		assert.ok(getCell(0, 2).parent().hasClass("sapUiTableRowHvr"), "Hover effect on scroll part of row");
 		getCell(0, 2).trigger("mouseout");
 		oTable.setSelectionMode("None");
-		oTable.setSelectionBehavior("RowSelector");
+		oTable.setSelectionBehavior(library.SelectionBehavior.RowSelector);
 		oTable.invalidate();
 		await nextUIUpdate();
 		oTable.attachCellClick(function() {});
