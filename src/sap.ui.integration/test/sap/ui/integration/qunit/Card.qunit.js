@@ -85,7 +85,8 @@ sap.ui.define([
 					},
 					"status": {
 						"text": "100 of 200"
-					}
+					},
+					"dataTimestamp": "2021-03-18T12:00:00Z"
 				},
 				"content": {
 					"data": {
@@ -1417,7 +1418,7 @@ sap.ui.define([
 				oHeaderFocusDomRef = oHeader.getDomRef("focusable"),
 				oHeaderTitleDomRef = oHeaderDomRef.querySelector(".sapFCardTitle"),
 				oContentDomRef = document.getElementsByClassName("sapFCardContent")[0],
-				sAriaLabelledByIds = this.oCard._ariaText.getId() + " " + oHeader._getTitle().getId() + " " + oHeader._getSubtitle().getId() + " " + oHeader.getId() + "-status" + " " + oHeader.getId() + "-ariaAvatarText";
+				sAriaLabelledByIds = this.oCard._ariaText.getId() + " " + oHeader._getTitle().getId() + " " + oHeader._getSubtitle().getId() + " " + oHeader.getId() + "-status" + " " + oHeader.getId() + "-dataTimestamp" + " " + oHeader.getId() + "-ariaAvatarText";
 
 			// Assert Card Container
 			assert.strictEqual(oCardDomRef.getAttribute("role"), "region", "Card container should have a role - region");
@@ -1431,7 +1432,7 @@ sap.ui.define([
 			// Assert Card Header's focusable element
 			assert.strictEqual(oHeaderFocusDomRef.getAttribute("aria-roledescription"), this.oRb.getText("ARIA_ROLEDESCRIPTION_CARD_HEADER"), "Card header focusable element should have aria-roledescription - Card Header");
 			assert.strictEqual(oHeaderFocusDomRef.getAttribute("role"), "group", "Card header focusable element should have a role - group");
-			assert.strictEqual(oHeaderFocusDomRef.getAttribute("aria-labelledby"), sAriaLabelledByIds, "Card header's focusable element should have aria-lebelledby - pointing to an element describing the card type, title, subtitle, status text and avatar ids if there is one");
+			assert.strictEqual(oHeaderFocusDomRef.getAttribute("aria-labelledby"), sAriaLabelledByIds, "Card header's focusable element should have aria-lebelledby - pointing to an element describing the card type, title, subtitle, status text, dataTimestamp and avatar ids if there is one");
 			assert.strictEqual(oHeaderFocusDomRef.getAttribute("tabindex"), "0", "Card header's focusable element should have tabindex=0");
 
 			// Assert Card Header Title
@@ -1576,6 +1577,7 @@ sap.ui.define([
 									oHeader._getTitle().getId() + " " +
 									oHeader._getSubtitle().getId() + " " +
 									oHeader.getId() + "-status" + " " +
+									oHeader.getId() + "-dataTimestamp" + " " +
 									oHeader._getUnitOfMeasurement().getId() + " " +
 									oHeader.getAggregation("_numericIndicators").getAggregation("_mainIndicator").getId() + " " +
 									oHeader._getSideIndicatorIds() + " " +
@@ -1583,7 +1585,7 @@ sap.ui.define([
 
 			assert.strictEqual(oHeaderFocusDomRef.getAttribute("role"), "group", "Card header focusable element should have a role - group");
 			assert.strictEqual(oHeaderFocusDomRef.getAttribute("aria-roledescription"), this.oRb.getText("ARIA_ROLEDESCRIPTION_CARD_HEADER"), "Card header focusable element should have aria-roledescription - Card Header");
-			assert.strictEqual(oHeaderFocusDomRef.getAttribute("aria-labelledby"), sAriaLabelledByIds, "Card header's focusable element should have aria-lebelledby - pointing to an element describing the card type, title, subtitle, status text and avatar ids if there is one");
+			assert.strictEqual(oHeaderFocusDomRef.getAttribute("aria-labelledby"), sAriaLabelledByIds, "Card header's focusable element should have aria-lebelledby - pointing to an element describing the card type, title, subtitle, status text, dataTimestamp and avatar ids if there is one");
 			assert.strictEqual(oHeaderFocusDomRef.getAttribute("tabindex"), "0", "Card header should have tabindex=0");
 		});
 

@@ -12,7 +12,7 @@ sap.ui.define([
 	"sap/ui/core/ResizeHandler",
 	"sap/ui/dom/units/Rem",
 	"sap/ui/qunit/utils/nextUIUpdate"
-], function (
+], function(
 	Log,
 	Splitter,
 	SplitterLayoutData,
@@ -856,35 +856,26 @@ sap.ui.define([
 
 	QUnit.module("Resize Handling");
 
-	QUnit.test("Size calculation when splitter is located in the preserve area", function (assert) {
+	QUnit.test("Size calculation when splitter is located in the preserve area", async function (assert) {
 		// Arrange
-		var done = assert.async();
-		var sXMLViewContent = '<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:layout="sap.ui.layout">'
-			+ '<layout:Splitter id="myResizeSplitter">'
-			+ '</layout:Splitter>'
-			+ '</mvc:View>';
+		const oSplitter = new Splitter("myResizeSplitter");
+		oSplitter.placeAt("qunit-fixture");
+		await nextUIUpdate();
 
-		XMLView.create({
-			definition: sXMLViewContent
-		}).then(function(oXMLView) {
-			var oResizeSplitter = oXMLView.byId("myResizeSplitter");
+		const oDomRef = oSplitter.getDomRef();
+		// Act
+		// move the Splitter into the preserve area
+		RenderManager.preserveContent(oDomRef, true /* bPreserveRoot */, true /* bPreserveNodesWithId */);
+		assert.ok(RenderManager.isPreservedContent(oDomRef), "Splitter control is preserved.");
 
-			oXMLView.placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
-			var oSpy = this.spy(oResizeSplitter, "_recalculateSizes");
+		const oSpy = this.spy(oSplitter, "_recalculateSizes");
+		oSplitter.triggerResize(true);
 
-			oXMLView.attachBeforeRendering(function () {
-				// check
-				assert.ok(RenderManager.isPreservedContent(oXMLView.getDomRef()), "Splitter control is preserved as part of XMLView.");
-				oResizeSplitter.triggerResize(true);
-				assert.strictEqual(oSpy.called, false, "Splitter has not calculated its sizes again.");
+		// Assert
+		assert.strictEqual(oSpy.called, false, "Splitter has not calculated its sizes again.");
 
-				oXMLView.destroy();
-				done();
-			});
-
-			oXMLView.invalidate();
-		}.bind(this));
+		// Clean up
+		oSplitter.destroy();
 	});
 
 	QUnit.test("Size calculation when splitter is not displayed", function (assert) {

@@ -1022,7 +1022,7 @@ sap.ui.define([
 		}).catch((err) => {
 			assert.equal(
 				err.message,
-				"Cannot load module 'sap/ui/model/odata/ODataModelNotExists'. This will most probably cause an error once the module is used later on.",
+				"Cannot load module 'sap/ui/model/odata/ODataModelNotExists'.",
 				"Component creation rejects with correct error"
 			);
 			future.active = undefined;
@@ -1070,7 +1070,7 @@ sap.ui.define([
 		}).catch((err) => {
 			assert.equal(
 				err.message,
-				"Cannot load module 'someRouterNotExists'. This will most probably cause an error once the module is used later on.",
+				"Cannot load module 'someRouterNotExists'.",
 				"Component creation rejects with correct error"
 			);
 			future.active = undefined;
