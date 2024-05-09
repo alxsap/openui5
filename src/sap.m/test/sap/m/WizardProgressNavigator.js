@@ -1,119 +1,81 @@
 sap.ui.define([
-	"sap/m/WizardProgressNavigator",
-	"sap/m/App",
-	"sap/m/Page",
-	"sap/ui/layout/VerticalLayout",
-	"sap/m/Button",
-	"sap/ui/core/Element",
-	"sap/m/Input",
-	"sap/m/library"
+  "sap/m/WizardProgressNavigator",
+  "sap/m/App",
+  "sap/m/Page",
+  "sap/ui/layout/VerticalLayout",
+  "sap/m/Button",
+  "sap/ui/core/Element",
+  "sap/m/Input",
+  "sap/m/library"
 ], function(WizardProgressNavigator, App, Page, VerticalLayout, Button, Element, Input, mobileLibrary) {
-	"use strict";
+  "use strict";
 
-	// shortcut for sap.m.InputType
-	const InputType = mobileLibrary.InputType;
+  // shortcut for sap.m.InputType
+  const InputType = mobileLibrary.InputType;
 
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "randomTitle", {
-		configurable: "false",
-		writable: "true",
+  var randomTitle = function () {
+	  return Array(Math.floor(Math.random() * 10) + 2).join("-").split("").map(function (x) {
+		  return Array(Math.floor(Math.random() * 10 + 4)).join("a");
 
-		value: function () {
-			return Array(Math.floor(Math.random() * 10) + 2).join("-").split("").map(function (x) {
-				return Array(Math.floor(Math.random() * 10 + 4)).join("a");
+	  }).join(" ");
+  }
 
-			}).join(" ");
-		}
-	});
+  var app = new App({initialPage: "landing"});
+  var pageOne = new Page("landing", {showHeader: false});
 
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "app", {
-		configurable: "false",
-		writable: "true",
-		value: new App({initialPage: "landing"})
-	});
+  var steps = 3;
+  var maximumSteps = 8;
 
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "pageOne", {
-		configurable: "false",
-		writable: "true",
-		value: new Page("landing", {showHeader: false})
-	});
+  while (steps <= maximumSteps) {
+	  var navId = "prog-nav-" + steps;
 
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "steps", {
-		configurable: "false",
-		writable: "true",
-		value: 3
-	});
+	  (function (navigatorId) {
+		  var inputId = navigatorId + "-input";
 
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "maximumSteps", {
-		configurable: "false",
-		writable: "true",
-		value: 8
-	});
+		  pageOne.addContent(new VerticalLayout({
+			  width: "100%",
+			  content: [
+				  new WizardProgressNavigator(navigatorId, {
+					  stepCount: steps,
+					  varyingStepCount: steps % 2 === 1,
+					  stepTitles: Array(steps + 1).join("-").split("").map(function (s, i) {
+						  return randomTitle();
+					  })
+				  }),
+				  new Button({
+					  text: "Previous",
+					  press: function () {
+						  Element.getElementById(navigatorId).previousStep();
+					  }
+				  }),
+				  new Button({
+					  text: "Next",
+					  press: function () {
+						  Element.getElementById(navigatorId).nextStep();
+					  }
+				  }),
+				  new Button({
+					  text: "Discard After Step",
+					  press: function () {
+						  var inputVal = parseInt(Element.getElementById(inputId).getValue(), 10);
 
-	while (steps <= maximumSteps) {
-		var navId = "prog-nav-" + steps;
+						  if (isNaN(inputVal)) {
+							  return;
+						  }
 
-		(function (navigatorId) {
-			var inputId = navigatorId + "-input";
+						  Element.getElementById(navigatorId).discardProgress(inputVal);
+					  }
+				  }),
+				  new Input(inputId, {
+					  type: InputType.Number
+				  })
+			  ]
+		  }));
+	  }(navId));
 
-			pageOne.addContent(new VerticalLayout({
-				width: "100%",
-				content: [
-					new WizardProgressNavigator(navigatorId, {
-						stepCount: steps,
-						varyingStepCount: steps % 2 === 1,
-						stepTitles: Array(steps + 1).join("-").split("").map(function (s, i) {
-							return randomTitle();
-						})
-					}),
-					new Button({
-						text: "Previous",
-						press: function () {
-							Element.getElementById(navigatorId).previousStep();
-						}
-					}),
-					new Button({
-						text: "Next",
-						press: function () {
-							Element.getElementById(navigatorId).nextStep();
-						}
-					}),
-					new Button({
-						text: "Discard After Step",
-						press: function () {
-							var inputVal = parseInt(Element.getElementById(inputId).getValue(), 10);
+	  steps += 1;
+  }
 
-							if (isNaN(inputVal)) {
-								return;
-							}
-
-							Element.getElementById(navigatorId).discardProgress(inputVal);
-						}
-					}),
-					new Input(inputId, {
-						type: InputType.Number
-					})
-				]
-			}));
-		}(navId));
-
-		steps += 1;
-	}
-
-	app.addPage(pageOne);
-	app.placeAt("content");
+  app.addPage(pageOne);
+  app.placeAt("content");
 });

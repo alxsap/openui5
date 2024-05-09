@@ -1,3 +1,5 @@
+// Note: the HTML page 'AlignedFlowLayoutFilterBar.html' loads this module via data-sap-ui-on-init
+
 sap.ui.define([
 	"sap/ui/core/Core",
 	"sap/m/App",

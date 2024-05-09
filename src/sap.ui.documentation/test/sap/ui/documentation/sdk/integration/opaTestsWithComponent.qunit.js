@@ -1,3 +1,5 @@
+// Note: the HTML page 'opaTestsWithComponent.qunit.html' loads this module via data-sap-ui-on-init
+
 // we want to be able to load our tests asynchronously - pause QUnit until we loaded everything
 QUnit.config.autostart = false;
 // Demo Kit in static navigation mode

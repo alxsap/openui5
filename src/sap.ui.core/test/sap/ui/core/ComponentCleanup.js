@@ -1,3 +1,5 @@
+// Note: the HTML page 'ComponentCleanup.html' loads this module via data-sap-ui-on-init
+
 sap.ui.define(["sap/ui/core/Core", "sap/ui/thirdparty/jquery", "sap/ui/core/Component"],function(Core, jQuery) {
 	"use strict";
 

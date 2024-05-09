@@ -1,31 +1,43 @@
-(function (jQuery, App, Page) {
-	sap.ui.controller("myController", {
-		onInit: function() {
-			this.view = this.getView();
-			this.titleSlider = this.view.byId('titleSlider');
-			this.contentSlider = this.view.byId('contentSlider');
-			this.actionsSlider = this.view.byId('actionsSlider');
-		},
+sap.ui.define([
+  "sap/ui/core/Core",
+  "sap/m/App",
+  "sap/m/Page",
+  "sap/ui/thirdparty/jquery",
+  "sap/ui/core/mvc/XMLView",
+  "sap/ui/core/mvc/Controller"
+], function(Core, App, Page, jQuery0) {
+  "use strict";
+  // Note: the HTML page 'DynamicPageTitleShrinkFactors.html' loads this module via data-sap-ui-on-init
 
-		// implement an event handler in the Controller
-		changeShrinkRatio: function(oEvent) {
-			var oView = this.getView(),
-				sAreaShrinkRatio = this.titleSlider.getValue() + ":"
-									+ this.contentSlider.getValue() + ":"
-									+ this.actionsSlider.getValue();
+  (function (jQuery, App, Page) {
+	  sap.ui.controller("myController", {
+		  onInit: function() {
+			  this.view = this.getView();
+			  this.titleSlider = this.view.byId('titleSlider');
+			  this.contentSlider = this.view.byId('contentSlider');
+			  this.actionsSlider = this.view.byId('actionsSlider');
+		  },
 
-			oView.byId('dynamicPageTitle').setAreaShrinkRatio(sAreaShrinkRatio);
-		}
-	});
+		  // implement an event handler in the Controller
+		  changeShrinkRatio: function(oEvent) {
+			  var oView = this.getView(),
+				  sAreaShrinkRatio = this.titleSlider.getValue() + ":"
+									  + this.contentSlider.getValue() + ":"
+									  + this.actionsSlider.getValue();
 
-	sap.ui.require(["sap/ui/core/Core"], Core => Core.ready(function () {
-		var oApp = new App(),
-			myView = sap.ui.xmlview({viewContent: jQuery('#view1').html()});
+			  oView.byId('dynamicPageTitle').setAreaShrinkRatio(sAreaShrinkRatio);
+		  }
+	  });
 
-		oApp.addPage(new Page({
-			title: "New Header",
-			content: [myView]
-		})).placeAt("content");
-	}));
+	  Core.ready(function () {
+		  var oApp = new App(),
+			  myView = sap.ui.xmlview({viewContent: jQuery0('#view1').html()});
 
-}(jQuery, sap.m.App, sap.m.Page));
+		  oApp.addPage(new Page({
+			  title: "New Header",
+			  content: [myView]
+		  })).placeAt("content");
+	  });
+
+  }(jQuery0, App, Page));
+});

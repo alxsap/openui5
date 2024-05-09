@@ -1,297 +1,251 @@
 sap.ui.define([
-	"sap/ui/core/Element",
-	"sap/m/Table",
-	"sap/m/Toolbar",
-	"sap/m/Label",
-	"sap/m/ToolbarSpacer",
-	"sap/m/Button",
-	"sap/ui/model/json/JSONModel",
-	"sap/m/Column",
-	"sap/m/ColumnListItem",
-	"sap/m/TablePersoController",
-	"sap/m/App",
-	"sap/m/Page",
-	"sap/ui/thirdparty/jquery"
+  "sap/ui/core/Element",
+  "sap/m/Table",
+  "sap/m/Toolbar",
+  "sap/m/Label",
+  "sap/m/ToolbarSpacer",
+  "sap/m/Button",
+  "sap/ui/model/json/JSONModel",
+  "sap/m/Column",
+  "sap/m/ColumnListItem",
+  "sap/m/TablePersoController",
+  "sap/m/App",
+  "sap/m/Page",
+  "sap/ui/thirdparty/jquery"
 ], function(
-	Element,
-	Table,
-	Toolbar,
-	Label,
-	ToolbarSpacer,
-	Button,
-	JSONModel,
-	Column,
-	ColumnListItem,
-	TablePersoController,
-	App,
-	Page,
-	jQuery
+  Element,
+  Table,
+  Toolbar,
+  Label,
+  ToolbarSpacer,
+  Button,
+  JSONModel,
+  Column,
+  ColumnListItem,
+  TablePersoController,
+  App,
+  Page,
+  jQuery
 ) {
-	"use strict";
+  "use strict";
 
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "oData", {
-		configurable: "false",
-		writable: "true",
+  var oData = {
+	  items: [
+		  {
+			  name: "Michelle",
+			  color: "orange",
+			  number: 3.14,
+			  tools: 2.0,
+			  support: 'prime',
+			  events: 'None',
+			  city: 'Walldorf',
+			  country: 'Germany',
+			  phone: '03525-2323-2352352',
+			  test1:"Test1",
+			  test2:"Test2",
+			  test3:"Test3",
+			  test4:"Test4",
+			  test5:"Test5",
+			  test6:"Test6",
+			  test7:"Test7",
+			  test8:"Test8",
+			  test9:"Test9"
+		  }, {
+			  name: "Joseph",
+			  color: "blue",
+			  number: 1.618,
+			  tools: 2.0,
+			  support: 'prime',
+			  events: 'None',
+			  city: 'Walldorf',
+			  country: 'Germany',
+			  phone: '03525-2323-2352352',
+			  test1:"Test1",
+			  test2:"Test2",
+			  test3:"Test3",
+			  test4:"Test4",
+			  test5:"Test5",
+			  test6:"Test6",
+			  test7:"Test7",
+			  test8:"Test8",
+			  test9:"Test9"
+		  }, {
+			  name: "David",
+			  color: "green",
+			  number: 0.12,
+			  tools: 2.0,
+			  support: 'normal',
+			  events: 'None',
+			  city: 'Walldorf',
+			  country: 'Germany',
+			  phone: '03525-2323-2352352',
+			  test1:"Test1",
+			  test2:"Test2",
+			  test3:"Test3",
+			  test4:"Test4",
+			  test5:"Test5",
+			  test6:"Test6",
+			  test7:"Test7",
+			  test8:"Test8",
+			  test9:"Test9"
+		  },
+	  ],
+	  cols: [
+		  "Test1", "Test2", "Test3","Test4","Test5","Name", "Color", "Number", "Tools", "Support", "Events", "City", "Country", "Phone"
+	  ]
+  };
 
-		value: {
-			items: [
-				{
-					name: "Michelle",
-					color: "orange",
-					number: 3.14,
-					tools: 2.0,
-					support: 'prime',
-					events: 'None',
-					city: 'Walldorf',
-					country: 'Germany',
-					phone: '03525-2323-2352352',
-					test1:"Test1",
-					test2:"Test2",
-					test3:"Test3",
-					test4:"Test4",
-					test5:"Test5",
-					test6:"Test6",
-					test7:"Test7",
-					test8:"Test8",
-					test9:"Test9"
-				}, {
-					name: "Joseph",
-					color: "blue",
-					number: 1.618,
-					tools: 2.0,
-					support: 'prime',
-					events: 'None',
-					city: 'Walldorf',
-					country: 'Germany',
-					phone: '03525-2323-2352352',
-					test1:"Test1",
-					test2:"Test2",
-					test3:"Test3",
-					test4:"Test4",
-					test5:"Test5",
-					test6:"Test6",
-					test7:"Test7",
-					test8:"Test8",
-					test9:"Test9"
-				}, {
-					name: "David",
-					color: "green",
-					number: 0.12,
-					tools: 2.0,
-					support: 'normal',
-					events: 'None',
-					city: 'Walldorf',
-					country: 'Germany',
-					phone: '03525-2323-2352352',
-					test1:"Test1",
-					test2:"Test2",
-					test3:"Test3",
-					test4:"Test4",
-					test5:"Test5",
-					test6:"Test6",
-					test7:"Test7",
-					test8:"Test8",
-					test9:"Test9"
-				},
-			],
-			cols: [
-				"Test1", "Test2", "Test3","Test4","Test5","Name", "Color", "Number", "Tools", "Support", "Events", "City", "Country", "Phone"
-			]
-		}
-	});
+  //make sure table id suffix is set (this is necessary for personalization)
+  var oTable = new Table('testTable', {
+	  headerToolbar: new Toolbar({
+		  content: [
+			  new Label({
+				  text: "Info"
+			  }), new ToolbarSpacer({}),
+			  /* new sap.m.Button("idPersonalizationResetButton", {
+				  icon: "sap-icon://refresh"
+			  }), */
+			  new Button("idPersonalizationButton", {
+				  icon: "sap-icon://action-settings"
+			  })
+		  ]
+	  })
+	  /* Note: this example of implicit data binding
+	  columns: oData.cols.map(function (colname) {
+		  //make sure column id suffix is set
+		  return new sap.m.Column(colname, { header: new sap.m.Label({ text: colname }), visible: colname != "Color"})
+	  })*/
+  });
 
-	//make sure table id suffix is set (this is necessary for personalization)
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "oTable", {
-		configurable: "false",
-		writable: "true",
+  oTable.setModel(new JSONModel(oData));
 
-		value: new Table('testTable', {
-			headerToolbar: new Toolbar({
-				content: [
-					new Label({
-						text: "Info"
-					}), new ToolbarSpacer({}),
-					/* new sap.m.Button("idPersonalizationResetButton", {
-						icon: "sap-icon://refresh"
-					}), */
-					new Button("idPersonalizationButton", {
-						icon: "sap-icon://action-settings"
-					})
-				]
-			})
-			/* Note: this example of implicit data binding
-			columns: oData.cols.map(function (colname) {
-				//make sure column id suffix is set
-				return new sap.m.Column(colname, { header: new sap.m.Label({ text: colname }), visible: colname != "Color"})
-			})*/
-		})
-	});
+  /* Note: this example of data binding uses formatter
+  oTable.bindAggregation("columns", {
+	  path: "/cols",
+	  template: new sap.m.Column({
+		  header: new sap.m.Label({
+			  text: {
+				  path: ""
+			  }
+		  }),
+		  visible: {
+			  path: "",
+			  formatter: function(sValue) {
+				  return sValue !== "Color";
+			  }
+		  }
 
-	oTable.setModel(new JSONModel(oData));
+	  })
+  });*/
 
-	/* Note: this example of data binding uses formatter
-	oTable.bindAggregation("columns", {
-		path: "/cols",
-		template: new sap.m.Column({
-			header: new sap.m.Label({
-				text: {
-					path: ""
-				}
-			}),
-			visible: {
-				path: "",
-				formatter: function(sValue) {
-					return sValue !== "Color";
-				}
-			}
+  // Note: this example of data binding uses factory
+  oTable.bindAggregation("columns", "/cols", function(sId, oContext) {
+	  var sColname = oContext.getProperty(oContext.getPath());
+	  //make sure column id suffix is set
+	  return new Column(sColname, {
+		  header: new Label({
+			  text: sColname
+		  }),
+		  visible: sColname !== "Color"
+	  });
+  });
 
-		})
-	});*/
+  oTable.bindAggregation("items", "/items", new ColumnListItem({
+	  cells: oData.cols.map(function(colname) {
+		  return new Label({
+			  text: "{" + colname.toLowerCase() + "}"
+		  });
+	  })
+  }));
 
-	// Note: this example of data binding uses factory
-	oTable.bindAggregation("columns", "/cols", function(sId, oContext) {
-		var sColname = oContext.getProperty(oContext.getPath());
-		//make sure column id suffix is set
-		return new Column(sColname, {
-			header: new Label({
-				text: sColname
-			}),
-			visible: sColname !== "Color"
-		});
-	});
+  var oPersoService = {
+	  getPersData: function() {
+		  var oDeferred = new jQuery.Deferred();
+		  var oBundle = this._oBundle;
+		  oDeferred.resolve(oBundle);
+		  return oDeferred.promise();
+	  },
 
-	oTable.bindAggregation("items", "/items", new ColumnListItem({
-		cells: oData.cols.map(function(colname) {
-			return new Label({
-				text: "{" + colname.toLowerCase() + "}"
-			});
-		})
-	}));
+	  setPersData: function(oBundle) {
+		  var oDeferred = new jQuery.Deferred();
+		  this._oBundle = oBundle;
+		  oDeferred.resolve();
+		  return oDeferred.promise();
+	  },
 
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "oPersoService", {
-		configurable: "false",
-		writable: "true",
+	  resetPersData: function() {
+		  var oDeferred = new jQuery.Deferred();
 
-		value: {
-			getPersData: function() {
-				var oDeferred = new jQuery.Deferred();
-				var oBundle = this._oBundle;
-				oDeferred.resolve(oBundle);
-				return oDeferred.promise();
-			},
+		  var oInitialData = {
+			  _persoSchemaVersion: "1.0",
+			  aColumns: [
+				  {
+					  id: "empty_component-testTable-Name",
+					  order: 2,
+					  text: "Name",
+					  visible: true
+				  }, {
+					  id: "empty_component-testTable-Number",
+					  order: 1,
+					  text: "Number",
+					  visible: true
+				  }, {
+					  id: "empty_component-testTable-Color",
+					  order: 0,
+					  text: "Color",
+					  visible: true
+				  }
+			  ]
+		  };
 
-			setPersData: function(oBundle) {
-				var oDeferred = new jQuery.Deferred();
-				this._oBundle = oBundle;
-				oDeferred.resolve();
-				return oDeferred.promise();
-			},
+		  this._oBundle = oInitialData;
 
-			resetPersData: function() {
-				var oDeferred = new jQuery.Deferred();
+		  //				this._oBundle = null;
+		  oDeferred.resolve();
+		  return oDeferred.promise();
+	  },
 
-				var oInitialData = {
-					_persoSchemaVersion: "1.0",
-					aColumns: [
-						{
-							id: "empty_component-testTable-Name",
-							order: 2,
-							text: "Name",
-							visible: true
-						}, {
-							id: "empty_component-testTable-Number",
-							order: 1,
-							text: "Number",
-							visible: true
-						}, {
-							id: "empty_component-testTable-Color",
-							order: 0,
-							text: "Color",
-							visible: true
-						}
-					]
-				};
+	  getCaption: function(oColumn) {
+		  if (oColumn.getHeader() && oColumn.getHeader().getText) {
+			  if (oColumn.getHeader().getText() == "Color") {
+				  return "Color: this is a very very very very long Column Name to check how the TablePersoDialog deals with it";
+			  }
+		  }
+		  return null;
+	  },
 
-				this._oBundle = oInitialData;
+	  getGroup: function(oColumn) {
+		  if (oColumn.getHeader() && oColumn.getHeader().getText) {
+			  if (oColumn.getHeader().getText() == "Color") {
+				  return "Primary Group";
+			  }
+		  }
+		  return "Secondary Group";
+	  }
+  };
 
-				//				this._oBundle = null;
-				oDeferred.resolve();
-				return oDeferred.promise();
-			},
+  //		jQuery.sap.require("sap.m.TablePersoController");
 
-			getCaption: function(oColumn) {
-				if (oColumn.getHeader() && oColumn.getHeader().getText) {
-					if (oColumn.getHeader().getText() == "Color") {
-						return "Color: this is a very very very very long Column Name to check how the TablePersoDialog deals with it";
-					}
-				}
-				return null;
-			},
+  var oTPC = new TablePersoController({
+	  table: oTable,
+	  persoService: oPersoService,
+	  hasGrouping: false
+  });
+  oTPC.activate();
 
-			getGroup: function(oColumn) {
-				if (oColumn.getHeader() && oColumn.getHeader().getText) {
-					if (oColumn.getHeader().getText() == "Color") {
-						return "Primary Group";
-					}
-				}
-				return "Secondary Group";
-			}
-		}
-	});
+  Element.getElementById("idPersonalizationButton").attachPress(function() {
+	  oTPC.openDialog();
+  });
 
-	//		jQuery.sap.require("sap.m.TablePersoController");
+  var app = new App("myApp", {
+	  initialPage: "page"
+  }), page = new Page("page", {
+	  title: "TablePersoDialog Testpage",
+	  content: [
+		  oTable
+	  ]
+  });
 
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "oTPC", {
-		configurable: "false",
-		writable: "true",
-
-		value: new TablePersoController({
-			table: oTable,
-			persoService: oPersoService,
-			hasGrouping: false
-		})
-	});
-
-	oTPC.activate();
-
-	Element.getElementById("idPersonalizationButton").attachPress(function() {
-		oTPC.openDialog();
-	});
-
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "app", {
-		configurable: "false",
-		writable: "true",
-
-		value: new App("myApp", {
-			initialPage: "page"
-		})
-	}), Object.defineProperty(globalThis, "page", {
-		configurable: "false",
-		writable: "true",
-
-		value: new Page("page", {
-			title: "TablePersoDialog Testpage",
-			content: [
-				oTable
-			]
-		})
-	});
-
-	app.addPage(page);
-	app.placeAt("body");
+  app.addPage(page);
+  app.placeAt("body");
 });

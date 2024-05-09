@@ -1,3 +1,5 @@
+// Note: the HTML page 'GenericEventBinding.html' loads this module via data-sap-ui-on-init
+
 sap.ui.define([
 	"sap/ui/core/Core",
 	"sap/ui/core/Rendering",

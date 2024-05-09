@@ -1,3 +1,5 @@
+// Note: the HTML page 'PlanningCalendarHeader.html' loads this module via data-sap-ui-on-init
+
 var oPCHeader;
 sap.ui.define([
 	'sap/m/PlanningCalendarHeader',

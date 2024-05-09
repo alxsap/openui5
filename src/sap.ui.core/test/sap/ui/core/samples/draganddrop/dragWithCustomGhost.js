@@ -1,3 +1,5 @@
+// Note: the HTML page 'dragWithCustomGhost.html' loads this module via data-sap-ui-on-init
+
 sap.ui.loader.config({paths: {"my": "./"}});
 
 sap.ui.define(["my/DraggableText", "sap/ui/core/dnd/DragDropInfo"], function(DraggableText, DragDropInfo) {

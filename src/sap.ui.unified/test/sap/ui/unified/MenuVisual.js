@@ -1,3 +1,5 @@
+// Note: the HTML page 'MenuVisual.html' loads this module via data-sap-ui-on-init
+
 sap.ui.define([
 	"sap/ui/unified/Menu",
 	"sap/ui/unified/MenuItem",

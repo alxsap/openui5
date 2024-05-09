@@ -1,3 +1,5 @@
+// Note: the HTML page 'DynamicDateRangeVisual.html' loads this module via data-sap-ui-on-init
+
 // We have to mock the current date in order to have stable visual tests as the dates used in the
 // DynamicDateRange control are relative to the current date. The case where there are no arguments passed to
 // the Date object returns a solid date in the past.

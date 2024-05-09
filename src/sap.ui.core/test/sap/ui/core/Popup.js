@@ -1,3 +1,5 @@
+// Note: the HTML page 'Popup.html' loads this module via data-sap-ui-on-init
+
 var openPopup, closePopup, greenClicked, openAnim, closeAnim;
 
 sap.ui.define(["sap/ui/core/Popup", "sap/ui/thirdparty/jquery"], function(Popup, jQuery) {

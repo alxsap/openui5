@@ -1,3 +1,5 @@
+// Note: the HTML page 'SupportAssistantAPI.html' loads this module via data-sap-ui-on-init
+
 sap.ui.define(["sap/ui/support/Bootstrap", "sap/ui/support/RuleAnalyzer", "sap/m/Panel", "sap/m/Button", "sap/m/Text", "sap/m/Link", "sap/m/Input", "sap/m/List", "sap/m/StandardListItem"],
 		function(bootstrap, RuleAnalyzer, Panel, Button, Text, Link, Input, List, StandardListItem) {
 			"use strict";

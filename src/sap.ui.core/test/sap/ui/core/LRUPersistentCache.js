@@ -1,3 +1,5 @@
+// Note: the HTML page 'LRUPersistentCache.html' loads this module via data-sap-ui-on-init
+
 var oCache;
 sap.ui.define(["sap/ui/core/cache/CacheManager"], function (classCacheManager) {
 	"use strict";

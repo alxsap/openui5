@@ -1,5 +1,8 @@
-sap.ui.require(["sap/ui/core/mvc/Controller", "sap/ui/core/mvc/XMLView", "sap/ui/model/json/JSONModel", "sap/m/MessageToast"],
-	function (Controller, XMLView, JSONModel, MessageToast) {
+// Note: the HTML page 'CheckBoxRequired.html' loads this module via data-sap-ui-on-init
+
+sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/mvc/XMLView", "sap/ui/model/json/JSONModel", "sap/m/MessageToast", "sap/ui/thirdparty/jquery"],
+	function(Controller, XMLView, JSONModel, MessageToast, jQuery) {
+		"use strict";
 		Controller.extend("SampleController", {
 			onInit: function () {
 				var model = new JSONModel();

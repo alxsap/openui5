@@ -1,31 +1,39 @@
-//	jQuery.sap.require("sap.m.DraftIndicator");
+sap.ui.define([
+  "sap/m/DraftIndicator",
+  "sap/m/Button"
+], function(DraftIndicator, Button) {
+  "use strict";
+  // Note: the HTML page 'DraftIndicator.html' loads this module via data-sap-ui-on-init
 
-	var draftInd = new sap.m.DraftIndicator({
-	});
+  //	jQuery.sap.require("sap.m.DraftIndicator");
 
-	var oSavingDraftButton = new sap.m.Button({
-		text: "show Saving Draft",
-		press: function () {
-			draftInd.showDraftSaving();
-		}
-	});
+  var draftInd = new DraftIndicator({
+  });
 
-	var oSavedDraftButton = new sap.m.Button({
-		text: "show Draft Saved",
-		press: function () {
-			draftInd.showDraftSaved();
-		}
-	});
+  var oSavingDraftButton = new Button({
+	  text: "show Saving Draft",
+	  press: function () {
+		  draftInd.showDraftSaving();
+	  }
+  });
 
-	var oClearDraftButton = new sap.m.Button({
-		text: "clear Draft state",
-		press: function () {
-			draftInd.clearDraftState();
-		}
-	});
+  var oSavedDraftButton = new Button({
+	  text: "show Draft Saved",
+	  press: function () {
+		  draftInd.showDraftSaved();
+	  }
+  });
+
+  var oClearDraftButton = new Button({
+	  text: "clear Draft state",
+	  press: function () {
+		  draftInd.clearDraftState();
+	  }
+  });
 
 
-	oClearDraftButton.placeAt("content");
-	oSavingDraftButton.placeAt("content");
-	oSavedDraftButton.placeAt("content");
-	draftInd.placeAt("content");
+  oClearDraftButton.placeAt("content");
+  oSavingDraftButton.placeAt("content");
+  oSavedDraftButton.placeAt("content");
+  draftInd.placeAt("content");
+});

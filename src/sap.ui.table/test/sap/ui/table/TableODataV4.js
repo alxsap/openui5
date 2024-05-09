@@ -1,3 +1,5 @@
+// Note: the HTML page 'TableODataV4.html' loads this module via data-sap-ui-on-init
+
 sap.ui.define([
 	"sap/ui/table/plugins/V4Aggregation",
 	"sap/ui/model/odata/v4/ODataModel",

@@ -1,3 +1,5 @@
+// Note: the HTML page 'SinglePlanningCalendarCellAndAppNav.html' loads this module via data-sap-ui-on-init
+
 var oSPC,
 	oDialog,
 	oLegend;

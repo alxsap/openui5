@@ -1,11 +1,22 @@
-(function (jQuery, App, Page) {
-	sap.ui.require(["sap/ui/core/Core"], Core => Core.ready(function() {
-		var oApp = new App(),
-			myView = sap.ui.xmlview({viewContent: jQuery('#view1').html()});
+sap.ui.define([
+  "sap/ui/core/Core",
+  "sap/m/App",
+  "sap/m/Page",
+  "sap/ui/thirdparty/jquery",
+  "sap/ui/core/mvc/XMLView"
+], function(Core, App, Page, jQuery0) {
+  "use strict";
+  // Note: the HTML page 'Old.html' loads this module via data-sap-ui-on-init
 
-		oApp.addPage(new Page({
-			title: "Old Header",
-			content: [myView]
-		})).placeAt("content");
-	}));
-}(jQuery, sap.m.App, sap.m.Page));
+  (function (jQuery, App, Page) {
+	  Core.ready(function() {
+		  var oApp = new App(),
+			  myView = sap.ui.xmlview({viewContent: jQuery0('#view1').html()});
+
+		  oApp.addPage(new Page({
+			  title: "Old Header",
+			  content: [myView]
+		  })).placeAt("content");
+	  });
+  }(jQuery0, App, Page));
+});

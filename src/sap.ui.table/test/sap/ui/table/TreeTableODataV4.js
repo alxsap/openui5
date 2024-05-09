@@ -1,3 +1,5 @@
+// Note: the HTML page 'TreeTableODataV4.html' loads this module via data-sap-ui-on-init
+
 sap.ui.define([
 	"sap/ui/core/Element",
 	"sap/ui/table/plugins/ODataV4Selection",

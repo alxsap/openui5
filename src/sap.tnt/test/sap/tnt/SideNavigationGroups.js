@@ -1,3 +1,5 @@
+// Note: the HTML page 'SideNavigationGroups.html' loads this module via data-sap-ui-on-init
+
 sap.ui.define([
 	"sap/ui/Device",
 	"sap/tnt/SideNavigation",

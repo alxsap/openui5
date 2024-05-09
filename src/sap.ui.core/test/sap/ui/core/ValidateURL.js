@@ -1,3 +1,5 @@
+// Note: the HTML page 'ValidateURL.html' loads this module via data-sap-ui-on-init
+
 sap.ui.define(["sap/ui/core/Core", "sap/ui/core/Element", "sap/base/security/URLListValidator", "sap/ui/core/library", "sap/ui/core/ListItem", "sap/ui/commons/TextField", "sap/ui/commons/Label", "sap/ui/commons/ListBox", "sap/ui/commons/Button", "sap/ui/commons/library", "sap/ui/layout/VerticalLayout", "sap/ui/commons/layout/MatrixLayoutRow", "sap/ui/commons/layout/MatrixLayout", "sap/ui/commons/layout/MatrixLayoutCell"],function(Core, Element, URLListValidator, coreLibrary, ListItem, TextField, Label, ListBox, Button, commonsLibrary, VerticalLayout, MatrixLayoutRow, MatrixLayout, MatrixLayoutCell) {
 	"use strict";
 

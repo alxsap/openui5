@@ -1,3 +1,5 @@
+// Note: the HTML page 'ODataV2Messages.html' loads this module via data-sap-ui-on-init
+
 sap.ui.define([
 	'sap/ui/core/Messaging',
 	'sap/ui/core/util/MockServer',

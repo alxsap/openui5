@@ -1,3 +1,5 @@
+// Note: the HTML page 'SinglePlanningCalendarMonthGrid.html' loads this module via data-sap-ui-on-init
+
 var oSPCGrid;
 sap.ui.define([
 	'sap/ui/model/json/JSONModel',

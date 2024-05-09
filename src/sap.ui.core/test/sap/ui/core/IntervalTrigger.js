@@ -1,154 +1,103 @@
 sap.ui.define([
-	"sap/ui/core/IntervalTrigger",
-	"sap/ui/commons/ButtonRenderer",
-	"sap/ui/core/Control",
-	"sap/ui/commons/Label",
-	"sap/ui/commons/Button",
-	"sap/ui/commons/layout/MatrixLayout"
+  "sap/ui/core/IntervalTrigger",
+  "sap/ui/commons/ButtonRenderer",
+  "sap/ui/core/Control",
+  "sap/ui/commons/Label",
+  "sap/ui/commons/Button",
+  "sap/ui/commons/layout/MatrixLayout"
 ], function(IntervalTrigger, ButtonRenderer, Control, Label, Button, MatrixLayout) {
-	"use strict";
-	try {
-		sap.ui.getCore().loadLibrary("sap.ui.commons");
-	} catch (e) {
-		alert("This test page requires the library 'sap.ui.commons' which is not available.");
-		throw (e);
-	}
+  "use strict";
+  // Note: the HTML page 'IntervalTrigger.html' loads this module via data-sap-ui-on-init
 
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "triggerCounter", {
-		configurable: "false",
-		writable: "true",
-		value: 0
-	});
+  try {
+	  sap.ui.getCore().loadLibrary("sap.ui.commons");
+  } catch (e) {
+	  alert("This test page requires the library 'sap.ui.commons' which is not available.");
+	  throw (e);
+  }
 
-	Control.extend("mySampleListener", {
-		metadata : {
-			properties : {
-				"index" : "int"
-			}
-		},
+  var triggerCounter = 0;
 
-		renderer : {
-			apiVersion: 2,
-			render: function(oRm, oControl) {
-				oRm.openStart("div", oControl);
-				oRm.class("sampleListener");
-				oRm.openEnd();
+  Control.extend("mySampleListener", {
+	  metadata : {
+		  properties : {
+			  "index" : "int"
+		  }
+	  },
 
-				oRm.text("Lorem Ipsum")
+	  renderer : {
+		  apiVersion: 2,
+		  render: function(oRm, oControl) {
+			  oRm.openStart("div", oControl);
+			  oRm.class("sampleListener");
+			  oRm.openEnd();
 
-				oRm.close("div");
-			}
-		},
+			  oRm.text("Lorem Ipsum")
 
-		onclick : function(oEvent) {
-			this.trigger();
-		},
+			  oRm.close("div");
+		  }
+	  },
 
-		trigger : function() {
-			triggerCounter += 1;
-			oLbl.setText("Call back calls: " + triggerCounter);
+	  onclick : function(oEvent) {
+		  this.trigger();
+	  },
 
-			var oThis = this;
-			oThis.$().css("background-color", "green");
+	  trigger : function() {
+		  triggerCounter += 1;
+		  oLbl.setText("Call back calls: " + triggerCounter);
 
-			setTimeout(function() {
-				oThis.$().css("background-color", "red");
-			}, 500);
-		}
-	});
+		  var oThis = this;
+		  oThis.$().css("background-color", "green");
 
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "oLbl", {
-		configurable: "false",
-		writable: "true",
+		  setTimeout(function() {
+			  oThis.$().css("background-color", "red");
+		  }, 500);
+	  }
+  });
 
-		value: new Label({
-			text : "Call back calls: " + triggerCounter
-		}).placeAt("counter")
-	});
+  var oLbl = new Label({
+	  text : "Call back calls: " + triggerCounter
+  }).placeAt("counter");
 
-	function removeListener(oTriggerBtn) {
-		var index = oTriggerBtn.getIndex();
-		oTrigger.removeListener(aListeners[index].trigger, aListeners[index]);
-	}
+  function removeListener(oTriggerBtn) {
+	  var index = oTriggerBtn.getIndex();
+	  oTrigger.removeListener(aListeners[index].trigger, aListeners[index]);
+  }
 
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "oTrigger", {
-		configurable: "false",
-		writable: "true",
-		value: new IntervalTrigger()
-	});
+  var oTrigger = new IntervalTrigger();
 
-	Button.extend("myTriggerButton", {
-		metadata : {
-			properties : {
-				"index" : "int",
-			}
-		},
+  Button.extend("myTriggerButton", {
+	  metadata : {
+		  properties : {
+			  "index" : "int",
+		  }
+	  },
 
-		renderer : sap.ui.commons.ButtonRenderer.render
-	});
+	  renderer : sap.ui.commons.ButtonRenderer.render
+  });
 
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "aListeners", {
-		configurable: "false",
-		writable: "true",
-		value: []
-	});
+  var aListeners = [];
+  var oBtn = {};
+  var oLayout = new MatrixLayout().placeAt("triggers");
 
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "oBtn", {
-		configurable: "false",
-		writable: "true",
-		value: {}
-	});
+  for ( var i = 0; i < 10; i++) {
+	  aListeners[i] = new mySampleListener();
+	  oBtn = new myTriggerButton({
+		  text : "Remove from trigger",
+		  index : i,
+		  press : function() {
+			  removeListener(this);
+		  }
+	  });
 
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "oLayout", {
-		configurable: "false",
-		writable: "true",
-		value: new MatrixLayout().placeAt("triggers")
-	});
+	  oLayout.createRow(aListeners[i], oBtn);
+	  oTrigger.addListener(aListeners[i].trigger, aListeners[i]);
+  }
 
-	for ( var i = 0; i < 10; i++) {
-		aListeners[i] = new mySampleListener();
-		oBtn = new myTriggerButton({
-			text : "Remove from trigger",
-			index : i,
-			press : function() {
-				removeListener(this);
-			}
-		});
-
-		oLayout.createRow(aListeners[i], oBtn);
-		oTrigger.addListener(aListeners[i].trigger, aListeners[i]);
-	}
-
-	/* TODO: Consider replacing this
-		* with a local var (let x=...) or 
-		* with an AMD export/import (export.x=..., ...=X.x) */
-	Object.defineProperty(globalThis, "oAttachIntervalBtn", {
-		configurable: "false",
-		writable: "true",
-
-		value: new Button({
-			text : "Start trigger",
-			press : function() {
-				oTrigger.setInterval(1000);
-			}
-		}).placeAt("attachIntervalBtn")
-	});
+  new Button({
+	  text : "Start trigger",
+	  press : function() {
+		  oTrigger.setInterval(1000);
+	  }
+  }).placeAt("attachIntervalBtn");
 });

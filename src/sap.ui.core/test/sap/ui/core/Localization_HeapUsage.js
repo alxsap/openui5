@@ -1,3 +1,5 @@
+// Note: the HTML page 'Localization_HeapUsage.html' loads this module via data-sap-ui-on-init
+
 sap.ui.define([
 	"sap/ui/thirdparty/jquery",
 	"sap/base/util/UriParameters",

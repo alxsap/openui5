@@ -1,3 +1,5 @@
+// Note: the HTML page 'index.html' loads this module via data-sap-ui-on-init
+
 sap.ui.define([
 	"controlEnablementReport/LibraryScanner",
 	"sap/ui/core/Core",

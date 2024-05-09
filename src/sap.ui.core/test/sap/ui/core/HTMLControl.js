@@ -1,3 +1,5 @@
+// Note: the HTML page 'HTMLControl.html' loads this module via data-sap-ui-on-init
+
 sap.ui.define(["sap/ui/core/Element", "sap/ui/commons/layout/MatrixLayout", "sap/ui/commons/Button", "sap/ui/commons/TextField", "sap/ui/core/HTML", "sap/ui/commons/Dialog", "sap/ui/thirdparty/jquery"], function(Element, MatrixLayout, Button, TextField, HTML, Dialog, jQuery) {
 	"use strict";
 	try{

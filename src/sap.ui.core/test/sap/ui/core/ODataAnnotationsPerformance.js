@@ -1,3 +1,5 @@
+// Note: the HTML page 'ODataAnnotationsPerformance.html' loads this module via data-sap-ui-on-init
+
 sap.ui.define(["sap/ui/core/Core", "sap/ui/model/odata/ODataMetadata", "sap/ui/model/odata/v2/ODataAnnotations", "sap/ui/model/odata/ODataAnnotations"],function(Core, ODataMetadata, V2ODataAnnotations, ODataAnnotations) {
 	"use strict";
 	Core.ready().then(function() {

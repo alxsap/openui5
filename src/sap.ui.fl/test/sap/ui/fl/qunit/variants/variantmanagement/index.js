@@ -1,3 +1,5 @@
+// Note: the HTML page 'index.html' loads this module via data-sap-ui-on-init
+
 sap.ui.define(["sap/ui/core/Component", "sap/ui/core/ComponentContainer"], function(Component, ComponentContainer) {
 	"use strict";
 	return Component.create({

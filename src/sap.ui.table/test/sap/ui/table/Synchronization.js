@@ -1,8 +1,20 @@
-sap.ui.require([
-	"sap/ui/model/json/JSONModel", "sap/ui/table/TreeTable", "sap/ui/table/Column", "sap/m/Text", "sap/m/Link", "sap/ui/core/Icon",
-	"sap/m/Toolbar", "sap/m/Label",
-	"sap/ui/layout/Splitter", "sap/ui/core/Control", "sap/ui/thirdparty/jquery"
-], function(JSONModel, TreeTable, Column, Text, Link, Icon, Toolbar, Label, Splitter, Control, jQuery) {
+// Note: the HTML page 'Synchronization.html' loads this module via data-sap-ui-on-init
+
+sap.ui.define([
+	"sap/ui/core/RenderManager",
+	"sap/ui/model/json/JSONModel",
+	"sap/ui/table/TreeTable",
+	"sap/ui/table/Column",
+	"sap/m/Text",
+	"sap/m/Link",
+	"sap/ui/core/Icon",
+	"sap/m/Toolbar",
+	"sap/m/Label",
+	"sap/ui/layout/Splitter",
+	"sap/ui/core/Control",
+	"sap/ui/thirdparty/jquery"
+], function(RenderManager, JSONModel, TreeTable, Column, Text, Link, Icon, Toolbar, Label, Splitter, Control, jQuery) {
+	"use strict";
 	var iGeneratedSizeFactors = 0;
 
 	function getSizeFactor() {
@@ -98,7 +110,7 @@ sap.ui.require([
 
 				this.oSyncInterface.placeVerticalScrollbarAt(this.oVSbContainer);
 
-				var oRenderManager = sap.ui.getCore().createRenderManager();
+				var oRenderManager = new RenderManager().getInterface();
 				this.oSyncInterface.renderHorizontalScrollbar(oRenderManager, this.getId() + "-hsb", 1000);
 				oRenderManager.flush(this.oHSbContainer);
 			}

@@ -1,3 +1,5 @@
+// Note: the HTML page 'PasteHelper.html' loads this module via data-sap-ui-on-init
+
 sap.ui.define([
 	'sap/ui/core/util/PasteHelper',
 	'sap/ui/core/Core',

@@ -1,4 +1,4 @@
-	sap.ui.define([
+sap.ui.define([
 		'sap/ui/dt/enablement/report/Table',
 		'sap/ui/dt/enablement/report/Statistic',
 		'sap/ui/dt/enablement/report/LibraryReport'

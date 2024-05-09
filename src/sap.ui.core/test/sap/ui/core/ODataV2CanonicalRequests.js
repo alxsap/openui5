@@ -1,3 +1,5 @@
+// Note: the HTML page 'ODataV2CanonicalRequests.html' loads this module via data-sap-ui-on-init
+
 sap.ui.define([
 	'sap/ui/core/util/MockServer',
 	'sap/ui/model/odata/v2/ODataModel',

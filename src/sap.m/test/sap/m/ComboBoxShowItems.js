@@ -1,10 +1,14 @@
-sap.ui.require([
+// Note: the HTML page 'ComboBoxShowItems.html' loads this module via data-sap-ui-on-init
+
+sap.ui.define([
 	"sap/ui/core/Core",
 	"sap/ui/core/mvc/XMLView",
 	'sap/ui/core/mvc/Controller',
 	'sap/ui/model/json/JSONModel',
-	'sap/m/Token'
-], async function (Core, XMLView, Controller, JSONModel, Token) {
+	'sap/m/Token',
+	"sap/ui/thirdparty/jquery"
+], async function(Core, XMLView, Controller, JSONModel, Token, jQuery) {
+	"use strict";
 	await Core.ready();
 	Controller.extend("myController", {
 		_btnToControlMap: {

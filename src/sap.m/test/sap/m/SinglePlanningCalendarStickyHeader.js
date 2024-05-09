@@ -1,3 +1,5 @@
+// Note: the HTML page 'SinglePlanningCalendarStickyHeader.html' loads this module via data-sap-ui-on-init
+
 var oSPC;
 sap.ui.define([
 	"sap/ui/core/Element",

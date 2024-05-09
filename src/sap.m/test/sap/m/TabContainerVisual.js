@@ -1,3 +1,5 @@
+// Note: the HTML page 'TabContainerVisual.html' loads this module via data-sap-ui-on-init
+
 sap.ui.define([
 	"sap/m/App",
 	"sap/m/Page",
