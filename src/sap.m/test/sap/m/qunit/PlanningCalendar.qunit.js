@@ -33,6 +33,9 @@ sap.ui.define([
 	"sap/ui/events/KeyCodes",
 	"sap/ui/core/Locale",
 	"sap/ui/core/date/UI5Date",
+	"sap/m/IllustratedMessage",
+	"sap/m/IllustratedMessageType",
+	"sap/m/IllustratedMessageSize",
 	// load all required calendars in advance
 	"sap/ui/core/date/Islamic"
 ], function(
@@ -68,7 +71,10 @@ sap.ui.define([
 	deepEqual,
 	KeyCodes,
 	Locale,
-	UI5Date
+	UI5Date,
+	IllustratedMessage,
+	IllustratedMessageType,
+	IllustratedMessageSize
 ) {
 	"use strict";
 
@@ -1572,6 +1578,23 @@ sap.ui.define([
 		assert.equal(getAppointmentsColumn().getDemandPopin(), true, "If showRowHeaders is set to true, appointments column is in Popin mode");
 		assert.equal(getAppointmentsColumn().getMinScreenWidth().toLowerCase(), ScreenSize.Desktop.toLowerCase(),
 			"If showRowHeaders is set to true, appointments column has minScreenWidth set to sap.m.ScreenSize.Desktop");
+	});
+
+	QUnit.test("noData: Illistrated Message", async function(assert) {
+		var oTable = Element.getElementById("PC1-Table"),
+			oIMNoData = new IllustratedMessage({
+				illustrationType: IllustratedMessageType.EmptyPlanningCalendar,
+				illustrationSize: IllustratedMessageSize.Dialog
+			});
+
+		oPC1.setNoData(oIMNoData);
+		await nextUIUpdate();
+
+		assert.equal(oPC1.getNoData(), oIMNoData, "IllustratedMessage is set");
+		assert.equal(oTable.getAggregation("noData"), oIMNoData, "IllustratedMessage is set on table");
+
+		oPC1.setNoData();
+		await nextUIUpdate();
 	});
 
 	QUnit.test("noDataText", async function(assert) {
