@@ -23,6 +23,9 @@ sap.ui.define([
 	"sap/m/PlanningCalendarRow",
 	"sap/m/PlanningCalendar",
 	"sap/m/Title",
+	"sap/m/IllustratedMessage",
+	"sap/m/IllustratedMessageType",
+	"sap/m/IllustratedMessageSize",
 	"sap/ui/core/CustomData",
 	"sap/ui/Device",
 	"sap/m/PlanningCalendarView",
@@ -33,9 +36,6 @@ sap.ui.define([
 	"sap/ui/events/KeyCodes",
 	"sap/ui/core/Locale",
 	"sap/ui/core/date/UI5Date",
-	"sap/m/IllustratedMessage",
-	"sap/m/IllustratedMessageType",
-	"sap/m/IllustratedMessageSize",
 	// load all required calendars in advance
 	"sap/ui/core/date/Islamic"
 ], function(
@@ -62,6 +62,9 @@ sap.ui.define([
 	PlanningCalendarRow,
 	PlanningCalendar,
 	Title,
+	IllustratedMessage,
+	IllustratedMessageType,
+	IllustratedMessageSize,
 	CustomData,
 	Device,
 	PlanningCalendarView,
@@ -71,10 +74,7 @@ sap.ui.define([
 	deepEqual,
 	KeyCodes,
 	Locale,
-	UI5Date,
-	IllustratedMessage,
-	IllustratedMessageType,
-	IllustratedMessageSize
+	UI5Date
 ) {
 	"use strict";
 

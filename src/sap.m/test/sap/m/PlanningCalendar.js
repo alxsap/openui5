@@ -40,11 +40,11 @@ sap.ui.define([
 	"sap/ui/core/Icon",
 	"sap/m/ToolbarSeparator",
 	"sap/m/Page",
-	"sap/base/Log",
-	"sap/ui/core/date/UI5Date",
 	"sap/m/IllustratedMessage",
 	"sap/m/IllustratedMessageType",
-	"sap/m/IllustratedMessageSize"
+	"sap/m/IllustratedMessageSize",
+	"sap/base/Log",
+	"sap/ui/core/date/UI5Date"
 ], function(
 	Element,
 	unifiedLibrary,
@@ -87,11 +87,11 @@ sap.ui.define([
 	Icon,
 	ToolbarSeparator,
 	Page,
-	Log,
-	UI5Date,
 	IllustratedMessage,
 	IllustratedMessageType,
-	IllustratedMessageSize
+	IllustratedMessageSize,
+	Log,
+	UI5Date
 ) {
 	"use strict";
 
