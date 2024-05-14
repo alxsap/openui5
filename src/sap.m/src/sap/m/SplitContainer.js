@@ -41,9 +41,6 @@ function(
 ) {
 	"use strict";
 
-	// shortcut for sap.m.ButtonType
-	var ButtonType = library.ButtonType;
-
 	// shortcut for sap.m.PlacementType
 	var PlacementType = library.PlacementType;
 
@@ -1708,7 +1705,7 @@ function(
 	};
 
 	SplitContainer.prototype._handleResize = function() {
-		var isLandscape = Device.orientation.landscape,
+			var isLandscape = Device.orientation.landscape,
 			_currentPage = this._oDetailNav.getCurrentPage(),
 			mode = this.getMode();
 
@@ -1901,7 +1898,6 @@ function(
 		this._oShowMasterBtn = new Button(this.getId() + "-MasterBtn", {
 			icon: IconPool.getIconURI("menu2"),
 			tooltip: this.getMasterButtonTooltip(),
-			type: ButtonType.Default,
 			press: jQuery.proxy(this._onMasterButtonTap, this)
 		}).addStyleClass("sapMSplitContainerMasterBtn");
 	};
@@ -1926,9 +1922,7 @@ function(
 			aHeaderContent = oHeaderAggregation.aAggregationContent;
 
 		for (var i = 0; i < aHeaderContent.length; i++) {
-			if (aHeaderContent[i] instanceof Button && aHeaderContent[i].getVisible()
-				&& (aHeaderContent[i].getType() == ButtonType.Back || (aHeaderContent[i].getType() == ButtonType.Up
-				&& aHeaderContent[i] !== this._oShowMasterBtn))) {
+			if (aHeaderContent[i] instanceof Button && aHeaderContent[i].getVisible()) {
 				this._bDetailNavButton = true;
 				return;
 			}
@@ -2093,16 +2087,16 @@ function(
 		});
 	};
 
-		/**
-	 * Shows the placeholder on the corresponding column for the provided aggregation name.
-	 *
-	 * @param {object} mSettings Object containing the aggregation name
-	 * @param {string} mSettings.aggregation The aggregation name to decide on which column/container the placeholder should be shown
-	 *
-	 * @private
-	 * @ui5-restricted SAPUI5 Distribution Layer Libraries
-	 * @since 1.91
-	 */
+	/**
+ * Shows the placeholder on the corresponding column for the provided aggregation name.
+ *
+ * @param {object} mSettings Object containing the aggregation name
+ * @param {string} mSettings.aggregation The aggregation name to decide on which column/container the placeholder should be shown
+ *
+ * @private
+ * @ui5-restricted SAPUI5 Distribution Layer Libraries
+ * @since 1.91
+ */
 	SplitContainer.prototype.showPlaceholder = function(mSettings) {
 		var Placeholder = sap.ui.require("sap/ui/core/Placeholder");
 
@@ -2233,5 +2227,4 @@ function(
 
 
 	return SplitContainer;
-
 });

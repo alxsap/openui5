@@ -337,15 +337,9 @@ GenericTileRenderer.render = function(oRm, oControl) {
 				}
 				this._sPreviousStyleClass = this._isValueColorValid(oControl.getValueColor()) ? oControl.getValueColor() : ValueColor.None;
 				oControl._oImage.addStyleClass(this._sPreviousStyleClass);
+				oRm.renderControl(oControl._oImage);
 			} else {
-				oRm.openStart("div", oControl.getId() + "-icon-frame").openEnd();
-			}
-
-			oControl._oImage.toggleStyleClass("sapMATIconFrame", bIsIconFrameEnabled);
-			oRm.renderControl(oControl._oImage);
-
-			if (bIsIconFrameEnabled) {
-				oRm.close("div");
+				oRm.renderControl(oControl._getIconFrame());
 			}
 		}
 

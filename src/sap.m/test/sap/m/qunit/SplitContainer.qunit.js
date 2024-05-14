@@ -3,7 +3,7 @@
 sap.ui.define([
 	"sap/ui/qunit/QUnitUtils",
 	"sap/ui/qunit/utils/createAndAppendDiv",
-	"sap/ui/qunit/utils/nextUIUpdate",
+	'sap/ui/core/Core',
 	"sap/m/SplitContainer",
 	"sap/m/ScrollContainer",
 	"sap/m/Page",
@@ -19,11 +19,12 @@ sap.ui.define([
 	"sap/m/Toolbar",
 	"sap/m/NavContainer",
 	"sap/ui/util/Mobile",
-	"sap/ui/model/json/JSONModel"
+	"sap/ui/model/json/JSONModel",
+	"sap/ui/qunit/utils/nextUIUpdate"
 ], function(
 	qutils,
 	createAndAppendDiv,
-	nextUIUpdate,
+	Core,
 	SplitContainer,
 	ScrollContainer,
 	Page,
@@ -39,7 +40,8 @@ sap.ui.define([
 	Toolbar,
 	NavContainer,
 	Mobile,
-	JSONModel
+	JSONModel,
+	nextUIUpdate
 ) {
 	"use strict";
 
@@ -140,7 +142,7 @@ sap.ui.define([
 		assert.strictEqual(this.sut.getDetailPages().length, 3, "Now details pages should remain 3");
 	});
 
-	QUnit.test("Destroy showMasterBtn during page navigation", async function(assert) {
+	QUnit.test("Destroy showMasterBtn during page navigation", async function(assert){
 		var done = assert.async();
 		var oSplitContainer = new SplitContainer({
 			detailNavigate: function(){
@@ -185,7 +187,7 @@ sap.ui.define([
 		oButton.firePress();
 	});
 
-	QUnit.test("No endless rerendering triggered by invalidation after navigation", async function(assert) {
+	QUnit.test("No endless rerendering triggered by invalidation after navigation", async function(assert){
 		var done = assert.async();
 		var oSystem = {
 				desktop: true,
@@ -273,7 +275,7 @@ sap.ui.define([
 		oSC.showMaster();
 	});
 
-	QUnit.test("Master button should be hidden in portrait mode with ShowHideMode", async function(assert) {
+	QUnit.test("Master button should be hidden in portrait mode with ShowHideMode", async function(assert){
 		var done = assert.async();
 		var oLandscape = {
 					landscape: true,
@@ -296,7 +298,6 @@ sap.ui.define([
 		// manually stub the orientation object on sap.ui.Device
 		Device.orientation = oPortrait;
 
-
 		var oSplitContainer = new SplitContainer({
 			initialDetail: "page1",
 			detailPages: [
@@ -307,7 +308,7 @@ sap.ui.define([
 					showNavButton: true
 				})
 			],
-			afterDetailNavigate: function(oEvent) {
+			afterDetailNavigate: async function(oEvent) {
 				var toId = oEvent.getParameter("toId"),
 					isBack = oEvent.getParameter("isBack");
 				if (toId === "page1" && isBack) {
@@ -320,9 +321,10 @@ sap.ui.define([
 				} else if (toId === "page2") {
 					// manually stub the orientation object on sap.ui.Device
 					Device.orientation = oLandscape;
+					await nextUIUpdate(this.clock);
 					oSplitContainer._handleResize();
 					oSplitContainer.backDetail();
-				}
+					}
 			}
 		});
 
@@ -332,7 +334,7 @@ sap.ui.define([
 		oSplitContainer.toDetail("page2");
 	});
 
-	QUnit.test("activeElement in master area should be blurred after master area is closed", async function(assert) {
+	QUnit.test("activeElement in master area should be blurred after master area is closed", async function(assert){
 		var done = assert.async();
 		var oPortrait = {
 				landscape: false,
@@ -372,7 +374,7 @@ sap.ui.define([
 		oSplitContainer.showMaster();
 	});
 
-	QUnit.test("Navigate and afterNavigate events should work in phone also", async function(assert) {
+	QUnit.test("Navigate and afterNavigate events should work in phone also", async function(assert){
 		var oSystem = {
 					desktop: false,
 					phone: true,
@@ -453,7 +455,7 @@ sap.ui.define([
 		oSplitContainer.destroy();
 	});
 
-	QUnit.test("Set custom header to current detail page after master button is already inserted", async function(assert) {
+	QUnit.test("Set custom header to current detail page after master button is already inserted",async function(assert){
 		var oPortrait = {
 				landscape: false,
 				portrait: true
@@ -635,7 +637,7 @@ sap.ui.define([
 		oSC.destroy();
 	});
 
-	QUnit.test("Call preventDefault on masterNavigate or detailNavigate events should prevent the navigation", async function(assert) {
+	QUnit.test("Call preventDefault on masterNavigate or detailNavigate events should prevent the navigation",async function(assert) {
 		var oLandscape = {
 				landscape: true,
 				portrait: false
@@ -747,7 +749,7 @@ sap.ui.define([
 		oSplitContainer.destroy();
 	});
 
-	QUnit.test("Switch between different modes", async function(assert) {
+	QUnit.test("Switch between different modes",  async function(assert) {
 		var done = assert.async();
 		var oSplitContainer = new SplitContainer({
 				masterPages: new Page(),
@@ -788,13 +790,13 @@ sap.ui.define([
 		assert.ok(oSplitContainer._oMasterNav.hasStyleClass("sapMSplitContainerMasterVisible"), "visible class is set to master");
 		assert.notOk(oSplitContainer._oMasterNav.hasStyleClass("sapMSplitContainerMasterHidden"), "hidden class isn't set to master");
 
-		oSplitContainer.attachAfterMasterOpen(function() {
+		oSplitContainer.attachAfterMasterOpen( async function() {
 			var oOldOrientation = Device.orientation;
 			Device.orientation = oPortrait;
 			oSplitContainer._handleResize();
 
 			oSplitContainer.setMode(SplitAppMode.ShowHideMode);
-			nextUIUpdate.runSync()/*context not obviously suitable for an async function*/;
+			await nextUIUpdate();
 			qutils.triggerEvent("tap", oSplitContainer._oDetailNav.getDomRef());
 			assert.ok(!oSplitContainer._oMasterNav.hasStyleClass("sapMSplitContainerMasterVisible"), "hidden class isn't set to master");
 			assert.ok(oSplitContainer._oMasterNav.hasStyleClass("sapMSplitContainerMasterHidden"), "hidden class is set to master");
@@ -869,7 +871,7 @@ sap.ui.define([
 		oSplitContainer.destroy();
 	});
 	QUnit.module("SplitContainer Navigation test", {
-		beforeEach : async function() {
+		beforeEach : async function () {
 			this.sut = splitContainerSetup();
 			await nextUIUpdate();
 		},
@@ -1040,7 +1042,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("SplitContainer public API test", {
-		beforeEach : async function() {
+		beforeEach : async function () {
 			this.sut = splitContainerSetup();
 			await nextUIUpdate();
 		},
@@ -1126,7 +1128,7 @@ sap.ui.define([
 	});
 
 	QUnit.module("Remove All pages API test", {
-		beforeEach : async function() {
+		beforeEach : async function () {
 			this.sut = splitContainerSetup(true);
 			await nextUIUpdate();
 		},
@@ -1406,7 +1408,7 @@ sap.ui.define([
 
 	QUnit.module("Initial master page rendering", {
 
-		beforeEach : async function() {
+		beforeEach : async function () {
 			this.page = new Page("page", {
 				title: "Page",
 				showNavButton: true,
