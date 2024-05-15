@@ -385,7 +385,6 @@ sap.ui.define([
 
 		const $SelectAll = oTable.$("selall");
 		const sSelectAllTitleText = TableUtils.getResourceBundle().getText("TBL_SELECT_ALL");
-		const sDeselectAllTitleText = TableUtils.getResourceBundle().getText("TBL_DESELECT_ALL");
 
 		// Initially no rows are selected.
 		assert.ok($SelectAll.hasClass("sapUiTableSelAll"), "Initial: The SelectAll checkbox is not checked");
@@ -394,7 +393,7 @@ sap.ui.define([
 		// Select all rows. The SelectAll checkbox should be checked.
 		oTable.selectAll();
 		assert.ok(!$SelectAll.hasClass("sapUiTableSelAll"), "Called selectAll: The SelectAll checkbox is checked");
-		assert.strictEqual($SelectAll.attr("title"), sDeselectAllTitleText, "Called selectAll: The SelectAll title text is correct");
+		assert.strictEqual($SelectAll.attr("title"), sSelectAllTitleText, "Called selectAll: The SelectAll title text is correct");
 
 		// Deselect the first row. The SelectAll checkbox should not be checked.
 		oTable.removeSelectionInterval(0, 0);
@@ -404,7 +403,7 @@ sap.ui.define([
 		// Select the first row again. The SelectAll checkbox should be checked.
 		oTable.addSelectionInterval(0, 0);
 		assert.ok(!$SelectAll.hasClass("sapUiTableSelAll"), "Selected the first row again: The SelectAll checkbox is checked");
-		assert.strictEqual($SelectAll.attr("title"), sDeselectAllTitleText, "Selected the first row again: The SelectAll title text is correct");
+		assert.strictEqual($SelectAll.attr("title"), sSelectAllTitleText, "Selected the first row again: The SelectAll title text is correct");
 	});
 
 	QUnit.test("RowActionCount", function(assert) {
@@ -3747,7 +3746,7 @@ sap.ui.define([
 
 		this.oTestPlugin.getRenderConfig = function() {
 			return {
-				headerSelector: {type: "toggle", visible: true, enabled: true,	selected: false}
+				headerSelector: {type: "toggle", visible: true, enabled: true, selected: false}
 			};
 		};
 		this.oTable.invalidate();
@@ -3758,14 +3757,14 @@ sap.ui.define([
 
 		this.oTestPlugin.getRenderConfig = function() {
 			return {
-				headerSelector: {type: "toggle", visible: true, enabled: true,	selected: true}
+				headerSelector: {type: "toggle", visible: true, enabled: true, selected: true}
 			};
 		};
 		this.oTable.invalidate();
 		await nextUIUpdate();
 		Elem = this.oTable.getDomRef("selall");
 		assert.ok(Elem.firstChild.classList.contains("sapUiTableSelectAllCheckBox"), "header selector is rendered");
-		assert.equal(Elem.getAttribute("title"), sDeselectAllTitleText, "Tooltip is correct");
+		assert.equal(Elem.getAttribute("title"), sSelectAllTitleText, "Tooltip is correct");
 
 		this.oTestPlugin.getRenderConfig = function() {
 			return {

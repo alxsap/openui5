@@ -2593,10 +2593,10 @@ sap.ui.define([
 [
 	{success : true},
 	{success : true, refreshKeptElementsFails : true},
+	{success : true, destroyedWhileRefreshing : true},
 	{success : false}
 ].forEach(function (oFixture) {
-	var sTitle = "refreshInternal: relative with own cache, success=" + oFixture.success
-			+ ", refreshKeptElements fails = " + oFixture.refreshKeptElementsFails;
+	var sTitle = "refreshInternal: relative with own cache, " + JSON.stringify(oFixture);
 
 	QUnit.test(sTitle, function (assert) {
 		var oBinding,
@@ -2639,12 +2639,18 @@ sap.ui.define([
 		this.mock(oBinding).expects("fetchCache")
 			.withExactArgs(sinon.match.same(oContext), false, /*bKeepQueryOptions*/true, undefined);
 		this.mock(oBinding).expects("refreshKeptElements").withExactArgs("myGroup", undefined)
-			.returns(oRefreshKeptElementsPromise);
+			.callsFake(function () {
+				if (oFixture.destroyedWhileRefreshing) {
+					oBinding.oHeaderContext = undefined;
+				}
+				return oRefreshKeptElementsPromise;
+			});
 		this.mock(oBinding).expects("createRefreshPromise").withExactArgs(undefined).callThrough();
 		this.mock(oBinding).expects("reset")
 			.withExactArgs(ChangeReason.Refresh, undefined, "myGroup");
 		this.mock(oBinding.oHeaderContext).expects("checkUpdateInternal")
-			.exactly(oFixture.success && !oFixture.refreshKeptElementsFails ? 1 : 0)
+			.exactly(oFixture.success && !oFixture.refreshKeptElementsFails
+				&& !oFixture.destroyedWhileRefreshing ? 1 : 0)
 			.withExactArgs()
 			.returns(oHeaderContextCheckUpdatePromise);
 
@@ -2657,7 +2663,9 @@ sap.ui.define([
 		return oRefreshResult.then(function (oResult) {
 			assert.ok(oFixture.success);
 			assert.notOk(oFixture.refreshKeptElementsFails);
-			assert.strictEqual(oResult, oHeaderContextCheckUpdatePromise.getResult());
+			if (!oFixture.destroyedWhileRefreshing) {
+				assert.strictEqual(oResult, oHeaderContextCheckUpdatePromise.getResult());
+			}
 		}, function (oError0) {
 			assert.strictEqual(oError0, oError);
 			assert.ok(!oFixture.success || oFixture.refreshKeptElementsFails);
@@ -11840,6 +11848,95 @@ sap.ui.define([
 		oListBindingMock.expects("getAggregation").withExactArgs().returns({});
 		assert.strictEqual(ODataListBinding.isBelowAggregation(oContext), true);
 	});
+
+	//*********************************************************************************************
+	QUnit.test("requestSibling: Missing recursive hierarchy", function (assert) {
+		const oBinding = this.bindList("/EMPLOYEES");
+		this.mock(oBinding).expects("checkSuspended").never();
+
+		assert.throws(function () {
+			// code under test
+			oBinding.requestSibling();
+		}, new Error("Missing recursive hierarchy"));
+
+		oBinding.mParameters = {$$aggregation : {}};
+
+		assert.throws(function () {
+			// code under test
+			oBinding.requestSibling();
+		}, new Error("Missing recursive hierarchy"));
+	});
+
+	//*********************************************************************************************
+	QUnit.test("requestSibling: Unsupported context", function (assert) {
+		const oBinding = this.bindList("/EMPLOYEES");
+		// Note: autoExpandSelect at model would be required for hierarchyQualifier, but that leads
+		// too far :-(
+		oBinding.mParameters.$$aggregation = {hierarchyQualifier : "X"};
+		const oNode = Context.create({/*oModel*/}, oBinding, "/EMPLOYEES('42')", 42);
+		oBinding.aContexts[41] = oNode; // wrong index
+		this.mock(oBinding).expects("checkSuspended").never();
+
+		assert.throws(function () {
+			// code under test
+			oBinding.requestSibling(oNode);
+		}, new Error("Unsupported context: " + oNode));
+	});
+
+	//*********************************************************************************************
+	QUnit.test("requestSibling: null", async function (assert) {
+		const oBinding = this.bindList("/EMPLOYEES");
+		// Note: autoExpandSelect at model would be required for hierarchyQualifier, but that leads
+		// too far :-(
+		oBinding.mParameters.$$aggregation = {hierarchyQualifier : "X"};
+		const oNode = {iIndex : "~iIndex~"};
+		oBinding.aContexts["~iIndex~"] = oNode;
+		const oCheckSuspendedExpectation
+			= this.mock(oBinding).expects("checkSuspended").withExactArgs();
+		const oCache = {
+			getSiblingIndex : mustBeMocked
+		};
+		oBinding.oCache = oCache;
+		const oGetSiblingIndexExpectation = this.mock(oCache).expects("getSiblingIndex")
+			.withExactArgs("~iIndex~", "~iOffset~").returns(-1);
+		this.mock(oBinding).expects("requestContexts").never();
+
+		// code under test
+		const oPromise = oBinding.requestSibling(oNode, "~iOffset~");
+
+		sinon.assert.callOrder(oCheckSuspendedExpectation, oGetSiblingIndexExpectation);
+		assert.ok(oPromise instanceof Promise);
+		assert.strictEqual(await oPromise, null);
+	});
+
+	//*********************************************************************************************
+[0, 1, 42].forEach((iIndex) => {
+	QUnit.test(`requestSibling: non-null, index = ${iIndex}`, async function (assert) {
+		const oBinding = this.bindList("/EMPLOYEES");
+		// Note: autoExpandSelect at model would be required for hierarchyQualifier, but that leads
+		// too far :-(
+		oBinding.mParameters.$$aggregation = {hierarchyQualifier : "X"};
+		const oNode = {iIndex : "~iIndex~"};
+		oBinding.aContexts["~iIndex~"] = oNode;
+		const oCheckSuspendedExpectation
+			= this.mock(oBinding).expects("checkSuspended").withExactArgs();
+		const oCache = {
+			getSiblingIndex : mustBeMocked
+		};
+		oBinding.oCache = oCache;
+		const oGetSiblingIndexExpectation = this.mock(oCache).expects("getSiblingIndex")
+			.withExactArgs("~iIndex~", "~iOffset~").returns(iIndex);
+		this.mock(oBinding).expects("requestContexts").withExactArgs(iIndex, 1)
+			.resolves(["~oSiblingContext~"]);
+
+		// code under test
+		const oPromise = oBinding.requestSibling(oNode, "~iOffset~");
+
+		sinon.assert.callOrder(oCheckSuspendedExpectation, oGetSiblingIndexExpectation);
+		assert.ok(oPromise instanceof Promise);
+		assert.strictEqual(await oPromise, "~oSiblingContext~");
+	});
+});
 
 	//*********************************************************************************************
 	QUnit.test("setResetViaSideEffects ", function (assert) {

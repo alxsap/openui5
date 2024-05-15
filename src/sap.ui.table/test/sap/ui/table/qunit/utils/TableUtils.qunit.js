@@ -78,66 +78,68 @@ sap.ui.define([
 		assert.ok(TableUtils.Binding.TableUtils === TableUtils, "Dependency forwarding of TableUtils correct");
 	});
 
-	QUnit.test("isRowSelectionAllowed", function(assert) {
-		function check(sSelectionBehavior, sSelectionMode, bGroup, bExpected) {
+	QUnit.test("isRowSelectionAllowed", async function(assert) {
+		async function check(sSelectionBehavior, sSelectionMode, bGroup, bExpected) {
 			oTreeTable.setSelectionBehavior(sSelectionBehavior);
 			oTreeTable.setSelectionMode(sSelectionMode);
 			oTreeTable.setUseGroupMode(bGroup);
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
+
 			const bRes = TableUtils.isRowSelectionAllowed(oTreeTable);
 			assert.ok(bRes && bExpected || !bRes && !bExpected,
 				"isRowSelectionAllowed: " + sSelectionBehavior + ", " + sSelectionMode + ", Group: " + bGroup);
 		}
 
-		check("RowSelector", "MultiToggle", false, false);
-		check("Row", "MultiToggle", false, true);
-		check("RowOnly", "MultiToggle", false, true);
-		check("RowSelector", "Single", false, false);
-		check("Row", "Single", false, true);
-		check("RowOnly", "Single", false, true);
-		check("RowSelector", "None", false, false);
-		check("Row", "None", false, false);
-		check("RowOnly", "None", false, false);
-		check("RowSelector", "MultiToggle", true, false);
-		check("Row", "MultiToggle", true, true);
-		check("RowOnly", "MultiToggle", true, true);
-		check("RowSelector", "Single", true, false);
-		check("Row", "Single", true, true);
-		check("RowOnly", "Single", true, true);
-		check("RowSelector", "None", true, false);
-		check("Row", "None", true, false);
-		check("RowOnly", "None", true, false);
+		await check("RowSelector", "MultiToggle", false, false);
+		await check("Row", "MultiToggle", false, true);
+		await check("RowOnly", "MultiToggle", false, true);
+		await check("RowSelector", "Single", false, false);
+		await check("Row", "Single", false, true);
+		await check("RowOnly", "Single", false, true);
+		await check("RowSelector", "None", false, false);
+		await check("Row", "None", false, false);
+		await check("RowOnly", "None", false, false);
+		await check("RowSelector", "MultiToggle", true, false);
+		await check("Row", "MultiToggle", true, true);
+		await check("RowOnly", "MultiToggle", true, true);
+		await check("RowSelector", "Single", true, false);
+		await check("Row", "Single", true, true);
+		await check("RowOnly", "Single", true, true);
+		await check("RowSelector", "None", true, false);
+		await check("Row", "None", true, false);
+		await check("RowOnly", "None", true, false);
 	});
 
-	QUnit.test("isRowSelectorSelectionAllowed", function(assert) {
-		function check(sSelectionBehavior, sSelectionMode, bGroup, bExpected) {
+	QUnit.test("isRowSelectorSelectionAllowed", async function(assert) {
+		async function check(sSelectionBehavior, sSelectionMode, bGroup, bExpected) {
 			oTreeTable.setSelectionBehavior(sSelectionBehavior);
 			oTreeTable.setSelectionMode(sSelectionMode);
 			oTreeTable.setUseGroupMode(bGroup);
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
+
 			const bRes = TableUtils.isRowSelectorSelectionAllowed(oTreeTable);
 			assert.ok(bRes && bExpected || !bRes && !bExpected,
 				"isRowSelectorSelectionAllowed: " + sSelectionBehavior + ", " + sSelectionMode + ", Group: " + bGroup);
 		}
 
-		check("RowSelector", "MultiToggle", false, true);
-		check("Row", "MultiToggle", false, true);
-		check("RowOnly", "MultiToggle", false, false);
-		check("RowSelector", "Single", false, true);
-		check("Row", "Single", false, true);
-		check("RowOnly", "Single", false, false);
-		check("RowSelector", "None", false, false);
-		check("Row", "None", false, false);
-		check("RowOnly", "None", false, false);
-		check("RowSelector", "MultiToggle", true, true);
-		check("Row", "MultiToggle", true, true);
-		check("RowOnly", "MultiToggle", true, true);
-		check("RowSelector", "Single", true, true);
-		check("Row", "Single", true, true);
-		check("RowOnly", "Single", true, true);
-		check("RowSelector", "None", true, false);
-		check("Row", "None", true, false);
-		check("RowOnly", "None", true, false);
+		await check("RowSelector", "MultiToggle", false, true);
+		await check("Row", "MultiToggle", false, true);
+		await check("RowOnly", "MultiToggle", false, false);
+		await check("RowSelector", "Single", false, true);
+		await check("Row", "Single", false, true);
+		await check("RowOnly", "Single", false, false);
+		await check("RowSelector", "None", false, false);
+		await check("Row", "None", false, false);
+		await check("RowOnly", "None", false, false);
+		await check("RowSelector", "MultiToggle", true, true);
+		await check("Row", "MultiToggle", true, true);
+		await check("RowOnly", "MultiToggle", true, true);
+		await check("RowSelector", "Single", true, true);
+		await check("Row", "Single", true, true);
+		await check("RowOnly", "Single", true, true);
+		await check("RowSelector", "None", true, false);
+		await check("Row", "None", true, false);
+		await check("RowOnly", "None", true, false);
 	});
 
 	QUnit.test("hasRowActions", function(assert) {
@@ -515,12 +517,12 @@ sap.ui.define([
 			iCallbackIndex = oRow.getIndex();
 		};
 
-		function testLocal(vRowIndicator) {
+		async function testLocal(vRowIndicator) {
 			let iRowIndex = 0;
 
 			oTable.clearSelection();
 			oTable.setSelectionBehavior(TableLibrary.SelectionBehavior.Row);
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 
 			if (vRowIndicator === parseInt(vRowIndicator)) {
 				iRowIndex = vRowIndicator;
@@ -549,8 +551,8 @@ sap.ui.define([
 		}
 
 		// Test by passing a cell as the row indicator.
-		testLocal(getRowHeader(0));
-		testLocal(getCell(0, 0));
+		await testLocal(getRowHeader(0));
+		await testLocal(getCell(0, 0));
 
 		// If row selection is not allowed on data cells the selection state should not change.
 		oTable.setSelectionBehavior(TableLibrary.SelectionBehavior.RowSelector);
@@ -580,12 +582,12 @@ sap.ui.define([
 		assert.ok(oTable.isIndexSelected(0), "Row selected");
 
 		// Test by passing a row index as the row indicator.
-		testLocal(0);
-		testLocal(2);
+		await testLocal(0);
+		await testLocal(2);
 
 		// Test by passing a row instance as the row indicator.
-		testLocal(oTable.getRows()[0]);
-		testLocal(oTable.getRows()[2]);
+		await testLocal(oTable.getRows()[0]);
+		await testLocal(oTable.getRows()[2]);
 	});
 
 	QUnit.test("getRowColCell", async function(assert) {
@@ -648,16 +650,16 @@ sap.ui.define([
 		assert.strictEqual(oInfo.cell, null, "Cell not found");
 	});
 
-	QUnit.test("getFirstFixedBottomRowIndex", function(assert) {
-		function initTest(iFixedBottomCount, iRowCount) {
+	QUnit.test("getFirstFixedBottomRowIndex", async function(assert) {
+		async function initTest(iFixedBottomCount, iRowCount) {
 			oTable.setRowMode(new FixedRowMode({
 				rowCount: iRowCount,
 				fixedBottomRowCount: iFixedBottomCount
 			}));
-			nextUIUpdate.runSync()/*fake timer is used in module*/;
+			await nextUIUpdate();
 		}
 
-		initTest(0, iNumberOfRows - 3);
+		await initTest(0, iNumberOfRows - 3);
 		assert.equal(TableUtils.getFirstFixedBottomRowIndex(oTable), -1, "No fixed buttom rows");
 
 		let iVisibleRows;
@@ -665,7 +667,7 @@ sap.ui.define([
 
 		for (let i = 0; i < 10; i++) {
 			iVisibleRows = iNumberOfRows - 3 + i;
-			initTest(iFixedBottomRows, iVisibleRows);
+			await initTest(iFixedBottomRows, iVisibleRows);
 
 			if (i <= 3) {
 				assert.equal(TableUtils.getFirstFixedBottomRowIndex(oTable), iVisibleRows - iFixedBottomRows,
@@ -817,7 +819,8 @@ sap.ui.define([
 		}).then(function(aContexts) {
 			assert.equal(oGetContextsSpy.callCount, 3, "Binding#getContexts is called thrice");
 			assert.ok(oGetContextsSpy.alwaysCalledWith(0, 7, 0, true), "with the correct parameters");
-			assert.ok(oAttachEventSpy.callCount === 2 && oAttachEventSpy.alwaysCalledWith("dataReceived"), "dataReceived event listener is attached twice");
+			assert.ok(oAttachEventSpy.callCount === 2 && oAttachEventSpy.alwaysCalledWith("dataReceived"),
+				"dataReceived event listener is attached twice");
 			assert.equal(aContexts.length, 7, "the method resolves with 7 contexts");
 		});
 	});

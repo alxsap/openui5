@@ -33,9 +33,10 @@ sap.ui.define([
 	"sap/ui/base/EventProvider",
 	"sap/ui/thirdparty/jquery",
 	"sap/ui/thirdparty/jqueryui/jquery-ui-position",
-	"sap/ui/dom/jquery/control", // jQuery Plugin "control"
-	"sap/ui/dom/jquery/Focusable", // jQuery Plugin "firstFocusableDomRef"
-	"sap/ui/dom/jquery/rect" // jQuery Plugin "rect"
+	// jQuery Plugin "firstFocusableDomRef"
+	"sap/ui/dom/jquery/Focusable",
+	// jQuery Plugin "rect"
+	"sap/ui/dom/jquery/rect"
 ], function(
 	Device,
 	DataType,

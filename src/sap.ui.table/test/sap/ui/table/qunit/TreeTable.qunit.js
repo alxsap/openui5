@@ -69,7 +69,7 @@ sap.ui.define([
 		};
 	}
 
-	function createTable() {
+	async function createTable() {
 		const oModel = new JSONModel();
 		oModel.setData(getData());
 
@@ -83,13 +83,14 @@ sap.ui.define([
 		oTable.setModel(oModel);
 
 		oTable.placeAt("qunit-fixture");
-		nextUIUpdate.runSync()/*context not obviously suitable for an async function*/;
+		await nextUIUpdate();
+
 		return oTable;
 	}
 
-	function destroyTable(oTable) {
+	async function destroyTable(oTable) {
 		oTable.destroy();
-		nextUIUpdate.runSync()/*context not obviously suitable for an async function*/;
+		await nextUIUpdate();
 	}
 
 	// *************************************************************************
@@ -97,11 +98,11 @@ sap.ui.define([
 	// *************************************************************************
 
 	QUnit.module("Basic checks", {
-		beforeEach: function() {
-			this.table = createTable();
+		beforeEach: async function() {
+			this.table = await createTable();
 		},
-		afterEach: function() {
-			destroyTable(this.table);
+		afterEach: async function() {
+			await destroyTable(this.table);
 		},
 		testAsync: function(mTestConfig) {
 			return new Promise(function(resolve) {
@@ -292,11 +293,11 @@ sap.ui.define([
 	});
 
 	QUnit.module("Events", {
-		beforeEach: function() {
-			this.table = createTable();
+		beforeEach: async function() {
+			this.table = await createTable();
 		},
-		afterEach: function() {
-			destroyTable(this.table);
+		afterEach: async function() {
+			await destroyTable(this.table);
 		}
 	});
 
@@ -526,11 +527,11 @@ sap.ui.define([
 	});
 
 	QUnit.module("Selection", {
-		beforeEach: function() {
-			this.table = createTable();
+		beforeEach: async function() {
+			this.table = await createTable();
 		},
-		afterEach: function() {
-			destroyTable(this.table);
+		afterEach: async function() {
+			await destroyTable(this.table);
 		}
 	});
 

@@ -21,9 +21,7 @@ sap.ui.define('sap/ui/qunit/QUnitUtils', [
 	"sap/ui/base/DataType",
 	"sap/ui/core/Element",
 	"sap/ui/events/KeyCodes",
-	"sap/ui/thirdparty/jquery",
-	// jQuery Plugin "control"
-	"sap/ui/dom/jquery/control"
+	"sap/ui/thirdparty/jquery"
 ], function(
 	Log,
 	camelize,
