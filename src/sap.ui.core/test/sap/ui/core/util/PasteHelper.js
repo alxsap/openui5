@@ -88,12 +88,13 @@ sap.ui.define([
 					},
 					{
 						property: "fullName",
-						customParseFunction: function(data) { return ( data.toUpperCase()) }
+						customParseFunction: function(data) {
+							return ( data.toUpperCase());
+						}
 					}
 				];
 				PasteHelper.parse(aData, aColumnsInfo).then(function(oResult) {
-					if (oResult.parsedData)
-					{
+					if (oResult.parsedData) {
 						showDataInTable(aData);
 						var msg = "";
 						var myJSON = JSON.stringify(oResult.parsedData);
@@ -103,7 +104,7 @@ sap.ui.define([
 						}
 						e.preventDefault();
 
-					}  else {
+					} else {
 						var msg = "";
 						for (var i = 0; i < oResult.errors.length; i++) {
 							msg = msg + "\n" + (oResult.errors)[i].message;

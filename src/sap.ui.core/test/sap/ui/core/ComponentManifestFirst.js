@@ -9,6 +9,7 @@ sap.ui.define([
   "use strict";
   // Note: the HTML page 'ComponentManifestFirst.html' loads this module via data-sap-ui-on-init
 
+  /*global sinon */
   sap.ui.localResources("samples");
 
 
@@ -178,7 +179,7 @@ sap.ui.define([
 
 	  oComp = sap.ui.component(oConfig);
 
-	  if (oComp instanceof Promise){
+	  if (oComp instanceof Promise) {
 		  oComp.then(function(oComponent){
 			  placeComponent(oComponent);
 			  oComp = oComponent;

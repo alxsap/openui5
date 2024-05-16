@@ -67,7 +67,7 @@ sap.ui.define([
 				oXhr.respond = function (status, headers, content) {
 
 					var oObject = null.getObject("/");
-					if(oObject){
+					if (oObject) {
 						headers["sap-message"] = JSON.stringify(oObject);
 					}
 

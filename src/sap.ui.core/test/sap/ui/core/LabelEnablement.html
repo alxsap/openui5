@@ -15,11 +15,11 @@
 	></script>
 
 	<script id="view1" type="text/xml">
-		<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.ui.commons" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form"
-				controllerName="my.own.controller" xmlns:html="http://www.w3.org/1999/xhtml">
+		<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form"
+				controllerName="my.own.controller">
 
 			<Label id="someFieldLabel" text="SomeLabel" labelFor="someField"/>
-			<TextField id="someField"/>
+			<Input id="someField"/>
 
 			<f:Form id="FormChange354" minWidth="1024" maxContainerCols="2" editable="true">
 				<f:title>
@@ -33,7 +33,7 @@
 						<f:formElements>
 							<f:FormElement label="Label via text">
 								<f:fields>
-									<TextField id="labelText"/>
+									<Input id="labelText"/>
 								</f:fields>
 							</f:FormElement>
 							<f:FormElement>
@@ -41,7 +41,7 @@
 									<Label id="labelControlNoForLabel" text="Label via control - no for"/>
 								</f:label>
 								<f:fields>
-									<TextField id="labelControlNoFor"/>
+									<Input id="labelControlNoFor"/>
 								</f:fields>
 							</f:FormElement>
 							<f:FormElement>
@@ -49,17 +49,17 @@
 									<Label id="labelControlWithForLabel" text="Label via control - with for" labelFor="labelControlWithFor"/>
 								</f:label>
 								<f:fields>
-									<TextField id="labelControlWithFor"/>
+									<Input id="labelControlWithFor"/>
 								</f:fields>
 							</f:FormElement>
 							<f:FormElement label="Label via text - multiple fields">
 								<f:fields>
-									<TextField id="labelTextMultiple1" />
-                  					<TextField id="labelTextMultiple2">
+									<Input id="labelTextMultiple1" />
+									<Input id="labelTextMultiple2">
 										<layoutData>
 											<l:GridData span="L2 M2 S4" />
 										</layoutData>
-									</TextField>
+									</Input>
 								</f:fields>
 							</f:FormElement>
 							<f:FormElement>
@@ -67,12 +67,12 @@
 									<Label id="labelControlMultipleNoForLabel" text="Label via control - multiple fields/no for"/>
 								</f:label>
 								<f:fields>
-									<TextField id="labelControlMultipleNoFor1" />
-                  					<TextField id="labelControlMultipleNoFor2">
+									<Input id="labelControlMultipleNoFor1" />
+									<Input id="labelControlMultipleNoFor2">
 										<layoutData>
 											<l:GridData span="L2 M2 S4" />
 										</layoutData>
-									</TextField>
+									</Input>
 								</f:fields>
 							</f:FormElement>
 							<f:FormElement>
@@ -80,12 +80,12 @@
 									<Label id="labelControlMultipleWithForLabel" text="Label via control - multiple fields/with for" labelFor="labelControlMultipleWithFor2"/>
 								</f:label>
 								<f:fields>
-									<TextField id="labelControlMultipleWithFor1" />
-                  					<TextField id="labelControlMultipleWithFor2">
+									<Input id="labelControlMultipleWithFor1" />
+									<Input id="labelControlMultipleWithFor2">
 										<layoutData>
 											<l:GridData span="L2 M2 S4" />
 										</layoutData>
-									</TextField>
+									</Input>
 								</f:fields>
 							</f:FormElement>
 						</f:formElements>

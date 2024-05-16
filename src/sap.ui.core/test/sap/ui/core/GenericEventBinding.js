@@ -3,60 +3,61 @@
 sap.ui.define([
 	"sap/ui/core/Core",
 	"sap/ui/core/Rendering",
-	"sap/ui/commons/TextField",
-	"sap/ui/commons/layout/MatrixLayout",
-	"sap/ui/commons/Button"
+	"sap/m/Input",
+	"sap/m/Button",
+	"sap/ui/layout/HorizontalLayout"
 ], function(
 	Core,
 	Rendering,
-	TextField,
-	MatrixLayout,
-	Button
+	Input,
+	Button,
+	HorizontalLayout
 ) {
 	"use strict";
 	Core.ready().then(function() {
 		function scream() {
-			alert("Help! I'm blurred!");
+			alert("Help! I've lost focus!");
 		}
 		function scream2() {
-			alert("HEEEEEEELP! I'M BLURRED!");
+			alert("HEEEEEEELP! I'VE LOST FOCUS!");
 		}
 
-		var oTf1 = new TextField("tf1").attachBrowserEvent("blur", function(){alert("Help! I'm blurred!");});
+		var oTf1 = new Input("tf1").attachBrowserEvent("focusout", scream);
 		oTf1.placeAt("uiArea1");
 
-		var oLayout = new MatrixLayout().setWidth("auto");
-		var oBtn = new Button("btn1", {text : "Bind blur event to TextField"});
+		var oBtn = new Button("btn1", {text : "Bind focusout event"});
 		oBtn.attachPress(function(){
-			oTf2.attachBrowserEvent("blur", scream);
+			oTf2.attachBrowserEvent("focusout", scream);
 		});
 
-		var oBtn2 = new Button("btn2", {text : "Bind another, more INTENSE, blur event to TextField"});
+		var oBtn2 = new Button("btn2", {text : "Bind another, more INTENSE focusout event"});
 		oBtn2.attachPress(function(){
-			oTf2.attachBrowserEvent("blur", scream2);
+			oTf2.attachBrowserEvent("focusout", scream2);
 		});
 
-		var oBtn3 = new Button("btn3", {text : "Unbind blur event from TextField"});
+		var oBtn3 = new Button("btn3", {text : "Unbind focusout event"});
 		oBtn3.attachPress(function(){
-			oTf2.detachBrowserEvent("blur", scream);
+			oTf2.detachBrowserEvent("focusout", scream);
 		});
 
-		var oBtn4 = new Button("btn4", {text : "Unbind INTENSE blur event from TextField"});
+		var oBtn4 = new Button("btn4", {text : "Unbind INTENSE focusout event"});
 		oBtn4.attachPress(function(){
-			oTf2.detachBrowserEvent("blur", scream2);
+			oTf2.detachBrowserEvent("focusout", scream2);
 		});
 
-		oLayout.createRow(oBtn, oBtn2);
-		oLayout.createRow(oBtn3, oBtn4);
-		oLayout.placeAt("uiArea2");
+		new HorizontalLayout({
+			content: [
+				oBtn, oBtn2, oBtn3, oBtn4
+			]
+		}).placeAt("uiArea2");
 
-		var oTf2 = new TextField("tf2");
+		var oTf2 = new Input("tf2");
 		oTf2.placeAt("uiArea3");
 
-		var oBtnR = new Button("btnR", {text : "Re-Render the TextFields", press : function(){
+		var oBtnR = new Button("btnR", {text : "Re-Render the Inputs", press : function(){
 			oTf1.invalidate();
 			oTf2.invalidate();
 		}});
-		oBtnR.placeAt("uiArea4")
+		oBtnR.placeAt("uiArea4");
 	});
 });

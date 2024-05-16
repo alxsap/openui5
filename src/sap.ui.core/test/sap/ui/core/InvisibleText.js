@@ -35,14 +35,14 @@ sap.ui.define([
 			  rm.openStart("div", ctrl).openEnd();
 				  var sLabelled = TestControl._STATIC_LABEL_TEXT.getId();
 				  var aTexts = ctrl.getAggregation("_texts");
-				  for(var i = 0; i < aTexts.length; i++){
+				  for (var i = 0; i < aTexts.length; i++){
 					  sLabelled += " " + aTexts[i].getId();
 					  rm.renderControl(aTexts[i]);
 				  }
 				  rm.voidStart("input");
 				  rm.accessibilityState(ctrl, {
 					  labelledby : {value: sLabelled, append: true}
-				  })
+				  });
 				  rm.voidEnd();
 			  rm.close("div");
 		  }

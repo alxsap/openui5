@@ -1,11 +1,4 @@
-sap.ui.require(["sap/ui/core/Element", "sap/ui/core/mvc/XMLView", "sap/ui/commons/TextField", "sap/ui/commons/Button", "sap/ui/thirdparty/jquery"], function(Element, XMLView, TextField, Button, jQuery) {
-	try{
-		sap.ui.getCore().loadLibrary("sap.ui.commons");
-	}catch(e){
-		alert("This test page requires the library 'sap.ui.commons' which is not available.");
-		throw(e);
-	}
-
+sap.ui.require(["sap/ui/core/Element", "sap/ui/core/mvc/XMLView", "sap/m/Input", "sap/m/Button", "sap/ui/thirdparty/jquery"], function(Element, XMLView, Input, Button, jQuery) {
 	// this test page is not below "resources", but "test-resources"
 	// usually this redirect is NOT needed - but possible if useful
 	sap.ui.loader.config({paths: {"sap/ui/core/mvctest": "../../../../../../test-resources/sap/ui/core/samples/mvc/"}});
@@ -35,7 +28,7 @@ sap.ui.require(["sap/ui/core/Element", "sap/ui/core/mvc/XMLView", "sap/ui/common
 		};
 	};
 
-	new TextField("timeout", {
+	new Input("timeout", {
 		value : "1000"
 	}).placeAt("asyncInput");
 

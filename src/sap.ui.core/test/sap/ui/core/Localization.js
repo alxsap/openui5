@@ -1,21 +1,14 @@
 sap.ui.define([
   "sap/ui/core/Supportability",
   "sap/base/i18n/Localization",
-  "sap/ui/commons/layout/MatrixLayout",
-  "sap/ui/commons/TextView",
-  "sap/ui/commons/Label",
-  "sap/ui/commons/TextField",
+  "sap/ui/layout/form/SimpleForm",
+  "sap/m/Title",
+  "sap/m/Label",
+  "sap/m/Input",
   "sap/ui/model/resource/ResourceModel"
-], function(Supportability, Localization, MatrixLayout, TextView, Label, TextField, ResourceModel) {
+], function(Supportability, Localization, SimpleForm, Title, Label, Input, ResourceModel) {
   "use strict";
   // Note: the HTML page 'Localization.html' loads this module via data-sap-ui-on-init
-
-  try{
-	  sap.ui.getCore().loadLibrary("sap.ui.commons");
-  }catch(e){
-	  alert("This test page requires the library 'sap.ui.commons' which is not available.");
-	  throw(e);
-  }
 
   function showInfo() {
 	  var mInfo = this.getOriginInfo("text"),
@@ -34,66 +27,47 @@ sap.ui.define([
   var sLocale = Localization.getLanguage();
   var oBundle = undefined/*jQuery*/.sap.resources({url : "resources/i18n.properties", locale: sLocale, includeInfo: Supportability.collectOriginInfo()});
 
-  var oMatrixLayout = new MatrixLayout();
-  oMatrixLayout.setLayoutFixed(false);
-  oMatrixLayout.createRow(
-		  new TextView({text: oBundle.getText("welcome", ["Administrator"])}).attachBrowserEvent("click", showInfo)
-  );
-  oMatrixLayout.getRows()[0].getCells()[0].setColSpan(2);
-  oMatrixLayout.createRow(
+  var oSimpleForm = new SimpleForm({
+	  editable: true,
+	  content: [
+		  new Title({text: oBundle.getText("welcome", ["Administrator"])}).attachBrowserEvent("click", showInfo),
 		  new Label({text: oBundle.getText("lastname"), tooltip: oBundle.getText("lastname")}).attachBrowserEvent("click", showInfo) ,
-		  new TextField()
-  );
-  oMatrixLayout.createRow(
+		  new Input(),
 		  new Label({text: oBundle.getText("firstname")}).attachBrowserEvent("click", showInfo) ,
-		  new TextField()
-  );
-  oMatrixLayout.createRow(
+		  new Input(),
 		  new Label({text: oBundle.getText("street")}).attachBrowserEvent("click", showInfo) ,
-		  new TextField()
-  );
-  oMatrixLayout.createRow(
+		  new Input(),
 		  new Label({text: oBundle.getText("zip")}).attachBrowserEvent("click", showInfo) ,
-		  new TextField()
-  );
-  oMatrixLayout.createRow(
+		  new Input(),
 		  new Label({text: oBundle.getText("city")}).attachBrowserEvent("click", showInfo) ,
-		  new TextField()
-  );
-  oMatrixLayout.placeAt("resourcebundle");
+		  new Input()
+	  ]
+  });
+  oSimpleForm.placeAt("resourcebundle");
 
   var oResourceModel = new ResourceModel({bundleUrl:"resources/i18n.properties"});
-  var oMatrixLayout = new MatrixLayout();
-  oMatrixLayout.setModel(oResourceModel, "i18n");
-  oMatrixLayout.setLayoutFixed(false);
-  oMatrixLayout.createRow(
-		  new TextView({text: oResourceModel.getResourceBundle().getText("welcome", ["Administrator"])}).attachBrowserEvent("click", showInfo)
-  );
-  oMatrixLayout.getRows()[0].getCells()[0].setColSpan(2);
-  oMatrixLayout.createRow(
+  new SimpleForm({
+	  editable: true,
+	  content: [
+		  new Title({text: oResourceModel.getResourceBundle().getText("welcome", ["Administrator"])}).attachBrowserEvent("click", showInfo),
 		  new Label({text: "{i18n>lastname}", tooltip: "{i18n>lastname}"}).attachBrowserEvent("click", showInfo) ,
-		  new TextField()
-  );
-  oMatrixLayout.createRow(
+		  new Input(),
 		  new Label({text: "{i18n>firstname}"}).attachBrowserEvent("click", showInfo) ,
-		  new TextField()
-  );
-  oMatrixLayout.createRow(
+		  new Input(),
 		  new Label({text: "{i18n>street}"}).attachBrowserEvent("click", showInfo) ,
-		  new TextField()
-  );
-  oMatrixLayout.createRow(
+		  new Input(),
 		  new Label({text: "{i18n>zip}"}).attachBrowserEvent("click", showInfo) ,
-		  new TextField()
-  );
-  oMatrixLayout.createRow(
+		  new Input(),
 		  new Label({text: "{i18n>city}"}).attachBrowserEvent("click", showInfo) ,
-		  new TextField()
-  );
-  oMatrixLayout.placeAt("resourcemodel");
+		  new Input()
+	  ],
+	  models: {
+		  i18n: oResourceModel
+	  }
+  }).placeAt("resourcemodel");
 
   undefined/*jQuery*/(function(){
-	  var url = undefined/*jQuery*/.sap.getModulePath("sap.ui.commons", '/') + "messagebundle.properties";
+	  var url = sap.ui.require.toUrl("sap/m/messagebundle.properties");
 	  var oBundle = undefined/*jQuery*/.sap.resources({url:url});
 	  undefined/*jQuery*/("#locale").html(oBundle ? oBundle.sLocale : "--");
   });

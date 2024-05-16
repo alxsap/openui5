@@ -1462,6 +1462,10 @@ sap.ui.define([
 				}
 			},
 
+			Select2: {
+				title: "Separate test page for sap.m.Select"
+			},
+
 			SelectDialog: {
 				title: "QUnit Page for sap.m.SelectDialog",
 				sinon: {

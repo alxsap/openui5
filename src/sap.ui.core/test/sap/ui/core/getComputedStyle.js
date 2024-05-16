@@ -5,7 +5,7 @@ sap.ui.define([
   // Note: the HTML page 'getComputedStyle.html' loads this module via data-sap-ui-on-init
 
   var style = window.getComputedStyle(document.documentElement);
-  console.log("style >> "+style);
+  console.log("style >> " + style);
   var oCarousel = new Carousel();
   oCarousel.placeAt("content");
   oCarousel.setHeight("300px");

@@ -12,7 +12,7 @@ sap.ui.define([
   var myController = sap.ui.controller("mycontroller", {
 	  onInit: function() {
 		  Log.debug("in controller onInit");
-	  },
+	  }
   });
 
   var oModel = new JSONModel({

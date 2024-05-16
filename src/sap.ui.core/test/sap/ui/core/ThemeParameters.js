@@ -1,44 +1,57 @@
+// Note: the HTML page 'ThemeParameters.html' loads this module via data-sap-ui-on-init
+
 sap.ui.define([
-  "sap/ui/core/theming/Parameters",
-  "sap/ui/commons/ListBox",
-  "sap/ui/core/ListItem"
-], function(Parameters, ListBox, ListItem) {
-  "use strict";
-  // Note: the HTML page 'ThemeParameters.html' loads this module via data-sap-ui-on-init
+	"sap/ui/core/Theming",
+	"sap/ui/core/theming/Parameters",
+	"sap/m/Table",
+	"sap/m/Column",
+	"sap/m/Text",
+	"sap/m/ColumnListItem"
+], function(Theming, Parameters, Table, Column, Text, ColumnListItem) {
+	"use strict";
 
-  sap.ui.reuire(["sap/ui/core/Theming"], function(Theming) {
-	  try{
-		  sap.ui.getCore().loadLibrary("sap.ui.commons");
-	  }catch(e){
-		  alert("This test page requires the library 'sap.ui.commons' which is not available.");
-		  throw(e);
-	  }
-
-	  var oListBox = new ListBox({
-		  height : "480px",
-		  displaySecondaryValues: true
-	  }).placeAt("content");
-
-
-	  function fetchParameters() {
-		  var mAllParameters = Parameters.get();
-
-		  oListBox.destroyItems();
-		  for (var name in mAllParameters) {
-			  oItem = new ListItem();
-			  oItem.setText(name);
-			  oItem.setAdditionalText(mAllParameters[name]);
-			  oListBox.addItem(oItem);
-		  }
-	  }
+	var oList = new Table({
+		columns: [
+			new Column({
+				header: new Text({
+					text: "Parameter Name"
+				})
+			}),
+			new Column({
+				width: "20em",
+				header: new Text({
+					text: "Value"
+				})
+			}),
+		]
+	}).placeAt("content");
 
 
-	  // react on theme change
-	  Theming.attachApplied(function(evt){
-		  fetchParameters();
-	  });
+	function fetchParameters() {
+		var mAllParameters = Parameters.get();
+
+		oList.destroyItems();
+		for (var name in mAllParameters) {
+			var oItem = new ColumnListItem({
+				cells: [
+					new Text({
+						text: name
+					}),
+					new Text({
+						text: mAllParameters[name]
+					}),
+				]
+			});
+			oList.addItem(oItem);
+		}
+	}
 
 
-	  fetchParameters();
-  });
+	// react on theme change
+	Theming.attachApplied(function(evt){
+		fetchParameters();
+	});
+
+
+	fetchParameters();
 });

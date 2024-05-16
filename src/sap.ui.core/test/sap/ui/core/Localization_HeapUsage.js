@@ -1,28 +1,28 @@
 // Note: the HTML page 'Localization_HeapUsage.html' loads this module via data-sap-ui-on-init
 
 sap.ui.define([
-	"sap/ui/thirdparty/jquery",
-	"sap/base/util/UriParameters",
 	"sap/base/i18n/ResourceBundle"
-], function(jQuery, UriParameters, ResourceBundle) {
+], function(ResourceBundle) {
 	"use strict";
 	var data = [];
-	var sLocale = UriParameters.fromQuery(window.location.search).get("sap-ui-language") || "";
+	var sLocale = new URLSearchParams(window.location.search).get("sap-language") ?? "en";
 
 	function loadi18n(lib) {
-		var sUri = sap.ui.require.toUrl((lib + '.messagebundle').replace(/\./g, "/")) + ".properties";
 		return ResourceBundle.create({
-			url: sUri,
+			bundleName: lib + ".messagebundle",
 			locale: sLocale
 		});
 	}
 
 	// try to enforce code compilation
 	for ( var i = 0; i < 10; i++ ) {
-		loadi18n('sap.ui.commons');
+		ResourceBundle._getPropertiesCache().clear();
+		loadi18n('sap.m');
 	}
 
-	jQuery('#readall').on("click", function() {
+	document.getElementById("readall").addEventListener("click", function() {
+
+		ResourceBundle._getPropertiesCache().clear();
 
 		// the following libs represents a typical set of libraries used in a Fiori environment
 
@@ -30,7 +30,7 @@ sap.ui.define([
 		data.push( loadi18n('sap.ui.core') ) ;
 		data.push( loadi18n('sap.ui.layout') ) ;
 		data.push( loadi18n('sap.ui.unified') ) ;
-		//data.push( loadi18n('sap.f') ) ; // no texts currently
+		data.push( loadi18n('sap.f') ) ;
 		data.push( loadi18n('sap.m') ) ;
 		data.push( loadi18n('sap.ui.table') ) ;
 		data.push( loadi18n('sap.uxap') ) ;

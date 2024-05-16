@@ -190,7 +190,7 @@ sap.ui.define([
 	  columns: [
 		  new Column({header: new Text({text: "Last Name"})}),
 		  new Column({header: new Text({text: "First Name"})}),
-		  new Column({header: new Text({text: "Birthday"}), hAlign: "End"}),
+		  new Column({header: new Text({text: "Birthday"}), hAlign: "End"})
 	  ],
 	  dragDropConfig: [
 		  new DragDropInfo({
@@ -274,7 +274,7 @@ sap.ui.define([
 		  }),
 		  new ToolbarSpacer()
 	  ]
-  })
+  });
 
   var oDescList2 = new List({
 	  noDataText: "Drop on Me",

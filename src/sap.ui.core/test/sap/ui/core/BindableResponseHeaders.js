@@ -6,6 +6,7 @@ sap.ui.define([
   "use strict";
   // Note: the HTML page 'BindableResponseHeaders.html' loads this module via data-sap-ui-on-init
 
+  /*global sinon, NorthwindData */
   // Configuration
   var iResponseDelay = 200;
 
@@ -32,7 +33,7 @@ sap.ui.define([
 		  }
 
 
-
+		  var sResponse;
 		  if (request.url === "fakeservice://northwind/") {
 			  sResponse = NorthwindData.root;
 		  } else if (request.url === "fakeservice://northwind/$metadata") {
@@ -40,7 +41,7 @@ sap.ui.define([
 			  sResponse = NorthwindData.$metadata;
 		  } else if (request.url === "fakeservice://northwind/Products/$count") {
 			  mResponseHeaders["Content-Type"] = "text/plain";
-			  sResponse = NorthwindData.Products.d.results.length;
+			  sResponse = String(NorthwindData.Products.d.results.length);
 		  } else if (request.url === "fakeservice://northwind/Products") {
 			  mResponseHeaders["Age"] = Date.now();
 
@@ -73,7 +74,7 @@ sap.ui.define([
 
 
   // Display control
-  Control.extend("AgeDisplay", {
+  var AgeDisplay = Control.extend("AgeDisplay", {
 	  metadata: {
 		  properties: {
 			  label: { type: "string" },

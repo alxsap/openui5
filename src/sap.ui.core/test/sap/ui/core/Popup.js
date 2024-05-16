@@ -1,21 +1,19 @@
 // Note: the HTML page 'Popup.html' loads this module via data-sap-ui-on-init
 
-var openPopup, closePopup, greenClicked, openAnim, closeAnim;
-
 sap.ui.define(["sap/ui/core/Popup", "sap/ui/thirdparty/jquery"], function(Popup, jQuery) {
 	"use strict";
-	openAnim = function($Ref, iDuration, fnCallback) {
+	globalThis.openAnim = function($Ref, iDuration, fnCallback) {
 	  $Ref.slideDown(iDuration, fnCallback);
 	};
 
-	closeAnim = function($Ref, iDuration, fnCallback) {
+	globalThis.closeAnim = function($Ref, iDuration, fnCallback) {
 	  $Ref.slideUp(iDuration, fnCallback);
 	};
 
 	var popup = null;
 	var modal = false;
 
-	openPopup = function (iDuration, bModal, bAutoClose, fnOpenAnim, fnCloseAnim, oOf, bNotCenter) {
+	globalThis.openPopup = function (iDuration, bModal, bAutoClose, fnOpenAnim, fnCloseAnim, oOf, bNotCenter) {
 		if (bModal) {
 			modal = true;
 			var oWithinArea = Popup.getWithinAreaDomRef();
@@ -43,24 +41,24 @@ sap.ui.define(["sap/ui/core/Popup", "sap/ui/thirdparty/jquery"], function(Popup,
 		} else {
 			popup.open(iDuration, "center center", "center center", oOf || window, null);
 		}
-	}
+	};
 
-	closePopup = function (iDuration) {
-	  if(popup) {
-		popup.close(iDuration);
-	  }
-	}
+	globalThis.closePopup = function (iDuration) {
+		if (popup) {
+			popup.close(iDuration);
+		}
+	};
 
 	function popupClosed() {
 		popup = null;
 		modal = false;
 	}
 
-	greenClicked = function () {
+	globalThis.greenClicked = function () {
 		if (modal) {
 			popup.close();
 		}
-	}
+	};
 
 	jQuery(function() {
 		document.getElementById("check").addEventListener("click", function(event) {

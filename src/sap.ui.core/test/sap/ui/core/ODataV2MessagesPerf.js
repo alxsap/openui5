@@ -52,15 +52,14 @@ sap.ui.define([
 			oXhr.respond = function (status, headers, content) {
 				if (sUrl === '/SalesOrderSrv/SalesOrderSet/$count') {
 					content = "" + oDo + 10;
-				}
-				else if (sUrl.startsWith('/SalesOrderSrv/SalesOrderSet')) {
+				} else if (sUrl.startsWith('/SalesOrderSrv/SalesOrderSet')) {
 					var oEntry, oContent = JSON.parse(content);
 
 					for (var i = 0; i < oDo; i++) {
 						oEntry = merge({}, oContent.d.results[0]);
 						oEntry.__metadata.uri = sServiceUri + "SalesOrderSet(" + i + ")";
-						oEntry.SalesOrderID = "SalesOrderSet(" + i + ")"
-						oEntry.ToLineItems = {id:"LI("+i+")"};
+						oEntry.SalesOrderID = "SalesOrderSet(" + i + ")";
+						oEntry.ToLineItems = {id:"LI(" + i + ")"};
 						oContent.d.results.push(oEntry);
 					}
 					content = JSON.stringify(oContent);
@@ -81,7 +80,7 @@ sap.ui.define([
 	new JSONModel();
 	sap.ui.getCore();
 
-	var i = j = 0;
+	var i = 0, j = 0;
 	var fnCheckUpdateOrig = ODataModel.prototype.checkUpdate;
 	ODataModel.prototype.checkUpdate = function() {
 		i++;
@@ -89,7 +88,7 @@ sap.ui.define([
 		fnCheckUpdateOrig.apply(this, arguments);
 		Measurement.end("cu" + i);
 		null.setData(Measurement.getAllMeasurements());
-	}
+	};
 	var fnCheckDataState = ODataModel.prototype.checkDataState;
 	ODataModel.prototype.checkDataState = function() {
 		j++;

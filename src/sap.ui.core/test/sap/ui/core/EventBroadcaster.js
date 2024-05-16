@@ -20,9 +20,9 @@ sap.ui.define(['sap/ui/core/Core', 'sap/ui/core/mvc/XMLView', 'sap/ui/core/suppo
 			},
 			attachDetachListener: function (oEvent) {
 				if (oEvent.getParameter("state")) {
-					window.addEventListener("UI5Event", this._fnListener)
+					window.addEventListener("UI5Event", this._fnListener);
 				} else {
-					window.removeEventListener("UI5Event", this._fnListener)
+					window.removeEventListener("UI5Event", this._fnListener);
 				}
 			},
 			clearRows: function () {

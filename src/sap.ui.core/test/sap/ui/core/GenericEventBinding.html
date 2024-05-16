@@ -7,7 +7,7 @@
 		<script src="shared-config.js"></script>
 		<script id="sap-ui-bootstrap"
 				src="../../../../resources/sap-ui-core.js"
-				data-sap-ui-libs="sap.ui.commons"
+				data-sap-ui-libs="sap.m, sap.ui.layout"
 				data-sap-ui-async="true"
 				data-sap-ui-compat-version="edge"
 				data-sap-ui-on-init="module:local/GenericEventBinding"
@@ -20,19 +20,19 @@
 	<body class="sapUiBody">
 		<h1>Generic Event Binding Test</h1>
 
-		This TextField has a blur event bound initially:
+		This Input has a focusout event bound initially:
 		<div id="uiArea1"></div>
 
 		<br> <br>
-		Click the button to bind a blur event to the below TextField:
+		Click the button to bind a focusout event to the below Input:
 		<div id="uiArea2"></div>
 
 		<br>
-		This TextField only has a blur event once the Button is clicked:
+		This Input only has a focusout event once the Button is clicked:
 		<div id="uiArea3"></div>
 
 		<br> <br>
-		Click the button to force a re-rendering of the TextFields:
+		Click the button to force a re-rendering of the Inputs:
 		<div id="uiArea4"></div>
 
 	</body>

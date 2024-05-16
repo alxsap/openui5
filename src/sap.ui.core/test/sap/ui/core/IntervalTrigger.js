@@ -1,24 +1,17 @@
 sap.ui.define([
   "sap/ui/core/IntervalTrigger",
-  "sap/ui/commons/ButtonRenderer",
+  "sap/m/ButtonRenderer",
   "sap/ui/core/Control",
-  "sap/ui/commons/Label",
-  "sap/ui/commons/Button",
-  "sap/ui/commons/layout/MatrixLayout"
-], function(IntervalTrigger, ButtonRenderer, Control, Label, Button, MatrixLayout) {
+  "sap/m/Label",
+  "sap/m/Button",
+  "sap/ui/layout/VerticalLayout",
+  "sap/ui/layout/HorizontalLayout"
+], function(IntervalTrigger, ButtonRenderer, Control, Label, Button, VerticalLayout, HorizontalLayout) {
   "use strict";
-  // Note: the HTML page 'IntervalTrigger.html' loads this module via data-sap-ui-on-init
-
-  try {
-	  sap.ui.getCore().loadLibrary("sap.ui.commons");
-  } catch (e) {
-	  alert("This test page requires the library 'sap.ui.commons' which is not available.");
-	  throw (e);
-  }
 
   var triggerCounter = 0;
 
-  Control.extend("mySampleListener", {
+  var MySampleListener = Control.extend("MySampleListener", {
 	  metadata : {
 		  properties : {
 			  "index" : "int"
@@ -32,7 +25,7 @@ sap.ui.define([
 			  oRm.class("sampleListener");
 			  oRm.openEnd();
 
-			  oRm.text("Lorem Ipsum")
+			  oRm.text("Lorem Ipsum");
 
 			  oRm.close("div");
 		  }
@@ -66,23 +59,23 @@ sap.ui.define([
 
   var oTrigger = new IntervalTrigger();
 
-  Button.extend("myTriggerButton", {
+  var MyTriggerButton = Button.extend("MyTriggerButton", {
 	  metadata : {
 		  properties : {
-			  "index" : "int",
+			  "index" : "int"
 		  }
 	  },
 
-	  renderer : sap.ui.commons.ButtonRenderer.render
+	  renderer : ButtonRenderer
   });
 
   var aListeners = [];
   var oBtn = {};
-  var oLayout = new MatrixLayout().placeAt("triggers");
+  var oLayout = new VerticalLayout().placeAt("triggers");
 
   for ( var i = 0; i < 10; i++) {
-	  aListeners[i] = new mySampleListener();
-	  oBtn = new myTriggerButton({
+	  aListeners[i] = new MySampleListener();
+	  oBtn = new MyTriggerButton({
 		  text : "Remove from trigger",
 		  index : i,
 		  press : function() {
@@ -90,7 +83,14 @@ sap.ui.define([
 		  }
 	  });
 
-	  oLayout.createRow(aListeners[i], oBtn);
+	  oLayout.addContent(
+		  new HorizontalLayout({
+			  content: [
+				  aListeners[i],
+				  oBtn
+			  ]
+		  })
+	  );
 	  oTrigger.addListener(aListeners[i].trigger, aListeners[i]);
   }
 

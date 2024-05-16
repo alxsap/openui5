@@ -1,8 +1,7 @@
 sap.ui.define([
   "sap/ui/commons/layout/MatrixLayout",
-  "sap/ui/commons/Label",
-  "sap/ui/commons/Button",
   "sap/m/Label",
+  "sap/m/Button",
   "sap/ui/commons/layout/MatrixLayoutCell",
   "sap/ui/core/Icon",
   "sap/ui/layout/FixFlex",
@@ -17,7 +16,6 @@ sap.ui.define([
   "sap/ui/unified/FileUploader",
   "sap/m/BusyIndicator",
   "sap/m/Bar",
-  "sap/m/Button",
   "sap/m/CheckBox",
   "sap/m/Carousel",
   "sap/m/FacetFilter",
@@ -64,7 +62,6 @@ sap.ui.define([
   MatrixLayout,
   Label,
   Button,
-  MLabel,
   MatrixLayoutCell,
   Icon,
   FixFlex,
@@ -79,7 +76,6 @@ sap.ui.define([
   FileUploader,
   BusyIndicator,
   Bar,
-  MButton,
   CheckBox,
   Carousel,
   FacetFilter,
@@ -126,22 +122,13 @@ sap.ui.define([
   "use strict";
   // Note: the HTML page 'InvisibleControls.html' loads this module via data-sap-ui-on-init
 
-  try{
-	  sap.ui.getCore().loadLibrary("sap.ui.unified");
-	  sap.ui.getCore().loadLibrary("sap.m");
-	  sap.ui.getCore().loadLibrary("sap.ui.table");
-  } catch(e) {
-	  alert("This test page requires the library 'sap.ui.commons' which is not available.");
-	  throw(e);
-  }
-
   var aInvisibleControls = [];
   var oLayout = new MatrixLayout({
 	  width: "95%"
   }).addStyleClass("displayTable").addDelegate({
 	  onAfterRendering: function() {
 		  var $Status = jQuery("#status_renderings");
-		  $Status.text(parseInt($Status.text(), 10) + 1);
+		  $Status.text(parseInt($Status.text()) + 1);
 	  }
   });
 
@@ -176,7 +163,7 @@ sap.ui.define([
 	  for (var i = 0; i < arguments.length; i++) {
 		  var oContent = arguments[i];
 		  if (typeof oContent === "string") {
-			  oContent = new MLabel({text: oContent});
+			  oContent = new Label({text: oContent});
 		  }
 		  var oCell = new MatrixLayoutCell({content: oContent});
 		  oCell.addStyleClass("heading");
@@ -244,7 +231,7 @@ sap.ui.define([
   addHeadingRow("sap.m");
   addRow("m/BusyIndicator", new BusyIndicator());
   addRow("m/Bar", new Bar({contentLeft: new Button({ text: "A"}), contentMiddle: new Button({ text: "B"}), contentRight: new Button({ text: "C"})}));
-  addRow("m/Button", new MButton({text: "A"}));
+  addRow("m/Button", new Button({text: "A"}));
   addRow("m/CheckBox", new CheckBox({text: "A"}));
   addRow("m/Carousel", new Carousel({pages: [new Button({ text: "A"}), new Button({ text: "B"})]}));
   addRow("[TODO: Leads to double rendering] m/FacetFilter", new FacetFilter({lists: [new FacetFilterList({title: "A"}), new FacetFilterList({title: "B"})]}));
@@ -255,7 +242,7 @@ sap.ui.define([
   // addRow("m/IconTabHeader", new sap.m.IconTabHeader({items: [new sap.m.IconTabFilter({ text: "A"}), new sap.m.IconTabFilter({ text: "B"})]}));
   addRow("m/Image", new Image({src: "https://sdk.openui5.org/resources/sap/ui/core/mimes/logo/icotxt_white_220x72_blue.png"}));
   addRow("m/Input(Base)", new Input({value: "A"}));
-  addRow("m/Label", new MLabel({text: "A"}));
+  addRow("m/Label", new Label({text: "A"}));
   addRow("m/Link", new Link({text: "Link", href: "https://sdk.openui5.org/resources/sap/ui/core/mimes/logo/icotxt_white_220x72_blue.png"}));
   addRow("m/List(Base),ListItem(Base)", new List({items: [new StandardListItem({title: "A"}), new StandardListItem({title: "B"})]}));
   addRow("m/NavContainer", new NavContainer({height: "20px", initialPage: "navpage1", pages: [new Button("navpage1", { text: "A"}), new Button({ text: "B"})]}));
@@ -275,7 +262,7 @@ sap.ui.define([
   addRow("m/RadioButton", new RadioButton({text: "A"}));
   addRow("m/RadioButtonGroup", new RadioButtonGroup({buttons: [new RadioButton({text: "A"}), new RadioButton({text: "B"})]}));
   addRow("m/RatingIndicator", new RatingIndicator({text: "A"}));
-  addRow("m/ScrollContainer", new ScrollContainer({content: [new MButton({text: "A"})]}));
+  addRow("m/ScrollContainer", new ScrollContainer({content: [new Button({text: "A"})]}));
   addRow("m/SearchField", new SearchField({value: "A"}));
   addRow("m/SegmentedButton", new SegmentedButton({items: [new SegmentedButtonItem({text: "A"}), new SegmentedButtonItem({text: "B"})]}));
   addRow("m/Select", new Select({items: [new Item({text: "A"}), new Item({text: "B"})]}));
@@ -285,5 +272,5 @@ sap.ui.define([
   addRow("m/Text", new Text({text: "A"}));
   addRow("m/Token", new Token({text: "A"}));
   addRow("m/Tokenizer", new Tokenizer({tokens: [new Token({text: "A"}), new Token({text: "B"})]}));
-  addRow("m/Toolbar", new Toolbar({content: [new MButton({text: "A"}), new MButton({text: "B"})]}));
+  addRow("m/Toolbar", new Toolbar({content: [new Button({text: "A"}), new Button({text: "B"})]}));
 });

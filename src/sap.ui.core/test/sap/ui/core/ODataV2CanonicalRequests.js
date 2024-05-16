@@ -36,13 +36,13 @@ sap.ui.define([
 		code: "MESSAGE/CODE",
 		message: "Fatal error!",
 		severity: "error",
-		target: "('0500000000')",
+		target: "('0500000000')"
 	};
 	var oMessageSO2 = {
 		code: "MESSAGE/CODE",
 		message: "Fatal error!",
 		severity: "error",
-		target: "('0500000001')",
+		target: "('0500000001')"
 	};
 	var oMessageSO1_SOI1 = {
 		code: "MESSAGE/CODE",
@@ -98,13 +98,13 @@ sap.ui.define([
 		code: "MESSAGE/CODE",
 		message: "Bad price!",
 		severity: "error",
-		target: "Price",
+		target: "Price"
 	};
 	var oMessageName = {
 		code: "MESSAGE/CODE",
 		message: "Bad name!",
 		severity: "warning",
-		target: "Name",
+		target: "Name"
 	};
 
 	var oMessageProduct = Object.assign({ details: [oMessagePrice, oMessageName] }, oMessagePrice);
@@ -397,7 +397,7 @@ sap.ui.define([
 				header: new Text({
 					text: "GrossAmount"
 				})
-			}),
+			})
 		],
 		itemPress: function (oEvent) {
 			var oItem = oEvent.getParameter("listItem");

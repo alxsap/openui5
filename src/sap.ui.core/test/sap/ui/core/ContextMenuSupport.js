@@ -41,7 +41,7 @@ sap.ui.define([
 		  new MenuItem({ text: "Action one" }),
 		  new MenuItem({ text: "Second action", enabled: false }),
 		  new MenuItem({ text: "Action three more ..."}),
-		  new MenuItem({ text: "Fourth option" }),
+		  new MenuItem({ text: "Fourth option" })
 	  ]
   });
 
@@ -49,8 +49,7 @@ sap.ui.define([
 	  items: [
 		  new UnifiedMenuItem( { text: "Example with Unified Menu" } ),
 		  new UnifiedMenuItem( { text: "Example" } ),
-		  new UnifiedMenuItem( { text: "Example" } ),
-
+		  new UnifiedMenuItem( { text: "Example" } )
 	  ]
   });
 
@@ -61,34 +60,34 @@ sap.ui.define([
 			  id: "firstItem",
 			  title: "Monitor Locking Cable",
 			  description: "P1239123",
-			  icon: "sap-icon://laptop",
+			  icon: "sap-icon://laptop"
 		  }),
 		  new StandardListItem({
 			  title: "Laptop Case",
 			  description: "123-3123-111",
-			  icon: "sap-icon://it-host",
+			  icon: "sap-icon://it-host"
 		  }),
 		  new StandardListItem({
 			  title: "USB Stick 16Gbyte",
 			  description: "XKT-2342432432",
-			  icon: "sap-icon://it-system",
+			  icon: "sap-icon://it-system"
 		  }),
 		  new StandardListItem({
 			  title: "Deskjet Super Highspeed",
 			  description: "KTZ-23432423",
-			  icon: "sap-icon://e-learning",
+			  icon: "sap-icon://e-learning"
 		  }),
 		  new StandardListItem({
 			  id: "lastItem",
 			  title: "Laser Allround Pro",
 			  description: "554325-423",
-			  icon: "sap-icon://it-instance",
+			  icon: "sap-icon://it-instance"
 		  })
 	  ]
   });
 
   var oBasicButton = new Button({
-	  text: "Buton without a ContextMenu"
+	  text: "Button without a ContextMenu"
   });
 
   var oLeftDownButton = new Button({
@@ -114,7 +113,7 @@ sap.ui.define([
 		  oLeftDownButton,
 		  oRightDownButton
 	  ]
-  })
+  });
   oApp.addPage(oPage);
 
   oPage.setContextMenu(oPageContextMenu);

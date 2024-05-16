@@ -1,14 +1,7 @@
 // Note: the HTML page 'HTMLControl.html' loads this module via data-sap-ui-on-init
 
-sap.ui.define(["sap/ui/core/Element", "sap/ui/commons/layout/MatrixLayout", "sap/ui/commons/Button", "sap/ui/commons/TextField", "sap/ui/core/HTML", "sap/ui/commons/Dialog", "sap/ui/thirdparty/jquery"], function(Element, MatrixLayout, Button, TextField, HTML, Dialog, jQuery) {
+sap.ui.define(["sap/ui/core/Element", "sap/ui/commons/layout/MatrixLayout", "sap/m/Button", "sap/ui/layout/VerticalLayout", "sap/ui/layout/HorizontalLayout", "sap/m/Input", "sap/ui/core/HTML", "sap/m/Dialog", "sap/ui/thirdparty/jquery"], function(Element, MatrixLayout, Button, VerticalLayout, HorizontalLayout, Input, HTML, Dialog, jQuery) {
 	"use strict";
-	try{
-		sap.ui.getCore().loadLibrary("sap.ui.commons");
-	}catch(e){
-		alert("This test page requires the library 'sap.ui.commons' which is not available.");
-		throw(e);
-	}
-
 	// create the controls in the head
 	var oLayout = new MatrixLayout();
 	oLayout.setLayoutFixed(false);
@@ -43,29 +36,39 @@ sap.ui.define(["sap/ui/core/Element", "sap/ui/commons/layout/MatrixLayout", "sap
 	);
 
 	function createOuterControlTree() {
-		var oLayout = new MatrixLayout();
-		var oButton = new Button({ text: "Some Button", tooltip : "Just a sample for a SAPUI5 Control", press: function() { oTextField.setValue("" + new Date().getTime()); }});
-		var oTextField = new TextField({ value : "Some Initial Value"});
-		oLayout.createRow(oButton, oTextField);
-		var oHTML = new HTML({ id : "embedded" });
-		oLayout.createRow(oHTML);
-
-		/*var oPanel = new sap.ui.commons.Panel({
-			title : new sap.ui.core.Title({text:"A SAPUI5 Panel"}),
-			content : [oLayout]
+		var oTextField;
+		var oLayout = new VerticalLayout({
+			content: [
+				new HorizontalLayout({
+					content: [
+						new Button({
+							text: "Some Button",
+							tooltip : "Just a sample for a SAPUI5 Control",
+							press: function() {
+								oTextField.setValue("" + new Date().getTime());
+							}
+						}),
+						oTextField = new Input({
+							value : "Some Initial Value"
+						})
+					]
+				}),
+				new HTML({ id : "embedded" })
+			]
 		});
-		oPanel.placeAt("target1");*/
 
-		/**/
 		var oDialog = new Dialog({
 			title : "A SAPUI5 Dialog",
 			content: oLayout,
-			buttons : [ new Button({text:"OK"}) ],
-			showCloseButton : true
+			buttons : [
+				new Button({
+					text:"OK",
+					press: () => oDialog.destroy()
+				})
+			]
 		});
-		// oDialog.placeAt("target1")
 		oDialog.open();
-		/**/
+
 	}
 
 	var delta = 10;
@@ -74,10 +77,12 @@ sap.ui.define(["sap/ui/core/Element", "sap/ui/commons/layout/MatrixLayout", "sap
 		var oButton = new Button({
 			text: "Inner Button", tooltip : "Just a sample for a SAPUI5 Control",
 			press: function() {
-				delta = delta <= 2 ? 2 : delta-1;
+				delta = delta <= 2 ? 2 : delta - 1;
 			}});
 		oButton.placeAt(jQuery(".x").get(0));
 	}
+
+	var d;
 
 	function animate() {
 		var html5 = jQuery("#embedded");
@@ -90,7 +95,9 @@ sap.ui.define(["sap/ui/core/Element", "sap/ui/commons/layout/MatrixLayout", "sap
 		var html5 = jQuery("#embedded > div");
 		html5.css("-webkit-transform", "rotateY(" + d + "deg)");
 		d = d + delta;
-		if ( d >= 360 ) d = 0;
+		if ( d >= 360 ) {
+			d = 0;
+		}
 		setTimeout(step, 50);
 	}
 

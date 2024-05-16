@@ -309,6 +309,7 @@ sap.ui.define([
 	QUnit.test("Back Button is adapted when bHideBackButton=true", async function(assert) {
 		var oAdaptOptions = {bHideBackButton: true};
 		this.oPage.setShowNavButton(true);
+		await nextUIUpdate();
 
 		Fiori20Adapter.traverse(this.oPage, oAdaptOptions);
 		await nextUIUpdate();
@@ -406,7 +407,7 @@ sap.ui.define([
 
 		var oAdaptOptions = {bCollapseHeader: true, bHideBackButton: true},
 			oModel = new JSONModel({showButton: false}),
-			oBackButton = new Button("newBackButton", {type: "Back", visible: "{/showButton}"}),
+			oBackButton = new Button("newBackButton-navButton", {visible: "{/showButton}"}),
 			oDetectedBackButton,
 			fnViewListener = function(oEvent) {
 				oDetectedBackButton = oEvent.getParameter("oBackButton");
@@ -496,7 +497,7 @@ sap.ui.define([
 
 	QUnit.test("Button visibility is post adapted", function(assert) {
 		var oAdaptOptions = {bHideBackButton: true},
-				oBackButton = new Button("newBackButton", {type: "Back", visible: false}),
+				oBackButton = new Button("newBackButton-navButton", {visible: false}),
 				oChangedBackButton,
 				fnViewListener = function(oEvent) {
 					oChangedBackButton = oEvent.getParameter("oBackButton");
@@ -585,14 +586,14 @@ sap.ui.define([
 
 		Fiori20Adapter.traverse(this.oPage, oAdaptOptions);
 		this.oPage.setCustomHeader(new Bar({
-			contentLeft: [new Button("newBackButton", {type: "Back"})],
+			contentLeft: [new Button("newBackButton-navButton")],
 			contentMiddle: [new Title("newTitle", {text: "New Title"})]
 		}));
 		await nextUIUpdate();
 
 		// Assert
-		assert.ok(jQuery("#newBackButton").hasClass("sapF2AdaptedNavigation"), "new back button is adapted");
-		assert.equal(oBackButton.getId(), "newBackButton", "back button is returned");
+		assert.ok(jQuery("#newBackButton-navButton").hasClass("sapF2AdaptedNavigation"), "new back button is adapted");
+		assert.equal(oBackButton.getId(), "newBackButton-navButton", "back button is returned");
 		assert.equal(oTitleInfo.text, "New Title", "title is returned");
 	});
 

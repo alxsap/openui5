@@ -14,7 +14,6 @@ sap.ui.define([
 
   sap.ui.controller("managedobjectmodel.example.Controller", {
 	  onInit: function(oEvent) {
-		  "use strict";
 		  var oModel = new ManagedObjectModel(this.getView());
 		  this.getView().setModel(oModel, "$ct");
 	  },
@@ -32,7 +31,7 @@ sap.ui.define([
 		  var that = this;
 		  var fn = function() {
 			  that.getView().byId("button3").detachPress(fn);
-		  }
+		  };
 		  this.getView().byId("button3").attachPress(fn);
 	  }
   });
@@ -57,12 +56,12 @@ sap.ui.define([
   input.placeAt('content');
 
   var button = new Button("button", {
-  text: "{= 'Add item number ' + ${select>/items}.length + ' to list'}",press: function() {
-	   var i= select.getItems().length + 1;
-
-	   select.addItem(new Item({key:"key" + i, text:"Text " + i}));
-  }
-});
+	  text: "{= 'Add item number ' + ${select>/items}.length + ' to list'}",
+	  press: function() {
+		   var i = select.getItems().length + 1;
+		   select.addItem(new Item({key:"key" + i, text:"Text " + i}));
+	  }
+  });
   button.setModel(oModel, "select");
-  button.placeAt("content")
+  button.placeAt("content");
 });
