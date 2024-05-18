@@ -15,7 +15,6 @@ sap.ui.define([
 	"sap/base/util/LoaderExtensions",
 	"sap/base/util/merge",
 	"sap/ui/base/ManagedObject",
-	"sap/ui/core/Control",
 	"sap/ui/core/RenderManager",
 	"sap/ui/core/XMLTemplateProcessor",
 	"sap/ui/core/cache/CacheManager",
@@ -38,7 +37,6 @@ sap.ui.define([
 		LoaderExtensions,
 		merge,
 		ManagedObject,
-		Control,
 		RenderManager,
 		XMLTemplateProcessor,
 		Cache,
@@ -55,26 +53,6 @@ sap.ui.define([
 		var RenderPrefixes = RenderManager.RenderPrefixes,
 			sXMLViewCacheError = "XMLViewCacheError",
 			notCacheRelevant = {};
-
-		/**
-		 * Dummy control for after rendering notification before onAfterRendering of
-		 * child controls of the XMLView is called
-		 *
-		 * @extends sap.ui.core.Control
-		 * @alias sap.ui.core.mvc.XMLAfterRenderingNotifier
-		 * @private
-		 */
-		var XMLAfterRenderingNotifier = Control.extend("sap.ui.core.mvc.XMLAfterRenderingNotifier", {
-			metadata: {
-				library: "sap.ui.core"
-			},
-			renderer: {
-				apiVersion: 2,
-				render: function(oRM, oControl) {
-					oRM.text(""); // onAfterRendering is only called if control produces output
-				}
-			}
-		});
 
 		/**
 		 * Constructor for a new <code>XMLView</code>.
@@ -299,16 +277,6 @@ sap.ui.define([
 			}
 		}
 
-		function setAfterRenderingNotifier(oView) {
-			// Delegate for after rendering notification before onAfterRendering of child controls
-			oView.oAfterRenderingNotifier = new XMLAfterRenderingNotifier();
-			oView.oAfterRenderingNotifier.addDelegate({
-				onAfterRendering: function() {
-					oView.onAfterRenderingBeforeChildren();
-				}
-			});
-		}
-
 		function getRootComponent(oSrcElement) {
 			var Component = sap.ui.require("sap/ui/core/Component"),
 				oComponent;
@@ -447,7 +415,7 @@ sap.ui.define([
 						var vAdditionalData = mCacheInput.additionalData;
 						if (vAdditionalData && vAdditionalData.setAdditionalCacheData && vAdditionalData.getAdditionalCacheData) {
 							vAdditionalData.setAdditionalCacheData(mCacheOutput.additionalData);
-						} else {}
+						}
 					}
 					return mCacheOutput;
 				}
@@ -483,11 +451,8 @@ sap.ui.define([
 				// vSetResourceModel is a promise if ResourceModel is created async
 				var vSetResourceModel = setResourceModel(that, mSettings);
 				if (vSetResourceModel instanceof Promise) {
-					return vSetResourceModel.then(function() {
-						setAfterRenderingNotifier(that);
-					});
+					return vSetResourceModel;
 				}
-				setAfterRenderingNotifier(that);
 			}
 
 			function runViewxmlPreprocessor(xContent, bAsync) {
@@ -651,42 +616,6 @@ sap.ui.define([
 
 		XMLView.prototype.isSubView = function() {
 			return this._oContainingView != this;
-		};
-
-		/**
-		 * If the HTML doesn't contain own content, it tries to reproduce existing content
-		 * This is executed before the onAfterRendering of the child controls, to ensure that
-		 * the HTML is already at its final position, before additional operations are executed.
-		 */
-		XMLView.prototype.onAfterRenderingBeforeChildren = function() {
-
-			if ( this._$oldContent.length !== 0 ) {
-				// Log.debug("after rendering for " + this);
-
-				// move DOM of children into correct place in preserved DOM
-				var aChildren = this.getAggregation("content");
-				if ( aChildren ) {
-					for (var i = 0; i < aChildren.length; i++) {
-
-						// Get current DOM of the child or the invisible placeholder for it.
-						// For children that do DOM preservation on their own, use the temporary DOM,
-						// they'll move their old DOM themselves
-						var oNewChildDOM =
-								document.getElementById(RenderPrefixes.Temporary + aChildren[i].getId())
-								|| aChildren[i].getDomRef()
-								|| document.getElementById(RenderPrefixes.Invisible + aChildren[i].getId());
-
-						// if such DOM exists, replace the placeholder in the view's DOM with it
-						if ( oNewChildDOM ) {
-							jQuery(document.getElementById(RenderPrefixes.Dummy + aChildren[i].getId())).replaceWith(oNewChildDOM);
-						} // otherwise keep the dummy placeholder
-					}
-				}
-				// move preserved DOM into place
-				// Log.debug("moving preserved dom into place for " + this);
-				jQuery(document.getElementById(RenderPrefixes.Temporary + this.getId())).replaceWith(this._$oldContent);
-			}
-			this._$oldContent = undefined;
 		};
 
 		XMLView.prototype._onChildRerenderedEmpty = function(oControl, oElement) {

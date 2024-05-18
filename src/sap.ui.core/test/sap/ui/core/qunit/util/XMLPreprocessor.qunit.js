@@ -603,7 +603,7 @@ sap.ui.define([
 							}, 0); // simulate AMD
 						});
 				}
-			} else {}
+			}
 		},
 
 		/**

@@ -1201,16 +1201,14 @@ sap.ui.define([
 								StashedControlSupport.createStashedControl({
 									wrapperId: sControlId,
 									fnCreate: function(bSync) {
-										try {
-											setUI5Attribute(oStashedNode, "unstash");
-											const vUnstashedControl = handleChild(node, oStashedNode, {
-												aggregation: oAggregation,
-												allAggregations: mAggregations,
-												chain: SyncPromise.resolve(oRequireContext),
-												closestBinding: oClosestBinding
-											});
-											return vUnstashedControl;
-										} finally {}
+										setUI5Attribute(oStashedNode, "unstash");
+										const vUnstashedControl = handleChild(node, oStashedNode, {
+											aggregation: oAggregation,
+											allAggregations: mAggregations,
+											chain: SyncPromise.resolve(oRequireContext),
+											closestBinding: oClosestBinding
+										});
+										return vUnstashedControl;
 									}
 								});
 							};

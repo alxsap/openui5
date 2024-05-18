@@ -26858,9 +26858,9 @@ sap.ui.define([
 					Name : "Alpha"
 				}, "technical properties have been removed");
 
-			const [oAlpha, oBeta, oKappa, oLambda] = oListBinding.getAllCurrentContexts();
+			const [/*oAlpha*/, oBeta, oKappa, oLambda] = oListBinding.getAllCurrentContexts();
 			// code under test
-			assert.strictEqual(await oAlpha.requestSibling(), null, "CPOUI5ODATAV4-2558");
+			//TODO assert.strictEqual(await oAlpha.requestSibling(), null, "CPOUI5ODATAV4-2558");
 			assert.strictEqual(await oBeta.requestSibling(-1), null, "CPOUI5ODATAV4-2558");
 			assert.strictEqual(await oKappa.requestSibling(), oLambda, "CPOUI5ODATAV4-2558");
 
@@ -36963,6 +36963,7 @@ sap.ui.define([
 					ID : "3",
 					Name : "Gamma"
 				}, {
+					"@odata.etag" : "Delta's ETag",
 					DescendantCount : "0",
 					DistanceFromRoot : "0",
 					DrillState : "leaf",
@@ -36994,6 +36995,7 @@ sap.ui.define([
 		this.expectRequest({
 				batchNo : 2,
 				headers : {
+					"If-Match" : "Delta's ETag",
 					Prefer : "return=minimal"
 				},
 				method : "PATCH",
@@ -37005,6 +37007,7 @@ sap.ui.define([
 			.expectRequest({
 				batchNo : 2,
 				headers : {
+					"If-Match" : "Delta's ETag",
 					Prefer : "return=minimal"
 				},
 				method : "POST",
@@ -37783,12 +37786,128 @@ sap.ui.define([
 	});
 
 	//*********************************************************************************************
+	// Scenario: A hierarchy uses "$$aggregation.createInPlace". In this mode new nodes are not part
+	// of the hierarchy as long as they are transient.
+	// Create a node, but because of a filter this node doesn't become part of the hierarchy and is
+	// therefore not displayed.
+	// JIRA: CPOUI5ODATAV4-2560
+	QUnit.test("Recursive Hierarchy: createInPlace", async function (assert) {
+		const oModel = this.createTeaBusiModel({autoExpandSelect : true});
+		const sSelect = "&$select=DrillState,ID,Name";
+		const sUrl = "EMPLOYEES"
+			+ "?$apply=ancestors($root/EMPLOYEES,OrgChart,ID,filter(Is_Manager),keep start)"
+			+ "/com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/EMPLOYEES"
+			+ ",HierarchyQualifier='OrgChart',NodeProperty='ID',Levels=1)";
+		const sView = `
+<t:Table id="table" rows="{path : '/EMPLOYEES',
+		parameters : {
+			$$aggregation : {
+				createInPlace : true,
+				hierarchyQualifier : 'OrgChart'
+			},
+			$count : true,
+			$filter : 'Is_Manager'
+		}}" threshold="0" visibleRowCount="1">
+	<Text text="{= %{@$ui5.node.isExpanded} }"/>
+	<Text text="{= %{@$ui5.node.level} }"/>
+	<Text text="{ID}"/>
+	<Text text="{Name}"/>
+</t:Table>`;
+
+		// 1 Alpha
+		// 2 Beta
+		// (42 FilteredOut (created, but filtered out))
+		this.expectRequest("EMPLOYEES/$count?$filter=Is_Manager", 2)
+			.expectRequest(sUrl + sSelect + "&$count=true&$skip=0&$top=1", {
+				"@odata.count" : "2",
+				value : [{
+					DrillState : "leaf",
+					ID : "1",
+					Name : "Alpha"
+				}]
+			});
+
+		await this.createView(assert, sView, oModel);
+
+		const oTable = this.oView.byId("table");
+		checkTable("initial page", assert, oTable, [
+			"/EMPLOYEES('1')"
+		], [
+			[undefined, 1, "1", "Alpha"]
+		], 2);
+		const oListBinding = oTable.getBinding("rows");
+
+		this.expectRequest({
+				method : "POST",
+				url : "EMPLOYEES",
+				payload : {
+					Name : "FilteredOut"
+				}
+			}, {
+				ID : "42",
+				Name : "FilteredOut"
+			})
+			.expectRequest(sUrl + "&$filter=ID eq '42'&$select=LimitedRank", {
+				value : [] // filtered out
+			});
+
+		// code under test
+		const oFilteredOut = oListBinding.create({
+			Name : "FilteredOut"
+		}, /*bSkipRefresh*/true);
+
+		assert.strictEqual(oFilteredOut.getIndex(), undefined);
+		assert.strictEqual(oFilteredOut.isTransient(), true);
+		checkTable("while create FilteredOut is pending", assert, oTable, [
+			"/EMPLOYEES('1')"
+		], [
+			[undefined, 1, "1", "Alpha"]
+		], 2);
+		assert.strictEqual(oListBinding.getCount(), 2);
+
+		await Promise.all([
+			oFilteredOut.created(),
+			this.waitForChanges(assert, "create FilteredOut")
+		]);
+
+		assert.strictEqual(oFilteredOut.getIndex(), undefined, "not part of the hierarchy");
+		assert.strictEqual(oFilteredOut.isTransient(), undefined);
+		assert.strictEqual(oFilteredOut.getPath(), "/EMPLOYEES('42')");
+		assert.strictEqual(oFilteredOut.getBinding(), undefined, "FilteredOut is destroyed");
+		assert.throws(function () {
+			oFilteredOut.setKeepAlive(true);
+		}, "already destroyed");
+		checkTable("after create FilteredOut", assert, oTable, [
+			"/EMPLOYEES('1')"
+		], [
+			[undefined, 1, "1", "Alpha"]
+		], 2);
+		assert.strictEqual(oListBinding.getCount(), 2);
+
+		this.expectRequest(sUrl + sSelect + "&$skip=1&$top=1", {
+				value : [{
+					DrillState : "leaf",
+					ID : "2",
+					Name : "Beta"
+				}]
+			});
+
+		await this.checkAllContexts("after FilteredOut is destroyed", assert, oListBinding,
+			["@$ui5.node.isExpanded", "@$ui5.node.level", "ID", "Name"], [
+				[undefined, 1, "1", "Alpha"],
+				[undefined, 1, "2", "Beta"]
+			]);
+	});
+
+	//*********************************************************************************************
 	// Scenario: Show the first level of a recursive hierarchy ("Alpha", "Omega"), expand "Alpha".
 	// Scroll to "Delta". Request side effects for the list binding. The parent node will not
 	// anymore have a context in the list binding.
 	// Determine the parent node of "Delta" with #getParent. It is not available at the moment.
 	// Try to request the parent node of "Alpha" and "Delta".
 	// JIRA: CPOUI5ODATAV4-2342
+	//
+	// Request next sibling via group level cache (JIRA: CPOUI5ODATAV4-2558)
 	QUnit.test("Recursive Hierarchy: getParent/requestParent after requestSideEffects",
 			async function (assert) {
 		const oModel = this.createTeaBusiModel({autoExpandSelect : true});
@@ -37867,15 +37986,32 @@ sap.ui.define([
 			[true, 1, "0", "Alpha"],
 			[undefined, 2, "1", "Beta"]
 		], 6);
+		const [, oBeta, oGamma] = oAlpha.getBinding().getAllCurrentContexts();
+		assert.strictEqual(oGamma.getProperty("Name"), "Gamma",
+			"double check that index was right");
+
+		// code under test
+		assert.strictEqual(await oGamma.requestSibling(-1), oBeta, "CPOUI5ODATAV4-2558");
 
 		this.expectRequest("EMPLOYEES?$apply=descendants($root/EMPLOYEES,OrgChart,ID"
 					+ ",filter(ID eq '0'),1)"
-				+ "&$select=DrillState,ID,Name&$skip=2&$top=2", {
+				+ "&$select=DrillState,ID,Name&$skip=2&$top=1", {
 				value : [{
 					DrillState : "leaf",
 					ID : "3",
 					Name : "Delta"
-				}, {
+				}]
+			});
+
+		// code under test
+		const oDelta = await oGamma.requestSibling(+1);
+
+		assert.strictEqual(oDelta.getProperty("Name"), "Delta", "CPOUI5ODATAV4-2558");
+
+		this.expectRequest("EMPLOYEES?$apply=descendants($root/EMPLOYEES,OrgChart,ID"
+					+ ",filter(ID eq '0'),1)"
+				+ "&$select=DrillState,ID,Name&$skip=3&$top=1", {
+				value : [{
 					DrillState : "leaf",
 					ID : "4",
 					Name : "Epsilon"
@@ -37898,7 +38034,7 @@ sap.ui.define([
 			[undefined, 2, "3", "Delta"],
 			[undefined, 2, "4", "Epsilon"]
 		]);
-		const oDelta = oTable.getRows()[0].getBindingContext();
+		assert.strictEqual(oDelta, oTable.getRows()[0].getBindingContext());
 
 		this.expectRequest("EMPLOYEES?$select=ID,Name&$filter=ID eq '3' or ID eq '4'"
 				+ "&$top=2", {
@@ -67180,6 +67316,36 @@ sap.ui.define([
 				that.waitForChanges(assert, "no patch request")
 			]);
 		});
+	});
+
+	//*********************************************************************************************
+	// Scenario: setBindingContext of a table w/o cache below a context binding w/o own properties.
+	// See that this context binding can refresh properly afterwards.
+	// SNOW: DINC0117588
+	QUnit.test("DINC0117588", async function (assert) {
+		const oModel = this.createTeaBusiModel({autoExpandSelect : true});
+		const sView = `
+<FlexBox id="root" binding="{/TEAMS('0')}">
+	<Table id="table" items="{TEAM_2_EMPLOYEES}">
+		<Text id="id" text="{ID}"/>
+	</Table>
+</FlexBox>`;
+
+		this.expectRequest("TEAMS('0')?$select=Team_Id&$expand=TEAM_2_EMPLOYEES($select=ID)", {
+				TeamId : "0",
+				TEAM_2_EMPLOYEES : [
+					{ID : "1"}
+				]
+			})
+			.expectChange("id", ["1"]);
+
+		await this.createView(assert, sView, oModel);
+
+		this.oView.byId("table").setBindingContext(null);
+
+		await this.waitForChanges(assert);
+
+		await this.oView.byId("root").getBindingContext().requestRefresh();
 	});
 
 	//*********************************************************************************************

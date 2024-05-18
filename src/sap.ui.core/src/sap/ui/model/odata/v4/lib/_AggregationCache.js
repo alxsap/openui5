@@ -540,6 +540,16 @@ sap.ui.define([
 		}
 		oEntityData["@$ui5.node.level"] = iLevel; // do not send via POST!
 
+		if (this.oAggregation.createInPlace) {
+			return oPromise.then(async () => {
+				_Helper.removeByPath(this.mPostRequests, sTransientPredicate, oEntityData);
+				await this.requestRank(oEntityData, oGroupLock);
+				oCache.removeElement(0, sTransientPredicate);
+
+				return oEntityData;
+			});
+		}
+
 		aElements.splice(iIndex, 0, null); // create a gap
 		this.addElements(oEntityData, iIndex, oCache); // rank is undefined!
 		aElements.$count += 1;
@@ -933,20 +943,23 @@ sap.ui.define([
 
 	/**
 	 * Returns the index in <code>this.aElements</code> for a given (limited preorder) rank where
-	 * either a node or placeholder with that rank is present and belongs to the first level cache.
+	 * either a node or placeholder with that rank is present and belongs to the given first level
+	 * or group level cache.
 	 *
 	 * @param {number} iRank
 	 *   The (limited preorder) rank of a node
+	 * @param {sap.ui.model.odata.v4.lib._CollectionCache} [oCache]
+	 *   A (group level) cache
 	 * @returns {number}
 	 *   The array index
 	 *
 	 * @private
 	 * @see #getInsertIndex
 	 */
-	_AggregationCache.prototype.findIndex = function (iRank) {
+	_AggregationCache.prototype.findIndex = function (iRank, oCache = this.oFirstLevel) {
 		return this.aElements.findIndex(
 			(oNode) => _Helper.getPrivateAnnotation(oNode, "rank") === iRank
-					&& _Helper.getPrivateAnnotation(oNode, "parent") === this.oFirstLevel);
+					&& _Helper.getPrivateAnnotation(oNode, "parent") === oCache);
 	};
 
 	/**
@@ -1096,24 +1109,28 @@ sap.ui.define([
 		function findSibling(aElements, iRank, iLevel) {
 			for (;;) {
 				iRank += iOffset;
-				if (iRank < 0 || iRank >= aElements.length
-						|| aElements[iRank]["@$ui5.node.level"] < iLevel) {
-					return null; // no such sibling
+				if (iRank < 0 || iRank >= aElements.$count) {
+					return -1; // no such sibling
+				}
+				if (!aElements[iRank]) {
+					return iRank;
+				}
+				if (aElements[iRank]["@$ui5.node.level"] < iLevel) {
+					return -1; // no such sibling
 				}
 				if (aElements[iRank]["@$ui5.node.level"] === iLevel) {
-					return aElements[iRank];
+					return iRank;
 				}
 				// else: ignore descendants
 			}
 		}
 
 		const oNode = this.aElements[iIndex];
-		const oSibling = findSibling(
-			_Helper.getPrivateAnnotation(oNode, "parent").aElements,
-			_Helper.getPrivateAnnotation(oNode, "rank"),
-			oNode["@$ui5.node.level"]);
+		const oCache = _Helper.getPrivateAnnotation(oNode, "parent");
+		const iSiblingRank = findSibling(oCache.aElements,
+			_Helper.getPrivateAnnotation(oNode, "rank"), oNode["@$ui5.node.level"]);
 
-		return oSibling ? this.aElements.indexOf(oSibling) : -1;
+		return iSiblingRank < 0 ? -1 : this.findIndex(iSiblingRank, oCache);
 	};
 
 	/**
@@ -1385,8 +1402,10 @@ sap.ui.define([
 					oSiblingNode = null;
 				}
 
-				return this.oRequestor.request("POST", sActionPath, oGroupLock.getUnlockedCopy(),
-					{Prefer : "return=minimal"}, {NextSibling : oSiblingNode});
+				return this.oRequestor.request("POST", sActionPath, oGroupLock.getUnlockedCopy(), {
+						"If-Match" : oChildNode,
+						Prefer : "return=minimal"
+					}, {NextSibling : oSiblingNode});
 			}
 		};
 
@@ -1974,7 +1993,7 @@ sap.ui.define([
 			mQueryOptions = getApply(
 				_AggregationHelper.buildApply4Hierarchy(oAggregation, this.mQueryOptions));
 		} else {
-			const oCache = _Helper.getPrivateAnnotation(oElement, "parent");
+			const oCache = _Helper.getPrivateAnnotation(oElement, "parent", this.oFirstLevel);
 			mQueryOptions = bDropFilter
 				? _AggregationHelper
 					.dropFilter(this.oAggregation, this.mQueryOptions, oCache.$parentFilter)

@@ -1057,7 +1057,7 @@ sap.ui.define("test-resources/sap/ui/table/Settings", [
 			action: function(oTable, bValue) {
 				if (oTable.isA("sap.ui.table.TreeTable")) {
 					oTable.setUseGroupMode(bValue);
-				} else {}
+				}
 			}
 		},
 		COLUMNFREEZE: {

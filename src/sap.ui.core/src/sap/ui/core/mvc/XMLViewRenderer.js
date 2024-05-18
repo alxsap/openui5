@@ -5,9 +5,8 @@
 // Provides default renderer for XMLView
 sap.ui.define([
 	'./ViewRenderer',
-	'../RenderManager',
-	"sap/ui/thirdparty/jquery"
-], function(ViewRenderer, RenderManager, jQuery) {
+	'../RenderManager'
+], function(ViewRenderer, RenderManager) {
 	"use strict";
 
 	// shortcut
@@ -26,7 +25,7 @@ sap.ui.define([
 	 * <h3>Initial Rendering</h3>
 	 *
 	 * The XMLView parses its XML representation into a sequence of strings and controls, where the strings
-	 * represent any static HTML/SVG. The individual strings in the sequence are not wellformed HTML/SVG but usually
+	 * represent any static HTML/SVG. The individual strings in the sequence are not well-formed HTML/SVG but usually
 	 * only represent a prefix or postfix of a bigger DOM tree.
 	 *
 	 * During string based rendering, the sequence is rendered into the RenderManager's buffer step by step.
@@ -35,6 +34,9 @@ sap.ui.define([
 	 * the <code>data-sap-ui-preserve</code> attribute.
 	 *
 	 * The resulting string is converted to a tree of DOM elements as usual and injected into the desired location.
+	 *
+	 * <b>Note:</b> The support of using HTML and SVG tags in XML Views is deprecated since version 1.120. There
+	 * will be no preserved content anymore without HTML and SVG tags.
 	 *
 	 * <h3>Re-rendering</h3>
 	 * Before the DOM of any UI5 control is removed from the page, it will be scanned for 'to-be-preserved' subtrees.
@@ -68,14 +70,15 @@ sap.ui.define([
 	 * @param {sap.ui.core.mvc.XMLView} oControl an object representation of the control that should be rendered
 	 */
 	XMLViewRenderer.render = function(rm, oControl) {
-		function writeRootOpenTag(bPreserve) {
+		/**
+				 * Create the root open tag.
+				 *
+				 */
+		function writeRootOpenTag() {
 			rm.openStart("div", oControl);
 			rm.class("sapUiView");
 			rm.class("sapUiXMLView");
 			ViewRenderer.addDisplayClass(rm, oControl);
-			if (bPreserve) {
-				rm.attr("data-sap-ui-preserve", oControl.getId());
-			}
 			rm.style("width", oControl.getWidth());
 			rm.style("height", oControl.getHeight());
 			rm.openEnd();
@@ -98,68 +101,24 @@ sap.ui.define([
 
 			writeRootCloseTag();
 		} else {
-			var $oldContent = oControl._$oldContent = RenderManager.findPreservedContent(oControl.getId());
-			if ($oldContent.length === 0) {
-				// Log.debug("rendering " + oControl + " anew");
-				var bSubView = oControl.isSubView();
-				if (!bSubView) {
-					// do not preserve when rendering initially in async mode
-					writeRootOpenTag(!oControl.oAsyncState || !oControl.oAsyncState.suppressPreserve /* bPreserve */);
-				}
-				if (aParsedContent) {
-					for (i = 0; i < aParsedContent.length; i++) {
-						var vRmInfo = aParsedContent[i];
-						// apply RenderManagerAPI calls which might have been recorded during XML processing for all encountered HTML elements in an XMLView
-						if (Array.isArray(vRmInfo)) {
-							rm[vRmInfo[0]].apply(rm, vRmInfo[1]);
-						} else if (!vRmInfo._isExtensionPoint) {
-							// XMLView ExtensionPoint placeholder
-							// we need to ignore these placeholders during rendering, they will be resolved asynchronously later by the flexibility provider
-							// plain UI5 Control
-							rm.renderControl(vRmInfo);
-							// when the child control did not render anything, we add a placeholder to know where to render the child later
-							if ( !vRmInfo.bOutput ) {
-								rm.openStart("div", PREFIX_DUMMY + vRmInfo.getId());
-								rm.class("sapUiHidden");
-								rm.openEnd();
-								rm.close("div");
-							}
-						}
-					}
-				}
-				if (!bSubView) {
-					writeRootCloseTag();
-				}
-
-			} else {
-
-				// render dummy control for early after rendering notification
-				rm.renderControl(oControl.oAfterRenderingNotifier);
-
-				// preserve mode: render a temporary element and all child controls
-				rm.openStart("div", PREFIX_TEMPORARY + oControl.getId());
-				rm.class("sapUiHidden");
-				rm.openEnd();
+			// Log.debug("rendering " + oControl + " anew");
+			var bSubView = oControl.isSubView();
+			if (!bSubView) {
+				writeRootOpenTag();
+			}
+			if (aParsedContent) {
 				for (i = 0; i < aParsedContent.length; i++) {
-					var vFragment = aParsedContent[i];
-					// if the parsed content does not have a corresponding _renderManagerAPICall, it's a control
-					if (!Array.isArray(vFragment) && !vFragment._isExtensionPoint) {
-						// render DOM string for child control
-						rm.renderControl(vFragment);
-
-						// replace any old DOM (or invisible placeholder) for a child control with a dummy placeholder
-						var sFragmentId = vFragment.getId(),
-							$fragment = jQuery(document.getElementById(sFragmentId));
-						if ($fragment.length == 0) {
-							$fragment = jQuery(document.getElementById(PREFIX_INVISIBLE + sFragmentId));
-						}
-						if ( !RenderManager.isPreservedContent($fragment[0]) ) {
-							$fragment.replaceWith('<div id="' + PREFIX_DUMMY + sFragmentId + '" class="sapUiHidden"></div>');
-						}
+					var vRmInfo = aParsedContent[i];
+					if (!vRmInfo._isExtensionPoint) {
+						// XMLView ExtensionPoint placeholder
+						// we need to ignore these placeholders during rendering, they will be resolved asynchronously later by the flexibility provider
+						// plain UI5 Control
+						rm.renderControl(vRmInfo);
 					}
 				}
-				rm.close("div");
-
+			}
+			if (!bSubView) {
+				writeRootCloseTag();
 			}
 		}
 	};
