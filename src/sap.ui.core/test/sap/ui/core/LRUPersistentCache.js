@@ -14,7 +14,7 @@ sap.ui.define(["sap/ui/core/cache/CacheManager"], function (oCache) {
 		}).then(function () {
 			document.getElementById("output").innerHTML = output;
 		});
-	}
+	};
 
 	globalThis.getEntry = function(idKey) {
 		var key = document.getElementById(idKey).value,
@@ -26,7 +26,7 @@ sap.ui.define(["sap/ui/core/cache/CacheManager"], function (oCache) {
 		}).then(function () {
 			document.getElementById("output").innerHTML = output;
 		});
-	}
+	};
 
 	globalThis.addLargeEntry = function() {
 		var oValue = m1;//came from the large script
@@ -39,7 +39,7 @@ sap.ui.define(["sap/ui/core/cache/CacheManager"], function (oCache) {
 		}).then(function () {
 			document.getElementById("output").innerHTML = output;
 		});
-	}
+	};
 
 	globalThis.delFilters = function() {
 		var oOptions = {};
@@ -47,7 +47,7 @@ sap.ui.define(["sap/ui/core/cache/CacheManager"], function (oCache) {
 		var iTimestamp;
 
 		if (oInputTimestamp.value) {
-			iTimestamp = parseInt(oInputTimestamp.value, 10);
+			iTimestamp = parseInt(oInputTimestamp.value);
 
 			if (!isNaN(iTimestamp)) {
 				oOptions.olderThan = new Date(iTimestamp);
@@ -57,5 +57,5 @@ sap.ui.define(["sap/ui/core/cache/CacheManager"], function (oCache) {
 		oOptions.prefix = document.getElementById("prefix").value;
 
 		oCache.delWithFilters(oOptions);
-	}
+	};
 });

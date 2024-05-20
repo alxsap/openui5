@@ -22,7 +22,7 @@ sap.ui.define([
 				header: new Text({
 					text: "Value"
 				})
-			}),
+			})
 		]
 	}).placeAt("content");
 
@@ -39,7 +39,7 @@ sap.ui.define([
 					}),
 					new Text({
 						text: mAllParameters[name]
-					}),
+					})
 				]
 			});
 			oList.addItem(oItem);

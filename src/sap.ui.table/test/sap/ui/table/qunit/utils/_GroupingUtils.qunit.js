@@ -1,4 +1,4 @@
-/*global QUnit, sinon, oTable */
+/*global QUnit, sinon */
 
 sap.ui.define([
 	"sap/ui/table/qunit/TableQUnitUtils",

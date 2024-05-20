@@ -11,7 +11,7 @@
  * might break in future releases.
  */
 
-/*global sap:true, Blob, console, document, Promise, URL, XMLHttpRequest */
+/*global sap:true, Blob, console, document, Promise, URL */
 
 (function(__global) {
 	"use strict";

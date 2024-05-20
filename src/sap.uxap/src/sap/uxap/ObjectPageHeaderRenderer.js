@@ -333,9 +333,7 @@ sap.ui.define(["./ObjectImageHelper", "sap/ui/Device"], function (ObjectImageHel
 	 *
 	 * @private
 	 */
-	ObjectPageHeaderRenderer._renderMarkers = function (oRm, oControl) {
-		var aIcons = [];
-	};
+	ObjectPageHeaderRenderer._renderMarkers = function (oRm, oControl) {};
 
 	/**
 	 * Renders hidden div with ARIA descriptions of the favorite and flag icons.

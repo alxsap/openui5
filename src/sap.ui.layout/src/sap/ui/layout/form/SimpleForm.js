@@ -35,7 +35,6 @@ sap.ui.define([
 	var SimpleFormLayout = library.form.SimpleFormLayout;
 
 	var ResponsiveLayout;
-	var ResponsiveFlowLayoutData;
 	var ResponsiveGridLayout;
 	var ColumnLayout;
 	var ResizeHandler;

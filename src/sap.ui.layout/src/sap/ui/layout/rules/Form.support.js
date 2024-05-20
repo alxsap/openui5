@@ -64,7 +64,7 @@ var oFormResponsiveLayoutRule = {
 	check: function (oIssueManager, oCoreFacade, oScope) {
 		oScope.getElementsByClassName("sap.ui.layout.form.Form")
 			.forEach(function (oForm) {
-			var oLayout = oForm.getLayout();
+			oForm.getLayout();
 		});
 	}
 };

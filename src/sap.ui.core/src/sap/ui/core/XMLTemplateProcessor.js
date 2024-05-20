@@ -2,7 +2,7 @@
  * ${copyright}
  */
 
-/*global HTMLTemplateElement, Promise */
+/*global Promise */
 
 sap.ui.define([
 	'sap/ui/base/DataType',

@@ -437,7 +437,7 @@ sap.ui.define([
 		oToolbar.addContent(oButton);
 	});
 
-	var oBindingInfo = oTable.getBindingInfo("rows");
+	oTable.getBindingInfo("rows");
 
 	new VBox({
 		width: "100%",

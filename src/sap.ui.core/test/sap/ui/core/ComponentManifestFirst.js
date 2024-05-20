@@ -1,11 +1,12 @@
 sap.ui.define([
+  "sap/ui/core/mvc/Controller",
   "sap/ui/model/json/JSONModel",
   "sap/ui/core/ComponentContainer",
   "sap/ui/base/Object",
   "sap/ui/thirdparty/jquery",
   "sap/ui/core/Component",
   "sap/ui/core/mvc/XMLView"
-], function(JSONModel, ComponentContainer, BaseObject, jQuery) {
+], function(Controller, JSONModel, ComponentContainer, BaseObject, jQuery) {
   "use strict";
   // Note: the HTML page 'ComponentManifestFirst.html' loads this module via data-sap-ui-on-init
 
@@ -96,9 +97,23 @@ sap.ui.define([
 
   //************* Config UI & LOGIC *******************************************
 
+  var MyController = Controller.extend("MyController", {
+	  onLoadComponent() {
+		  if (oComp && BaseObject.isObjectA(oComp, "sap.ui.core.Component")) {
+			  oComp.destroy();
+			  oCompCont.destroy();
+		  };
+		  initComponents();
+	  },
+	  selectChange(oEvent) {
+		  selectManifest(oEvent.getSource().getSelectedKey());
+	  }
+  });
+
   // View Creation
   var oManifestModel = new JSONModel(mModel);
   var oMainView = new sap.ui.xmlview({
+	  controller: new MyController(),
 	  viewContent: jQuery("#viewSource").html()
   });
   oMainView.setModel(oManifestModel);

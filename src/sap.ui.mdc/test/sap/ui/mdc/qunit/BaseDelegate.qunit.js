@@ -1,4 +1,4 @@
-/* global QUnit, sinon*/
+/* global QUnit*/
 
 sap.ui.define([
 	"sap/ui/mdc/BaseDelegate", "sap/ui/mdc/DefaultTypeMap"

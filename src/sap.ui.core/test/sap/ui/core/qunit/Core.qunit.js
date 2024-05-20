@@ -1,4 +1,4 @@
-/*global QUnit, sinon, testlibs */
+/*global QUnit */
 sap.ui.define([
 	'sap/base/i18n/Localization',
 	'sap/ui/Device',

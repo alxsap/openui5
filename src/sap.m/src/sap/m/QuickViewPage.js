@@ -76,9 +76,6 @@ sap.ui.define([
 	// shortcut for sap.m.ButtonType
 	var ButtonType = library.ButtonType;
 
-	// shortcut for sap.m.AvatarShape
-	var AvatarShape = library.AvatarShape;
-
 	// shortcut for sap.m.EmptyIndicator
 	var EmptyIndicatorMode = library.EmptyIndicatorMode;
 
@@ -636,8 +633,7 @@ sap.ui.define([
 	};
 
 	QuickViewPage.prototype._getAvatar = function () {
-		var oAvatar = null,
-			sIcon = undefined;
+		var oAvatar = null;
 
 		if (this.getAvatar()) {
 			// Copy the values of properties directly, don't clone bindings,

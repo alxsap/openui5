@@ -187,7 +187,7 @@ sap.ui.define([
 	  new Button({ text: "Toggle All", press: toggleAllVisible })
   );
 
-  oLayout.getRows()[0].addStyleClass("firstRow")
+  oLayout.getRows()[0].addStyleClass("firstRow");
 
   oLayout.placeAt("uiArea1");
 

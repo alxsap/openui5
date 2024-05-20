@@ -1,7 +1,11 @@
 // Note: the HTML page 'Popup.html' loads this module via data-sap-ui-on-init
 
-sap.ui.define(["sap/ui/core/Popup", "sap/ui/thirdparty/jquery"], function(Popup, jQuery) {
-	"use strict";
+sap.ui.define([
+	"sap/ui/core/Popup",
+	"sap/ui/thirdparty/jquery"
+], function(Popup, jQuery) {
+	"use strict"
+
 	globalThis.openAnim = function($Ref, iDuration, fnCallback) {
 	  $Ref.slideDown(iDuration, fnCallback);
 	};
@@ -20,10 +24,12 @@ sap.ui.define(["sap/ui/core/Popup", "sap/ui/thirdparty/jquery"], function(Popup,
 			if (oWithinArea !== window) {
 				oOf = oWithinArea;
 			}
+			//eslint-disable-next-line no-alert -- use alert to avoid conflict with UI5 popups
 			alert("Click the green rectangle to close the popup!");
 		}
 
 		if (popup) {
+			//eslint-disable-next-line no-alert -- use alert to avoid conflict with UI5 popups
 			alert("This test page only allows one open popup at a time");
 			return;
 		}
@@ -33,7 +39,7 @@ sap.ui.define(["sap/ui/core/Popup", "sap/ui/thirdparty/jquery"], function(Popup,
 		popup = new Popup(element, bModal, true, bAutoClose);
 		popup.attachClosed(popupClosed);
 		if (fnOpenAnim || fnCloseAnim) {
-			popup.setAnimations(openAnim, fnCloseAnim);
+			popup.setAnimations(fnOpenAnim, fnCloseAnim);
 		}
 
 		if (bNotCenter) {

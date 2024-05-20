@@ -4,15 +4,9 @@
 
 // Provides default renderer for XMLView
 sap.ui.define([
-	'./ViewRenderer',
-	'../RenderManager'
-], function(ViewRenderer, RenderManager) {
+	'./ViewRenderer'
+], function(ViewRenderer) {
 	"use strict";
-
-	// shortcut
-	var PREFIX_DUMMY = RenderManager.RenderPrefixes.Dummy,
-		PREFIX_INVISIBLE = RenderManager.RenderPrefixes.Invisible,
-		PREFIX_TEMPORARY = RenderManager.RenderPrefixes.Temporary;
 
 	/**
 	 * Renderer for an XMLView.
@@ -124,5 +118,4 @@ sap.ui.define([
 	};
 
 	return XMLViewRenderer;
-
 });
