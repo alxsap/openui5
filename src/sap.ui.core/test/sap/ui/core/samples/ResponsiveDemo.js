@@ -92,7 +92,7 @@ sap.ui.define([
 	  } else if (sTitle.indexOf("Cellphone") >= 0 || sTitle.indexOf("PDA") >= 0) {
 		  oProduct.category = "Mobile";
 	  }
-	  oProduct.image = "../images/"+oProduct.category+".png";
+	  oProduct.image = "../images/" + oProduct.category + ".png";
 	  data.products.push(oProduct);
   }
 
@@ -106,7 +106,7 @@ sap.ui.define([
 	  }
 	  data.selectionIdx = -1;
 
-	  if (idx >=0 && idx < data.products.length) {
+	  if (idx >= 0 && idx < data.products.length) {
 		  data.products[idx].selected = true;
 		  data.selectionIdx = idx;
 	  }
@@ -150,7 +150,7 @@ sap.ui.define([
 
 	  var mobile = aInfo[1];
 
-	  function init(){
+	  function init() {
 		  currentControl = aInfo[0];
 		  var ctrl;
 		  if (!currentMobile) {
@@ -165,7 +165,7 @@ sap.ui.define([
 		  if (!uiArea || uiArea.getContent()[0] != ctrl) {
 			  ctrl.placeAt("root", "only");
 		  }
-	  };
+	  }
 
 	  if (currentMobile === null || currentMobile != mobile) {
 		  sap.ui.require(["sap/ui/core/Theming"], function(Theming) {
@@ -188,7 +188,7 @@ sap.ui.define([
   }
 
 
-  function initializeTable(){
+  function initializeTable() {
 	  if (oTable) {
 		  oTable.__refresh();
 		  return [oTable, false];
@@ -196,8 +196,8 @@ sap.ui.define([
 
 	  oTable = new Table({
 		  selectionMode: "Single",
-		  rowSelectionChange: function(oEvent){
-			  if(!oTable.__ignoreSelectionChange){
+		  rowSelectionChange: function(oEvent) {
+			  if (!oTable.__ignoreSelectionChange) {
 				  select(oEvent.getParameter("rowIndex"));
 			  }
 		  },
@@ -236,18 +236,18 @@ sap.ui.define([
   }
 
 
-  function initializeDataset(bSingleRow){
+  function initializeDataset(bSingleRow) {
 	  if (oDataSet) {
 		  oDataSet.__refresh(true, bSingleRow);
 		  return [oDataSet, false];
 	  }
 
-	  Control.extend("ItemLayout", {
+	  const ItemLayout = Control.extend("ItemLayout", {
 		  metadata : {
 			  aggregations : {
 				  "link" : {type : "sap.m.Link", multiple : false},
 				  "image" : {type : "sap.m.Image", multiple : false},
-				  "form" : {type : "sap.ui.layout.form.Form", multiple : false},
+				  "form" : {type : "sap.ui.layout.form.Form", multiple : false}
 			  }
 		  },
 
@@ -335,7 +335,7 @@ sap.ui.define([
 				  ]
 			  })
 		  });
-	  };
+	  }
 
 	  var oResponsiveView = new DataSetSimpleView({
 		  floating: true,
@@ -367,7 +367,7 @@ sap.ui.define([
 	  oDataSet.setModel(oModel);
 
 	  oDataSet.__refresh = function(bChangeCurrentView, bSingleRow){
-		  if(bChangeCurrentView){
+		  if (bChangeCurrentView) {
 			  this.setSelectedView(bSingleRow ? oDataSet.getViews()[1] : oDataSet.getViews()[0]);
 		  }
 		  this.getBinding("items").filter(currentFilter);
@@ -380,7 +380,7 @@ sap.ui.define([
   }
 
 
-  function initializeList(){
+  function initializeList() {
 	  if (oApp) {
 		  oApp.__refresh();
 		  return [oApp, true];
@@ -434,7 +434,7 @@ sap.ui.define([
   }
 
 
-  function initializeShell(){
+  function initializeShell() {
 	  if (oShell) {
 		  return oShell;
 	  }
@@ -461,5 +461,6 @@ sap.ui.define([
 
 	  return oShell;
   }
+
   Device.media.initRangeSet('myPoints', aPoints);
 });

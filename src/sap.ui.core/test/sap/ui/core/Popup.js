@@ -4,7 +4,7 @@ sap.ui.define([
 	"sap/ui/core/Popup",
 	"sap/ui/thirdparty/jquery"
 ], function(Popup, jQuery) {
-	"use strict"
+	"use strict";
 
 	globalThis.openAnim = function($Ref, iDuration, fnCallback) {
 	  $Ref.slideDown(iDuration, fnCallback);

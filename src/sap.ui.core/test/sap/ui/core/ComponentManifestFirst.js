@@ -102,7 +102,7 @@ sap.ui.define([
 		  if (oComp && BaseObject.isObjectA(oComp, "sap.ui.core.Component")) {
 			  oComp.destroy();
 			  oCompCont.destroy();
-		  };
+		  }
 		  initComponents();
 	  },
 	  selectChange(oEvent) {
@@ -180,7 +180,7 @@ sap.ui.define([
 			  break;
 		  default:
 			  manifirst = false;
-	  };
+	  }
 
 	  var oConfig = {
 		  manifestUrl: manifirst ? undefined : "anylocation/manifest.json",

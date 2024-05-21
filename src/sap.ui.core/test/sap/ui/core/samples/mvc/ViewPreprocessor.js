@@ -1,15 +1,23 @@
 sap.ui.define([
+  "sap/m/MessageBox",
   "sap/ui/core/mvc/XMLView",
   "sap/m/Button"
-], async function(XMLView, Button) {
+], async function(MessageBox, XMLView, Button) {
   "use strict";
-  // Note: the HTML page 'ViewPreprocessor.html' loads this module via data-sap-ui-on-init
+
+  function ui5Alert(text) {
+	  return new Promise((resolve) => {
+		  MessageBox.show(text, {
+			  onClose: resolve
+		  });
+	  });
+  }
 
   // Define sample preprocessor functions
   var fnXmlPreprocessor = function(xml, info, settings) {
 	  return new Promise(function(resolve) {
-		  setTimeout(function() {
-			  alert(info.id + ": " + settings.message);
+		  setTimeout(async function() {
+			  await ui5Alert(info.id + ": " + settings.message);
 			  // Convert apples to oranges
 			  var sXml = new XMLSerializer().serializeToString(xml);
 			  sXml = sXml.replace("apple", "orange");
@@ -19,16 +27,16 @@ sap.ui.define([
   },
   fnControlPreprocessor = function(controls, info, settings) {
 	  return new Promise(function(resolve) {
-		  setTimeout(function() {
-			  alert(info.id + ": " + settings.message);
+		  setTimeout(async function() {
+			  await ui5Alert(info.id + ": " + settings.message);
 			  // Some manipulation of the control tree
 			  var oPanel = controls.getContent()[0];
 			  oPanel.removeAllContent();
 			  oPanel.addContent(new Button({
 				  text: "Apple View",
 				  icon: "sap-icon://nutrition-activity",
-				  press: function() {
-					  alert("Fruit alert!");
+				  press: async function() {
+					  await ui5Alert("Fruit alert!");
 				  }
 			  }));
 			  resolve(/*return value is irrelevant for 'controls'*/);

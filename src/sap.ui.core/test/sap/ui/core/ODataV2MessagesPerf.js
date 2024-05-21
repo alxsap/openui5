@@ -96,7 +96,7 @@ sap.ui.define([
 		fnCheckDataState.apply(this, arguments);
 		Measurement.end("cd" + j);
 		null.setData(Measurement.getAllMeasurements());
-	}
+	};
 	var oTable = new Table({ // create Table UI
 		columns : [
 			{label: "Measure Id", template: new Text({text:"{measure>id}"})},
@@ -108,13 +108,13 @@ sap.ui.define([
 	oTable.bindRows({path: "measure>/"}); // bind the rows against a certain root-level collection in the service
 	oTable.placeAt("measure"); // place Table onto UI*/$
 
-	var oButton = new Button({text: 'force checkUpdate', press: function() {
+	new Button({text: 'force checkUpdate', press: function() {
 	   oModel.checkUpdate(true);
 	}}).placeAt("measure");
-	var oButton = new Button({text: 'update data', press: function() {
+	new Button({text: 'update data', press: function() {
 		oModel.setProperty("/SalesOrderSet(0)/id", "SalesOrderSet(0er)");
 	}}).placeAt("measure");
-	var oButton = new Button({text: 'refresh data', press: function() {
+	new Button({text: 'refresh data', press: function() {
 		oTable.getBinding("items").refresh();
 	}}).placeAt("measure");
 	// create a List control

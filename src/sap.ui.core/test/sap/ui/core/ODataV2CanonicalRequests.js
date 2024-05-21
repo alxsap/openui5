@@ -312,7 +312,7 @@ sap.ui.define([
 					}),
 					new Text({
 						text: "{GrossAmount}"
-					}),
+					})
 				],
 				type: "Navigation"
 			})
@@ -337,7 +337,7 @@ sap.ui.define([
 				header: new Text({
 					text: "GrossAmount"
 				})
-			}),
+			})
 		],
 		itemPress: function (oEvent) {
 			var oItem = oEvent.getParameter("listItem");
@@ -372,7 +372,7 @@ sap.ui.define([
 					}),
 					new Text({
 						text: "{GrossAmount}"
-					}),
+					})
 				],
 				type: "Navigation"
 			})

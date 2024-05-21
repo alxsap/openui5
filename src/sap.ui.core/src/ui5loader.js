@@ -1527,14 +1527,7 @@
 
 		// check if module has been loaded already
 		if ( oModule.state !== INITIAL ) {
-
 			let bExecutedNow = false;
-
-			if ( oModule.state === EXECUTING && oModule.data != null && false && oModule.async ) {
-				oModule.state = PRELOADED;
-				oModule.async = true;
-				oModule.pending = null; // TODO or is this still needed ?
-			}
 
 			if ( oModule.state === PRELOADED ) {
 				oModule.state = LOADED;

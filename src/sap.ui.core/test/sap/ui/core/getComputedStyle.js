@@ -5,6 +5,7 @@ sap.ui.define([
   // Note: the HTML page 'getComputedStyle.html' loads this module via data-sap-ui-on-init
 
   var style = window.getComputedStyle(document.documentElement);
+  //eslint-disable-next-line no-console -- there's no alternative in <head>
   console.log("style >> " + style);
   var oCarousel = new Carousel();
   oCarousel.placeAt("content");

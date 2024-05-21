@@ -291,8 +291,7 @@ sap.ui.define([
 				  oDragSession.setDropControl(oHeaderToolbar);
 			  },
 			  dragOver: function(oEvent) {
-				  var oBrowserEvent = oEvent.getParameter("browserEvent");
-				  oBrowserEvent.metaKey || oBrowserEvent.ctrlKey;
+				  oEvent.getParameter("browserEvent");
 			  },
 			  drop: function(oEvent) {
 				  var oDraggedItem = oEvent.getParameter("draggedControl");

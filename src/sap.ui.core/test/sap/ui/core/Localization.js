@@ -1,15 +1,14 @@
 sap.ui.define([
-  "sap/ui/core/Supportability",
   "sap/base/i18n/Localization",
+  "sap/m/MessageBox",
+  "sap/ui/core/Supportability",
   "sap/ui/layout/form/SimpleForm",
   "sap/m/Title",
   "sap/m/Label",
   "sap/m/Input",
   "sap/ui/model/resource/ResourceModel"
-], function(Supportability, Localization, SimpleForm, Title, Label, Input, ResourceModel) {
+], function(Localization, MessageBox, Supportability, SimpleForm, Title, Label, Input, ResourceModel) {
   "use strict";
-  // Note: the HTML page 'Localization.html' loads this module via data-sap-ui-on-init
-
   function showInfo() {
 	  var mInfo = this.getOriginInfo("text"),
 		  sText = "Info:\n";
@@ -21,7 +20,7 @@ sap.ui.define([
 	  } else {
 		  sText += "Not available!";
 	  }
-	  alert(sText);
+	  MessageBox.show(sText);
   }
 
   var sLocale = Localization.getLanguage();
