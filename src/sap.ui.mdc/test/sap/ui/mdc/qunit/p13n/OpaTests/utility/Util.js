@@ -11,11 +11,10 @@
  * @since 1.30.0
  */
 sap.ui.define([
-	"sap/base/i18n/ResourceBundle",
 	'sap/ui/base/Object',
 	'sap/ui/core/Lib',
 	'sap/ui/Device'
-], function(ResourceBundle, BaseObject, Library, Device) {
+], function(BaseObject, Library, Device) {
 	"use strict";
 
 	const Util = BaseObject.extend("sap.ui.mdc.qunit.p13n.test.Util",
@@ -52,9 +51,7 @@ sap.ui.define([
 	};
 
 	Util.getTextOfChartType = function(sChartType) {
-		const oBundle = ResourceBundle.create({
-			bundleName: "sap.chart.messages.messagebundle"
-		});
+		const oBundle = Library.getResourceBundleFor("sap.chart");
 		return oBundle.getText("info/" + sChartType);
 	};
 

@@ -123,6 +123,7 @@ sap.ui.define([
 				page: "test-resources/sap/m/qunit/CSSClassesFromParameters.qunit.html",
 				title: "QUnit Page for Theme-dependent CSS Classes",
 				ui5: {
+					theme: "sap_horizon"
 				}
 			},
 

@@ -113,7 +113,7 @@ sap.ui.define([
 	});
 
 	// Test fails in Safari, skip until fixed
-	QUnit[Device.browser.safari ? "skip" : "test"]("Horizontal scrollbar position", function(assert) {
+	QUnit[Device.browser.safari ? "skip" : "test"]("Horizontal scrollbar position", async function(assert) {
 		const oTable = this.oTable;
 		const oScrollExtension = oTable._getScrollExtension();
 		const oHSb = oScrollExtension.getHorizontalScrollbar();
@@ -122,13 +122,15 @@ sap.ui.define([
 		const oHSbContentComputedStyle = window.getComputedStyle(oHSbContent);
 
 		oTable.invalidate();
-		nextUIUpdate.runSync()/*context not obviously suitable for an async function*/;
+		await oTable.qunit.whenRenderingFinished();
+
 		assert.strictEqual(oHSbComputedStyle.marginLeft, "48px", "Left margin");
 		assert.strictEqual(oHSbComputedStyle.marginRight, "17px", "Right margin");
 		assert.strictEqual(oHSbContentComputedStyle.width, "800px", "Scroll range");
 
 		oTable.getColumns()[0].setWidth("10px");
-		nextUIUpdate.runSync()/*context not obviously suitable for an async function*/;
+		await oTable.qunit.whenRenderingFinished();
+
 		assert.strictEqual(oHSb.style.marginLeft, "", "Scrollbar hidden: Left margin");
 		assert.strictEqual(oHSb.style.marginRight, "", "Scrollbar hidden: Right margin");
 		assert.strictEqual(oHSbContent.style.width, "", "Scrollbar hidden: Scroll range");
@@ -138,7 +140,8 @@ sap.ui.define([
 		oTable.setFixedColumnCount(1);
 		oTable.setRowActionCount(2);
 		oTable.setRowActionTemplate(TableQUnitUtils.createRowAction(null));
-		nextUIUpdate.runSync()/*context not obviously suitable for an async function*/;
+		await oTable.qunit.whenRenderingFinished();
+
 		assert.strictEqual(oHSbComputedStyle.marginLeft, "88px", "Fixed columns and row actions: Left margin");
 		assert.strictEqual(oHSbComputedStyle.marginRight, "91px", "Fixed columns and row actions: Right margin");
 		assert.strictEqual(oHSbContentComputedStyle.width, "500px", "Fixed columns and row actions: Scroll range");
@@ -1200,7 +1203,6 @@ sap.ui.define([
 			const iInnerScrollPosition = this.oTable.getDomRef("tableCCnt").scrollTop;
 
 			this.oTable.invalidate();
-			nextUIUpdate.runSync()/*context not obviously suitable for an async function*/;
 
 			return this.oTable.qunit.whenRenderingFinished().then(function() {
 				that.assertPosition(assert, iFirstVisibleRow, iScrollPosition, iInnerScrollPosition, sTitle + "After re-rendering");

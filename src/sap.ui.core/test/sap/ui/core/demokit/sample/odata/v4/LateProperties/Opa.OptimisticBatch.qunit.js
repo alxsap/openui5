@@ -12,9 +12,8 @@ sap.ui.require([
 	"sap/ui/core/sample/odata/v4/LateProperties/pages/Main",
 	"sap/ui/model/odata/v4/ODataModel",
 	"sap/ui/test/opaQunit",
-	// preload only
-	"sap/ui/core/sample/odata/v4/LateProperties/SandboxModel"
-], function(Log, Localization, Core, CacheManager, Any, Main, ODataModel, opaTest) {
+	"sap/ui/core/sample/odata/v4/LateProperties/SandboxModel" // preload only
+], function (Log, Localization, Core, CacheManager, Any, Main, ODataModel, opaTest) {
 	"use strict";
 
 	Core.ready().then(function () {

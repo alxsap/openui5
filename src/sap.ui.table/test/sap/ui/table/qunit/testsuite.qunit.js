@@ -98,8 +98,8 @@ sap.ui.define([
 				group: "Menus",
 				module: "./menus/{name}.qunit",
 				ui5: {
-					// Test has dependency to sap.m module
-					libs: ["sap.m"]
+					// Test has dependencies to sap.m modules
+					libs: ["sap.ui.table", "sap.m"]
 				}
 			},
 
@@ -204,7 +204,11 @@ sap.ui.define([
 
 			"Scrolling": {
 				group: "Extensions",
-				module: "./extensions/{name}.qunit"
+				module: "./extensions/{name}.qunit",
+				ui5: {
+					// Test has dependencies to sap.m modules
+					libs: ["sap.ui.table", "sap.m"]
+				}
 			},
 
 			"Scrolling-RTL": {
