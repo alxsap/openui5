@@ -13,6 +13,7 @@
  *	jquery.ui.mouse.js
  *	jquery.ui.widget.js
  */
+sap.ui.define(["sap/ui/thirdparty/jquery", 'sap/ui/thirdparty/jqueryui/jquery-ui-mouse'], (jQuery) => {
 (function( $, undefined ) {
 
 $.widget("ui.selectable", $.ui.mouse, {
@@ -275,3 +276,5 @@ $.widget("ui.selectable", $.ui.mouse, {
 });
 
 })(jQuery);
+return jQuery;
+});

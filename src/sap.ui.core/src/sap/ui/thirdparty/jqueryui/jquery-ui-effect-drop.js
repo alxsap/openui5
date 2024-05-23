@@ -11,6 +11,7 @@
  * Depends:
  *	jquery.ui.effect.js
  */
+sap.ui.define(["sap/ui/thirdparty/jquery"], (jQuery) => {
 (function( $, undefined ) {
 
 $.effects.effect.drop = function( o, done ) {
@@ -63,3 +64,5 @@ $.effects.effect.drop = function( o, done ) {
 };
 
 })(jQuery);
+return jQuery;
+});

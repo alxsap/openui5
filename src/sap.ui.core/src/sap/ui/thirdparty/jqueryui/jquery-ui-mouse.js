@@ -11,6 +11,7 @@
  * Depends:
  *	jquery.ui.widget.js
  */
+sap.ui.define(["sap/ui/thirdparty/jquery", 'sap/ui/thirdparty/jqueryui/jquery-ui-core', 'sap/ui/thirdparty/jqueryui/jquery-ui-widget'], (jQuery) => {
 (function( $, undefined ) {
 
 var mouseHandled = false;
@@ -191,3 +192,5 @@ $.widget("ui.mouse", {
 });
 
 })(jQuery);
+return jQuery;
+});

@@ -11,6 +11,7 @@
  * Depends:
  *	jquery.ui.effect.js
  */
+sap.ui.define(["sap/ui/thirdparty/jquery"], (jQuery) => {
 (function( $, undefined ) {
 
 $.effects.effect.fold = function( o, done ) {
@@ -74,3 +75,5 @@ $.effects.effect.fold = function( o, done ) {
 };
 
 })(jQuery);
+return jQuery;
+});

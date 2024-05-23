@@ -11,6 +11,7 @@
  * Depends:
  *	jquery.ui.effect.js
  */
+sap.ui.define(["sap/ui/thirdparty/jquery"], (jQuery) => {
 (function( $, undefined ) {
 
 var rvertical = /up|down|vertical/,
@@ -80,3 +81,5 @@ $.effects.effect.blind = function( o, done ) {
 };
 
 })(jQuery);
+return jQuery;
+});

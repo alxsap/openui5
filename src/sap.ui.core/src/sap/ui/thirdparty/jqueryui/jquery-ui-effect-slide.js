@@ -11,6 +11,7 @@
  * Depends:
  *	jquery.ui.effect.js
  */
+sap.ui.define(["sap/ui/thirdparty/jquery"], (jQuery) => {
 (function( $, undefined ) {
 
 $.effects.effect.slide = function( o, done ) {
@@ -62,3 +63,5 @@ $.effects.effect.slide = function( o, done ) {
 };
 
 })(jQuery);
+return jQuery;
+});

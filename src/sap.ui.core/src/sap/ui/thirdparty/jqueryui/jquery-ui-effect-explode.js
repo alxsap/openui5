@@ -11,6 +11,7 @@
  * Depends:
  *	jquery.ui.effect.js
  */
+sap.ui.define(["sap/ui/thirdparty/jquery"], (jQuery) => {
 (function( $, undefined ) {
 
 $.effects.effect.explode = function( o, done ) {
@@ -95,3 +96,5 @@ $.effects.effect.explode = function( o, done ) {
 };
 
 })(jQuery);
+return jQuery;
+});

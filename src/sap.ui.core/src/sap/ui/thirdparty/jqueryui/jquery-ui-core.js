@@ -8,6 +8,7 @@
  *
  * http://api.jqueryui.com/category/ui-core/
  */
+sap.ui.define(["sap/ui/thirdparty/jquery"], (jQuery) => {
 (function( $, undefined ) {
 
 // ##### BEGIN: MODIFIED BY SAP
@@ -351,3 +352,5 @@ $.extend( $.ui, {
 });
 
 })( jQuery );
+return jQuery;
+});

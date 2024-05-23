@@ -8,6 +8,7 @@
  *
  * http://api.jqueryui.com/category/effects-core/
  */
+sap.ui.define(["sap/ui/thirdparty/jquery"], (jQuery) => {
 (function($, undefined) {
 
 var dataSpace = "ui-effects-";
@@ -1308,3 +1309,5 @@ $.each( baseEasings, function( name, easeIn ) {
 })();
 
 })(jQuery);
+return jQuery;
+});
