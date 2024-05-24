@@ -305,7 +305,7 @@ sap.ui.define([
 		}
 	}
 
-	function showDropIndicator(oEvent, oDropTarget, sDropPosition, sDropLayout) {
+	function showDropIndicator(oEvent, oDropTarget, sDropPosition, sDropLayout, bCalculateOnly) {
 		if (!oDropTarget) {
 			return;
 		}
@@ -388,7 +388,7 @@ sap.ui.define([
 			}
 		}
 
-		if (mIndicatorConfig && mIndicatorConfig.display == "none") {
+		if (bCalculateOnly || mIndicatorConfig?.display == "none") {
 			return sRelativePosition;
 		}
 
@@ -467,11 +467,11 @@ sap.ui.define([
 		}
 	}
 
-	function showDropPosition(oEvent, oDropInfo, oValidDropControl) {
+	function showDropPosition(oEvent, oDropInfo, oValidDropControl, bCalculateOnly) {
 		// no target aggregation so entire control is the target
 		var sTargetAggregation = oDropInfo.getTargetAggregation();
 		if (!sTargetAggregation) {
-			return showDropIndicator(oEvent, oValidDropControl.getDomRef());
+			return showDropIndicator(oEvent, oValidDropControl.getDomRef(), undefined, undefined, bCalculateOnly);
 		}
 
 		// whether the current DOM element corresponds to the configured aggregation
@@ -484,7 +484,7 @@ sap.ui.define([
 		oTargetDomRef = oTargetDomRef || oValidDropControl.getDomRef();
 
 		// let the user know the drop position
-		return showDropIndicator(oEvent, oTargetDomRef, oDropInfo.getDropPosition(true), oDropInfo.getDropLayout(true));
+		return showDropIndicator(oEvent, oTargetDomRef, oDropInfo.getDropPosition(true), oDropInfo.getDropLayout(true), bCalculateOnly);
 	}
 
 	// before controls handle UIArea events
@@ -610,7 +610,6 @@ sap.ui.define([
 
 			oParentDomRef = oValidDropControl.getDomRef();
 			oParentDomRef = oParentDomRef && oParentDomRef.parentElement;
-
 			oValidDropControl = Element.closestTo(oParentDomRef, true);
 		}
 
@@ -638,6 +637,7 @@ sap.ui.define([
 		} else if (oEvent.getMark("DragWithin") != "SameControl") {
 			// fire dragenter event of valid DropInfos and filter if preventDefault is called
 			aValidDropInfos = aValidDropInfos.filter(function(oDropInfo) {
+				sCalculatedDropPosition = showDropPosition(oEvent, oDropInfo, oValidDropControl, true);
 				return oDropInfo.fireDragEnter(oEvent);
 			});
 		}
@@ -663,28 +663,34 @@ sap.ui.define([
 	};
 
 	DnD.onafterdragover = function(oEvent) {
-		var oValidDropInfo = aValidDropInfos[0];
+		// drop is not possible if there is no valid drop control or dragover event is marked as NonDroppable
+		if (!oValidDropControl || oEvent.isMarked("NonDroppable")) {
+			aValidDropInfos = [];
+		} else {
+			// fire dragover event of valid DropInfos and filter if preventDefault is called
+			aValidDropInfos = aValidDropInfos.filter(function(oDropInfo) {
+				sCalculatedDropPosition = showDropPosition(oEvent, oDropInfo, oValidDropControl, true);
+				return oDropInfo.fireDragOver(oEvent);
+			});
+		}
 
-		// let the browser do the default if there is no valid drop info
+		// set drop effect and drop position
+		const oValidDropInfo = aValidDropInfos[0];
 		if (!oValidDropInfo || oValidDropInfo.getDropEffect() == "None") {
-			return;
+			hideDropIndicator();
+			sCalculatedDropPosition = "";
+		} else {
+			// browsers drop effect must be set on dragover always
+			setDropEffect(oEvent, oValidDropInfo);
+
+			// drop position is set already at dragenter it should not be changed for DropPosition=On
+			if (oValidDropInfo && oValidDropInfo.getDropPosition(true) == "On") {
+				return;
+			}
+
+			// drop indicator position may change depending on the mouse pointer location
+			sCalculatedDropPosition = showDropPosition(oEvent, oValidDropInfo, oValidDropControl);
 		}
-
-		// fire dragover events of valid DropInfos
-		aValidDropInfos.forEach(function(oDropInfo) {
-			oDropInfo.fireDragOver(oEvent);
-		});
-
-		// browsers drop effect must be set on dragover always
-		setDropEffect(oEvent, oValidDropInfo);
-
-		// drop position is set already at dragenter it should not be changed for DropPosition=On
-		if (oValidDropInfo && oValidDropInfo.getDropPosition(true) == "On") {
-			return;
-		}
-
-		// drop indicator position may change depending on the mouse pointer location
-		sCalculatedDropPosition = showDropPosition(oEvent, oValidDropInfo, oValidDropControl);
 	};
 
 	DnD.onafterdragleave = function(oEvent) {
