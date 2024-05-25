@@ -1,7 +1,7 @@
 // Note: the HTML page 'LRUPersistentCache.html' loads this module via data-sap-ui-on-init
 
 /*global m1 -- was defined on the (now missing) large_cache_content.js */
-sap.ui.require(["sap/ui/core/cache/CacheManager"], function (oCache) {
+sap.ui.define(["sap/ui/core/cache/CacheManager"], function (oCache) {
 	"use strict";
 
 	globalThis.addEntry = function(key, idValue) {

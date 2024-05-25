@@ -293,7 +293,7 @@ sap.ui.define([
 		});
 	});
 
-	QUnit.test("Async rootView & sync childView", function(assert) {
+	QUnit.test("Async rootView & (auto) async childView", function(assert) {
 		var done = assert.async();
 
 		sap.ui.define("test/XMLTemplateProcessor2/Component", function() {
@@ -321,7 +321,7 @@ sap.ui.define([
 
 				oView.getContent()[0].loaded().then(function(oChildView1) {
 					assert.ok(oChildView1, "View is loaded.");
-					assert.notOk(oChildView1.oAsyncState, "View is a sync view.");
+					assert.ok(oChildView1.oAsyncState, "View is an async view.");
 					assert.equal(oChildView1._sProcessingMode, XMLProcessingMode.Sequential, "ProcessingMode 'Sequential' is set on " + "View:" + oChildView1.getViewName());
 
 					oChildView1.getContent()[0].loaded().then(function(oChildView2) {

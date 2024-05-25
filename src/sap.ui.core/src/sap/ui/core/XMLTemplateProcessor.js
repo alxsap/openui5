@@ -1335,40 +1335,17 @@ sap.ui.define([
 
 					mSettings.type = oClass._sType || sType;
 
-					// If the view is owned by an async-component we can propagate the asynchronous creation behavior to the nested views
-					if (bIsAsyncComponent) {
-						// legacy check: async=false is not supported with an async-component
-						if (mSettings.async === false) {
-							throw new Error(
-								"A nested view contained in a Component implementing 'sap.ui.core.IAsyncContentCreation' is processed asynchronously by default and cannot be processed synchronously.\n" +
-								"Affected Component '" + oOwnerComponent.getMetadata().getComponentName() + "' and View '" + mSettings.viewName + "'."
-							);
-						}
-
-						pInstanceCreated = scopedRunWithOwner(function() {
-							return View.create(mSettings);
-						});
-					} else {
-						// Pass processingMode to nested XMLViews
-						if (oClass.getMetadata().isA("sap.ui.core.mvc.XMLView") && oView._sProcessingMode) {
-							mSettings.processingMode = oView._sProcessingMode;
-						}
-
-						var sViewClass = View._getViewClassName(mSettings, true /* skip error log*/);
-						if (sViewClass) {
-							pInstanceCreated = new Promise(function(resolve, reject) {
-								sap.ui.require([sViewClass], resolve, reject);
-							}).then(function() {
-								return scopedRunWithOwner(function() {
-									return View._create(mSettings);
-								});
-							});
-						} else {
-							vNewControlInstance = scopedRunWithOwner(function() {
-								return View._create(mSettings);
-							});
-						}
+					// legacy check: async=false is not supported with an async-component
+					if (bIsAsyncComponent && mSettings.async === false) {
+						throw new Error(
+							"A nested view contained in a Component implementing 'sap.ui.core.IAsyncContentCreation' is processed asynchronously by default and cannot be processed synchronously.\n" +
+							"Affected Component '" + oOwnerComponent.getMetadata().getComponentName() + "' and View '" + mSettings.viewName + "'."
+						);
 					}
+
+					pInstanceCreated = scopedRunWithOwner(function() {
+						return View.create(mSettings);
+					});
 				} else if (oClass.getMetadata().isA("sap.ui.core.Fragment")) {
 					mSettings.processingMode = oView._sProcessingMode;
 

@@ -60,21 +60,6 @@ sap.ui.define([
 		}.bind(this));
 	});
 
-	QUnit.test("Should create a view synchronously", function (assert) {
-		// Configure view as synchronous
-		this.oViewOptions.async = false;
-
-		// Act
-		var oReturnValue = this.oViews.getView(this.oViewOptions);
-
-		// Assert
-		return oReturnValue.then(function (oView) {
-			assert.deepEqual(oView.getContent(), this.oView.getContent(), "the view was created");
-			assert.strictEqual(this.fnCreateViewStub.callCount, 0, "The 'View.create' factory is not called");
-			assert.strictEqual(this.fnGenericCreateViewSpy.callCount, 1, "The 'View._create' factory is called");
-		}.bind(this));
-	});
-
 	QUnit.test("Should set a view to the cache", function (assert) {
 		// Act
 		var oReturnValue = this.oViews.setView("virtual.view.Home", this.oView);

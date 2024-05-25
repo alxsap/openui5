@@ -2733,7 +2733,9 @@ sap.ui.define([
 	 *   from which the tree has been created
 	 * @returns {object} The AST of the filter tree including the static filter as string or null if
 	 *   no filters are set
+	 *
 	 * @private
+	 * @since 1.57.0
 	 * @ui5-restricted sap.ui.table, sap.ui.export
 	 */
 	// @override sap.ui.model.ListBinding#getFilterInfo
@@ -3305,7 +3307,8 @@ sap.ui.define([
 	 * @returns {sap.ui.base.SyncPromise<void>}
 	 *   A promise which is resolved without a defined result when the move is finished, or
 	 *   rejected in case of an error
-	 * @throws {Error} If there is no recursive hierarchy
+	 * @throws {Error} If there is no recursive hierarchy or if this binding's root binding is
+	 *   suspended
 	 *
 	 * @private
 	 */
@@ -3331,6 +3334,7 @@ sap.ui.define([
 		if (!this.mParameters.$$aggregation?.hierarchyQualifier) {
 			throw new Error("Missing recursive hierarchy");
 		}
+		this.checkSuspended();
 
 		const sUpdateGroupId = this.getUpdateGroupId();
 		const oGroupLock = this.lockGroup(sUpdateGroupId, true, true);

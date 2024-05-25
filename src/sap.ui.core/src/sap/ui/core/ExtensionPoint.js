@@ -89,11 +89,7 @@ sap.ui.define(["sap/base/future", "sap/base/Log", "sap/ui/core/mvc/View", "sap/u
 					} else if (oExtensionConfig.className === "sap.ui.core.mvc.View") {
 						oFactoryConfig.viewName = oExtensionConfig.viewName;
 
-						// Call View._create in order to keep the processingMode (e.g. 'SequentialLegacy')
-						// View.create always overrides the processingMode to 'Sequential'
-						var oExtensionView = View._create(oFactoryConfig);
-
-						vResult = oExtensionView.loaded();
+						vResult = View.create(oFactoryConfig);
 					} else {
 						// unknown extension class
 						future.warningThrows("Customizing: Unknown extension className configured in Component.js for extension point '" + sExtName

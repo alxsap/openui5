@@ -8,21 +8,8 @@ sap.ui.define([
   "sap/m/Dialog",
   "sap/m/Button",
   "sap/ui/commons/Button",
-  "sap/ui/thirdparty/jquery",
-  "sap/ui/core/Configuration"
-], function(
-  Theming,
-  Menu,
-  MenuItem,
-  MenuTextFieldItem,
-  MenuButton,
-  RichTooltip,
-  Dialog,
-  Button,
-  CommonsButton,
-  jQuery,
-  Configuration
-) {
+  "sap/ui/thirdparty/jquery"
+], function(Theming, Menu, MenuItem, MenuTextFieldItem, MenuButton, RichTooltip, Dialog, Button, CommonsButton, jQuery) {
   "use strict";
   // Note: the HTML page 'Menu.html' loads this module via data-sap-ui-on-init
 
