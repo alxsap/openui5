@@ -1306,7 +1306,7 @@ sap.ui.define([
 			return this;
 		}
 		this.setProperty("headerStyle", sStyle, true);
-		this._oTitle && this._oTitle.setTitleStyle(this.getHeaderStyle() || TitleLevel.H4);
+		this._oTitle?.setTitleStyle(this.getHeaderStyle() || TitleLevel[ThemeParameters.get({name: "_sap_ui_mdc_Table_HeaderStyle"})]);
 		return this;
 	};
 
@@ -1974,7 +1974,7 @@ sap.ui.define([
 				text: this.getHeader(),
 				width: this.getHeaderVisible() ? undefined : "0px",
 				level: this.getHeaderLevel(),
-				titleStyle: this.getHeaderStyle() || TitleLevel.H4
+				titleStyle: this.getHeaderStyle() || TitleLevel[ThemeParameters.get({name: "_sap_ui_mdc_Table_HeaderStyle"})]
 			});
 			// Create Toolbar
 			this._oToolbar = new ActionToolbar(this.getId() + "-toolbar", {
@@ -3065,6 +3065,11 @@ sap.ui.define([
 		if (this._oToolbar) {
 			const sToolBarDesign = ToolbarDesign[ThemeParameters.get({name: "_sap_ui_mdc_Table_ToolbarDesign"})];
 			this._oToolbar.setDesign(sToolBarDesign);
+		}
+
+		if (this._oTitle && !this.getHeaderStyle()) {
+			const sHeaderStyle = TitleLevel[ThemeParameters.get({name: "_sap_ui_mdc_Table_HeaderStyle"})];
+			this._oTitle.setTitleStyle(sHeaderStyle);
 		}
 	};
 

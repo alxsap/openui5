@@ -1380,6 +1380,10 @@ sap.ui.define([
 			this._oLazyLoading = null;
 		}
 
+		if (this._asyncUpdateScreenSizeExec) {
+			clearTimeout(this._asyncUpdateScreenSizeExec);
+		}
+
 		this._destroyInvisibleText();
 
 		this._deregisterScreenSizeListener();
@@ -3196,7 +3200,8 @@ sap.ui.define([
 
 		this._oLazyLoading.setLazyLoadingParameters();
 
-		setTimeout(function () {
+		this._asyncUpdateScreenSizeExec = setTimeout(function () {
+
 			if (bIsAlwaysShowContentHeaderEnabled && (this._bHeaderInTitleArea != this._checkAlwaysShowContentHeader())) {
 				this.invalidate();
 			}
