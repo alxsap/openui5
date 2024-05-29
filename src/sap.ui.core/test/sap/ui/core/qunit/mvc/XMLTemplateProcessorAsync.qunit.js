@@ -3,15 +3,12 @@ sap.ui.define([
 	"sap/base/future",
 	"sap/base/Log",
 	"sap/m/Button",
-	'sap/ui/core/Component',
-	'sap/ui/core/UIComponent',
 	"sap/ui/core/XMLTemplateProcessor",
-	"sap/ui/core/mvc/XMLProcessingMode",
 	"sap/ui/core/mvc/XMLView",
 	"sap/ui/model/json/JSONModel",
 	"sap/ui/thirdparty/jquery",
 	"sap/ui/base/DesignTime"
-], function(future, Log, Button, Component, UIComponent, XMLTemplateProcessor, XMLProcessingMode, XMLView, JSONModel, jQuery, DesignTime) {
+], function(future, Log, Button, XMLTemplateProcessor, XMLView, JSONModel, jQuery, DesignTime) {
 	"use strict";
 
 	QUnit.module("enrichTemplateIdsPromise", {
@@ -248,92 +245,6 @@ sap.ui.define([
 		assert.ok(sError,"Not ending with binding in {model: 'model', path: '/path'}{path: '/path', name: 'context1'},{path: '/any', name: 'context2'}huhuhuh is detected");
 	});
 
-
-
-	QUnit.module("Propagation of processingMode: 'Sequential'", {
-		beforeEach: function() {
-			this.loadTemplatePromiseSpy = sinon.spy(XMLTemplateProcessor, "loadTemplatePromise");
-		},
-		afterEach: function() {
-			this.loadTemplatePromiseSpy.restore();
-		}
-	});
-
-	QUnit.test("Async rootView & childView", function(assert) {
-		var done = assert.async();
-
-		sap.ui.define("test/XMLTemplateProcessor/Component", function() {
-			return UIComponent.extend("test.XMLTemplateProcessor", {
-				metadata: {
-					rootView: {
-						viewName: "testdata/view/XMLTemplateProcessorAsync_nested",
-						type: "XML",
-						async: true
-					}
-				}
-			});
-		});
-
-		Component.create({
-			name: "test.XMLTemplateProcessor",
-			manifest: false
-		}).then(function(oComponent) {
-			var oRootView = oComponent.getRootControl();
-
-			oRootView.loaded().then(function(oView) {
-				assert.ok(oView, "View is loaded.");
-				assert.equal(oView._sProcessingMode, XMLProcessingMode.Sequential, "ProcessingMode 'Sequential' is set on " + "View:" + oView.getViewName());
-
-				oView.getContent()[0].loaded().then(function(oView) {
-					assert.ok(oView, "View is loaded.");
-					assert.equal(oView._sProcessingMode, XMLProcessingMode.Sequential, "ProcessingMode 'Sequential' is set on " + "View:" + oView.getViewName());
-					done();
-				});
-			});
-		});
-	});
-
-	QUnit.test("Async rootView & (auto) async childView", function(assert) {
-		var done = assert.async();
-
-		sap.ui.define("test/XMLTemplateProcessor2/Component", function() {
-			return UIComponent.extend("test.XMLTemplateProcessor2", {
-				metadata: {
-					rootView: {
-						viewName: "testdata/view/XMLTemplateProcessorAsync_nested_2",
-						type: "XML",
-						async: true
-					}
-				}
-			});
-		});
-
-		Component.create({
-			name: "test.XMLTemplateProcessor2",
-			manifest: false
-		}).then(function(oComponent) {
-			var oRootView = oComponent.getRootControl();
-
-			oRootView.loaded().then(function(oView) {
-				assert.ok(oView, "View is loaded.");
-				assert.ok(oView.oAsyncState, "View is an async view.");
-				assert.equal(oView._sProcessingMode, XMLProcessingMode.Sequential, "ProcessingMode 'Sequential' is set on " + "View:" + oView.getViewName());
-
-				oView.getContent()[0].loaded().then(function(oChildView1) {
-					assert.ok(oChildView1, "View is loaded.");
-					assert.ok(oChildView1.oAsyncState, "View is an async view.");
-					assert.equal(oChildView1._sProcessingMode, XMLProcessingMode.Sequential, "ProcessingMode 'Sequential' is set on " + "View:" + oChildView1.getViewName());
-
-					oChildView1.getContent()[0].loaded().then(function(oChildView2) {
-						assert.ok(oChildView2, "View is loaded.");
-						assert.ok(oChildView2.oAsyncState, "View is an async view.");
-						assert.equal(oChildView2._sProcessingMode, XMLProcessingMode.Sequential, "ProcessingMode 'Sequential' is set on " + "View:" + oChildView2.getViewName());
-						done();
-					});
-				});
-			});
-		});
-	});
 
 	QUnit.module("Databinding", {
 		beforeEach: function() {

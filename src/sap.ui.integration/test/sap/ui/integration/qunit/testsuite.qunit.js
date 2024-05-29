@@ -299,6 +299,12 @@ sap.ui.define([
 				}
 			},
 
+			"util/AnalyticsCloudHelper": {
+				coverage: {
+					only: ["sap/ui/integration/util/AnalyticsCloudHelper"]
+				}
+			},
+
 			"util/BindingHelper": {
 				coverage: {
 					only: ["sap/ui/integration/util/BindingHelper"]

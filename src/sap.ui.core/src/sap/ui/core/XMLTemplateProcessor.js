@@ -11,7 +11,6 @@ sap.ui.define([
 	'sap/ui/core/Component',
 	'sap/ui/core/ElementRegistry',
 	'./mvc/View',
-	'./mvc/XMLProcessingMode',
 	'./mvc/EventHandlerResolver',
 	'./ExtensionPoint',
 	'./StashedControlSupport',
@@ -32,7 +31,6 @@ sap.ui.define([
 	Component,
 	ElementRegistry,
 	View,
-	XMLProcessingMode,
 	EventHandlerResolver,
 	ExtensionPoint,
 	StashedControlSupport,
@@ -524,7 +522,6 @@ sap.ui.define([
 			pResultChain = parseAndLoadRequireContext(xmlNode, true) || SyncPromise.resolve(),
 			collectControl = (pContent) => aResult.push(pContent);
 
-		Log.debug("XML processing mode is " + (oView._sProcessingMode || "default") + ".", "", "XMLTemplateProcessor");
 		Log.debug("XML will be processed " + ("asynchronously") + ".", "", "XMLTemplateProcessor");
 
 		var bDesignMode = DesignTime.isDesignModeEnabled();
@@ -1137,12 +1134,7 @@ sap.ui.define([
 					Log.error(oError);
 				}
 
-				// [COMPATIBILITY]
-				// sync: we just log the error and keep on processing
-				// asnyc: throw the error, so the parseTemplate Promise will reject
-				if (oView._sProcessingMode !== XMLProcessingMode.SequentialLegacy) {
-					throw oError;
-				}
+				throw oError;
 			});
 
 			/**
@@ -1347,8 +1339,6 @@ sap.ui.define([
 						return View.create(mSettings);
 					});
 				} else if (oClass.getMetadata().isA("sap.ui.core.Fragment")) {
-					mSettings.processingMode = oView._sProcessingMode;
-
 					var sFragmentPath = "sap/ui/core/Fragment";
 					var Fragment = sap.ui.require(sFragmentPath);
 

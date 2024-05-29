@@ -61,11 +61,6 @@ sap.ui.define(["sap/base/future", "sap/base/Log", "sap/ui/core/mvc/View", "sap/u
 						type: oExtensionConfig.type
 					};
 
-					// processingMode must not be set for sync path
-					if (oView._sProcessingMode) {
-						oFactoryConfig.processingMode = oView._sProcessingMode;
-					}
-
 					if (oExtensionConfig.className === "sap.ui.core.Fragment") {
 						// We cannot model the Fragment class as a dependency of the ExtensionPoint class,
 						// since the XML Fragments rely on the XMLTP for parsing and thus create a cyclic dependency:

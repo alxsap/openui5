@@ -115,12 +115,7 @@ sap.ui.define([
 					/**
 					 * Configuration for the XMLView caching.
 					 */
-					cache : 'Object',
-
-					/**
-					 * The processing mode of the XMLView.
-					 */
-					processingMode: { type: "sap.ui.core.mvc.XMLProcessingMode", visibility: "hidden" }
+					cache : 'Object'
 				},
 
 				designtime: "sap/ui/core/designtime/mvc/XMLView.designtime"
@@ -511,8 +506,6 @@ sap.ui.define([
 			}
 
 			this._oContainingView = mSettings.containingView || this;
-
-			this._sProcessingMode = mSettings.processingMode;
 
 			if (this.oAsyncState) {
 				// suppress rendering of preserve content

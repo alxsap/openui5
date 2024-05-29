@@ -10,8 +10,7 @@ sap.ui.define([
 	'sap/base/Log',
 	'sap/base/util/merge',
 	'sap/ui/util/XMLHelper',
-	'sap/ui/core/Component',
-	'sap/ui/core/mvc/XMLProcessingMode'
+	'sap/ui/core/Component'
 ],
 function(
 	ManagedObject,
@@ -21,8 +20,7 @@ function(
 	Log,
 	merge,
 	XMLHelper,
-	Component,
-	XMLProcessingMode
+	Component
 ) {
 	"use strict";
 
@@ -107,12 +105,12 @@ function(
 				type: 'string'
 			},
 			specialSettings: {
-
 				/**
 				 * Whether to load and parse the fragment asynchronous
 				 * @private
 				 */
 				async: { type: 'boolean', visibility: 'hidden' },
+
 				/*
 				 * Name of the fragment to load
 				 */
@@ -141,13 +139,7 @@ function(
 				/**
 				 * The ID of the owner component (optional)
 				 */
-				sOwnerId : { type: 'sap.ui.core.ID', visibility: 'hidden' },
-
-				/**
-				 * The processing mode is not used by the Fragment itself.
-				 * It is only relevant for XMLViews nested within the Fragment.
-				 */
-				processingMode: { type: 'sap.ui.core.mvc.XMLProcessingMode', visibility: 'hidden' }
+				sOwnerId : { type: 'sap.ui.core.ID', visibility: 'hidden' }
 			}
 		},
 
@@ -470,7 +462,6 @@ function(
 
 		mParameters.type = mParameters.type || "XML";
 		mParameters.async = true;
-		mParameters.processingMode = mParameters.processingMode || XMLProcessingMode.Sequential;
 
 		// map new parameter names to classic API, delete new names to avoid assertion failures
 		mParameters.fragmentName = mParameters.fragmentName || mParameters.name;
@@ -539,8 +530,6 @@ function(
 				this._oContainingView.oController = (mSettings.containingView && mSettings.containingView.oController) || mSettings.oController;
 			}
 
-			// If given, processingMode will be passed down to nested subviews in XMLTemplateProcessor
-			this._sProcessingMode = mSettings.processingMode;
 
 			// take the settings preprocessor from the containing view (if any)
 			var fnSettingsPreprocessor = this._oContainingView._fnSettingsPreprocessor;

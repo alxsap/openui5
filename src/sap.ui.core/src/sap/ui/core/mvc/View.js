@@ -16,24 +16,22 @@ sap.ui.define([
 	"sap/ui/core/Element",
 	"./Controller",
 	"./ViewRenderer",
-	"./ViewType",
-	"./XMLProcessingMode"
+	"./ViewType"
 ], function(
-		assert,
-		future,
-		Log,
-		extend,
-		isEmptyObject,
-		merge,
-		ManagedObject,
-		Control,
-		DesignTime,
-		Element,
-		Controller,
-		ViewRenderer,
-		ViewType,
-		XMLProcessingMode
-	) {
+	assert,
+	future,
+	Log,
+	extend,
+	isEmptyObject,
+	merge,
+	ManagedObject,
+	Control,
+	DesignTime,
+	Element,
+	Controller,
+	ViewRenderer,
+	ViewType
+) {
 	"use strict";
 
 
@@ -1015,11 +1013,6 @@ sap.ui.define([
 			 }, reject);
 		})
 		.then(function(ViewClass) {
-			// Activate the asynchronous processing for XMLViews
-			if (ViewClass.getMetadata().isA("sap.ui.core.mvc.XMLView")) {
-				mParameters.processingMode = XMLProcessingMode.Sequential;
-			}
-
 			if (oOwnerComponent) {
 				return oOwnerComponent.runAsOwner(createView);
 			} else {
@@ -1081,12 +1074,6 @@ sap.ui.define([
 		// apply the type defined in specialized factory functions
 		if (sType) {
 			oView.type = sType;
-		}
-
-		if (oView.type === ViewType.XML && oView.async) {
-			// the processingMode might be already set by the asnychronous View.create factory
-			// "SequentialLegacy" is only used if the sap.ui.view factory with async=true was called
-			oView.processingMode = oView.processingMode || XMLProcessingMode.SequentialLegacy;
 		}
 
 
