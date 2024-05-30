@@ -151,6 +151,7 @@ sap.ui.define([
 		  "sap.m.PanelAccessibleRole",
 		  "sap.m.PDFViewerDisplayType",
 		  "sap.m.PlacementType",
+		  "sap.m.CarouselPageIndicatorPlacementType",
 		  "sap.m.PlanningCalendarBuiltInView",
 		  "sap.m.PlanningCalendarStickyMode",
 		  "sap.m.PopinDisplay",
@@ -1088,6 +1089,39 @@ sap.ui.define([
 		  * @public
 		  */
 		 PageIndicator : "PageIndicator"
+	 };
+
+	 /**
+	  * Types for the placement of the page indicator of the Carousel control.
+	  *
+	  * @enum {string}
+	  * @public
+	  */
+	 thisLib.CarouselPageIndicatorPlacementType = {
+
+		 /**
+		  * Page indicator will be placed at the top of the Carousel.
+		  * @public
+		  */
+		 Top : "Top",
+
+		 /**
+		  * Page indicator will be placed at the bottom of the Carousel.
+		  * @public
+		  */
+		 Bottom : "Bottom",
+
+		 /**
+		  * Page indicator will be placed over the Carousel content, top aligned.
+		  * @public
+		  */
+		 OverContentTop : "OverContentTop",
+
+		 /**
+		  * Page indicator will be placed over the Carousel content, bottom aligned.
+		  * @public
+		  */
+		 OverContentBottom : "OverContentBottom"
 	 };
 
 	 /**

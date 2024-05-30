@@ -56,7 +56,7 @@ sap.ui.define([
 					oConnectorSpecificPropertyBag.version = oFlexInfoSession.version;
 				}
 			}
-			var bIsRtaStarting = !!window.sessionStorage.getItem(`sap.ui.rta.restart.${Layer.CUSTOMER}`);
+			var bIsRtaStarting = !!Object.keys(window.sessionStorage).filter((sKey) => sKey.startsWith("sap.ui.rta.restart.")).length;
 			// save change and activate version do not trigger a reload, need saveChangeKeepSession to keep values in the session
 			if (!bIsRtaStarting && !oFlexInfoSession.saveChangeKeepSession) {
 				delete oFlexInfoSession.version;
@@ -64,7 +64,10 @@ sap.ui.define([
 				delete oFlexInfoSession.adaptationLayer;
 				FlexInfoSession.setByReference(oFlexInfoSession, mPropertyBag.reference);
 			}
-
+			// Disable cacheKey when request data for a specific version
+			if (oConnectorSpecificPropertyBag.version) {
+				delete oConnectorSpecificPropertyBag.cacheKey;
+			}
 			return oConnectorConfig.loadConnectorModule.loadFlexData(oConnectorSpecificPropertyBag)
 			.then(function(oResponse) {
 				// ensure an object with the corresponding properties

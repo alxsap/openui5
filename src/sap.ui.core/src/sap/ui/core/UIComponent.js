@@ -731,7 +731,13 @@ sap.ui.define([
 				if (oRootView.id) {
 					oRootView.id = this.createId(oRootView.id);
 				}
-				return View.create(oRootView);
+
+				const bModernFactory = this.isA("sap.ui.core.IAsyncContentCreation");
+				if (bModernFactory) {
+					return View.create(oRootView);
+				} else {
+					return View._create(oRootView);
+				}
 			} else if (oRootView) {
 				throw new Error("Configuration option 'rootView' of component '" + this.getMetadata().getName() + "' is invalid! 'rootView' must be type of string or object!");
 			}
