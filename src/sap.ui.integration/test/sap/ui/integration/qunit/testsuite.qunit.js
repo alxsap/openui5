@@ -367,6 +367,15 @@ sap.ui.define([
 				sinon: false
 			},
 
+			"util/CardMergerWithTranslationsOfUnMatchLanguages": {
+				coverage: {
+					only: [
+						"sap/ui/integration/util/CardMerger"
+					]
+				},
+				sinon: false
+			},
+
 			"util/CardObserver": {
 				coverage: {
 					only: [
@@ -2889,6 +2898,126 @@ sap.ui.define([
 			},
 
 			"editor/i18nAsObject/MultiLanguages02": {
+				group: "Runtime Editor",
+				coverage: {
+					only: [
+						"sap/ui/integration/editor"
+					]
+				},
+				sinon: false
+			},
+
+			"editor/unMatchLanguages/BCChanges/AdminMode": {
+				group: "Runtime Editor",
+				coverage: {
+					only: [
+						"sap/ui/integration/editor"
+					]
+				},
+				sinon: false
+			},
+
+			"editor/unMatchLanguages/BCChanges/ContentMode01": {
+				group: "Runtime Editor",
+				coverage: {
+					only: [
+						"sap/ui/integration/editor"
+					]
+				},
+				sinon: false
+			},
+
+			"editor/unMatchLanguages/BCChanges/ContentMode02": {
+				group: "Runtime Editor",
+				coverage: {
+					only: [
+						"sap/ui/integration/editor"
+					]
+				},
+				sinon: false
+			},
+
+			"editor/unMatchLanguages/BCChanges/ContentMode03": {
+				group: "Runtime Editor",
+				coverage: {
+					only: [
+						"sap/ui/integration/editor"
+					]
+				},
+				sinon: false
+			},
+
+			"editor/unMatchLanguages/BCChanges/TranslationMode01": {
+				group: "Runtime Editor",
+				coverage: {
+					only: [
+						"sap/ui/integration/editor"
+					]
+				},
+				sinon: false
+			},
+
+			"editor/unMatchLanguages/BCChanges/TranslationMode02": {
+				group: "Runtime Editor",
+				coverage: {
+					only: [
+						"sap/ui/integration/editor"
+					]
+				},
+				sinon: false
+			},
+
+			"editor/unMatchLanguages/BCChanges/AllMode01": {
+				group: "Runtime Editor",
+				coverage: {
+					only: [
+						"sap/ui/integration/editor"
+					]
+				},
+				sinon: false
+			},
+
+			"editor/unMatchLanguages/BCChanges/AllMode02": {
+				group: "Runtime Editor",
+				coverage: {
+					only: [
+						"sap/ui/integration/editor"
+					]
+				},
+				sinon: false
+			},
+
+			"editor/unMatchLanguages/BCChanges/AllMode03": {
+				group: "Runtime Editor",
+				coverage: {
+					only: [
+						"sap/ui/integration/editor"
+					]
+				},
+				sinon: false
+			},
+
+			"editor/unMatchLanguages/BCChanges/AllMode04": {
+				group: "Runtime Editor",
+				coverage: {
+					only: [
+						"sap/ui/integration/editor"
+					]
+				},
+				sinon: false
+			},
+
+			"editor/unMatchLanguages/BCChanges/AllMode05": {
+				group: "Runtime Editor",
+				coverage: {
+					only: [
+						"sap/ui/integration/editor"
+					]
+				},
+				sinon: false
+			},
+
+			"editor/unMatchLanguages/BCChanges/AllMode06": {
 				group: "Runtime Editor",
 				coverage: {
 					only: [
