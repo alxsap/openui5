@@ -181,8 +181,6 @@ sap.ui.define([
 	 */
 	AnalyticalTable.prototype._bindAggregation = function(sName, oBindingInfo) {
 		if (sName === "rows") {
-			this._applyODataModelAnalyticalAdapter(oBindingInfo.model);
-
 			// make sure to reset the first visible row (currently needed for the analytical binding)
 			// TODO: think about a boundary check to reset the firstvisiblerow if out of bounds
 			this._setFirstVisibleRowIndex(0, {onlySetProperty: true});
@@ -209,12 +207,6 @@ sap.ui.define([
 		// The binding does not support the number of expanded levels to be bigger than the number of grouped columns.
 		if (oBindingInfo.parameters.numberOfExpandedLevels > this._aGroupedColumns.length) {
 			oBindingInfo.parameters.numberOfExpandedLevels = 0;
-		}
-	};
-
-	AnalyticalTable.prototype._applyODataModelAnalyticalAdapter = function(oModel) {
-		if (oModel) {
-			ODataModelAdapter.apply(oModel);
 		}
 	};
 

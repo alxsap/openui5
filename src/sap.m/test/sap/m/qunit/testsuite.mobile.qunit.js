@@ -28,9 +28,7 @@ sap.ui.define([
 		},
 		tests: {
 			ActionListItem: {
-				sinon: {
-					useFakeTimers: true
-				}
+				title: "Test Page for sap.m.ActionListItem"
 			},
 
 			ActionSheet: {
@@ -1692,9 +1690,6 @@ sap.ui.define([
 				module: "test-resources/sap/m/qunit/table/columnmenu/Menu.qunit",
 				paths: {
 					resourceroot: "test-resources/sap/m/qunit/table/columnmenu"
-				},
-				sinon: {
-					useFakeTimers: true
 				}
 			},
 

@@ -1922,7 +1922,7 @@ function(
 			aHeaderContent = oHeaderAggregation.aAggregationContent;
 
 		for (var i = 0; i < aHeaderContent.length; i++) {
-			if (aHeaderContent[i] instanceof Button && aHeaderContent[i].getVisible()) {
+			if (aHeaderContent[i] instanceof Button && aHeaderContent[i].getVisible() && aHeaderContent[i] !== this._oShowMasterBtn) {
 				this._bDetailNavButton = true;
 				return;
 			}
