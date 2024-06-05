@@ -46,8 +46,9 @@ sap.ui.define(["sap/m/library", "sap/base/security/encodeCSS"], function (librar
 			aDescribedBy = oAvatar.getAriaDescribedBy(),
 			aHasPopup = oAvatar.getAriaHasPopup(),
 			bHasListener = oAvatar.hasListeners("press"),
-			bShouldBeClickable = (bHasListener && !oAvatar._bIsDefaultIcon && oAvatar.getDetailBox()) || (bHasListener && !oAvatar.getDetailBox()),
-			oBadge = bShouldBeClickable ?  oAvatar._getBadge() : null,
+			bHasSrc = (!oAvatar._bIsDefaultIcon && oAvatar.getDetailBox()) || (!oAvatar.getDetailBox()),
+			bShouldBeClickable = bHasListener && bHasSrc,
+			oBadge = bHasSrc ?  oAvatar._getBadge() : null,
 			sDefaultTooltip = oAvatar._getDefaultTooltip(),
 			sInitialsLength = sInitials.length,
 			bActive = oAvatar.getActive() && bShouldBeClickable;

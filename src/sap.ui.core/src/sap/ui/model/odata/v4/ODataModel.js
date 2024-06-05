@@ -252,8 +252,7 @@ sap.ui.define([
 	 *   <code>odataVersion</code> is given.
 	 */
 	function constructor(mParameters = {}) {
-		var sGroupId,
-			oGroupProperties,
+		var oGroupProperties,
 			sLanguageTag = Localization.getLanguageTag().toString(),
 			sODataVersion,
 			sParameter,
@@ -312,7 +311,7 @@ sap.ui.define([
 		_Helper.checkGroupId(mParameters.updateGroupId, false, false, "Invalid update group ID: ");
 		this.sUpdateGroupId = mParameters.updateGroupId || this.getGroupId();
 		this.mGroupProperties = {};
-		for (sGroupId in mParameters.groupProperties) {
+		for (const sGroupId in mParameters.groupProperties) {
 			_Helper.checkGroupId(sGroupId, true);
 			oGroupProperties = mParameters.groupProperties[sGroupId];
 			if (typeof oGroupProperties !== "object"
@@ -1364,7 +1363,6 @@ sap.ui.define([
 	ODataModel.prototype.createBindingContext = function (sPath, oContext) {
 		var sDataPath,
 			oMetaContext,
-			sMetaPath,
 			sResolvedPath,
 			iSeparator;
 
@@ -1397,7 +1395,7 @@ sap.ui.define([
 		iSeparator = sResolvedPath.indexOf("#");
 		if (iSeparator >= 0) {
 			sDataPath = sResolvedPath.slice(0, iSeparator);
-			sMetaPath = sResolvedPath.slice(iSeparator + 1);
+			let sMetaPath = sResolvedPath.slice(iSeparator + 1);
 			if (sMetaPath[0] === "#") {
 				sMetaPath = sMetaPath.slice(1);
 			} else if (sDataPath.length > 1 && sMetaPath[0] !== "@"

@@ -529,7 +529,7 @@ sap.ui.define([
 	//*********************************************************************************************
 	QUnit.test("buildQuery: no query", function (assert) {
 		assert.strictEqual(_Helper.buildQuery(), "");
-		assert.strictEqual(_Helper.buildQuery({}), "");
+		assert.strictEqual(_Helper.buildQuery({}, true), "");
 	});
 
 	//*********************************************************************************************
@@ -543,6 +543,22 @@ sap.ui.define([
 
 		sEncoded = _Helper.buildQuery({a : "b", c : ["d", "e"]});
 		assert.strictEqual(sEncoded, "?a=b&c=d&c=e");
+	});
+
+	//*********************************************************************************************
+	QUnit.test("buildQuery: sort system query options", function (assert) {
+		const oHelperMock = this.mock(_Helper);
+		oHelperMock.expects("encodePair").withExactArgs("c", "d").returns("c=d");
+		oHelperMock.expects("encodePair").withExactArgs("c", "e").returns("c=e");
+		oHelperMock.expects("encodePair").withExactArgs("a", "b").returns("a=b");
+		oHelperMock.expects("encodePair").withExactArgs("$x", "x").returns("$x=x");
+		oHelperMock.expects("encodePair").withExactArgs("$y", "y").returns("$y=y");
+		oHelperMock.expects("encodePair").withExactArgs("$z", "z").returns("$z=z");
+
+		assert.strictEqual(
+			// code under test
+			_Helper.buildQuery({$z : "z", c : ["d", "e"], $y : "y", a : "b", $x : "x"}, true),
+			"?c=d&c=e&a=b&$x=x&$y=y&$z=z");
 	});
 
 	//*********************************************************************************************
@@ -3448,8 +3464,9 @@ sap.ui.define([
 				mWrappedQueryOptions,
 				oMetaModelMock = this.mock(oMetaModel);
 
-			aMetaPathSegments.forEach(function (sSegment, j, aMetaPathSegments) {
-				var sPropertyMetaPath = "/EMPLOYEES/" + aMetaPathSegments.slice(0, j + 1).join("/"),
+			aMetaPathSegments.forEach(function (sSegment, j, aMetaPathSegments0) {
+				var sPropertyMetaPath = "/EMPLOYEES/"
+						+ aMetaPathSegments0.slice(0, j + 1).join("/"),
 					sKind = sSegment.split("_")[0];
 
 				if (sSegment.endsWith("*")) {

@@ -526,6 +526,9 @@ sap.ui.define([
 		const oPromise = oCache.create(oGroupLock, oPostPathPromise, sPath, sTransientPredicate,
 			oEntityData, bAtEndOfCreated, fnErrorCallback, fnSubmitCallback, /*onCancel*/() => {
 				_Helper.removeByPath(this.mPostRequests, sTransientPredicate, oEntityData);
+				if (this.oAggregation.createInPlace) {
+					return;
+				}
 				if (oCache === this.oFirstLevel) {
 					this.adjustDescendantCount(oEntityData, iIndex, -1);
 				}
@@ -1111,45 +1114,6 @@ sap.ui.define([
 	};
 
 	/**
-	 * Returns the index of the given node's sibling, either the next one (via offset +1) or the
-	 * previous one (via offset -1).
-	 *
-	 * @param {number} iIndex - The index of a node
-	 * @param {number} iOffset - An offset, either -1 or +1
-	 * @returns {number}
-	 *   The sibling node's index, or -1 if no such sibling exists
-	 *
-	 * @public
-	 */
-	_AggregationCache.prototype.getSiblingIndex = function (iIndex, iOffset) {
-		function findSibling(aElements, iRank, iLevel) {
-			for (;;) {
-				iRank += iOffset;
-				if (iRank < 0 || iRank >= aElements.$count) {
-					return -1; // no such sibling
-				}
-				if (!aElements[iRank]) {
-					return iRank;
-				}
-				if (aElements[iRank]["@$ui5.node.level"] < iLevel) {
-					return -1; // no such sibling
-				}
-				if (aElements[iRank]["@$ui5.node.level"] === iLevel) {
-					return iRank;
-				}
-				// else: ignore descendants
-			}
-		}
-
-		const oNode = this.aElements[iIndex];
-		const oCache = _Helper.getPrivateAnnotation(oNode, "parent");
-		const iSiblingRank = findSibling(oCache.aElements,
-			_Helper.getPrivateAnnotation(oNode, "rank"), oNode["@$ui5.node.level"]);
-
-		return iSiblingRank < 0 ? -1 : this.findIndex(iSiblingRank, oCache);
-	};
-
-	/**
 	 * @override
 	 * @see sap.ui.model.odata.v4.lib._Cache#getValue
 	 */
@@ -1551,7 +1515,6 @@ sap.ui.define([
 	_AggregationCache.prototype.read = function (iIndex, iLength, iPrefetchLength, oGroupLock,
 			fnDataRequested) {
 		var oCurrentParent,
-			oElement,
 			iFirstLevelIndex = iIndex,
 			iFirstLevelLength = iLength,
 			oGapParent,
@@ -1569,9 +1532,9 @@ sap.ui.define([
 		 * @param {number} iGapStart start of gap, inclusive
 		 * @param {number} iGapEnd end of gap, exclusive
 		 */
-		function readGap(iGapStart, iGapEnd) {
+		function readGap(iGapStart0, iGapEnd) {
 			aReadPromises.push(
-				that.readGap(oGapParent, iGapStart, iGapEnd, oGroupLock.getUnlockedCopy(),
+				that.readGap(oGapParent, iGapStart0, iGapEnd, oGroupLock.getUnlockedCopy(),
 					fnDataRequested));
 		}
 
@@ -1617,7 +1580,7 @@ sap.ui.define([
 				});
 			const n = Math.min(oReadRange.start + oReadRange.length, this.aElements.length);
 			for (i = oReadRange.start; i < n; i += 1) {
-				oElement = this.aElements[i];
+				const oElement = this.aElements[i];
 				oCurrentParent = _Helper.hasPrivateAnnotation(oElement, "placeholder")
 					? _Helper.getPrivateAnnotation(oElement, "parent")
 					: undefined;
@@ -2057,6 +2020,81 @@ sap.ui.define([
 			oGroupLock, false, false, bRefreshNeeded);
 
 		return oResult && parseInt(_Helper.drillDown(oResult, this.oAggregation.$LimitedRank));
+	};
+
+	/**
+	 * Returns the index of the given node's sibling, either the next one (via offset +1) or the
+	 * previous one (via offset -1).
+	 *
+	 * @param {number} iIndex - The index of a node
+	 * @param {number} iOffset - An offset, either -1 or +1
+	 * @param {sap.ui.model.odata.v4.lib._GroupLock} oGroupLock
+	 *   A lock for the group to associate the requests with
+	 * @returns {Promise<number>}
+	 *   The sibling node's index, or -1 if no such sibling exists
+	 *
+	 * @public
+	 */
+	_AggregationCache.prototype.requestSiblingIndex = async function (iIndex, iOffset, oGroupLock) {
+		const oNode = this.aElements[iIndex];
+		const oCache = _Helper.getPrivateAnnotation(oNode, "parent");
+		const bSingleLevelCache = oCache !== this.oFirstLevel
+			|| this.oAggregation.expandTo === 1 && !this.oAggregation.$ExpandLevels;
+		const iRank = _Helper.getPrivateAnnotation(oNode, "rank");
+		let iSiblingRank = iRank + iOffset;
+		if (iOffset < 0) { // previous sibling
+			if (!bSingleLevelCache) {
+				iSiblingRank // Note: may become undefined!
+					= _AggregationHelper.findPreviousSiblingIndex(oCache.aElements, iRank);
+			}
+			if (iSiblingRank < 0) {
+				return -1; // no such sibling
+			}
+		} else { // next sibling: skip descendants
+			iSiblingRank += _Helper.getPrivateAnnotation(oNode, "descendants", 0);
+			if (iSiblingRank >= oCache.aElements.$count
+				|| oCache.aElements[iSiblingRank]?.["@$ui5.node.level"]
+					< oNode["@$ui5.node.level"]) {
+				return -1; // no such sibling
+			}
+		}
+
+		if (iSiblingRank >= 0) {
+			const iSiblingIndex = this.findIndex(iSiblingRank, oCache);
+			if (bSingleLevelCache
+				|| !_Helper.hasPrivateAnnotation(this.aElements[iSiblingIndex], "placeholder")) {
+				return iSiblingIndex; // sibling found
+			}
+		}
+
+		const mQueryOptions = {
+			...this.oFirstLevel.mQueryOptions,
+			$filter : this.oAggregation.$LimitedRank + (iOffset < 0 ? " lt '" : " gt '")
+				+ _Helper.getPrivateAnnotation(oNode, "rank") + "' and "
+				+ this.oAggregation.$DistanceFromRoot + " lt '" + oNode["@$ui5.node.level"]
+				+ "'",
+			$top : 1
+		};
+		if (iOffset < 0) {
+			mQueryOptions.$orderby = this.oAggregation.$LimitedRank + " desc";
+		}
+		mQueryOptions.$select = [...mQueryOptions.$select, this.oAggregation.$LimitedRank];
+		delete mQueryOptions.$count;
+		const sResourcePath = this.sResourcePath
+			+ this.oRequestor.buildQueryString("", mQueryOptions, false, true, true);
+
+		const oResult = await this.oRequestor.request("GET", sResourcePath, oGroupLock);
+
+		const oSibling = oResult.value[0];
+		// Note: overridden by _AggregationCache.calculateKeyPredicateRH
+		this.oFirstLevel.calculateKeyPredicate(oSibling, this.getTypes(), this.sMetaPath);
+		iSiblingRank = parseInt(_Helper.drillDown(oSibling, this.oAggregation.$LimitedRank));
+		_Helper.deleteProperty(oSibling, this.oAggregation.$LimitedRank);
+		this.insertNode(oSibling, iSiblingRank);
+
+		return oSibling["@$ui5.node.level"] === oNode["@$ui5.node.level"]
+			? iSiblingRank
+			: -1; // no such sibling
 	};
 
 	/**

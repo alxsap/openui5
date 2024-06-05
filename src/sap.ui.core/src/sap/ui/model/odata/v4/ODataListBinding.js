@@ -40,7 +40,8 @@ sap.ui.define([
 			DataStateChange : true,
 			patchCompleted : true,
 			patchSent : true,
-			refresh : true
+			refresh : true,
+			selectionChanged : true
 		},
 		/**
 		 * @alias sap.ui.model.odata.v4.ODataListBinding
@@ -48,8 +49,8 @@ sap.ui.define([
 		 * @class List binding for an OData V4 model.
 		 *   An event handler can only be attached to this binding for the following events:
 		 *   'AggregatedDataStateChange', 'change', 'createActivate', 'createCompleted',
-		 *   'createSent', 'dataReceived', 'dataRequested', 'DataStateChange', 'patchCompleted',
-		 *   'patchSent', and 'refresh'. For other events, an error is thrown.
+		 *   'createSent', 'dataReceived', 'dataRequested', 'DataStateChange', 'selectionChanged',
+		 *   'patchCompleted', 'patchSent', and 'refresh'. For other events, an error is thrown.
 		 * @extends sap.ui.model.ListBinding
 		 * @hideconstructor
 		 * @mixes sap.ui.model.odata.v4.ODataParentBinding
@@ -243,8 +244,8 @@ sap.ui.define([
 				this.fetchCache(this.oContext, /*bIgnoreParentCache*/true);
 			}
 			this.oHeaderContext.adjustPredicate(sTransientPredicate, sPredicate);
-			this.aContexts.forEach(function (oContext) {
-				oContext.adjustPredicate(sTransientPredicate, sPredicate, adjustPreviousData);
+			this.aContexts.forEach(function (oContext0) {
+				oContext0.adjustPredicate(sTransientPredicate, sPredicate, adjustPreviousData);
 			});
 		}
 	};
@@ -546,6 +547,22 @@ sap.ui.define([
 	 */
 
 	/**
+	 * The 'selectionChanged' event is fired if the selection state of a context changes; for more
+	 * information see {@link sap.ui.model.odata.v4.Context#setSelected}.
+	 *
+	 * @param {sap.ui.base.Event} oEvent The event object
+	 * @param {sap.ui.model.odata.v4.ODataListBinding} oEvent.getSource() This binding
+	 * @param {function():Object<any>} oEvent.getParameters
+	 *   Function which returns an object containing all event parameters
+	 * @param {boolean} oEvent.getParameters.context
+	 *   The context for which {@link sap.ui.model.odata.v4.Context#setSelected} was called
+	 *
+	 * @event sap.ui.model.odata.v4.ODataListBinding#selectionChanged
+	 * @experimental As of version 1.126.0
+	 * @public
+	 */
+
+	/**
 	 * Attach event handler <code>fnFunction</code> to the 'createActivate' event of this binding.
 	 *
 	 * @param {function} fnFunction The function to call when the event occurs
@@ -678,9 +695,9 @@ sap.ui.define([
 		if (iCount > 0) {
 			const aContexts = this.aContexts;
 			const iModelIndex = oContext.getModelIndex();
-			aContexts.splice(iModelIndex + 1, iCount).forEach((oContext) => {
-				if (!oContext.created()) {
-					this.mPreviousContextsByPath[oContext.getPath()] = oContext;
+			aContexts.splice(iModelIndex + 1, iCount).forEach((oContext0) => {
+				if (!oContext0.created()) {
+					this.mPreviousContextsByPath[oContext0.getPath()] = oContext0;
 				} // else: created (even persisted) is kept inside "context" annotation
 			});
 			for (let i = iModelIndex + 1; i < aContexts.length; i += 1) {
@@ -931,7 +948,7 @@ sap.ui.define([
 				return;
 			}
 
-			oContext.doSetSelected(false);
+			oContext.doSetSelected(false, true);
 			that.removeCreated(oContext);
 			return Promise.resolve().then(function () {
 				// Fire the change asynchronously so that Cache#delete is finished and #getContexts
@@ -953,7 +970,7 @@ sap.ui.define([
 		).then(function (oCreatedEntity) {
 			// The entity was created on the server
 			// Note: This code is not called for nested creates, they are always rejected
-			var bDeepCreate, sGroupId, sPredicate;
+			var bDeepCreate, sGroupId0, sPredicate;
 
 			// refreshSingle requires the new key predicate in oContext.getPath()
 			sPredicate = _Helper.getPrivateAnnotation(oCreatedEntity, "predicate");
@@ -973,14 +990,14 @@ sap.ui.define([
 			}
 			bDeepCreate = _Helper.getPrivateAnnotation(oCreatedEntity, "deepCreate");
 			_Helper.deletePrivateAnnotation(oCreatedEntity, "deepCreate");
-			sGroupId = that.getGroupId();
-			if (that.oModel.isApiGroup(sGroupId)) {
-				sGroupId = "$auto";
+			sGroupId0 = that.getGroupId();
+			if (that.oModel.isApiGroup(sGroupId0)) {
+				sGroupId0 = "$auto";
 			}
 			// currently the optimized update w/o bSkipRefresh is restricted to deep create
 			return bSkipRefresh || bDeepCreate
-				? oContext.updateAfterCreate(bSkipRefresh, sGroupId)
-				: that.refreshSingle(oContext, that.lockGroup(sGroupId));
+				? oContext.updateAfterCreate(bSkipRefresh, sGroupId0)
+				: that.refreshSingle(oContext, that.lockGroup(sGroupId0));
 		}, function (oError) {
 			oGroupLock.unlock(true); // createInCache failed, so the lock might still be blocking
 			throw oError;
@@ -989,7 +1006,7 @@ sap.ui.define([
 		const iIndex = bCreateInPlace ? undefined : iChildIndex ?? -this.iCreatedContexts;
 		oContext = Context.create(this.oModel, this, sTransientPath, iIndex, oCreatePromise,
 			bInactive);
-		oContext.setSelected(this.oHeaderContext.isSelected());
+		oContext.doSetSelected(this.oHeaderContext.isSelected());
 		if (this.isTransient()) {
 			oContext.created().catch(this.oModel.getReporter());
 		}
@@ -1036,21 +1053,19 @@ sap.ui.define([
 			sPath = this.getResolvedPath(),
 			sPredicate,
 			bStartBeyondRange = iStart > this.aContexts.length,
-			i,
 			that = this;
 
 		/*
 		 * Shrinks contexts to the new length, destroys unneeded contexts
 		 */
 		function shrinkContexts() {
-			var iNewLength = that.iMaxLength + that.iCreatedContexts,
-				i;
+			var iNewLength = that.iMaxLength + that.iCreatedContexts;
 
 			if (iNewLength >= that.aContexts.length) {
 				return;
 			}
 
-			for (i = iNewLength; i < that.aContexts.length; i += 1) {
+			for (let i = iNewLength; i < that.aContexts.length; i += 1) {
 				if (that.aContexts[i]) {
 					that.aContexts[i].destroy();
 				}
@@ -1062,7 +1077,7 @@ sap.ui.define([
 			bChanged = true;
 		}
 
-		for (i = 0; i < aResults.length; i += 1) {
+		for (let i = 0; i < aResults.length; i += 1) {
 			if (this.aContexts[iStart + i] === undefined && aResults[i]) {
 				bChanged = true;
 				i$skipIndex = iStart + i - this.iCreatedContexts; // index on server ($skip)
@@ -1092,7 +1107,7 @@ sap.ui.define([
 					}
 				} else {
 					oContext = Context.create(oModel, this, sContextPath, i$skipIndex);
-					oContext.setSelected(this.oHeaderContext.isSelected());
+					oContext.doSetSelected(this.oHeaderContext.isSelected());
 				}
 				this.aContexts[iStart + i] = oContext;
 			}
@@ -2181,6 +2196,18 @@ sap.ui.define([
 		}
 
 		return false;
+	};
+
+	/**
+	 * Fires the 'selectionChanged' event.
+	 *
+	 * @param {sap.ui.model.odata.v4.Context} oContext
+	 *   The context whose selection has changed
+	 *
+	 * @private
+	 */
+	ODataListBinding.prototype.fireSelectionChanged = function (oContext) {
+		this.fireEvent("selectionChanged", {context : oContext});
 	};
 
 	/**
@@ -3501,20 +3528,20 @@ sap.ui.define([
 				sResolvedPath = that.getResolvedPath();
 
 			that.aContexts = aInitialDataCollection.map(function (oInitialData, i) {
-				var oContext,
+				var oContext0,
 					sTransientPredicate
 						= _Helper.getPrivateAnnotation(oInitialData, "transientPredicate"),
 					oPromise = _Helper.getPrivateAnnotation(oInitialData, "promise");
 
-				oContext = Context.create(that.oModel, that, sResolvedPath + sTransientPredicate,
+				oContext0 = Context.create(that.oModel, that, sResolvedPath + sTransientPredicate,
 					i - aInitialDataCollection.length, oPromise, false, true);
-				oContext.created().catch(that.oModel.getReporter());
+				oContext0.created().catch(that.oModel.getReporter());
 
-				_Helper.setPrivateAnnotation(oInitialData, "context", oContext);
+				_Helper.setPrivateAnnotation(oInitialData, "context", oContext0);
 				_Helper.setPrivateAnnotation(oInitialData, "firstCreateAtEnd", false);
 				_Helper.deletePrivateAnnotation(oInitialData, "promise");
 
-				return oContext;
+				return oContext0;
 			});
 			that.iCreatedContexts = that.iActiveContexts = that.aContexts.length;
 			that.bFirstCreateAtEnd = false;
@@ -4050,11 +4077,13 @@ sap.ui.define([
 			throw new Error("Unsupported context: " + oNode);
 		}
 		this.checkSuspended();
-		const iIndex = this.oCache.getSiblingIndex(oNode.iIndex, iOffset);
 
-		return iIndex < 0
-			? Promise.resolve(null)
-			: this.requestContexts(iIndex, 1).then((aResult) => aResult[0]);
+		return this.oCache.requestSiblingIndex(oNode.iIndex, iOffset, this.lockGroup())
+			.then((iIndex) => {
+				return iIndex < 0
+					? null
+					: this.requestContexts(iIndex, 1).then((aResult) => aResult[0]);
+			});
 	};
 
 	/**
@@ -4154,8 +4183,7 @@ sap.ui.define([
 	 * @private
 	 */
 	ODataListBinding.prototype.reset = function (sChangeReason, bDrop, sGroupId) {
-		var oContext,
-			iCreated = 0, // index (and finally number) of created elements that we keep
+		var iCreated = 0, // index (and finally number) of created elements that we keep
 			bEmpty = this.iCurrentEnd === 0,
 			bKeepTransient = sGroupId && sGroupId !== this.getUpdateGroupId(),
 			i,
@@ -4170,7 +4198,7 @@ sap.ui.define([
 				that.mPreviousContextsByPath[oContext.getPath()] = oContext;
 			});
 			for (i = 0; i < this.iCreatedContexts; i += 1) {
-				oContext = this.aContexts[i];
+				const oContext = this.aContexts[i];
 				if (bDrop === false
 						? bKeepTransient && oContext.isTransient()
 							|| oContext.isInactive() !== undefined
@@ -4524,10 +4552,10 @@ sap.ui.define([
 					sResolvedPath = this.oModel.resolve(this.sPath, oContext);
 					// Note: oHeaderContext is missing only if called from c'tor
 					if (this.oHeaderContext && this.oHeaderContext.getPath() !== sResolvedPath) {
+						this.oHeaderContext.doSetSelected(false);
 						// Do not destroy the context immediately to avoid timing issues with
 						// dependent bindings, keep it in mPreviousContextsByPath to destroy it
 						// later
-						this.oHeaderContext.setSelected(false);
 						this.mPreviousContextsByPath[this.oHeaderContext.getPath()]
 							= this.oHeaderContext;
 						this.oHeaderContext = null;

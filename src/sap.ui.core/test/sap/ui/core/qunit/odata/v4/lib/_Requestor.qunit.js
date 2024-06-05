@@ -2618,8 +2618,8 @@ sap.ui.define([
 			oBatchRequest3,
 			oJQueryMock = this.mock(jQuery),
 			aPromises = [],
-			sServiceUrl = "/Service/",
-			oRequestor = _Requestor.create(sServiceUrl, oModelInterface),
+			sServiceUrl0 = "/Service/",
+			oRequestor = _Requestor.create(sServiceUrl0, oModelInterface),
 			bWaitingIsOver;
 
 		// expects a jQuery.ajax for a batch request and returns a mock for it to be resolved later
@@ -2627,7 +2627,7 @@ sap.ui.define([
 			var jqXHR = new jQuery.Deferred();
 
 			oJQueryMock.expects("ajax")
-				.withArgs(sServiceUrl + "$batch")
+				.withArgs(sServiceUrl0 + "$batch")
 				.returns(jqXHR);
 			return jqXHR;
 		}
@@ -3707,11 +3707,14 @@ sap.ui.define([
 				.withExactArgs(sMetaPath, sinon.match.same(oQueryParams), true, bSortExpandSelect)
 				.returns(oConvertedQueryParams);
 			this.mock(_Helper).expects("buildQuery")
-				.withExactArgs(sinon.match.same(oConvertedQueryParams)).returns("?query");
+				.withExactArgs(sinon.match.same(oConvertedQueryParams), "~bSortSystemQueryOptions~")
+				.returns("?query");
 
 			// code under test
 			assert.strictEqual(
-				oRequestor.buildQueryString(sMetaPath, oQueryParams, true, bSortExpandSelect),
+				oRequestor.buildQueryString(sMetaPath, oQueryParams, true, bSortExpandSelect,
+					"~bSortSystemQueryOptions~"
+				),
 				"?query");
 		});
 	});
@@ -5604,8 +5607,8 @@ sap.ui.define([
 });
 
 	//*****************************************************************************************
-	const sTitle = "processOptimisticBatch: n+1 start, optimistic batch matches, enabler rejects";
-	QUnit.test(sTitle, function (assert) {
+	QUnit.test("processOptimisticBatch: n+1 start, optimistic batch matches, enabler rejects",
+			function (assert) {
 		var oError = new Error("Enabler rejects"),
 			sKey = window.location.href,
 			oOptimisticBatch = {
