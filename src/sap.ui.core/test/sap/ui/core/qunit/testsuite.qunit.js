@@ -98,6 +98,7 @@ sap.ui.define(function() {
 			tmpl: {},
 			designtime: {},
 			dnd: {},
+			fieldhelp: {},
 			generic: {},
 			gherkin: {},
 			i18n: {},
