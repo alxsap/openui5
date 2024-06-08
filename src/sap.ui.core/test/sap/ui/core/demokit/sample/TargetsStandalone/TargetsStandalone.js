@@ -1,4 +1,6 @@
-sap.ui.require(["sap/ui/core/Core", "sap/ui/core/ComponentContainer"], function(Core, ComponentContainer) {
+// Note: the HTML page 'TargetsStandalone.html' loads this module via data-sap-ui-on-init
+
+sap.ui.define(["sap/ui/core/Core", "sap/ui/core/ComponentContainer"], function(Core, ComponentContainer) {
 	"use strict";
 	Core.ready().then(function() {
 		new ComponentContainer({

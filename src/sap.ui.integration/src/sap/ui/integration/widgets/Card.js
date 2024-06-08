@@ -36,7 +36,8 @@ sap.ui.define([
 	"sap/ui/integration/util/CardObserver",
 	"sap/m/IllustratedMessageType",
 	"sap/ui/integration/util/ParameterMap",
-	"sap/ui/integration/util/Measurement"
+	"sap/ui/integration/util/Measurement",
+	"sap/ui/integration/util/DisplayVariants"
 ], function(
 	CardRenderer,
 	Footer,
@@ -72,7 +73,8 @@ sap.ui.define([
 	CardObserver,
 	IllustratedMessageType,
 	ParameterMap,
-	Measurement
+	Measurement,
+	DisplayVariants
 ) {
 	"use strict";
 
@@ -271,7 +273,8 @@ sap.ui.define([
 				 * @since 1.76
 				 */
 				manifestChanges: {
-					type: "object[]"
+					type: "object[]",
+					defaultValue: []
 				},
 
 				/**
@@ -497,6 +500,7 @@ sap.ui.define([
 
 		this._oIntegrationRb = Library.getResourceBundleFor("sap.ui.integration");
 		this._iModelSizeLimit = DEFAULT_MODEL_SIZE_LIMIT;
+		this._oDisplayVariants = new DisplayVariants(this);
 		this._initModels();
 		this._oContentFactory = new ContentFactory(this);
 		this._oCardObserver = new CardObserver(this);
@@ -517,6 +521,7 @@ sap.ui.define([
 		 * @public
 		 * @author SAP SE
 		 * @version ${version}
+		 * @borrows sap.ui.integration.widgets.Card#getId as getId
 		 * @borrows sap.ui.integration.widgets.Card#getDomRef as getDomRef
 		 * @borrows sap.ui.integration.widgets.Card#setVisible as setVisible
 		 * @borrows sap.ui.integration.widgets.Card#getParameters as getParameters
@@ -550,6 +555,7 @@ sap.ui.define([
 		 * @borrows sap.ui.integration.widgets.Card#getBlockingMessage as getBlockingMessage
 		 */
 		this._oLimitedInterface = new Interface(this, [
+			"getId",
 			"getDomRef",
 			"setVisible",
 			"getParameters",
@@ -626,6 +632,9 @@ sap.ui.define([
 				init: () => this.setModel(new ResourceModel({
 					bundle: this._oIntegrationRb
 				}), "i18n")
+			},
+			size: {
+				init: () => this.setModel(this._oDisplayVariants.getInitialSizeModel(), "size")
 			}
 		};
 
@@ -696,7 +705,6 @@ sap.ui.define([
 		if (this._getActualDataMode() !== CardDataMode.Active) {
 			return;
 		}
-
 		this.startManifestProcessing();
 	};
 
@@ -1271,6 +1279,7 @@ sap.ui.define([
 		this._destroyManifest();
 		this._oCardObserver.destroy();
 		this._oCardObserver = null;
+		this._oDisplayVariants = null;
 		this._oContentFactory = null;
 		this._oIntegrationRb = null;
 		this._aActiveLoadingProviders = null;
@@ -1989,9 +1998,13 @@ sap.ui.define([
 	};
 
 	Card.prototype._applyFooterManifestSettings = function () {
-		var oFooter = this.createFooter();
 
 		this.destroyAggregation("_footer");
+
+		if (this._shouldIgnoreFooter()) {
+			return;
+		}
+		var oFooter = this.createFooter();
 
 		if (oFooter) {
 			this.setAggregation("_footer", oFooter);
@@ -2074,6 +2087,38 @@ sap.ui.define([
 	};
 
 	/**
+	 * @private
+	 * @ui5-restricted sap.ui.integration
+	 * @returns {boolean} If the card is rendered as a compactheader variant
+	 */
+	Card.prototype.isCompactHeader = function () {
+		return this.getDisplayVariant() === CardDisplayVariant.CompactHeader;
+	};
+
+	/**
+	 * @private
+	 * @ui5-restricted sap.ui.integration
+	 * @returns {boolean} If the card is rendered as a smallheader variant
+	 */
+	Card.prototype.isSmallHeader = function () {
+		return this.getDisplayVariant() === CardDisplayVariant.SmallHeader;
+	};
+
+	/**
+	 * @private
+	 * @ui5-restricted sap.ui.integration
+	 * @returns {boolean} If the card is rendered as a tile variant
+	 */
+	Card.prototype.isHeaderDisplayVariant = function () {
+		const aHeaderVariants = [
+			CardDisplayVariant.SmallHeader,
+			CardDisplayVariant.StandardHeader,
+			CardDisplayVariant.CompactHeader
+		];
+		return aHeaderVariants.indexOf(this.getDisplayVariant()) > -1;
+	};
+
+	/**
 	 * Checks if this is a Component Card. Manifest must be loaded for that check.
 	 * @private
 	 * @returns {boolean} True if this is a Component Card.
@@ -2095,9 +2140,21 @@ sap.ui.define([
 		}
 
 		const bIsTile = this.isTileDisplayVariant();
+		const bIsHeader = this.isHeaderDisplayVariant();
 		const bHasNoContent = !this._oCardManifest.get(MANIFEST_PATHS.CONTENT);
 
-		return bIsTile || bHasNoContent;
+		return bIsTile || bHasNoContent || bIsHeader;
+	};
+
+	/**
+	 * Checks if the content section should be ignored.
+	 * @private
+	 * @returns {boolean} True if the content section should be ignored.
+	 */
+	Card.prototype._shouldIgnoreFooter = function () {
+		const bIsTile = this.isTileDisplayVariant();
+		const bIsHeader = this.isHeaderDisplayVariant();
+		return bIsTile || bIsHeader;
 	};
 
 	Card.prototype.createHeader = function () {
@@ -2986,6 +3043,18 @@ sap.ui.define([
 		}
 
 		return sDataMode;
+	};
+
+	/**
+	 * Sets the display variant and informs the size model.
+	 * @param {sap.ui.integration.DisplayVariant} sValue The new display variant.
+	 * @param {boolean} bSuppressInvalidate Whether to suppress invalidation.
+	 * @return {sap.ui.integration.widgets.Card} Pointer to the control instance to allow method chaining.
+	 */
+	Card.prototype.setDisplayVariant = function (sValue, bSuppressInvalidate) {
+		this.setProperty("displayVariant", sValue, bSuppressInvalidate);
+		this._oDisplayVariants.updateSizeModel();
+		return this;
 	};
 
 	return Card;

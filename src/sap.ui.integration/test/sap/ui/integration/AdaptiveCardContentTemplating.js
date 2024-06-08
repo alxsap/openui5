@@ -1,3 +1,8 @@
-// Note: the HTML page 'AdaptiveCardContentTemplating.html' loads this module via data-sap-ui-on-init
+sap.ui.define([
 
-delete Document.prototype.adoptedStyleSheets;
+], function () {
+  "use strict";
+  // Note: the HTML page 'AdaptiveCardContentTemplating.html' loads this module via data-sap-ui-on-init
+
+  delete Document.prototype.adoptedStyleSheets;
+});

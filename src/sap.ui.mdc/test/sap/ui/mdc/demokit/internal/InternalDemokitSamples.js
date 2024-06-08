@@ -1,4 +1,6 @@
-sap.ui.require([
+// Note: the HTML page 'InternalDemokitSamples.html' loads this module via data-sap-ui-on-init
+
+sap.ui.define([
 	"sap/ui/core/Core",
 	"sap/ui/core/util/LibraryInfo",
 	"sap/ui/util/openWindow",
@@ -9,6 +11,7 @@ sap.ui.require([
 	"sap/m/Label",
 	"sap/m/Text"
 ], async function(Core, LibraryInfo, openWindow, JSONModel, Table, Column, ColumnListItem, Label, Text) {
+	"use strict";
 	var oLibraryInfo = new LibraryInfo();
 
 	await Core.ready();
