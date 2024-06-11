@@ -1193,6 +1193,11 @@ sap.ui.define([
 				}
 			},
 
+			"p13n.Smoke": {
+				title: "Test Page for sap.m.p13n Demokit samples",
+				page: "test-resources/sap/m/qunit/p13n/smoke/testsuite.qunit.html"
+			},
+
 			P13nFilterPanel: {
 				title: "Test Page for sap.m.P13nFilterPanel",
 				ui5: {
@@ -2528,7 +2533,7 @@ sap.ui.define([
 				title: "QUnit Page for sap.m.routing.Router",
 				ui5: {
 					resourceroots: {
-						"sap.ui.test": "test-resources/sap/m/qunit/"
+						"m.test": "test-resources/sap/m/qunit/"
 					}
 				}
 			},
@@ -2537,7 +2542,7 @@ sap.ui.define([
 				title: "QUnit Page for sap.m.routing.Targets",
 				ui5: {
 					resourceroots: {
-						"sap.ui.test": "test-resources/sap/m/qunit/"
+						"m.test": "test-resources/sap/m/qunit/"
 					}
 				}
 			},
@@ -2546,7 +2551,7 @@ sap.ui.define([
 				title: "QUnit Page for sap.m.routing.TargetHandler",
 				ui5: {
 					resourceroots: {
-						"sap.ui.test": "test-resources/sap/m/qunit/"
+						"m.test": "test-resources/sap/m/qunit/"
 					}
 				}
 			},

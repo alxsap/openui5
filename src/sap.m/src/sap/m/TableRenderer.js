@@ -374,9 +374,11 @@ TableRenderer.renderNoData = function(rm, oControl) {
 	}
 	rm.openEnd();
 
+	rm.openStart("td").attr("role", "presentation").class("sapMListTblHighlightCell").openEnd().close("td");
+
 	var bRenderDummyColumn = oControl.shouldRenderDummyColumn();
 	rm.openStart("td", oControl.getId("nodata-text"));
-	rm.attr("colspan", oControl.getColCount() - bRenderDummyColumn);
+	rm.attr("colspan", oControl.getColCount() - bRenderDummyColumn - 2 /* Highlight and Navigated cells are rendered always */);
 	rm.class("sapMListTblCell").class("sapMListTblCellNoData");
 	rm.openEnd();
 
@@ -392,6 +394,8 @@ TableRenderer.renderNoData = function(rm, oControl) {
 	}
 
 	rm.close("td");
+
+	rm.openStart("td").attr("role", "presentation").class("sapMListTblNavigatedCell").openEnd().close("td");
 
 	if (bRenderDummyColumn) {
 		ColumnListItemRenderer.renderDummyCell(rm, oControl);

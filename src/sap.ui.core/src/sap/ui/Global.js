@@ -29,7 +29,7 @@ sap.ui.define([
 		"use strict";
 
 		// Register to the OpenAjax Hub if it exists
-		if (window.OpenAjax && window.OpenAjax.hub) {
+		if (globalThis.OpenAjax && globalThis.OpenAjax.hub) {
 			OpenAjax.hub.registerLibrary("sap", "http://www.sap.com/", "0.1", {});
 		}
 

@@ -39,10 +39,22 @@ GroupHeaderListItemRenderer.renderContentLatter = function(rm, oLI) {
 	ColumnListItemRenderer.renderContentLatter.apply(this, arguments);
 };
 
-// GroupHeaderListItem does not respect mode, counter and highlight property of the LIB
+// GroupHeaderListItem does not respect mode and counter property of the LIB
 GroupHeaderListItemRenderer.renderMode = function() {};
 GroupHeaderListItemRenderer.renderCounter = function() {};
-GroupHeaderListItemRenderer.renderHighlight = function() {};
+
+// Hightlist cells should be rendered to satisfy the Jaws with the colspan calculation for the correct column count
+GroupHeaderListItemRenderer.renderHighlight = function(rm, oLI) {
+	if (oLI.getTable()) {
+		rm.openStart("td");
+		rm.class("sapMListTblHighlightCell");
+		rm.attr("role", "presentation");
+		rm.openEnd();
+		rm.close("td");
+	} else {
+		ListItemBaseRenderer.renderHighlight(rm, oLI);
+	}
+};
 
 // accesibility position is only relevant for the Table case therefore use the logic of CLI
 GroupHeaderListItemRenderer.getAccessbilityPosition = ColumnListItemRenderer.getAccessbilityPosition;
@@ -85,7 +97,7 @@ GroupHeaderListItemRenderer.renderLIContentWrapper = function(rm, oLI) {
 		rm.class("sapMGHLICell");
 		rm.attr("role", "gridcell");
 		ColumnListItemRenderer.makeFocusable(rm);
-		rm.attr("colspan", oTable.getColCount() - oTable.doItemsNeedTypeColumn() - oTable.shouldRenderDummyColumn() - 1 /* Navigated cells are always rendered */);
+		rm.attr("colspan", oTable.getColCount() - oTable.doItemsNeedTypeColumn() - oTable.shouldRenderDummyColumn() - 2 /* Navigated and Highlight cells are always rendered */);
 		rm.openEnd();
 	}
 

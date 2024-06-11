@@ -21731,6 +21731,10 @@ sap.ui.define([
 				// code under test (JIRA: CPOUI5ODATAV4-2337)
 				oListBinding.getHeaderContext().isAncestorOf(/*don't care*/);
 			}, new Error("Missing recursive hierarchy"));
+			assert.throws(function () {
+				// code under test (JIRA: CPOUI5ODATAV4-2558)
+				oListBinding.getHeaderContext().getSibling(/*don't care*/);
+			}, new Error("Missing recursive hierarchy"));
 		});
 	});
 
@@ -25563,7 +25567,7 @@ sap.ui.define([
 				})
 				.expectChange("count");
 
-			return this.createView(assert, sView, oModel).then(async function () {
+			return this.createView(assert, sView, oModel).then(function () {
 				oTable = that.oView.byId("table");
 				oRoot = oTable.getRows()[0].getBindingContext();
 				oListBinding = oRoot.getBinding();
@@ -25623,8 +25627,12 @@ sap.ui.define([
 					}, "technical properties have been removed");
 
 				// code under test
-				assert.strictEqual(await oRoot.requestSibling(-1), null, "CPOUI5ODATAV4-2558");
-				assert.strictEqual(await oRoot.requestSibling(+1), null, "CPOUI5ODATAV4-2558");
+				assert.strictEqual(oRoot.getSibling(-1), null, "CPOUI5ODATAV4-2558");
+				assert.strictEqual(oRoot.getSibling(+1), null, "CPOUI5ODATAV4-2558");
+				assert.throws(function () {
+					// code under test (JIRA: CPOUI5ODATAV4-2558)
+					oRoot.getSibling(0);
+				}, new Error("Unsupported offset: 0"));
 
 				// code under test
 				checkSelected(assert, oRoot, undefined);
@@ -26773,7 +26781,7 @@ sap.ui.define([
 			})
 			.expectChange("count");
 
-		return this.createView(assert, sView, oModel).then(async function () {
+		return this.createView(assert, sView, oModel).then(function () {
 			oTable = that.oView.byId("table");
 			oListBinding = oTable.getBinding("rows");
 
@@ -26805,9 +26813,9 @@ sap.ui.define([
 
 			const [oBeta, oKappa, oLambda] = oListBinding.getCurrentContexts();
 			// code under test
-			assert.strictEqual(await oKappa.requestSibling(-1), oBeta, "CPOUI5ODATAV4-2558");
-			assert.strictEqual(await oKappa.requestSibling(), oLambda, "CPOUI5ODATAV4-2558");
-			assert.strictEqual(await oKappa.requestSibling(+1), oLambda, "CPOUI5ODATAV4-2558");
+			assert.strictEqual(oKappa.getSibling(-1), oBeta, "CPOUI5ODATAV4-2558");
+			assert.strictEqual(oKappa.getSibling(), oLambda, "CPOUI5ODATAV4-2558");
+			assert.strictEqual(oKappa.getSibling(+1), oLambda, "CPOUI5ODATAV4-2558");
 
 			// code under test
 			assert.strictEqual(oListBinding.getDownloadUrl(), sTeaBusi + "EMPLOYEES"
@@ -26840,7 +26848,7 @@ sap.ui.define([
 			oTable.setFirstVisibleRow(0);
 
 			return that.waitForChanges(assert, "scroll up");
-		}).then(async function () {
+		}).then(function () {
 			var oNameBinding;
 
 			oRoot = oTable.getRows()[0].getBindingContext();
@@ -26866,9 +26874,9 @@ sap.ui.define([
 
 			const [oAlpha, oBeta, oKappa, oLambda] = oListBinding.getAllCurrentContexts();
 			// code under test
-			assert.strictEqual(await oAlpha.requestSibling(), null, "CPOUI5ODATAV4-2558");
-			assert.strictEqual(await oBeta.requestSibling(-1), null, "CPOUI5ODATAV4-2558");
-			assert.strictEqual(await oKappa.requestSibling(), oLambda, "CPOUI5ODATAV4-2558");
+			assert.strictEqual(oAlpha.getSibling(), null, "CPOUI5ODATAV4-2558");
+			assert.strictEqual(oBeta.getSibling(-1), null, "CPOUI5ODATAV4-2558");
+			assert.strictEqual(oKappa.getSibling(), oLambda, "CPOUI5ODATAV4-2558");
 
 			that.expectRequest({
 					batchNo : 3,
@@ -26918,7 +26926,7 @@ sap.ui.define([
 
 			assert.throws(function () {
 				// code under test
-				oBeta.requestSibling();
+				oBeta.getSibling();
 			}, new Error("Unsupported context: " + oBeta));
 
 			return that.waitForChanges(assert, "collapse root");
@@ -26973,10 +26981,10 @@ sap.ui.define([
 			oCollapsed.expand();
 
 			return that.waitForChanges(assert, "expand initially collapsed node");
-		}).then(async function () {
+		}).then(function () {
 			const [, oBeta, oGamma] = oListBinding.getCurrentContexts();
 			// code under test (JIRA: CPOUI5ODATAV4-2558)
-			const oZeta0 = await oGamma.requestSibling(); // Note: new context created here
+			const oZeta0 = oGamma.getSibling(); // Note: new context created here
 
 			// BEWARE: calls #getAllCurrentContexts!
 			checkTable("initially collapsed node expanded", assert, oTable, [
@@ -27004,12 +27012,12 @@ sap.ui.define([
 			const [,,, oZeta, oKappa] = oListBinding.getAllCurrentContexts();
 			assert.strictEqual(oZeta0, oZeta);
 			// code under test
-			assert.strictEqual(await oBeta.requestSibling(+1), oKappa, "CPOUI5ODATAV4-2558");
-			assert.strictEqual(await oKappa.requestSibling(-1), oBeta, "CPOUI5ODATAV4-2558");
-			assert.strictEqual(await oGamma.requestSibling(-1), null, "CPOUI5ODATAV4-2558");
-			assert.strictEqual(await oGamma.requestSibling(+1), oZeta, "CPOUI5ODATAV4-2558");
-			assert.strictEqual(await oZeta.requestSibling(-1), oGamma, "CPOUI5ODATAV4-2558");
-			assert.strictEqual(await oZeta.requestSibling(+1), null, "CPOUI5ODATAV4-2558");
+			assert.strictEqual(oBeta.getSibling(+1), oKappa, "CPOUI5ODATAV4-2558");
+			assert.strictEqual(oKappa.getSibling(-1), oBeta, "CPOUI5ODATAV4-2558");
+			assert.strictEqual(oGamma.getSibling(-1), null, "CPOUI5ODATAV4-2558");
+			assert.strictEqual(oGamma.getSibling(+1), oZeta, "CPOUI5ODATAV4-2558");
+			assert.strictEqual(oZeta.getSibling(-1), oGamma, "CPOUI5ODATAV4-2558");
+			assert.strictEqual(oZeta.getSibling(+1), null, "CPOUI5ODATAV4-2558");
 
 			that.expectRequest(sTopLevelsSelectUrl + "&$skip=4&$top=2", {
 					value : [{
@@ -27116,7 +27124,7 @@ sap.ui.define([
 				oListBinding.getHeaderContext().requestSideEffects(["AGE"]),
 				that.waitForChanges(assert, "create new root, side effect: AGE for all rows")
 			]);
-		}).then(async function () {
+		}).then(function () {
 			checkTable("new root created, after side effect: AGE for all rows", assert, oTable, [
 				"/EMPLOYEES('9')",
 				"/EMPLOYEES('0')"
@@ -27128,9 +27136,9 @@ sap.ui.define([
 
 			const [oAleph, oAlpha] = oListBinding.getCurrentContexts();
 			// code under test
-			assert.strictEqual(await oAlpha.requestSibling(+1), oAleph,
+			assert.strictEqual(oAlpha.getSibling(+1), oAleph,
 				"CPOUI5ODATAV4-2558 ignoring out-of-place nodes");
-			assert.strictEqual(await oAleph.requestSibling(-1), oAlpha,
+			assert.strictEqual(oAleph.getSibling(-1), oAlpha,
 				"CPOUI5ODATAV4-2558 ignoring out-of-place nodes");
 
 			that.expectRequest(sTopLevelsSelectUrl + "&$skip=1&$top=1", {
@@ -30351,7 +30359,7 @@ sap.ui.define([
 				}, new Error("Cannot move to " + sFriend));
 				assert.throws(function () {
 					// code under test
-					oListBinding.getHeaderContext().requestSibling();
+					oListBinding.getHeaderContext().getSibling();
 				}, new Error("Unsupported context: " + sFriend));
 
 				checkTable("root is leaf", assert, oTable, [
@@ -30416,7 +30424,7 @@ sap.ui.define([
 				}, new Error("Cannot move to " + oBeta), "too early");
 				assert.throws(function () {
 					// code under test
-					oBeta.requestSibling();
+					oBeta.getSibling();
 				}, new Error("Unsupported context: " + oBeta), "too early");
 
 				return that.waitForChanges(assert, "create 1st child");
@@ -31626,7 +31634,7 @@ sap.ui.define([
 			}, new Error("Cannot move to " + oNewRoot), "too late");
 			assert.throws(function () {
 				// code under test
-				oNewRoot.requestSibling();
+				oNewRoot.getSibling();
 			}, new Error("Unsupported context: " + oNewRoot), "too late");
 
 			await Promise.all([
@@ -38069,9 +38077,11 @@ sap.ui.define([
 	});
 
 	//*********************************************************************************************
-	// Scenario: A hierarchy uses "$$aggregation.createInPlace". Create a root node which is created
-	// and shown in-place between two existing nodes. Use the special cases model to ensure the node
-	// property is properly requested.
+	// Scenario: A hierarchy uses "$$aggregation.createInPlace".
+	// Create a node, but because of a filter this node doesn't become part of the hierarchy and is
+	// therefore not displayed.
+	// Create a root node which is created and shown in-place between two existing nodes. Use the
+	// special cases model to ensure the node property is properly requested.
 	// Expand a node to see that createInPlace activated a unified cache (side-effects expand).
 	// JIRA: CPOUI5ODATAV4-2560
 	QUnit.test("Recursive Hierarchy: createInPlace, root", async function (assert) {
@@ -38136,6 +38146,47 @@ sap.ui.define([
 			[false, 1, "2", "Beta", "2,false"]
 		]);
 		const oListBinding = oTable.getBinding("rows");
+
+		this.expectRequest({
+				method : "POST",
+				url : "Artists",
+				payload : {
+					Name : "FilteredOut"
+				}
+			}, {
+				ArtistID : "42",
+				IsActiveEntity : false,
+				Name : "FilteredOut",
+				_ : null // not available w/ RAP for a non-hierarchical request
+			})
+			.expectRequest(sUrl
+				+ "&$filter=ArtistID eq '42' and IsActiveEntity eq false"
+				+ "&$select=_/Limited_Rank,_/NodeID", {
+				value : [] // filtered out
+			});
+
+		// code under test
+		const oFilteredOut = oListBinding.create({
+			Name : "FilteredOut"
+		}, /*bSkipRefresh*/true);
+
+		await Promise.all([
+			oFilteredOut.created(),
+			this.waitForChanges(assert, "create FilteredOut")
+		]);
+
+		assert.strictEqual(oFilteredOut.getIndex(), undefined, "not part of the hierarchy");
+		assert.strictEqual(oFilteredOut.isTransient(), undefined);
+		assert.strictEqual(oFilteredOut.getPath(), "/Artists(ArtistID='42',IsActiveEntity=false)");
+		assert.strictEqual(oFilteredOut.getBinding(), undefined, "FilteredOut is destroyed");
+		checkTable("after create FilteredOut", assert, oTable, [
+			"/Artists(ArtistID='1',IsActiveEntity=false)",
+			"/Artists(ArtistID='2',IsActiveEntity=false)"
+		], [
+			[undefined, 1, "1", "Alpha", "1,false"],
+			[false, 1, "2", "Beta", "2,false"]
+		]);
+		assert.strictEqual(oListBinding.getCount(), 3);
 
 		this.expectRequest({
 				method : "POST",
@@ -38273,6 +38324,7 @@ sap.ui.define([
 	// JIRA: CPOUI5ODATAV4-2342
 	//
 	// Request next sibling via group level cache (JIRA: CPOUI5ODATAV4-2558)
+	// Duplicate calls to #requestSibling (JIRA: CPOUI5ODATAV4-2618)
 	QUnit.test("Recursive Hierarchy: getParent/requestParent after requestSideEffects",
 			async function (assert) {
 		const sBaseUrl = "EMPLOYEES?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels("
@@ -38357,7 +38409,8 @@ sap.ui.define([
 			"double check that index was right");
 
 		// code under test
-		assert.strictEqual(await oGamma.requestSibling(-1), oBeta, "CPOUI5ODATAV4-2558");
+		assert.strictEqual(oGamma.getSibling(-1), oBeta, "CPOUI5ODATAV4-2558");
+		assert.strictEqual(oGamma.getSibling(+1), undefined, "CPOUI5ODATAV4-2558");
 
 		this.expectRequest("EMPLOYEES?$apply=descendants($root/EMPLOYEES,OrgChart,ID"
 					+ ",filter(ID eq '0'),1)"
@@ -38369,13 +38422,17 @@ sap.ui.define([
 				}]
 			});
 
-		const [oDelta] = await Promise.all([
+		const [oDelta, oDelta0] = await Promise.all([
 			// code under test
+			oGamma.requestSibling(+1),
 			oGamma.requestSibling(+1),
 			this.waitForChanges(assert, "request Gamma's next sibling")
 		]);
 
+		assert.strictEqual(oDelta, oDelta0, "CPOUI5ODATAV4-2618");
 		assert.strictEqual(oDelta.getProperty("Name"), "Delta", "CPOUI5ODATAV4-2558");
+		// code under test
+		assert.strictEqual(oGamma.getSibling(+1), oDelta, "CPOUI5ODATAV4-2558");
 
 		this.expectRequest("EMPLOYEES?$apply=descendants($root/EMPLOYEES,OrgChart,ID"
 					+ ",filter(ID eq '0'),1)"
@@ -38476,12 +38533,14 @@ sap.ui.define([
 				}]
 			});
 
-		const [oOmega] = await Promise.all([
+		const [oOmega, oOmega0] = await Promise.all([
 			// code under test
+			oResult.requestSibling(),
 			oResult.requestSibling(),
 			this.waitForChanges(assert, "request Alpha's next sibling")
 		]);
 
+		assert.strictEqual(oOmega, oOmega0, "CPOUI5ODATAV4-2618");
 		assert.strictEqual(oOmega.getIndex(), 5, "CPOUI5ODATAV4-2558");
 		assert.strictEqual(oOmega.getPath(), "/EMPLOYEES('9')");
 		assert.deepEqual(oOmega.getObject(), {
@@ -39403,6 +39462,8 @@ sap.ui.define([
 	// works together with paging. Turn siblings into placeholders again and request a previous
 	// sibling which is known, but there are children in between which have not yet been loaded.
 	// JIRA: CPOUI5ODATAV4-2558
+	//
+	// Duplicate calls to #requestSibling (JIRA: CPOUI5ODATAV4-2618)
 	QUnit.test("Recursive Hierarchy: requestSibling via 1st level cache", async function (assert) {
 		const sFriend = "/Artists(ArtistID='99',IsActiveEntity=false)/_Friend";
 		const sBaseUrl = sFriend.slice(1) + "?custom=foo&$apply=ancestors($root" + sFriend
@@ -39423,6 +39484,7 @@ sap.ui.define([
 					hierarchyQualifier : 'OrgChart',
 					search : 'covfefe'
 				},
+				$$ownRequest : true,
 				$filter : 'sendsAutographs',
 				$orderby : 'defaultChannel desc',
 				custom : 'foo'
@@ -39493,6 +39555,8 @@ sap.ui.define([
 		], 7);
 		const oListBinding = oTable.getBinding("rows");
 		const [oDelta, oEpsilon] = oListBinding.getCurrentContexts();
+		// code under test
+		assert.strictEqual(oDelta.getSibling(-1), undefined, "CPOUI5ODATAV4-2558");
 
 		// 0 Alpha (not loaded)
 		//   1 Beta (loaded now)
@@ -39501,33 +39565,37 @@ sap.ui.define([
 		//   4 Epsilon
 		//     5 Zeta (not loaded)
 		//   6 Eta (loaded later)
-		this.expectRequest(sBaseUrl + sExpand
-				+ "&$filter=_/Limited_Rank lt '3' and _/DistanceFromRoot lt '2'"
-				+ "&$orderby=_/Limited_Rank desc&$select=ArtistID,IsActiveEntity,Name"
+		for (let i = 0; i < 2; i += 1) {
+			this.expectRequest(sBaseUrl + sExpand
+					+ "&$filter=_/Limited_Rank lt '3' and _/DistanceFromRoot lt '2'"
+					+ "&$orderby=_/Limited_Rank desc&$select=ArtistID,IsActiveEntity,Name"
 					+ ",_/DescendantCount,_/DistanceFromRoot,_/DrillState,_/Limited_Rank,_/NodeID"
-				+ "&$top=1", {
-				value : [{
-					"@odata.etag" : "etag1.0",
-					ArtistID : "1",
-					BestFriend : {
-						ArtistID : "1*",
+					+ "&$top=1", {
+					value : [{
+						"@odata.etag" : "etag1.0",
+						ArtistID : "1",
+						BestFriend : {
+							ArtistID : "1*",
+							IsActiveEntity : false,
+							Name : "Beta's Friend"
+						},
 						IsActiveEntity : false,
-						Name : "Beta's Friend"
-					},
-					IsActiveEntity : false,
-					Name : "Beta",
-					_ : {
-						DescendantCount : "1",
-						DistanceFromRoot : "1",
-						DrillState : "expanded",
-						Limited_Rank : "1",
-						NodeID : "1,false"
-					}
-				}]
-			});
+						Name : "Beta",
+						_ : {
+							DescendantCount : "1",
+							DistanceFromRoot : "1",
+							DrillState : "expanded",
+							Limited_Rank : "1",
+							NodeID : "1,false"
+						}
+					}]
+				});
+		}
 
-		let [oBeta] = await Promise.all([
+		// eslint-disable-next-line prefer-const
+		let [oBeta, oBeta0] = await Promise.all([
 			// code under test
+			oDelta.requestSibling(-1),
 			oDelta.requestSibling(-1),
 			this.waitForChanges(assert, "request Delta's previous sibling")
 		]);
@@ -39540,6 +39608,7 @@ sap.ui.define([
 			[undefined, 2, "etag3.0", "3", "Delta", "3,false", "Delta's Friend"],
 			[true, 2, "etag4.0", "4", "Epsilon", "4,false", "Epsilon's Friend"]
 		], 7);
+		assert.strictEqual(oBeta, oBeta0, "CPOUI5ODATAV4-2618");
 		assert.strictEqual(oBeta.getIndex(), 1, "CPOUI5ODATAV4-2558");
 		assert.strictEqual(oBeta.getPath(), sFriend + "(ArtistID='1',IsActiveEntity=false)");
 		assert.deepEqual(oBeta.getObject(), {
@@ -39558,6 +39627,20 @@ sap.ui.define([
 				NodeID : "1,false"
 			}
 		}, "no Limited_Rank");
+		// code under test
+		assert.strictEqual(oDelta.getSibling(-1), oBeta, "CPOUI5ODATAV4-2558");
+
+		//TODO what a stupid request :-(
+		this.expectRequest(sFriend.slice(1) + "(ArtistID='6',IsActiveEntity=false)"
+				+ "?custom=foo&$select=ArtistID,IsActiveEntity", {
+					ArtistID : "6",
+					IsActiveEntity : false
+				});
+
+		const oEta0
+			= oListBinding.getKeepAliveContext(sFriend + "(ArtistID='6',IsActiveEntity=false)");
+
+		await this.waitForChanges(assert, "request Eta as keep alive outside the collection");
 
 		// 0 Alpha (not loaded)
 		//   1 Beta
@@ -39623,6 +39706,8 @@ sap.ui.define([
 				NodeID : "6,false"
 			}
 		}, "no Limited_Rank");
+		assert.strictEqual(oEta, oEta0, "keep alive context reused");
+		oEta0.setKeepAlive(false); // not needed anymore...
 
 		this.expectRequest(sBaseUrl + sSelect + sExpand + "&$skip=0&$top=1", {
 				value : [{
@@ -39800,7 +39885,7 @@ sap.ui.define([
 		[, oBeta] = oListBinding.getCurrentContexts();
 
 		// code under test
-		assert.strictEqual(await oDelta.requestSibling(-1), oBeta);
+		assert.strictEqual(oDelta.getSibling(-1), oBeta);
 	});
 
 	//*********************************************************************************************
@@ -39933,8 +40018,9 @@ sap.ui.define([
 
 		assert.strictEqual(oSibling, null);
 
-		// code under test (no request needed!)
-		const oOmega = await oAlpha.requestSibling();
+		// code under test
+		const oOmega = oAlpha.getSibling();
+		assert.strictEqual(await oAlpha.requestSibling(), oOmega, "no request needed");
 
 		assert.strictEqual(oOmega.getIndex(), 2);
 		assert.deepEqual(oOmega.getObject(), {
@@ -39949,6 +40035,10 @@ sap.ui.define([
 		], [
 			[undefined, 2, "1", "Beta"]
 		]);
+
+		// code under test
+		assert.strictEqual(oAlpha.getSibling(-1), null, "CPOUI5ODATAV4-2558");
+		assert.strictEqual(await oAlpha.requestSibling(-1), null, "CPOUI5ODATAV4-2558");
 	});
 
 	//*********************************************************************************************

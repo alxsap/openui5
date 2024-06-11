@@ -595,7 +595,7 @@ sap.ui.define([
 					only: ["sap/ui/fl/apply/_internal/preprocessors/RegistrationDelegator"]
 				},
 				ui5: {
-					libs: null // The fl library is being loaded inside the test
+					libs: [] // The fl library is being loaded inside the test
 				}
 			},
 
@@ -1194,7 +1194,7 @@ sap.ui.define([
 				group: "Variants",
 				ui5: {
 					resourceroots: {
-						"sap.ui.test": "test-resources/sap/ui/fl/qunit/testResources/"
+						"fl.test": "test-resources/sap/ui/fl/qunit/testResources/"
 					},
 					flexibilityServices: '[{"connector": "SessionStorageConnector"}]'
 				},
@@ -1230,7 +1230,7 @@ sap.ui.define([
 					only: ["sap/ui/fl/library"]
 				},
 				ui5: {
-					libs: null // The fl library is being loaded inside the test
+					libs: [] // The fl library is being loaded inside the test
 				}
 			},
 
@@ -1239,7 +1239,7 @@ sap.ui.define([
 					only: ["sap/ui/fl/library"]
 				},
 				ui5: {
-					libs: null // The fl library is being loaded inside the test
+					libs: [] // The fl library is being loaded inside the test
 				}
 			},
 
@@ -1248,7 +1248,7 @@ sap.ui.define([
 					only: ["sap/ui/fl/library"]
 				},
 				ui5: {
-					libs: null // The fl library is being loaded inside the test
+					libs: [] // The fl library is being loaded inside the test
 				}
 			},
 
@@ -1257,7 +1257,7 @@ sap.ui.define([
 					only: ["sap/ui/fl/library"]
 				},
 				ui5: {
-					libs: null // The fl library is being loaded inside the test
+					libs: [] // The fl library is being loaded inside the test
 				}
 			},
 

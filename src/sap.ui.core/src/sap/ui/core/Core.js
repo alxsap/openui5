@@ -7,7 +7,6 @@ sap.ui.define([
 	"./AnimationMode",
 	"./ControlBehavior",
 	"./ElementRegistry",
-	"./ElementMetadata",
 	"./Lib",
 	"./Rendering",
 	"./RenderManager",
@@ -19,7 +18,6 @@ sap.ui.define([
 	"sap/base/Event",
 	"sap/base/Log",
 	"sap/base/i18n/Formatting",
-	"sap/base/i18n/Localization",
 	"sap/base/util/Deferred",
 	"sap/base/util/Version",
 	"sap/ui/Device",
@@ -49,7 +47,6 @@ sap.ui.define([
 		AnimationMode,
 		ControlBehavior,
 		ElementRegistry,
-		ElementMetadata,
 		Library,
 		Rendering,
 		RenderManager,
@@ -61,7 +58,6 @@ sap.ui.define([
 		BaseEvent,
 		Log,
 		Formatting,
-		Localization,
 		Deferred,
 		Version,
 		Device,
@@ -98,6 +94,19 @@ sap.ui.define([
 			jQuery.noConflict();
 		}
 
+		// set LogLevel
+		const sLogLevel = BaseConfig.get({
+			name: "sapUiLogLevel",
+			type: BaseConfig.Type.String,
+			defaultValue: undefined,
+			external: true
+		});
+
+		if (sLogLevel) {
+			Log.setLevel(Log.Level[sLogLevel.toUpperCase()] || parseInt(sLogLevel));
+		} else if (!globalThis["sap-ui-optimized"]) {
+			Log.setLevel(Log.Level.DEBUG);
+		}
 
 		const oJQVersion = Version(jQuery.fn.jquery);
 		if ( oJQVersion.compareTo("3.6.0") != 0 ) {
