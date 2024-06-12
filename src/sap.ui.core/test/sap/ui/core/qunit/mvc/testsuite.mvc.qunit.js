@@ -6,19 +6,17 @@ sap.ui.define(["sap/ui/Device"], function(Device) {
 		defaults: {
 			loader: {
 				paths: {
-					"testdata/fragments": "test-resources/sap/ui/core/qunit/testdata/fragments/", // fragments used in views
+					// fragments used in views
+					"testdata/fragments": "test-resources/sap/ui/core/qunit/testdata/fragments/",
 
-// @deprecated as of 1.110
-					"testdata/fragments_legacyAPIs": "test-resources/sap/ui/core/qunit/testdata/fragments_legacyAPIs/", // fragments used in views
-					"testdata/mvc": "test-resources/sap/ui/core/qunit/mvc/testdata", // used by async tests
+					// used by async tests
+					"testdata/mvc": "test-resources/sap/ui/core/qunit/mvc/testdata",
 
-					// @deprecated as of 1.110
-					"testdata/mvc_legacyAPIs": "test-resources/sap/ui/core/qunit/mvc_legacyAPIs/testdata",
-					"example/mvc": "test-resources/sap/ui/core/qunit/mvc/testdata", // used by sync tests
+					// used by sync tests
+					"example/mvc": "test-resources/sap/ui/core/qunit/mvc/testdata",
 
-					// @deprecated as of 1.110
-					"example/mvc_legacyAPIs": "test-resources/sap/ui/core/qunit/mvc_legacyAPIs/testdata",
-					"sap/ui/testlib": "test-resources/sap/ui/core/qunit/testdata/uilib/" // used by sync tests
+					// used by sync tests
+					"sap/ui/testlib": "test-resources/sap/ui/core/qunit/testdata/uilib/"
 				}
 			},
 			ui5: {

@@ -181,13 +181,6 @@
 	});
 
 
-	// @deprecated
-	QUnit.module("Config variants for async", {
-		afterEach: function() {
-			removeUi5Loader();
-		}
-	});
-
 	QUnit.test("xx-async=true", function(assert){
 		var done = assert.async();
 		startUi5Loader(function() {
@@ -274,33 +267,6 @@
 				});
 			});
 		});
-	});
-
-	// @deprecated
-	QUnit.test("Expose loader via bootstrap attribute", function(assert) {
-		var done = assert.async();
-
-		assert.strictEqual(window.require, otherRequire, "global require should be the 'other' loader's implementation again");
-		assert.strictEqual(window.define, otherDefine, "global define should be the 'other' loader's implementation again");
-
-		startUi5Loader(function() {
-			var privateLoaderAPI = sap.ui.loader._;
-
-			assert.notStrictEqual(window.require, otherRequire, "global require should have changed");
-			assert.notStrictEqual(window.define, otherDefine, "global define should have changed");
-			assert.strictEqual(window.require, privateLoaderAPI.amdRequire, "global require should be the UI5 implementation");
-			assert.strictEqual(window.define, privateLoaderAPI.amdDefine, "global define should be the UI5 implementation");
-
-			// hide UI5 implementation again
-			sap.ui.loader.config({
-				amd: false
-			});
-
-			assert.strictEqual(window.require, otherRequire, "global require should be the 'other' loader's implementation again");
-			assert.strictEqual(window.define, otherDefine, "global define should be the 'other' loader's implementation again");
-
-			done();
-		}, {"data-sap-ui-amd": "true"});
 	});
 
 	QUnit.module("Bootstrap config");

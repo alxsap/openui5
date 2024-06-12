@@ -44,11 +44,11 @@ sap.ui.define(function() {
 
 			"jquery-mobile-custom": {
 				title: "jquery-mobile-custom",
+
 				sinon: {
 					qunitBridge: true
 				},
-				// @deprecated
-				bootCore: false,
+
 				beforeBootstrap: "test-resources/sap/ui/core/qunit/jquery-mobile-custom.beforeBootstrap"
 			},
 
