@@ -15,6 +15,7 @@ sap.ui.define([
 	"sap/m/Text",
 	"sap/m/Token",
 	"sap/ui/core/library",
+	"sap/ui/core/Theming",
 	"sap/ui/table/Table",
 	"sap/ui/table/Column",
 	"sap/m/CheckBox",
@@ -31,7 +32,7 @@ sap.ui.define([
 	"sap/ui/core/SeparatorItem",
 	"sap/m/ToolbarSpacer",
 	"sap/m/Title"
-], function(JSONModel, App, Button, Column, ColumnListItem, Label, List, MessageBox, MessageToast, MultiInput, Page, StandardListItem, Table, Text, Token, coreLibrary, GridTable, GridTableColumn, CheckBox, SimpleForm, FormattedText, Link, Dialog, Popup, ToggleButton, SelectDialog, Tokenizer, Sorter, Item, SeparatorItem, ToolbarSpacer, Title) {
+], function(JSONModel, App, Button, Column, ColumnListItem, Label, List, MessageBox, MessageToast, MultiInput, Page, StandardListItem, Table, Text, Token, coreLibrary, Theming, GridTable, GridTableColumn, CheckBox, SimpleForm, FormattedText, Link, Dialog, Popup, ToggleButton, SelectDialog, Tokenizer, Sorter, Item, SeparatorItem, ToolbarSpacer, Title) {
 	"use strict";
 
 	// shortcut for sap.ui.core.ValueState
@@ -936,7 +937,7 @@ sap.ui.define([
 		selected: false,
 		select: function () {
 			document.getElementById("body").classList.toggle("sapUiSizeCompact");
-			sap.ui.core.Theming.notifyContentDensityChanged();
+			Theming.notifyContentDensityChanged();
 		}
 	});
 

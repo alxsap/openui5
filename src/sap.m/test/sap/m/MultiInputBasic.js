@@ -14,6 +14,7 @@ sap.ui.define([
 	"sap/m/Text",
 	"sap/m/Token",
 	"sap/ui/core/library",
+	"sap/ui/core/Theming",
 	"sap/ui/table/Table",
 	"sap/ui/table/Column",
 	"sap/m/CheckBox",
@@ -22,7 +23,7 @@ sap.ui.define([
 	"sap/m/Dialog",
 	"sap/m/ToolbarSpacer",
 	"sap/m/Title"
-], function(JSONModel, App, Button, Column, ColumnListItem, Label, List, MessageBox, MultiInput, Page, StandardListItem, Table, Text, Token, coreLibrary, GridTable, GridTableColumn, CheckBox, FormattedText, Link, Dialog, ToolbarSpacer, Title) {
+], function(JSONModel, App, Button, Column, ColumnListItem, Label, List, MessageBox, MultiInput, Page, StandardListItem, Table, Text, Token, coreLibrary, Theming, GridTable, GridTableColumn, CheckBox, FormattedText, Link, Dialog, ToolbarSpacer, Title) {
 	"use strict";
 
 	// var TextDirection = coreLibrary.TextDirection;
@@ -312,7 +313,7 @@ sap.ui.define([
 		selected: false,
 		select : function() {
 			document.getElementById("body").classList.toggle("sapUiSizeCompact");
-			sap.ui.core.Theming.notifyContentDensityChanged();
+			Theming.notifyContentDensityChanged();
 		}
 	});
 

@@ -19,9 +19,11 @@
 						"...loader should know module 'sap/ui/thirdparty/jquery' and its export");
 				assert.strictEqual(sap.ui.require('sap/ui/thirdparty/jqueryui/jquery-ui-position'), jQuery,
 						"...loader should know module 'sap/ui/thirdparty/jqueryui/jquery-ui-position' and its export");
-
 				done();
 			});
+			setTimeout(function() {
+				Core.boot?.();
+			}, 500);
 		});
 	});
 

@@ -128,7 +128,7 @@ PageRenderer.renderSubHeader = function (oRm, oPage, oSubHeader, oLandmarkInfo, 
 		.class("sapMPageSubHeader")
 		.accessibilityState(oPage, oPage._formatLandmarkInfo(oLandmarkInfo, "SubHeader"));
 
-	if (oSubHeader.getDesign() == library.ToolbarDesign.Info) {
+	if (oSubHeader.getDesign?.() == library.ToolbarDesign.Info) {
 		oRm.class("sapMPageSubHeaderInfoBar");
 	}
 
