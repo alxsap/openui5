@@ -85,7 +85,8 @@ sap.ui.define([
 
   NumberFormat.getFloatInstance({minFractionDigits: 2, maxFractionDigits: 2});
 
-  new JSONModel({
+  // create model
+  var model = new JSONModel({
 	  items: [
 		  {id: 5163, name:"Lorem Ipsum", amount: 1, price: 23.45, status: "Open"},
 		  {id: 6342, name:"Dolor Sit Amet", amount: 1, price: 233.22, status: "In Process"},
@@ -98,10 +99,9 @@ sap.ui.define([
 	  ]
   });
 
-  sap.ui.getCore();
-
   // create and add app
   var app = new SplitApp("myApp");
+  app.setModel(model);
   app.placeAt("body");
 
   var toDetailBtn = new Button({

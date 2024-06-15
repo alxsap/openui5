@@ -133,7 +133,6 @@ function(JSONModel, SinglePlanningCalendarGrid, CalendarAppointment, App, Page, 
 	];
 	var oModel = new JSONModel();
 	oModel.setData({modelData: aAppointments});
-	sap.ui.getCore();
 
 	oSPCGrid = new SinglePlanningCalendarGrid("SinglePlanningCalendarGrid", {
 		startDate: UI5Date.getInstance(2018, 5, 18),
@@ -171,6 +170,7 @@ function(JSONModel, SinglePlanningCalendarGrid, CalendarAppointment, App, Page, 
 		pages: new Page({
 			title: "SinglePlanningCalendarGrid test page",
 			content: oSPCGrid
-		})
+		}),
+		models: oModel
 	}).placeAt("body");
 });

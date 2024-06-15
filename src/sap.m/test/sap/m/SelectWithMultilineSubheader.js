@@ -368,7 +368,6 @@ sap.ui.define([
 	};
 	var oModel = new JSONModel();
 	oModel.setData(mData);
-	sap.ui.getCore();
 
 	var oItemTemplate = new Item({
 		key: "{key}",
@@ -406,6 +405,7 @@ sap.ui.define([
 
 	new App("myApp", {
 		initialPage: "myPage",
-		pages: [oPage]
+		pages: [oPage],
+		models: oModel
 	}).placeAt("body");
 })

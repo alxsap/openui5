@@ -1,6 +1,8 @@
 // Note: the HTML page 'ODataV2CanonicalRequests.html' loads this module via data-sap-ui-on-init
 
 sap.ui.define([
+	'sap/ui/core/Core',
+	'sap/ui/core/Messaging',
 	'sap/ui/core/util/MockServer',
 	'sap/ui/model/odata/v2/ODataModel',
 	'sap/ui/model/Filter',
@@ -19,7 +21,9 @@ sap.ui.define([
 	'sap/m/Label',
 	'sap/m/Table',
 	'sap/ui/model/json/JSONModel'
-], function(MockServer, ODataModel, Filter, ResponsiveSplitter, SplitPane, PaneContainer, VerticalLayout, HorizontalLayout, Column, ColumnListItem, Text, SimpleForm, Button, Panel, Input, Label, Table, JSONModel) {
+], function (Core, Messaging, MockServer, ODataModel, Filter, ResponsiveSplitter, SplitPane, PaneContainer,
+	VerticalLayout, HorizontalLayout, Column, ColumnListItem, Text, SimpleForm, Button, Panel, Input, Label,
+	Table, JSONModel) {
 	"use strict";
 
 	var sServiceUri = "/SalesOrderSrv/";
@@ -183,14 +187,10 @@ sap.ui.define([
 		oTableMMFiltered.getBinding("items").filter(new Filter("fullTarget", "StartsWith", sFilterPath));
 	};
 
-	new ODataModel(sServiceUri, {
+	var oModel = new ODataModel(sServiceUri, {
 		defaultCountMode: "None",
 		canonicalRequests: true
 	});
-
-	sap.ui.getCore();
-
-	sap.ui.getCore();
 	var oTableMM = new Table({
 		items: {
 			path: 'message>/',
@@ -456,4 +456,8 @@ sap.ui.define([
 	oPanel2.placeAt("content");
 	oPanel3.placeAt("content");
 	oPanel4.placeAt("content");
+	Core.ready(() => {
+		oPanel.getUIArea().setModel(oModel);
+		oPanel.getUIArea().setModel(Messaging.getMessageModel(), "message");
+	});
 });

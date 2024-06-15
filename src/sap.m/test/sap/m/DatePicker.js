@@ -78,9 +78,37 @@ sap.ui.define([
 	  }
   }
 
-  sap.ui.getCore();
+  app.attachParseError(
+		  function(oEvent) {
+			  var oElement = oEvent.getParameter("element");
+			  oEvent.getParameter('property');
+			  var oValue = oEvent.getParameter('newValue');
+			  oEvent.getParameter('type');
+			  oEvent.getParameter('oldValue');
 
-  sap.ui.getCore();
+			  var oInput = Element.getElementById("I2");
+			  oInput.setValue( "ParseError: Entered value: "+oValue);
+
+			  if (oElement.setValueState) {
+				  oElement.setValueState(ValueState.Error);
+			  }
+		  });
+
+  app.attachValidationSuccess(
+		  function(oEvent) {
+			  var oElement = oEvent.getParameter("element");
+			  oEvent.getParameter('property');
+			  var oValue = oEvent.getParameter('newValue');
+			  oEvent.getParameter('type');
+			  oEvent.getParameter('oldValue');
+
+			  var oInput = Element.getElementById("I2");
+			  oInput.setValue( "ValidationSuccess: Entered value: "+oValue);
+
+			  if (oElement.setValueState) {
+				  oElement.setValueState(ValueState.None);
+			  }
+		  });
 
   var handleFieldGroupValidation = function (oEvent) {
 	  var oDP = oEvent.oSource;
@@ -130,7 +158,7 @@ sap.ui.define([
   oModel.setData({
 	  dateValue: UI5Date.getInstance()
   });
-  sap.ui.getCore();
+  app.setModel(oModel);
 
   var page1 = new Page("page1", {
 	  title:"Mobile DatePicker",

@@ -62,9 +62,6 @@ sap.ui.define([
   // set the data for the model
   oModel.setData(data);
 
-  // set the model to the core
-  sap.ui.getCore();
-
   // create a Sorter with very simple grouping by the gender attribute
   var oGenderSorter = new Sorter("gender", false, true);
 
@@ -236,6 +233,7 @@ sap.ui.define([
   });
 
   new App({
-	  pages : [oPage]
+	  pages : [oPage],
+	  models: oModel
   }).placeAt("content");
 });

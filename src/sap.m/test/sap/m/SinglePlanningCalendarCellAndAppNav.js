@@ -469,11 +469,9 @@ sap.ui.define([
 		];
 		var oModel = new JSONModel();
 		oModel.setData({modelData: aAppointments});
-		sap.ui.getCore();
 
 		var oStateModel = new JSONModel();
 		oStateModel.setData({legendShown: false});
-		sap.ui.getCore();
 
 		var oWeekView = new SinglePlanningCalendarWeekView({
 				key: "WeekView",
@@ -668,6 +666,10 @@ sap.ui.define([
 			footer: new Bar()
 		});
 		new App({
-			pages: oPage
+			pages: oPage,
+			models: {
+				"undefined": oModel,
+				"stateModel": oStateModel
+			}
 		}).placeAt("body");
 	});

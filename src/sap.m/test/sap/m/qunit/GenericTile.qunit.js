@@ -65,6 +65,9 @@ sap.ui.define([
 	// shortcut for sap.m.GenericTileScope
 	var GenericTileScope = library.GenericTileScope;
 
+	// shortcut for sap.m.TileInfoColor
+	var TileInfoColor = library.TileInfoColor;
+
 	var IMAGE_PATH = "test-resources/sap/m/images/";
 
 	function createMouseEnterEvent() {
@@ -73,6 +76,19 @@ sap.ui.define([
 
 	function createMouseLeaveEvent() {
 		return new Event("mouseleave");
+	}
+
+	function hexToRgb(hex) {
+		var result = /^#?([a-f\d]{1,2})([a-f\d]{1,2})([a-f\d]{1,2})$/i.exec(hex);
+		var clr = result ? {
+			r: parseInt(result[1].length === 1 ? result[1] + result[1] : result[1], 16),
+			g: parseInt(result[2].length === 1 ? result[2] + result[2] : result[2], 16),
+			b: parseInt(result[3].length === 1 ? result[3] + result[3] : result[3], 16)
+		} : null;
+		if (clr) {
+			return "rgb(" + clr.r + ", " + clr.g + ", " + clr.b + ")";
+		}
+		return hex;
 	}
 
 	QUnit.module("Control initialization core and theme checks", {
@@ -5476,7 +5492,7 @@ sap.ui.define([
 				subheader: "Test Subheader",
 				frameType: FrameType.TwoByOne,
 				badge:[
-					new Badge({src:"sap-icon://ai",text:"SAP",textColor: "CriticalTextColor",backgroundColor: "WarningBackground", borderColor: "WarningBorderColor"})
+					new Badge({src:"sap-icon://ai",text:"SAP",textColor: TileInfoColor.NeutralElementColor,backgroundColor: TileInfoColor.NeutralBackgroundColor, borderColor: TileInfoColor.NeutralBorderColor})
 				]
 			}).placeAt("qunit-fixture");
 			await nextUIUpdate();
@@ -5489,5 +5505,20 @@ sap.ui.define([
 
 	QUnit.test("Check whether the badge is rendered", function (assert) {
 		assert.ok(document.querySelector(".sapMGTBadge"),"Badge has been rendered");
+	});
+
+	QUnit.test("Check whether the Neutral colors has been set as enum", function (assert) {
+		var fnDone = assert.async();
+		var sColor = Parameters.get({
+			name: "sapNeutralBackground",
+			callback: function (sColor) {
+				assert.equal(getComputedStyle(document.querySelector(".sapMGTBadge")).backgroundColor,hexToRgb(sColor),"Color has been applied");
+				fnDone();
+			}
+		});
+		if (sColor) {
+			assert.equal(getComputedStyle(document.querySelector(".sapMGTBadge")).backgroundColor,hexToRgb(sColor),"Color has been applied");
+			fnDone();
+		}
 	});
 });

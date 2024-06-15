@@ -201,7 +201,7 @@ sap.ui.define([
 		  text: "headerContent aggregation with binding"
 	  }]
   });
-  sap.ui.getCore();
+  app.setModel(oModel);
 
   function createFooter() {
 	  return new Bar({

@@ -334,6 +334,13 @@ sap.ui.define([
 				}
 			},
 
+			"apply/_internal/changes/descriptor/fiori/SetCloudDevAdaptationStatus": {
+				group: "Apply Internal - Descriptor Change Merger",
+				coverage: {
+					only: ["sap/ui/fl/apply/_internal/changes/descriptor/fiori/SetCloudDevAdaptationStatus"]
+				}
+			},
+
 			"apply/_internal/changes/descriptor/Preprocessor": {
 				group: "Apply Internal - Descriptor Change Merger",
 				coverage: {

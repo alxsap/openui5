@@ -11,7 +11,11 @@ sap.ui.define([
   // Note: the HTML page 'ComponentManifestFirst.html' loads this module via data-sap-ui-on-init
 
   /*global sinon */
-  sap.ui.localResources("samples");
+  sap.ui.loader.config({
+	  paths: {
+		  ["samples"]: "./samples"
+	  }
+  });
 
 
   //***** Manifest **************************************

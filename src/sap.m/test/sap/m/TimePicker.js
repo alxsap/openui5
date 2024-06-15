@@ -226,7 +226,7 @@ sap.ui.define([
   oModel.setData({
 	  timeValue: UI5Date.getInstance()
   });
-  sap.ui.getCore();
+  app.setModel(oModel);
 
   var page = new Page("page1", {
 	  title: "TimePicker",
@@ -274,7 +274,8 @@ sap.ui.define([
 			  press: handleTimezoneButtonPress
 		  }),
 		  new HTML({
-			  content: "<div id='eventsDiv' style='float:right;'>Some Events:</div>"
+			  id: "eventsDiv",
+			  content: "<div style='float:right;'>Some Events:</div>"
 		  })
 	  ]
   });

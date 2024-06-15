@@ -1,13 +1,17 @@
 sap.ui.define([
-  "sap/ui/core/ComponentContainer",
-  "sap/ui/core/Component"
-], function(ComponentContainer) {
+  "sap/ui/core/Component",
+  "sap/ui/core/ComponentContainer"
+], async function(Component, ComponentContainer) {
   "use strict";
   // Note: the HTML page 'ComponentConfig.html' loads this module via data-sap-ui-on-init
 
-  sap.ui.localResources("samples");
+  sap.ui.loader.config({
+	  paths: {
+		  ["samples"]: "./samples"
+	  }
+  });
 
-  var oComp = sap.ui.component({
+  var oComp = await Component.create({
 	  name: "samples.components.config"
   });
   var oCompCont = new ComponentContainer({

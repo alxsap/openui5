@@ -117,7 +117,6 @@ sap.ui.define([
 	  oModel.setData(data);
 	  // set the model to the list
 	  list.setModel(oModel, "test");
-	  //sap.ui.getCore().setModel(oModel);
 
 	  // create a CustomData template, set its key to "answer" and bind its value to the answer data
 	  var oDataTemplate = new CustomData({
@@ -136,7 +135,6 @@ sap.ui.define([
   function bindListData2(data, itemTemplate, list) {
 	  // set the model to the list
 	  list.setModel(oModel, "test");
-	  //sap.ui.getCore().setModel(oModel);
 
 	  // create a CustomData template, set its key to "answer" and bind its value to the answer data
 	  var oDataTemplate = new CustomData({

@@ -45,8 +45,6 @@ sap.ui.define([
 	  ]
   });
 
-  sap.ui.getCore();
-
   var oTemplate = new Currency({
 	  value: {
 		  path: 'value',
@@ -62,6 +60,7 @@ sap.ui.define([
 		  template: oTemplate
 	  }
   });
+  oLayout.setModel(oModel);
 
   var oTemplate2 = new Currency({
 	  value: {
@@ -78,6 +77,7 @@ sap.ui.define([
 		  template: oTemplate2
 	  }
   });
+  oLayout2.setModel(oModel);
 
   oLayout.placeAt("content");
   oLayout2.placeAt("content");

@@ -129,23 +129,20 @@ sap.ui.define([
   };
 
   /* column data and model */
-  var model = new JSONModel();
-  model.setData({
+  var i18nModel = new JSONModel();
+  i18nModel.setData({
 	  Name: "Name",
 	  Status: "Status",
 	  Value: "Value",
 	  Price: "Price"
   });
-  sap.ui.getCore();
 
   /* table definition */
 
   var table = new Table("items", {
-	  threshold: 2,
 	  inset: false,
 	  mode: "MultiSelect",
 	  showUnread: true,
-	  scrollToLoad: true,
 	  infoToolbar:
 		  new Toolbar({
 		  visible: false,
@@ -263,6 +260,7 @@ sap.ui.define([
   var oModel = new JSONModel();
   oModel.setData(data);
   table.setModel(oModel);
+  table.setModel(i18nModel, "i18n");
   table.bindAggregation("items", "/navigation", template);
 
   /* sort item text model (CSN issue)*/
@@ -1572,7 +1570,6 @@ sap.ui.define([
 
   var panel = new Panel({
 	  headerText: "Debug Area",
-	  headerLevel: "H4",
 	  content: debug
   }).addStyleClass("debugPanel");
 

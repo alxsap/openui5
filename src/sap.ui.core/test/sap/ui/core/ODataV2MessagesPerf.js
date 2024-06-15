@@ -6,8 +6,9 @@ sap.ui.define([
 	'sap/ui/model/json/JSONModel',
 	'sap/ui/model/odata/ODataPropertyBinding',
 	'sap/ui/table/Table',
-	'sap/m/Text',
 	'sap/m/Button',
+	'sap/m/Label',
+	'sap/m/Text',
 	'sap/base/util/merge',
 	'sap/ui/performance/Measurement',
 	"sap/m/Table",
@@ -19,8 +20,9 @@ sap.ui.define([
 	JSONModel,
 	ODataPropertyBinding,
 	Table,
-	Text,
 	Button,
+	Label,
+	Text,
 	merge,
 	Measurement,
 	MTable,
@@ -75,10 +77,8 @@ sap.ui.define([
 	// create an ODataModel from URL
 	var oModel = new ODataModel(sServiceUri, {defaultOperationMode: 'Client'});
 	oModel.setSizeLimit(9999999);
-	sap.ui.getCore();
 
-	new JSONModel();
-	sap.ui.getCore();
+	var oMeasureModel = new JSONModel();
 
 	var i = 0, j = 0;
 	var fnCheckUpdateOrig = ODataModel.prototype.checkUpdate;
@@ -87,7 +87,7 @@ sap.ui.define([
 		Measurement.start("cu" + i, "checkupdate model", ["cu"]);
 		fnCheckUpdateOrig.apply(this, arguments);
 		Measurement.end("cu" + i);
-		null.setData(Measurement.getAllMeasurements());
+		oMeasureModel.setData(Measurement.getAllMeasurements());
 	};
 	var fnCheckDataState = ODataModel.prototype.checkDataState;
 	ODataModel.prototype.checkDataState = function() {
@@ -95,13 +95,34 @@ sap.ui.define([
 		Measurement.start("cd" + j, "checkDataState model", ["cd"]);
 		fnCheckDataState.apply(this, arguments);
 		Measurement.end("cd" + j);
-		null.setData(Measurement.getAllMeasurements());
+		oMeasureModel.setData(Measurement.getAllMeasurements());
 	};
 	var oTable = new Table({ // create Table UI
 		columns : [
-			{label: "Measure Id", template: new Text({text:"{measure>id}"})},
-			{label: "Info", template: new Text({text:"{measure>info}"})},
-			{label: "Time", template: new Text({text:"{measure>time}"})}
+			{
+				label: new Label({
+					text: "Measure Id"
+				}),
+				template: new Text({
+					text:"{measure>id}"
+				})
+			},
+			{
+				label: new Label({
+					text: "Info"
+				}),
+				template: new Text({
+					text:"{measure>info}"
+				})
+			},
+			{
+				label: new Label({
+					text: "Time"
+				}),
+				template: new Text({
+					text:"{measure>time}"
+				})
+			}
 		]
 	});
 
@@ -140,5 +161,9 @@ sap.ui.define([
 			]
 		})
 	});
+
+	oTable.setModel(oModel);
+	oTable.setModel(oMeasureModel, "measure");
+
 	oTable.placeAt("content");
 });

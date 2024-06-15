@@ -24,6 +24,9 @@ sap.ui.define([
 ], function (Messaging, MockServer, ODataModel, ResponsiveSplitter, SplitPane, PaneContainer, VerticalLayout, HorizontalLayout, Item, Column, ColumnListItem, Text, Input, Label, Select, Button, Table, Panel, JSONModel, CodeEditor) {
 	"use strict";
 
+	// 0. Create root control
+	var oSplitter = new ResponsiveSplitter();
+
 	// 1. Mocking
 	var sServiceUri = "/SalesOrderSrv/";
 	var sDataRootPath = "qunit/testdata/SalesOrder/";
@@ -55,8 +58,8 @@ sap.ui.define([
 			}
 		]
 	};
-	new JSONModel(oMessages);
-	sap.ui.getCore();
+	var oMessageContainerModel = new JSONModel(oMessages);
+	oSplitter.setModel(oMessageContainerModel, "bMessages");
 
 	aRequests.forEach(function (oRequest) {
 		var fnOrginalResponse;
@@ -66,12 +69,12 @@ sap.ui.define([
 				var fnOrignalXHRRespond = oXhr.respond;
 				oXhr.respond = function (status, headers, content) {
 
-					var oObject = null.getObject("/");
+					var oObject = oSplitter.getModel("bMessages").getObject("/");
 					if (oObject) {
 						headers["sap-message"] = JSON.stringify(oObject);
 					}
 
-					var aHistoryModel = null;
+					var aHistoryModel = oSplitter.getModel("history");
 					var aHistory = aHistoryModel.getObject("/");
 					aHistory.push({url: oXhr.url.replace("/SalesOrderSrv", "")});
 					aHistoryModel.setData(aHistory);
@@ -131,9 +134,9 @@ sap.ui.define([
 		icon: "sap-icon://paper-plane",
 		press: function(){
 			if (oResponseEditor.getValue()){
-				null.setData(JSON.parse(oResponseEditor.getValue()));
+				oSplitter.getModel("bMessages").setData(JSON.parse(oResponseEditor.getValue()));
 			} else {
-				null.setData(undefined);
+				oSplitter.getModel("bMessages").setData(undefined);
 			}
 			oODataModel.read(oEntitySelect.getSelectedItem().getText());
 		}
@@ -144,14 +147,14 @@ sap.ui.define([
 		icon: "sap-icon://delete",
 		press: function(){
 			Messaging.removeAllMessages();
-			var aHistoryModel = null;
+			var aHistoryModel = oSplitter.getModel("history");
 			aHistoryModel.setData([]);
 		}
 	});
 
 
 	// 4. Show front-end messages
-	sap.ui.getCore();
+	oSplitter.setModel(Messaging.getMessageModel(), "message");
 
 	var oTableMM = new Table({
 		items: {
@@ -186,8 +189,10 @@ sap.ui.define([
 	});
 
 
-	new JSONModel([]);
-	sap.ui.getCore();
+	// 5. Show call history
+
+	var oHistoryModel = new JSONModel([]);
+	oSplitter.setModel(oHistoryModel, "history");
 
 	var oHistoryTable = new Table({
 		items: {
@@ -210,8 +215,8 @@ sap.ui.define([
 
 
 	// 6. Add content
-	var oSplitter = new ResponsiveSplitter({
-		rootPaneContainer: new PaneContainer({
+	oSplitter.setRootPaneContainer(
+		new PaneContainer({
 			panes: [
 				new SplitPane({content:
 					new VerticalLayout({content: [
@@ -226,6 +231,6 @@ sap.ui.define([
 				new SplitPane({content: oMessageModelPanel})
 			]
 		})
-	});
+	);
 	oSplitter.placeAt("content");
 });

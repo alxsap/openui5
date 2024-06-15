@@ -53,9 +53,6 @@ sap.ui.define([
   // set the data for the model
   oModel.setData(data);
 
-  // set the model to the core
-  sap.ui.getCore();
-
 
   // define the row template
   var oItemTemplate = new ColumnListItem({
@@ -468,6 +465,7 @@ sap.ui.define([
   });
 
   new App({
-	  pages : [page]
+	  pages : [page],
+	  models: oModel
   }).placeAt("content");
 });

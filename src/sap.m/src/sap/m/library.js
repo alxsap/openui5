@@ -2036,7 +2036,22 @@ sap.ui.define([
 		  * Information Background Color
 		  * @public
 		  */
-		 InformationBackgroundColor: "InformationBackgroundColor"
+		 InformationBackgroundColor: "InformationBackgroundColor",
+		 /**
+		  * Neutral Element Color
+		  * @public
+		  */
+		 NeutralElementColor: "NeutralElementColor",
+		 /**
+		  * Neutral Background Color
+		  * @public
+		  */
+		 NeutralBackgroundColor: "NeutralBackgroundColor",
+		 /**
+		  * Neutral Border Color
+		  * @public
+		  */
+		 NeutralBorderColor: "NeutralBorderColor"
 
 	 };
 

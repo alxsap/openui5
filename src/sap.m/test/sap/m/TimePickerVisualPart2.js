@@ -64,12 +64,6 @@ sap.ui.define([
 		  value: "09:15:16 PM",
 		  localeId: "en_US",
 		  displayFormat: "B HH:mm"
-	  },
-	  {
-		  id: "TP25",
-		  value: "09:15:16 PM",
-		  localeId: "en_US",
-		  displayFormat: "B hh:mm"
 	  }
   ];
 
@@ -116,7 +110,7 @@ sap.ui.define([
   oModel.setData({
 	  timeValue: UI5Date.getInstance()
   });
-  sap.ui.getCore();
+  app.setModel(oModel);
 
   var page = new Page("page1", {
 	  title: "TimePicker",
@@ -151,7 +145,8 @@ sap.ui.define([
 		  }),
 		  generateTimePickers(),
 		  new HTML({
-			  content: "<div id='eventsDiv' style='float:right;'>Some Events:</div>"
+			  id: "eventsDiv",
+			  content: "<div style='float:right;'>Some Events:</div>"
 		  })
 	  ]
   });
