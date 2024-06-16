@@ -1,14 +1,14 @@
 sap.ui.define([
   "sap/base/i18n/Localization",
   "sap/ui/core/Element",
-  "sap/ui/unified/library",
   "sap/m/App",
   "sap/m/Bar",
   "sap/m/Button",
   "sap/ui/core/library",
-  "sap/ui/unified/DateTypeRange",
   "sap/ui/unified/CalendarLegend",
   "sap/ui/unified/CalendarLegendItem",
+  "sap/ui/unified/library",
+  "sap/ui/unified/DateTypeRange",
   "sap/ui/model/json/JSONModel",
   "sap/m/Page",
   "sap/m/Label",
@@ -20,14 +20,14 @@ sap.ui.define([
 ], function(
   Localization,
   Element,
-  unifiedLibrary,
   App,
   Bar,
   Button,
   coreLibrary,
-  DateTypeRange,
   CalendarLegend,
   CalendarLegendItem,
+  unifiedLibrary,
+  DateTypeRange,
   JSONModel,
   Page,
   Label,
@@ -121,9 +121,6 @@ sap.ui.define([
   function toggleSpecialDates(oEvent) {
 	  var bPressed = oEvent.getParameter("pressed");
 	  var oDP = Element.getElementById("DP2");
-	  if (!DateTypeRange) {
-		  sap.ui.getCore().loadLibrary("sap.ui.unified");
-	  }
 	  if (!oLegend) {
 		  oLegend = new CalendarLegend("Legend1", {
 			  items: [

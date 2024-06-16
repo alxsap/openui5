@@ -1,7 +1,7 @@
 sap.ui.define([
+  "sap/ui/core/Lib",
   "sap/ui/core/format/NumberFormat",
   "sap/m/MessageBox",
-  "sap/ui/core/Fragment",
   "sap/ui/model/json/JSONModel",
   "sap/m/SplitApp",
   "sap/m/Button",
@@ -22,17 +22,13 @@ sap.ui.define([
   "sap/m/StandardListItem",
   "sap/m/ActionListItem",
   "sap/m/ProgressIndicator",
-  "sap/suite/ui/commons/HeaderContainer",
-  "sap/suite/ui/commons/HeaderCell",
-  "sap/suite/ui/commons/HeaderCellItem",
-  "sap/suite/ui/commons/ComparisonChart",
-  "sap/suite/ui/commons/ComparisonData",
+  "sap/m/HeaderContainer",
   "sap/m/Page",
   "sap/ui/Device"
 ], function(
+  Library,
   NumberFormat,
   MessageBox,
-  Fragment,
   JSONModel,
   SplitApp,
   Button,
@@ -54,14 +50,13 @@ sap.ui.define([
   ActionListItem,
   ProgressIndicator,
   HeaderContainer,
-  HeaderCell,
-  HeaderCellItem,
-  ComparisonChart,
-  ComparisonData,
   Page,
   Device
 ) {
   "use strict";
+
+  // shortcut for sap.ui.core.TextAlign
+  const TextAlign = coreLibrary.TextAlign;
 
   // shortcut for sap.m.PlacementType
   const PlacementType = mobileLibrary.PlacementType;
@@ -74,14 +69,6 @@ sap.ui.define([
 
   // shortcut for sap.ui.core.TextDirection
   const TextDirection = coreLibrary.TextDirection;
-
-  // Note: the HTML page 'ObjectHeaderResponsive.html' loads this module via data-sap-ui-on-init
-
-  try{
-	  sap.ui.getCore().loadLibrary("sap.suite.ui.commons");
-  }catch(e){
-	  console.log("This test page requires the library 'sap.suite.ui.commons' to display the HeaderContainer control inside the ObjectHeader which is not available.");
-  }
 
   NumberFormat.getFloatInstance({minFractionDigits: 2, maxFractionDigits: 2});
 
@@ -897,50 +884,6 @@ sap.ui.define([
   });
   oh9.addStyleClass("sapUiResponsivePadding--header");
 
-  if (sap.suite) {
-	  var hc9 = new HeaderContainer({
-		  scrollStep: 200,
-		  scrollTime: 500,
-		  items: [
-			  new HeaderCell({
-				  north: new HeaderCellItem({
-					  height: "90%",
-					  content: new ComparisonChart({
-						  size: "S",
-						  scale: "M",
-						  data: [
-							  new ComparisonData({
-								  title: "Americas",
-								  value: 234,
-								  color: "Good"
-							  }),
-							  new ComparisonData({
-								  title: "EMEA",
-								  value: 97,
-								  color: "Error"
-							  }),
-							  new ComparisonData({
-								  title: "APAC",
-								  value: 197,
-								  color: "Critical"
-							  })
-						  ]
-					  })
-				  }),
-				  south: new HeaderCellItem({
-					  height: "10%",
-					  content: new Label({
-						  text: "EUR, Compare across regions"
-					  })
-				  })
-			  })
-		  ]
-	  });
-
-	  // connect HeaderContainer and ObjectHeader
-	  oh9.setHeaderContainer(hc9);
-  }
-
   /*use case 10 object header + header container as XML fragment */
   var oh10 = new ObjectHeader("oh10", {
 	  responsive: true,
@@ -969,130 +912,205 @@ sap.ui.define([
 	  ]
   });
   oh10.addStyleClass("sapUiResponsivePadding--header");
-  if (sap.suite) {
-	  var xml = '' +
-	  '<HeaderContainer xmlns="sap.suite.ui.commons" xmlns:m="sap.m" scrollStep="200" scrollTime="500">' +
-	  '	<items>' +
-	  '		<HeaderCell>' +
-	  '			<north>' +
-	  '				<HeaderCellItem height="90%">' +
-	  '					<content>' +
-	  '						<ComparisonChart size="S" scale="M">' +
-	  '					        <data>' +
-	  '					        	<ComparisonData	title="Americas" value="234" color="Good"/>' +
-	  '					        	<ComparisonData	title="EMEA" value="97" color="Error"/>' +
-	  '					        	<ComparisonData	title="APAC" value="197" color="Critical"/>' +
-	  '					        </data>' +
-	  '				        </ComparisonChart>' +
-	  '					</content>' +
-	  '				</HeaderCellItem>' +
-	  '			</north>' +
-	  '			<south>' +
-	  '				<HeaderCellItem height="10%">' +
-	  '					<content>' +
-	  '						<m:Label text="EUR, Compare across regions" />' +
-	  '					</content>' +
-	  '				</HeaderCellItem>' +
-	  '			</south>' +
-	  '		</HeaderCell>' +
-	  '		<HeaderCell>' +
-	  '			<north>' +
-	  '				<HeaderCellItem height="90%">' +
-	  '					<content>' +
-	  '						<NumericContent size="S" scale="M" value="1.96" valueColor="Error" indicator="Up"/>' +
-	  '					</content>' +
-	  '				</HeaderCellItem>' +
-	  '			</north>' +
-	  '			<south>' +
-	  '				<HeaderCellItem height="10%">' +
-	  '					<content>' +
-	  '						<m:Label text="EUR, Current Quarter" />' +
-	  '					</content>' +
-	  '				</HeaderCellItem>' +
-	  '			</south>' +
-	  '		</HeaderCell>' +
-	  '		<HeaderCell>' +
-	  '			<north>' +
-	  '				<HeaderCellItem height="90%">' +
-	  '					<content>' +
-	  '						<BulletChart size="S" scale="M" targetValue="75" targetValueLabel="75c" minValue="0" maxValue="150">' +
-	  '							<actual>' +
-	  '								<BulletChartData value="125" color="Error"/>' +
-	  '							</actual>' +
-	  '							<thresholds>' +
-	  '								<BulletChartData value="35" color="Critical"/>' +
-	  '								<BulletChartData value="115" color="Error"/>' +
-	  '							</thresholds>' +
-	  '						</BulletChart> ' +
-	  '					</content>' +
-	  '				</HeaderCellItem>' +
-	  '			</north>' +
-	  '			<south>' +
-	  '				<HeaderCellItem height="10%">' +
-	  '					<content>' +
-	  '						<m:Label text="EUR, Current and Target" />' +
-	  '					</content>' +
-	  '				</HeaderCellItem>' +
-	  '			</south>' +
-	  '		</HeaderCell>' +
-	  '		<HeaderCell>' +
-	  '			<north>' +
-	  '				<HeaderCellItem height="90%">' +
-	  '					<content>' +
-	  '						<NumericContent size="S" value="3" icon="sap-icon://travel-expense" />' +
-	  '					</content>' +
-	  '				</HeaderCellItem>' +
-	  '			</north>' +
-	  '			<south>' +
-	  '				<HeaderCellItem height="10%">' +
-	  '					<content>' +
-	  '						<m:Label text="Leave Requests" />' +
-	  '					</content>' +
-	  '				</HeaderCellItem>' +
-	  '			</south>' +
-	  '		</HeaderCell>' +
-	  '		<HeaderCell>' +
-	  '			<north>' +
-	  '				<HeaderCellItem height="90%">' +
-	  '					<content>' +
-	  '						<NumericContent size="S" value="9" icon="sap-icon://locked" /> ' +
-	  '					</content>' +
-	  '				</HeaderCellItem>' +
-	  '			</north>' +
-	  '			<south>' +
-	  '				<HeaderCellItem height="10%">' +
-	  '					<content>' +
-	  '						<m:Label text="Hours since last Activity" />' +
-	  '					</content>' +
-	  '				</HeaderCellItem>' +
-	  '			</south>' +
-	  '		</HeaderCell>' +
-	  '		<HeaderCell>' +
-	  '			<north>' +
-	  '				<HeaderCellItem height="90%">' +
-	  '					<content>' +
-	  '						<NumericContent size="S" scale="M" value="1.25" valueColor="Good" indicator="Up"/>' +
-	  '					</content>' +
-	  '				</HeaderCellItem>' +
-	  '			</north>' +
-	  '			<south>' +
-	  '				<HeaderCellItem height="10%">' +
-	  '					<content>' +
-	  '						<m:Label text="EUR, Current Quarter" />' +
-	  '					</content>' +
-	  '				</HeaderCellItem>' +
-	  '			</south>' +
-	  '		</HeaderCell>' +
-	  '	</items>'+
-	  '</HeaderContainer>';
 
-	  Fragment.load({
-		  definition: xml
-	  }).then(function(oHeaderContainer){
+  Library.load("sap.suite.ui.commons").then(() => {
+	  sap.ui.require([
+		  "sap/ui/core/Fragment",
+		  "sap/suite/ui/commons/HeaderContainer",
+		  "sap/suite/ui/commons/HeaderCell",
+		  "sap/suite/ui/commons/HeaderCellItem",
+		  "sap/suite/ui/commons/ComparisonChart",
+		  "sap/suite/ui/commons/ComparisonData"
+	  ], function(Fragment, HeaderContainer, HeaderCell, HeaderCellItem, ComparisonChart, ComparisonData) {
+
+		  var hc9 = new HeaderContainer({
+			  scrollStep: 200,
+			  scrollTime: 500,
+			  items: [
+				  new HeaderCell({
+					  north: new HeaderCellItem({
+						  height: "90%",
+						  content: new ComparisonChart({
+							  size: "S",
+							  scale: "M",
+							  data: [
+								  new ComparisonData({
+									  title: "Americas",
+									  value: 234,
+									  color: "Good"
+								  }),
+								  new ComparisonData({
+									  title: "EMEA",
+									  value: 97,
+									  color: "Error"
+								  }),
+								  new ComparisonData({
+									  title: "APAC",
+									  value: 197,
+									  color: "Critical"
+								  })
+							  ]
+						  })
+					  }),
+					  south: new HeaderCellItem({
+						  height: "10%",
+						  content: new Label({
+							  text: "EUR, Compare across regions"
+						  })
+					  })
+				  })
+			  ]
+		  });
+
 		  // connect HeaderContainer and ObjectHeader
-		  oh10.setHeaderContainer(oHeaderContainer);
+		  oh9.setHeaderContainer(hc9);
+
+		  var xml = '' +
+		  '<HeaderContainer xmlns="sap.suite.ui.commons" xmlns:m="sap.m" scrollStep="200" scrollTime="500">' +
+		  '	<items>' +
+		  '		<HeaderCell>' +
+		  '			<north>' +
+		  '				<HeaderCellItem height="90%">' +
+		  '					<content>' +
+		  '						<ComparisonChart size="S" scale="M">' +
+		  '					        <data>' +
+		  '					        	<ComparisonData	title="Americas" value="234" color="Good"/>' +
+		  '					        	<ComparisonData	title="EMEA" value="97" color="Error"/>' +
+		  '					        	<ComparisonData	title="APAC" value="197" color="Critical"/>' +
+		  '					        </data>' +
+		  '				        </ComparisonChart>' +
+		  '					</content>' +
+		  '				</HeaderCellItem>' +
+		  '			</north>' +
+		  '			<south>' +
+		  '				<HeaderCellItem height="10%">' +
+		  '					<content>' +
+		  '						<m:Label text="EUR, Compare across regions" />' +
+		  '					</content>' +
+		  '				</HeaderCellItem>' +
+		  '			</south>' +
+		  '		</HeaderCell>' +
+		  '		<HeaderCell>' +
+		  '			<north>' +
+		  '				<HeaderCellItem height="90%">' +
+		  '					<content>' +
+		  '						<NumericContent size="S" scale="M" value="1.96" valueColor="Error" indicator="Up"/>' +
+		  '					</content>' +
+		  '				</HeaderCellItem>' +
+		  '			</north>' +
+		  '			<south>' +
+		  '				<HeaderCellItem height="10%">' +
+		  '					<content>' +
+		  '						<m:Label text="EUR, Current Quarter" />' +
+		  '					</content>' +
+		  '				</HeaderCellItem>' +
+		  '			</south>' +
+		  '		</HeaderCell>' +
+		  '		<HeaderCell>' +
+		  '			<north>' +
+		  '				<HeaderCellItem height="90%">' +
+		  '					<content>' +
+		  '						<BulletChart size="S" scale="M" targetValue="75" targetValueLabel="75c" minValue="0" maxValue="150">' +
+		  '							<actual>' +
+		  '								<BulletChartData value="125" color="Error"/>' +
+		  '							</actual>' +
+		  '							<thresholds>' +
+		  '								<BulletChartData value="35" color="Critical"/>' +
+		  '								<BulletChartData value="115" color="Error"/>' +
+		  '							</thresholds>' +
+		  '						</BulletChart> ' +
+		  '					</content>' +
+		  '				</HeaderCellItem>' +
+		  '			</north>' +
+		  '			<south>' +
+		  '				<HeaderCellItem height="10%">' +
+		  '					<content>' +
+		  '						<m:Label text="EUR, Current and Target" />' +
+		  '					</content>' +
+		  '				</HeaderCellItem>' +
+		  '			</south>' +
+		  '		</HeaderCell>' +
+		  '		<HeaderCell>' +
+		  '			<north>' +
+		  '				<HeaderCellItem height="90%">' +
+		  '					<content>' +
+		  '						<NumericContent size="S" value="3" icon="sap-icon://travel-expense" />' +
+		  '					</content>' +
+		  '				</HeaderCellItem>' +
+		  '			</north>' +
+		  '			<south>' +
+		  '				<HeaderCellItem height="10%">' +
+		  '					<content>' +
+		  '						<m:Label text="Leave Requests" />' +
+		  '					</content>' +
+		  '				</HeaderCellItem>' +
+		  '			</south>' +
+		  '		</HeaderCell>' +
+		  '		<HeaderCell>' +
+		  '			<north>' +
+		  '				<HeaderCellItem height="90%">' +
+		  '					<content>' +
+		  '						<NumericContent size="S" value="9" icon="sap-icon://locked" /> ' +
+		  '					</content>' +
+		  '				</HeaderCellItem>' +
+		  '			</north>' +
+		  '			<south>' +
+		  '				<HeaderCellItem height="10%">' +
+		  '					<content>' +
+		  '						<m:Label text="Hours since last Activity" />' +
+		  '					</content>' +
+		  '				</HeaderCellItem>' +
+		  '			</south>' +
+		  '		</HeaderCell>' +
+		  '		<HeaderCell>' +
+		  '			<north>' +
+		  '				<HeaderCellItem height="90%">' +
+		  '					<content>' +
+		  '						<NumericContent size="S" scale="M" value="1.25" valueColor="Good" indicator="Up"/>' +
+		  '					</content>' +
+		  '				</HeaderCellItem>' +
+		  '			</north>' +
+		  '			<south>' +
+		  '				<HeaderCellItem height="10%">' +
+		  '					<content>' +
+		  '						<m:Label text="EUR, Current Quarter" />' +
+		  '					</content>' +
+		  '				</HeaderCellItem>' +
+		  '			</south>' +
+		  '		</HeaderCell>' +
+		  '	</items>'+
+		  '</HeaderContainer>';
+
+		  Fragment.load({
+			  definition: xml
+		  }).then(function(oHeaderContainer){
+			  // connect HeaderContainer and ObjectHeader
+			  oh10.setHeaderContainer(oHeaderContainer);
+		  });
 	  });
-  }
+  }, function(err) {
+	  console.info("This test page requires the library 'sap.suite.ui.commons' to display the HeaderContainer control inside the ObjectHeader which is not available.");
+	  oh9.setHeaderContainer(
+		  new HeaderContainer({
+			  content: [
+				  new Text({
+					  textAlign: TextAlign.Center,
+					  text: "sap.suite.ui.commons library is missing"
+				  }).addStyleClass("missingControl sapThemeBrand-asBorderColor")
+			  ]
+		  })
+	  );
+	  oh10.setHeaderContainer(
+		  new HeaderContainer({
+			  content: [
+				  new Text({
+					  textAlign: TextAlign.Center,
+					  text: "sap.suite.ui.commons library is missing"
+				  }).addStyleClass("missingControl sapThemeBrand-asBorderColor")
+			  ]
+		  })
+	  );
+  });
 
   var oh11 = new ObjectHeader("oh11", {
 	  responsive: true,

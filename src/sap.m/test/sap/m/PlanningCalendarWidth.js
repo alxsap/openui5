@@ -1,7 +1,6 @@
 sap.ui.define([
   "sap/m/Popover",
   "sap/ui/core/Element",
-  "sap/ui/layout/library",
   "sap/ui/unified/library",
   "sap/m/PlanningCalendarLegend",
   "sap/ui/unified/CalendarLegendItem",
@@ -26,6 +25,7 @@ sap.ui.define([
   "sap/ui/unified/DateTypeRange",
   "sap/m/PlanningCalendarView",
   "sap/ui/layout/form/SimpleForm",
+  "sap/ui/layout/library",
   "sap/ui/core/Title",
   "sap/m/DateTimePicker",
   "sap/ui/core/library",
@@ -44,7 +44,6 @@ sap.ui.define([
 ], function(
   Popover,
   Element,
-  layoutLibrary,
   unifiedLibrary,
   PlanningCalendarLegend,
   CalendarLegendItem,
@@ -69,6 +68,7 @@ sap.ui.define([
   DateTypeRange,
   PlanningCalendarView,
   SimpleForm,
+  layoutLibrary,
   Title,
   DateTimePicker,
   coreLibrary,
@@ -638,7 +638,6 @@ sap.ui.define([
 	  type: ButtonType.Transparent,
 	  press: function () {
 		  if (!oDialog2) {
-			  sap.ui.getCore().loadLibrary("sap.ui.layout");
 			  var oForm = new SimpleForm("SimpleForm1", {
 				  layout: SimpleFormLayout.ResponsiveGridLayout,
 				  content: [

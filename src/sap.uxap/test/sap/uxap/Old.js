@@ -1,22 +1,15 @@
 sap.ui.define([
-  "sap/ui/core/Core",
+  "sap/ui/core/mvc/XMLView",
   "sap/m/App",
   "sap/m/Page",
-  "sap/ui/thirdparty/jquery",
-  "sap/ui/core/mvc/XMLView"
-], function(Core, App, Page, jQuery0) {
+  "sap/ui/thirdparty/jquery"
+], async function(XMLView, App, Page, jQuery) {
   "use strict";
-  // Note: the HTML page 'Old.html' loads this module via data-sap-ui-on-init
+  var oApp = new App(),
+	  myView = await XMLView.create({definition: jQuery('#view1').html()});
 
-  (function (jQuery, App, Page) {
-	  Core.ready(function() {
-		  var oApp = new App(),
-			  myView = sap.ui.xmlview({viewContent: jQuery0('#view1').html()});
-
-		  oApp.addPage(new Page({
-			  title: "Old Header",
-			  content: [myView]
-		  })).placeAt("content");
-	  });
-  }(jQuery0, App, Page));
+  oApp.addPage(new Page({
+	  title: "Old Header",
+	  content: [myView]
+  })).placeAt("content");
 });

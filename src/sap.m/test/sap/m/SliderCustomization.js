@@ -3,12 +3,13 @@ sap.ui.define([
   "sap/m/SliderTooltipBase",
   "sap/m/App",
   "sap/m/Label",
-  "sap/m/library",
+  "sap/m/RangeSlider",
+  "sap/m/Slider",
   "sap/ui/core/Element",
   "sap/m/SliderTooltipBaseRenderer",
   "sap/m/Page",
   "sap/ui/thirdparty/jquery"
-], function(IconPool, SliderTooltipBase, App, Label, mobileLibrary, Element, SliderTooltipBaseRenderer, Page, jQuery) {
+], function(IconPool, SliderTooltipBase, App, Label, RangeSlider, Slider, Element, SliderTooltipBaseRenderer, Page, jQuery) {
   "use strict";
   // Note: the HTML page 'SliderCustomization.html' loads this module via data-sap-ui-on-init
 
@@ -19,17 +20,21 @@ sap.ui.define([
   };
 
   var createSlider = function (bRangeSlider, aTooltips, oScale, fValue, fValue2, bShowTickMarks) {
-	  return new mobileLibrary[bRangeSlider ? "RangeSlider" : "Slider"]({
+	  const SliderClass = bRangeSlider ? RangeSlider : Slider;
+	  const settings = {
 		  min: 1,
 		  max: 31,
 		  value: fValue || 15,
-		  value2: fValue2 || 24,
 		  width: "80%",
 		  enableTickmarks: bShowTickMarks,
 		  showAdvancedTooltip: true,
 		  scale: oScale,
 		  customTooltips: aTooltips
-	  }).addStyleClass("slider-margin");
+	  };
+	  if ( bRangeSlider ) {
+		  settings.value2 = fValue2 || 24;
+	  }
+	  return new SliderClass(settings).addStyleClass("slider-margin");
   }
 
   IconPool.insertFontFaceStyle();
@@ -162,17 +167,17 @@ sap.ui.define([
 	  title: "Mobile Slider Control",
 	  content: [
 		  createExampleDescriptionLabel("Custom Tooltip (read-only): "),
-		  createSlider(false, [new sap.xx.custom.CustomTooltip()], null, 15, 0, false),
-		  createSlider(true, [new sap.xx.custom.CustomTooltip(), new sap.xx.custom.CustomTooltip()], null, 7, false),
+		  createSlider(false, [new CustomTooltip()], null, 15, 0, false),
+		  createSlider(true, [new CustomTooltip(), new CustomTooltip()], null, 7, false),
 		  createExampleDescriptionLabel("Custom Tooltip (interactive): "),
-		  createSlider(false, [new sap.xx.custom.CustomTooltip({ showButtons: true }), new sap.xx.custom.CustomTooltip({ showButtons: true })], null, 15, null, true),
-		  createSlider(true, [new sap.xx.custom.CustomTooltip({ showButtons: true }), new sap.xx.custom.CustomTooltip({ showButtons: true })], null, 15, null, true),
+		  createSlider(false, [new CustomTooltip({ showButtons: true })], null, 15, null, true),
+		  createSlider(true, [new CustomTooltip({ showButtons: true }), new CustomTooltip({ showButtons: true })], null, 15, null, true),
 		  createExampleDescriptionLabel("Custom scale: "),
-		  createSlider(false, [], new sap.xx.custom.CustomScale(), 15, 0, true),
-		  createSlider(true, [], new sap.xx.custom.CustomScale(), 7, 24, true),
+		  createSlider(false, [], new CustomScale(), 15, 0, true),
+		  createSlider(true, [], new CustomScale(), 7, 24, true),
 		  createExampleDescriptionLabel("Custom Tooltip (read-only) + Custom scale: "),
-		  createSlider(false, [new sap.xx.custom.CustomTooltip(), new sap.xx.custom.CustomTooltip()], new sap.xx.custom.CustomScale(), 15, null, true),
-		  createSlider(true, [new sap.xx.custom.CustomTooltip(), new sap.xx.custom.CustomTooltip()], new sap.xx.custom.CustomScale(), 7, 24, true),]
+		  createSlider(false, [new CustomTooltip()], new CustomScale(), 15, null, true),
+		  createSlider(true, [new CustomTooltip(), new CustomTooltip()], new CustomScale(), 7, 24, true),]
   });
 
   oApp.addPage(oPage1);
