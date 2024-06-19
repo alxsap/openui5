@@ -71,14 +71,6 @@ sap.ui.define([
 	QUnit.test("basics", function (assert) {
 		var oModel;
 
-		// @deprecated As of Version 1.110.0
-		assert.throws(function () {
-			return new ODataModel({synchronizationMode : undefined});
-		}, new Error("Synchronization mode must be 'None'"));
-		// @deprecated As of Version 1.110.0
-		assert.throws(function () {
-			return new ODataModel({synchronizationMode : "Nope"});
-		}, new Error("Synchronization mode must be 'None'"));
 		assert.throws(function () {
 			return new ODataModel();
 		}, new Error("Missing service root URL"));
@@ -97,9 +89,7 @@ sap.ui.define([
 
 		// code under test: operation mode Server must not throw an error
 		oModel = this.createModel("", {
-			operationMode : OperationMode.Server,
-			// @deprecated As of Version 1.110.0
-			synchronizationMode : "None" // deprecated and optional, but still allowed
+			operationMode : OperationMode.Server
 		});
 
 		assert.strictEqual(oModel.sOperationMode, OperationMode.Server);

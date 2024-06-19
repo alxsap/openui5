@@ -162,7 +162,6 @@ sap.ui.define([
 	 * @return {sap.ui.core.ComponentMetadata} a metadata proxy object
 	 */
 	function createMetadataProxy(oMetadata, oManifest) {
-
 		// create a proxy for the metadata object and simulate to be an
 		// instance of the original metadata object of the Component
 		// => retrieving the prototype from the original metadata to
@@ -182,15 +181,6 @@ sap.ui.define([
 			}
 		}
 
-		// @public & @deprecated on ComponentMetadata, kept for compatibility
-		oMetadataProxy.getManifest = function() {
-			return this._getManifest();
-		};
-		// @public & @deprecated on ComponentMetadata, kept for compatibility
-		oMetadataProxy.getManifestEntry = function(sKey, bMerged) {
-			return this._getManifestEntry(sKey, bMerged);
-		};
-
 		oMetadataProxy._getManifest = function() {
 			// return the content of the manifest instead of the static metadata
 			return oManifest && oManifest.getJson();
@@ -208,7 +198,6 @@ sap.ui.define([
 		oMetadataProxy[Symbol("isProxy")] = true;
 
 		return oMetadataProxy;
-
 	}
 
 	/**
