@@ -655,7 +655,9 @@ sap.ui.define([
 	/**
 	 * Converts the sap.ui.table.Table controls within the document. Embeds all inner controls into
 	 * a <t:Column> with <t:template> each. <t:Column> may still be used however. Do not use <rows>,
-	 * it breaks this automatic conversion (and is unnecessary anyway).
+	 * it breaks this automatic conversion (and is unnecessary anyway). Replaces the deprecated
+	 * table property "visibleRowCount" by the correct <rowMode><Fixed rowCount="..."></rowMode>,
+	 * allowing the tests to still use it.
 	 *
 	 * @param {Document} oDocument The view as XML document
 	 */
@@ -991,6 +993,7 @@ sap.ui.define([
 			}
 
 			if (Rendering.isPending() || this.oModel && this.oModel.aPrerenderingTasks
+					|| this.aExpectedEvents.length > 0
 					|| Messaging.getMessageModel().getObject("/").length < this.aMessages.length) {
 				setTimeout(this.checkFinish.bind(this, assert), 10);
 			} else if (this.resolve) {
@@ -16585,7 +16588,7 @@ sap.ui.define([
 	// BCP: 2180279839
 	// BCP: 2280024694
 	//
-	// Same with prefetch of preceeding entries (SNOW: CS20230006538459)
+	// Same with prefetch of preceding entries (SNOW: CS20230006538459)
 	QUnit.test("BCP: 2180279839: dataReceived follows each dataRequested", function (assert) {
 		var oListBinding,
 			aValues = [],

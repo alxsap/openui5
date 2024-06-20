@@ -42,6 +42,21 @@ sap.ui.define([
 					  liveChange: fnLiveChange,
 				  }).addStyleClass('myInput'),
 				  new Input({
+					  placeholder: "Type Password",
+					  type:"Password",
+					  showClearIcon: true,
+					  change: fnChange,
+					  liveChange: fnLiveChange,
+				  }).addStyleClass('myInput'),
+				  new Input({
+					  placeholder: "Type Password",
+					  type:"Password",
+					  value:"Initial password value",
+					  showClearIcon: true,
+					  change: fnChange,
+					  liveChange: fnLiveChange,
+				  }).addStyleClass('myInput'),
+				  new Input({
 					  placeholder: "Prompt Text",
 					  showClearIcon: true,
 					  showValueHelp: true,
