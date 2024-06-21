@@ -1,9 +1,11 @@
 /*global QUnit */
 sap.ui.define([
+	"sap/ui/core/Core"
 ], function(
-
+	Core
 ) {
 	"use strict";
+	Core.boot();
 
 	QUnit.test("Check Main Module Functionality", function(assert) {
 		var done = assert.async();

@@ -1572,6 +1572,7 @@ sap.ui.define([
 			active: true,
 			design: ToolbarDesign.Info,
 			visible: false,
+			ariaLabelledBy: sToolbarId + "-text",
 			content: [
 				new Text({
 					id: sToolbarId + "-text",

@@ -671,7 +671,7 @@ sap.ui.define([
 	 * Expands the given group node.
 	 *
 	 * @param {sap.ui.model.odata.v4.lib._GroupLock} oGroupLock
-	 *   A lock for the group to associate the requests with
+	 *   An unlocked lock for the group to associate the requests with
 	 * @param {object|string} vGroupNodeOrPath
 	 *   The group node or its path relative to the cache; a group node instance (instead of a path)
 	 *   MUST only be given in case of "expanding" continued
@@ -836,7 +836,7 @@ sap.ui.define([
 	 * @param {number} iIndex
 	 *   The index of the child node
 	 * @param {sap.ui.model.odata.v4.lib._GroupLock} oGroupLock
-	 *   A lock for the group to associate the requests with
+	 *   An unlocked lock for the group to associate the requests with
 	 * @returns {sap.ui.base.SyncPromise}
 	 *   A promise to be resolved with the requested index of the parent.
 	 *
@@ -916,8 +916,7 @@ sap.ui.define([
 	 * Returns a promise to be resolved with an OData object for the requested data.
 	 *
 	 * @param {sap.ui.model.odata.v4.lib._GroupLock} oGroupLock
-	 *   A lock for the group to associate the request with; unused in CollectionCache since no
-	 *   request will be created
+	 *   An unlocked lock for the group to associate the request with
 	 * @param {string} [sPath]
 	 *   Relative path to drill-down into
 	 * @param {function} [fnDataRequested]
@@ -1364,12 +1363,15 @@ sap.ui.define([
 	 * @param {string} [sNonCanonicalChildPath]
 	 *   The (child) node's non-canonical path (relative to the service); only used when
 	 *   <code>sSiblingPath</code> is given
+	 * @param {boolean} [bRequestSiblingRank]
+	 *   Whether to request the next sibling's rank and return its new index
 	 * @returns {{promise : sap.ui.base.SyncPromise<function():number|number[]>, refresh : boolean}}
 	 *   An object with two properties:
 	 *   - <code>promise</code>: A promise which is resolved when the move is finished, or rejected
 	 *     in case of an error. In case a refresh is needed, the promise is resolved with a function
-	 *     that can be called w/o args once the refresh is finished; it then returns the new index
-	 *     of the moved node (or <code>undefined</code>). Else it resolves with with an array of:
+	 *     that can be called w/o args once the refresh is finished - it then returns an array with
+	 *     the new indices of the moved node (or <code>undefined</code>) and of the next sibling (if
+	 *     requested). Else it is resolved with an array of:
 	 *     - the number of child nodes added (normally one, but maybe more in case the parent node
 	 *       was collapsed before),
 	 *     - the new index of the moved node,
@@ -1380,7 +1382,7 @@ sap.ui.define([
 	 * @public
 	 */
 	_AggregationCache.prototype.move = function (oGroupLock, sChildPath, sParentPath, sSiblingPath,
-			sNonCanonicalChildPath) {
+			sNonCanonicalChildPath, bRequestSiblingRank) {
 		let bRefreshNeeded = !this.bUnifiedCache;
 
 		const sChildPredicate = sChildPath.slice(sChildPath.indexOf("("));
@@ -1410,13 +1412,15 @@ sap.ui.define([
 			}
 		}
 
+		let oSiblingNode; // side effect of calling invokeNextSibling()
 		const invokeNextSibling = () => {
 			if (sSiblingPath !== undefined) {
 				bRefreshNeeded = true;
 				const sActionPath = sNonCanonicalChildPath + "/"
 					+ this.oAggregation.$Actions.ChangeNextSiblingAction;
 				const sSiblingPredicate = sSiblingPath?.slice(sSiblingPath.indexOf("("));
-				let oSiblingNode = this.aElements.$byPredicate[sSiblingPredicate];
+				oSiblingNode = this.aElements.$byPredicate[sSiblingPredicate];
+				let oNextSibling = null;
 				if (oSiblingNode) {
 					// remove OOP for all descendants (incl. itself) of a next sibling
 					this.oTreeState.deleteOutOfPlace(sSiblingPredicate);
@@ -1424,18 +1428,16 @@ sap.ui.define([
 						_Helper.getMetaPath("/" + sActionPath + "/NextSibling/")
 					).getResult();
 					const aKeys = Object.keys(oNextSiblingType).filter((sKey) => sKey[0] !== "$");
-					oSiblingNode = aKeys.reduce((oKeys, sKey) => {
+					oNextSibling = aKeys.reduce((oKeys, sKey) => {
 						oKeys[sKey] = oSiblingNode[sKey];
 						return oKeys;
 					}, {});
-				} else {
-					oSiblingNode = null;
 				}
 
 				return this.oRequestor.request("POST", sActionPath, oGroupLock.getUnlockedCopy(), {
 						"If-Match" : oChildNode,
 						Prefer : "return=minimal"
-					}, {NextSibling : oSiblingNode});
+					}, {NextSibling : oNextSibling});
 			}
 		};
 
@@ -1446,13 +1448,17 @@ sap.ui.define([
 				}, {[this.oAggregation.$ParentNavigationProperty + "@odata.bind"] : sParentPath},
 				/*fnSubmit*/null, function fnCancel() { /*nothing to do*/ }),
 			invokeNextSibling(),
-			this.requestRank(oChildNode, oGroupLock, bRefreshNeeded)
+			this.requestRank(oChildNode, oGroupLock, bRefreshNeeded),
+			bRequestSiblingRank && this.requestRank(oSiblingNode, oGroupLock, true)
 		]);
 
 		if (bRefreshNeeded) {
-			oPromise = oPromise.then(([,, iRank]) => {
+			oPromise = oPromise.then(([,, iRank, iSiblingRank]) => {
 				return () => { // Note: caller MUST wait for side-effects refresh first
-					return iRank === undefined ? undefined : this.findIndex(iRank);
+					return [
+						iRank === undefined ? undefined : this.findIndex(iRank),
+						bRequestSiblingRank && this.findIndex(iSiblingRank)
+					];
 				};
 			});
 		} else {
@@ -1675,8 +1681,8 @@ sap.ui.define([
 	 * search into account.
 	 *
 	 * @param {sap.ui.model.odata.v4.lib._GroupLock} oGroupLock
-	 *   A lock for the group to associate the requests with;
-	 *   {@link sap.ui.model.odata.v4.lib._GroupLock#getUnlockedCopy} still needs to be called!
+	 *   An original lock for the group ID to be used for the GET request, to be cloned via
+	 *   {@link sap.ui.model.odata.v4.lib._GroupLock#getUnlockedCopy}
 	 * @returns {Promise<void>|undefined}
 	 *   A promise which is resolved without a defined result when the read is finished, or
 	 *   rejected in case of an error; <code>undefined</code> in case no count needs to be read
@@ -1945,7 +1951,8 @@ sap.ui.define([
 	 * moved to their out-of-place position in the cache.
 	 *
 	 * @param {sap.ui.model.odata.v4.lib._GroupLock} oGroupLock
-	 *   A lock for the group to associate the requests with
+	 *   An original lock for the group ID to be used for the GET request, to be cloned via
+	 *   {@link sap.ui.model.odata.v4.lib._GroupLock#getUnlockedCopy}
 	 * @returns {Promise[]}
 	 *   The request promises
 	 *
@@ -2079,7 +2086,7 @@ sap.ui.define([
 	 * @param {number} iIndex - The index of a node
 	 * @param {number} iOffset - An offset, either -1 or +1
 	 * @param {sap.ui.model.odata.v4.lib._GroupLock} oGroupLock
-	 *   A lock for the group to associate the requests with
+	 *   An unlocked lock for the group to associate the requests with
 	 * @returns {Promise<number>}
 	 *   The sibling node's index, or -1 if no such sibling exists
 	 *

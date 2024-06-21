@@ -170,7 +170,7 @@ InputRenderer.getAccessibilityState = function (oControl) {
 	var mAccessibilityState = InputBaseRenderer.getAccessibilityState.apply(this, arguments);
 
 	if (bShowSuggestions && oControl.getEditable() && oControl.getEnabled()) {
-		mAccessibilityState["haspopup"] = "listbox";
+		mAccessibilityState["haspopup"] = "dialog";
 	}
 
 
