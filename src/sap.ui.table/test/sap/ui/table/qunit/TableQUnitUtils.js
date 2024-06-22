@@ -1,5 +1,4 @@
 sap.ui.define([
-	"sap/ui/qunit/utils/nextUIUpdate",
 	"sap/ui/table/Table",
 	"sap/ui/table/TreeTable",
 	"sap/ui/table/AnalyticalTable",
@@ -12,16 +11,17 @@ sap.ui.define([
 	"sap/ui/table/utils/TableUtils",
 	"sap/ui/model/json/JSONModel",
 	"sap/ui/core/Control",
+	"sap/ui/core/Core",
 	"sap/ui/core/library",
 	"sap/ui/core/UIArea",
 	"sap/ui/Device",
 	"sap/ui/thirdparty/jquery",
+	"sap/ui/qunit/utils/nextUIUpdate",
 	"sap/base/util/merge",
 	"sap/base/i18n/Localization",
 	// provides jQuery.fn.scrollLeftRTL
 	"sap/ui/dom/jquery/scrollLeftRTL"
 ], function(
-	nextUIUpdate,
 	Table,
 	TreeTable,
 	AnalyticalTable,
@@ -34,10 +34,12 @@ sap.ui.define([
 	TableUtils,
 	JSONModel,
 	Control,
+	oCore,
 	CoreLibrary,
 	UIArea,
 	Device,
 	jQuery,
+	nextUIUpdate,
 	merge,
 	Localization
 ) {
@@ -1010,7 +1012,8 @@ sap.ui.define([
 		return mDefaultSettings;
 	};
 
-	TableQUnitUtils.createTable = function(TableClass, mSettings, fnBeforePlaceAt) {
+	// eslint-disable-next-line complexity
+	TableQUnitUtils.createTable = async function(TableClass, mSettings, fnBeforePlaceAt) {
 		if (typeof TableClass === "function" && TableClass !== Table && TableClass !== TreeTable && TableClass !== AnalyticalTable) {
 			fnBeforePlaceAt = TableClass;
 			TableClass = Table;
@@ -1056,7 +1059,7 @@ sap.ui.define([
 
 		if (sContainerId != null) {
 			oTable.placeAt(sContainerId);
-			nextUIUpdate.runSync()/*context not obviously suitable for an async function*/;
+			await nextUIUpdate();
 		}
 
 		return oTable;
@@ -1360,7 +1363,7 @@ sap.ui.define([
 	TableQUnitUtils.assertNoDataVisible = function(assert, oTable, bVisible, sTitle) {
 		const sTestTitle = sTitle == null ? "" : sTitle + ": ";
 
-		assert.strictEqual(oTable.getDomRef().classList.contains("sapUiTableEmpty"), bVisible, sTestTitle + "NoData visibility");
+		assert.equal(TableUtils.isNoDataVisible(oTable), bVisible, sTestTitle + "NoData visibility");
 
 		if (!bVisible) {
 			// If the NoData element is not visible, the table must have focusable elements (cells).
@@ -1722,7 +1725,7 @@ sap.ui.define([
 	window.aFields = aFields;
 	window.iNumberOfRows = iNumberOfDataRows;
 
-	window.createTables = function(bSkipPlaceAt, bFocusableCellTemplates, iCustomNumberOfRows) {
+	window.createTables = async function(bSkipPlaceAt, bFocusableCellTemplates, iCustomNumberOfRows) {
 		const iCount = iCustomNumberOfRows ? iCustomNumberOfRows : iNumberOfDataRows;
 
 		oTable = new Table({
@@ -1798,7 +1801,7 @@ sap.ui.define([
 		if (!bSkipPlaceAt) {
 			oTable.placeAt("qunit-fixture");
 			oTreeTable.placeAt("qunit-fixture");
-			nextUIUpdate.runSync()/*context not obviously suitable for an async function*/;
+			await nextUIUpdate();
 		}
 	};
 

@@ -171,8 +171,8 @@ sap.ui.define([
 	}
 
 	QUnit.module("Lifecycle", {
-		beforeEach: function() {
-			this.oTable = TableQUnitUtils.createTable();
+		beforeEach: async function() {
+			this.oTable = await TableQUnitUtils.createTable();
 		},
 		afterEach: function() {
 			this.oTable.destroy();
@@ -341,7 +341,7 @@ sap.ui.define([
 
 	QUnit.module("Data Cells", {
 		beforeEach: async function() {
-			this.oTable = TableQUnitUtils.createTable({
+			this.oTable = await TableQUnitUtils.createTable({
 				rows: "{/}",
 				models: TableQUnitUtils.createJSONModelWithEmptyRows(9),
 				columns: [
@@ -744,7 +744,7 @@ sap.ui.define([
 
 	QUnit.module("Column Header", {
 		beforeEach: async function() {
-			createTables();
+			await createTables();
 			await _modifyTables();
 		},
 		afterEach: function() {
@@ -989,7 +989,7 @@ sap.ui.define([
 
 	QUnit.module("Row Header", {
 		beforeEach: async function() {
-			this.oTable = TableQUnitUtils.createTable({
+			this.oTable = await TableQUnitUtils.createTable({
 				rows: "{/}",
 				models: TableQUnitUtils.createJSONModelWithEmptyRows(9),
 				columns: TableQUnitUtils.createTextColumn(),
@@ -1240,7 +1240,7 @@ sap.ui.define([
 
 	QUnit.module("Row Actions", {
 		beforeEach: async function() {
-			this.oTable = TableQUnitUtils.createTable({
+			this.oTable = await TableQUnitUtils.createTable({
 				rows: "{/}",
 				models: TableQUnitUtils.createJSONModelWithEmptyRows(9),
 				columns: TableQUnitUtils.createTextColumn(),
@@ -1459,7 +1459,7 @@ sap.ui.define([
 
 	QUnit.module("SelectAll", {
 		beforeEach: async function() {
-			createTables();
+			await createTables();
 			await _modifyTables();
 		},
 		afterEach: function() {
@@ -1539,7 +1539,7 @@ sap.ui.define([
 
 	QUnit.module("Misc", {
 		beforeEach: async function() {
-			createTables();
+			await createTables();
 			await _modifyTables();
 			oTable.addExtension(new TestControl({text: "Extension"}));
 			oTable.setFooter(new TestControl({text: "Footer"}));
@@ -2159,7 +2159,7 @@ sap.ui.define([
 
 	QUnit.module("No Acc Mode", {
 		beforeEach: async function() {
-			createTables();
+			await createTables();
 			await _modifyTables();
 		},
 		afterEach: function() {

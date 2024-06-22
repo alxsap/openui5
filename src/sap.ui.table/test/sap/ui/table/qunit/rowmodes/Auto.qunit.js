@@ -38,8 +38,8 @@ sap.ui.define([
 	}
 
 	QUnit.module("Automatic row count adjustment", {
-		beforeEach: function() {
-			this.oTable = TableQUnitUtils.createTable({
+		beforeEach: async function() {
+			this.oTable = await TableQUnitUtils.createTable({
 				extension: [
 					new HeightTestControl({height: "100px"})
 				],
@@ -112,8 +112,8 @@ sap.ui.define([
 	});
 
 	QUnit.module("Hide empty rows", {
-		beforeEach: function() {
-			this.oTable = TableQUnitUtils.createTable({
+		beforeEach: async function() {
+			this.oTable = await TableQUnitUtils.createTable({
 				columns: [
 					new Column({template: new HeightTestControl({height: "1px"})}),
 					new Column({template: new HeightTestControl({height: "1px"})})
@@ -193,8 +193,8 @@ sap.ui.define([
 		after: function() {
 			Device.resize.height = this.iOriginalDeviceHeight;
 		},
-		createTable: function(bVariableRowHeightEnabled) {
-			this.oTable = TableQUnitUtils.createTable({
+		createTable: async function(bVariableRowHeightEnabled) {
+			this.oTable = await TableQUnitUtils.createTable({
 				models: TableQUnitUtils.createJSONModelWithEmptyRows(100),
 				_bVariableRowHeightEnabled: bVariableRowHeightEnabled
 			});
@@ -203,25 +203,29 @@ sap.ui.define([
 		}
 	});
 
-	QUnit.test("Initialization", function(assert) {
-		return this.createTable().qunit.whenRenderingFinished().then(function() {
+	QUnit.test("Initialization", async function(assert) {
+		const oTable = await this.createTable();
+
+		return oTable.qunit.whenRenderingFinished().then(() => {
 			assert.strictEqual(this.oGetContextsSpy.callCount, 1, "Method to get contexts called once"); // auto rerender
 			assert.ok(this.oGetContextsSpy.getCall(0).calledWithExactly(0, this.oTable.getRowMode().getComputedRowCounts().count, 100),
 				"The call considers the row count");
-		}.bind(this));
+		});
 	});
 
-	QUnit.test("Initialization; Variable row heights", function(assert) {
-		return this.createTable(true).qunit.whenRenderingFinished().then(function() {
+	QUnit.test("Initialization; Variable row heights", async function(assert) {
+		const oTable = await this.createTable(true);
+
+		return oTable.qunit.whenRenderingFinished().then(() => {
 			assert.strictEqual(this.oGetContextsSpy.callCount, 1, "Method to get contexts called once"); // auto render
 			assert.ok(this.oGetContextsSpy.getCall(0).calledWithExactly(0, this.oTable.getRowMode().getComputedRowCounts().count + 1, 100),
 				"The call considers the row count");
-		}.bind(this));
+		});
 	});
 
-	QUnit.test("Resize", function(assert) {
+	QUnit.test("Resize", async function(assert) {
 		const oGetContextsSpy = this.oGetContextsSpy;
-		const oTable = this.createTable();
+		const oTable = await this.createTable();
 		let iFirstVisibleRow;
 
 		return oTable.qunit.whenRenderingFinished().then(function() {
@@ -295,8 +299,8 @@ sap.ui.define([
 		return fnOriginalTest();
 	});
 
-	RowsUpdatedTest.test("Resize", function(assert) {
-		this.createTable();
+	RowsUpdatedTest.test("Resize", async function(assert) {
+		await this.createTable();
 		return this.oTable.qunit.whenRenderingFinished().then(() => {
 			this.resetRowsUpdatedSpy();
 		}).then(this.oTable.qunit.$resize({height: "500px"})).then(() => {
@@ -306,8 +310,8 @@ sap.ui.define([
 		}).finally(this.oTable.qunit.resetSize);
 	});
 
-	RowsUpdatedTest.test("Animation", function(assert) {
-		this.createTable();
+	RowsUpdatedTest.test("Animation", async function(assert) {
+		await this.createTable();
 		return this.oTable.qunit.whenRenderingFinished().then(() => {
 			this.resetRowsUpdatedSpy();
 			this.oTable.getRowMode().setProperty("rowContentHeight", 30, true); // Simulate that the row count changes after animation.
@@ -319,9 +323,9 @@ sap.ui.define([
 		});
 	});
 
-	RowsUpdatedTest.test("Render when theme not applied", function(assert) {
+	RowsUpdatedTest.test("Render when theme not applied", async function(assert) {
 		const oIsThemeApplied = sinon.stub(TableUtils, "isThemeApplied").returns(false);
-		this.createTable();
+		await this.createTable();
 		return this.checkRowsUpdated(assert, []).then(() => {
 			this.resetRowsUpdatedSpy();
 			this.oTable.invalidate();
@@ -376,8 +380,8 @@ sap.ui.define([
 
 	function RowsUpdatedTestInvisibleInitialRendering(assert, fnOriginalTest) {
 		return testWithStableRowCount(() => {
-			return TableQUnitUtils.hideTestContainer().then(() => {
-				this.createTable();
+			return TableQUnitUtils.hideTestContainer().then(async () => {
+				await this.createTable();
 				return this.checkRowsUpdated(assert, []);
 			}).then(() => {
 				this.resetRowsUpdatedSpy();
@@ -423,8 +427,8 @@ sap.ui.define([
 		});
 	}
 
-	function RowsUpdatedTestInvisibleRerenderWithBinding(assert, fnOriginalTest) {
-		this.createTable();
+	async function RowsUpdatedTestInvisibleRerenderWithBinding(assert, fnOriginalTest) {
+		await this.createTable();
 		return this.oTable.qunit.whenRenderingFinished().then(() => {
 			this.resetRowsUpdatedSpy();
 			return TableQUnitUtils.hideTestContainer();

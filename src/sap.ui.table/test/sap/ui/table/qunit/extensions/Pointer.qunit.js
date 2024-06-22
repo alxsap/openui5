@@ -43,8 +43,8 @@ sap.ui.define([
 	}
 
 	QUnit.module("Lifecycle", {
-		beforeEach: function() {
-			this.oTable = TableQUnitUtils.createTable();
+		beforeEach: async function() {
+			this.oTable = await TableQUnitUtils.createTable();
 		},
 		afterEach: function() {
 			this.oTable.destroy();
@@ -78,7 +78,7 @@ sap.ui.define([
 		beforeEach: async function() {
 			this.bOriginalSystemDesktop = Device.system.desktop;
 
-			createTables();
+			await createTables();
 
 			// Ensure that the last column is "streched" and the others have their defined size
 			const oLastColumn = oTable.getColumns()[oTable.getColumns().length - 1];
@@ -252,8 +252,8 @@ sap.ui.define([
 	});
 
 	QUnit.module("Menus", {
-		beforeEach: function() {
-			createTables();
+		beforeEach: async function() {
+			await createTables();
 			this.oPointerExtension = oTable._getPointerExtension();
 			this.oPointerExtension._debug();
 		},
@@ -341,8 +341,8 @@ sap.ui.define([
 	});
 
 	QUnit.module("Mousedown", {
-		beforeEach: function() {
-			createTables();
+		beforeEach: async function() {
+			await createTables();
 		},
 		afterEach: function() {
 			destroyTables();
@@ -363,8 +363,8 @@ sap.ui.define([
 	});
 
 	QUnit.module("Click", {
-		beforeEach: function() {
-			createTables();
+		beforeEach: async function() {
+			await createTables();
 		},
 		afterEach: function() {
 			destroyTables();
@@ -608,9 +608,9 @@ sap.ui.define([
 	});
 
 	QUnit.module("Selection plugin integration", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.oSelectionPlugin = new TableQUnitUtils.TestSelectionPlugin();
-			this.oTable = TableQUnitUtils.createTable({
+			this.oTable = await TableQUnitUtils.createTable({
 				rowMode: new FixedRowMode({
 					rowCount: 5
 				}),
@@ -783,8 +783,8 @@ sap.ui.define([
 	});
 
 	QUnit.module("Column Reordering", {
-		beforeEach: function() {
-			createTables();
+		beforeEach: async function() {
+			await createTables();
 		},
 		afterEach: function() {
 			destroyTables();
@@ -996,7 +996,7 @@ sap.ui.define([
 
 	QUnit.module("Row Hover Effect", {
 		beforeEach: async function() {
-			createTables();
+			await createTables();
 			oTable.setSelectionBehavior(library.SelectionBehavior.Row);
 			oTable.invalidate();
 			await nextUIUpdate();
@@ -1094,8 +1094,8 @@ sap.ui.define([
 	});
 
 	QUnit.module("Helpers", {
-		beforeEach: function() {
-			createTables();
+		beforeEach: async function() {
+			await createTables();
 		},
 		afterEach: function() {
 			destroyTables();

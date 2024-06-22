@@ -42,10 +42,16 @@ sap.ui.define(function () {
 			},
 
 			"model/bindingPathSyntaxValidation": {
+				ui5: {
+					debug: false
+				},
 				title: "QUnit Tests for model rule: bindingPathSyntaxValidation"
 			},
 
 			"model/selectUsedInBoundAggregation": {
+				ui5: {
+					debug: false
+				},
 				title: "QUnit Tests for model rule: selectUsedInBoundAggregation"
 			}
 		}

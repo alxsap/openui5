@@ -1,5 +1,4 @@
 sap.ui.define([
-	"sap/base/i18n/ResourceBundle",
 	"sap/ui/qunit/utils/nextUIUpdate",
 	"sap/ui/core/Lib",
 	"sap/ui/core/Theming",
@@ -27,7 +26,7 @@ sap.ui.define([
 	"sap/ui/model/odata/type/TimeOfDay",
 	"sap/ui/model/odata/v2/ODataListBinding",
 	"sap/ui/core/InvisibleMessage"
-], function(ResourceBundle, nextUIUpdate, Library, Theming, List, Util, Table, ThemeParameters, Filter, JSONListBinding, BooleanType, Byte, DateType, DateTime, DateTimeWithTimezone, Decimal, Double, Single, Guid, Int16, Int32, Int64, SByte, StringType, Time, TimeOfDay, ODataListBinding, InvisibleMessage) {
+], function(nextUIUpdate, Library, Theming, List, Util, Table, ThemeParameters, Filter, JSONListBinding, BooleanType, Byte, DateType, DateTime, DateTimeWithTimezone, Decimal, Double, Single, Guid, Int16, Int32, Int64, SByte, StringType, Time, TimeOfDay, ODataListBinding, InvisibleMessage) {
 	"use strict";
 	/* global QUnit,sinon */
 
@@ -480,9 +479,7 @@ sap.ui.define([
 		assert.ok(oPopover, "Popover was created");
 		assert.ok(oDetailsList, "List was created");
 
-		const oResourceBundle = ResourceBundle.create({
-			bundleName: "sap.m.table.messagebundle"
-		});
+		const oResourceBundle = Library.getResourceBundleFor("sap.m");
 		var sTitle = oResourceBundle.getText("TABLE_MULTI_GROUP_TITLE");
 		var sPlacement = "VerticalPreferredBottom";
 

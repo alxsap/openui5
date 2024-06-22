@@ -4,7 +4,6 @@
 
 sap.ui.define([
 	"sap/base/i18n/Localization",
-	"sap/base/i18n/ResourceBundle",
 	"sap/m/library",
 	"sap/ui/core/Lib",
 	"sap/ui/core/Locale",
@@ -19,7 +18,7 @@ sap.ui.define([
 	"sap/m/ResponsivePopover",
 	"sap/m/Text",
 	"sap/ui/core/InvisibleMessage"
-], function(Localization, ResourceBundle, MLibrary, Library, Locale, LocaleData, syncStyleClass, Theming, ThemeParameters, IllustratedMessage, Button, CustomListItem, HBox, ResponsivePopover, Text, InvisibleMessage) {
+], function(Localization, MLibrary, Library, Locale, LocaleData, syncStyleClass, Theming, ThemeParameters, IllustratedMessage, Button, CustomListItem, HBox, ResponsivePopover, Text, InvisibleMessage) {
 	"use strict";
 	/*global Intl*/
 
@@ -543,9 +542,7 @@ sap.ui.define([
 	 * @ui5-restricted sap.fe
 	 */
 	Util.createOrUpdateMultiUnitPopover = async function(vPopover, mSettings) {
-		const oResourceBundle = ResourceBundle.create({
-			bundleName: "sap.m.table.messagebundle"
-		});
+		const oResourceBundle = Library.getResourceBundleFor("sap.m");
 		let oPopover;
 
 		if (typeof vPopover === "object") {

@@ -10769,11 +10769,11 @@ ToProduct/ToSupplier/BusinessPartnerID\'}}">\
 			}, {
 				__count : "1",
 				results : [{
-					ForceElementOrgID : "4711"
+					ForceElementOrgID : "4711",
 					// HierarchyNode : "32,FA163E2C58541EDA8E9C92E909255DAF",
 					// HierarchyParentNode : "",
 					// HierarchyLevel : 0,
-					// HierarchyDescendantCount : 0,
+					HierarchyDescendantCount : 0
 					// DrillDownState : "collapsed"
 				}]
 			})
@@ -10838,6 +10838,7 @@ ToProduct/ToSupplier/BusinessPartnerID\'}}">\
 				__count : "2",
 				results : [{
 					__metadata : {uri : "C_RSHMaintSchedSmltdOrdAndOp('1')"},
+					HierarchyDescendantCount : 0,
 					MaintenanceOrder : "Foo"
 				}]
 			})
@@ -10867,6 +10868,7 @@ ToProduct/ToSupplier/BusinessPartnerID\'}}">\
 					__count : "2",
 					results : [{
 						__metadata : {uri : "C_RSHMaintSchedSmltdOrdAndOp('1')"},
+						HierarchyDescendantCount : 0,
 						MaintenanceOrder : "Bar"
 					}]
 				});
@@ -10943,6 +10945,7 @@ ToProduct/ToSupplier/BusinessPartnerID\'}}">\
 					__count : "1",
 					results : [{
 						__metadata : {uri : "C_RSHMaintSchedSmltdOrdAndOp('1')"},
+						HierarchyDescendantCount : 0,
 						MaintenanceOrder : "Bar"
 					}]
 				})
@@ -19819,7 +19822,7 @@ ToProduct/ToSupplier/BusinessPartnerID\'}}">\
 					ErhaOrderItem : "100",
 					ErhaOrderItemName : "100",
 					HierarchyParentNode : "",
-					HierarchyDescendantCount : 1,
+					HierarchyDescendantCount : "1",
 					HierarchyDistanceFromRoot : 0,
 					HierarchyDrillState : "expanded",
 					HierarchyNode : "100",

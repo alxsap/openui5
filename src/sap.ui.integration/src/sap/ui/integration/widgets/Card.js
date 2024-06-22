@@ -481,7 +481,7 @@ sap.ui.define([
 				/**
 				 * The opener card.
 				 * @private
-				 * @ui5-restricted
+				 * @ui5-private
 				 */
 				openerReference: { visibility: "hidden" }
 			}

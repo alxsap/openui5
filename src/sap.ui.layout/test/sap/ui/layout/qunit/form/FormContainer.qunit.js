@@ -7,23 +7,23 @@ sap.ui.define([
 	"sap/ui/core/Title",
 	"sap/m/library",
 	"sap/m/Toolbar",
+	"sap/m/Label", // to make FormHelper could load all modules
+	"sap/m/Text", // to make FormHelper could load all modules
 	// to make FormHelper could load all modules
-	"sap/m/Label",
-	// to make FormHelper could load all modules
-	"sap/m/Text",
-	// to make FormHelper could load all modules
-	"sap/m/Button"
-],
+	"sap/m/Button",
+	"sap/ui/core/theming/Parameters"
+	],
 	function(
-		Element,
-		FormContainer,
-		FormElement,
-		Title,
-		mLibrary,
-		Toolbar,
-		Label,
-		Text,
-		Button
+			Element,
+			FormContainer,
+			FormElement,
+			Title,
+			mLibrary,
+			Toolbar,
+			Label,
+			Text,
+			Button,
+			Parameters
 	) {
 	"use strict";
 
@@ -132,11 +132,16 @@ sap.ui.define([
 	function expanderIcon(assert) {
 		var oButton = oFormContainer.getAggregation("_expandButton");
 
-		assert.equal(oButton.getIcon(), undefined, "Expander Icon");
+		const mExpandIcons = Parameters.get({
+			name: ["_sap_ui_layout_Form_FormContainerExpImageURL", "_sap_ui_layout_Form_FormContainerColImageURL"],
+			_restrictedParseUrls: true
+		});
+
+		assert.equal(oButton.getIcon(), mExpandIcons['_sap_ui_layout_Form_FormContainerExpImageURL'], "Expander Icon");
 		assert.equal(oButton.getTooltip(), "Expand", "Expander Tooltip");
 
 		oFormContainer.setExpanded(true);
-		assert.equal(oButton.getIcon(), undefined, "Expander Icon");
+		assert.equal(oButton.getIcon(), mExpandIcons['_sap_ui_layout_Form_FormContainerColImageURL'], "Expander Icon");
 		assert.equal(oButton.getTooltip(), "Collapse", "Expander Tooltip");
 	}
 

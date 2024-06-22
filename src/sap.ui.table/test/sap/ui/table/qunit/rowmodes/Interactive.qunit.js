@@ -27,9 +27,9 @@ sap.ui.define([
 	});
 
 	QUnit.module("Get contexts", {
-		beforeEach: function() {
+		beforeEach: async function() {
 			this.oGetContextsSpy = sinon.spy(Table.prototype, "_getContexts");
-			this.oTable = TableQUnitUtils.createTable({
+			this.oTable = await TableQUnitUtils.createTable({
 				models: TableQUnitUtils.createJSONModelWithEmptyRows(100)
 			});
 		},
@@ -43,7 +43,17 @@ sap.ui.define([
 		const oGetContextsSpy = this.oGetContextsSpy;
 
 		return this.oTable.qunit.whenRenderingFinished().then(function() {
-			assert.strictEqual(oGetContextsSpy.callCount, 1, "Method to get contexts called once");
+			/*
+			 * During the table initialization, Table._getContexts is called twice.
+			 * Since the calls are throttled, the second call which is triggered by
+			 * TableDelegate.onBeforeRendering, cancels the initial call.
+			 *
+			 * This mechanism behaves differently when the table initalization uses
+			 * nextUIUpdate instead of Core.applyChanges. The initial call is already
+			 * executed before the second call would cancel it. Therefore the function
+			 * is called twice.
+			 */
+			assert.strictEqual(oGetContextsSpy.callCount, 2, "Method to get contexts called twice");
 			assert.ok(oGetContextsSpy.calledWithExactly(0, 10, 100), "The call considers the rendered row count");
 		});
 	});
@@ -92,7 +102,7 @@ sap.ui.define([
 
 	QUnit.module("Resize", {
 		beforeEach: async function() {
-			this.oTable = TableQUnitUtils.createTable({
+			this.oTable = await TableQUnitUtils.createTable({
 				models: TableQUnitUtils.createJSONModelWithEmptyRows(100)
 			});
 			await this.oTable.qunit.whenRenderingFinished();
