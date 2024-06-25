@@ -374,11 +374,14 @@ TableRenderer.renderNoData = function(rm, oControl) {
 	}
 	rm.openEnd();
 
-	rm.openStart("td").attr("role", "presentation").class("sapMListTblHighlightCell").openEnd().close("td");
+	const bHasVisibleColumns = oControl.getColumns().some((oColumn) => oColumn.getVisible());
+	if (bHasVisibleColumns) {
+		rm.openStart("td").attr("role", "presentation").class("sapMListTblHighlightCell").openEnd().close("td");
+	}
 
 	var bRenderDummyColumn = oControl.shouldRenderDummyColumn();
 	rm.openStart("td", oControl.getId("nodata-text"));
-	rm.attr("colspan", oControl.getColCount() - bRenderDummyColumn - 2 /* Highlight and Navigated cells are rendered always */);
+	rm.attr("colspan", oControl.getColCount() - bRenderDummyColumn - (bHasVisibleColumns ? 2 /* Highlight and Navigated cells are rendered always */ : 0));
 	rm.class("sapMListTblCell").class("sapMListTblCellNoData");
 	rm.openEnd();
 
@@ -395,7 +398,9 @@ TableRenderer.renderNoData = function(rm, oControl) {
 
 	rm.close("td");
 
-	rm.openStart("td").attr("role", "presentation").class("sapMListTblNavigatedCell").openEnd().close("td");
+	if (bHasVisibleColumns) {
+		rm.openStart("td").attr("role", "presentation").class("sapMListTblNavigatedCell").openEnd().close("td");
+	}
 
 	if (bRenderDummyColumn) {
 		ColumnListItemRenderer.renderDummyCell(rm, oControl);

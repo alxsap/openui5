@@ -171,22 +171,17 @@ sap.ui.define([
 			properties: ["operators", "propertyKey", "additionalDataType"]
 		});
 
+		this._mDescriptionPromises = new Map();
+		this._mDescriptions = new Map();
 	};
 
 	FilterField.prototype.exit = function() {
 
+		this._mDescriptionPromises = null;
+		this._mDescriptions = null;
+
 		FieldBase.prototype.exit.apply(this, arguments);
 
-	};
-
-	// TODO: remove fallback if propertyKey is used by stakeholders
-	FilterField.prototype.getPropertyKey = function() {
-		let sPropertyKey = this.getProperty("propertyKey");
-		if (!sPropertyKey) {
-			sPropertyKey = this.getFieldPath();
-		}
-
-		return sPropertyKey;
 	};
 
 	FilterField.prototype.setProperty = function(sPropertyName, oValue, bSuppressInvalidate) {
@@ -465,6 +460,52 @@ sap.ui.define([
 
 	};
 
-	return FilterField;
+	const _findConditionMapEntry = (oMap, oCondition) => {
+		return [...oMap.entries()].find((aEntry) => deepEqual(aEntry[0], oCondition));
+	};
 
+	FilterField.prototype.getFormattingPromise = function () {
+		if (this._mDescriptionPromises) {
+			const aRunningPromises = [...this._mDescriptionPromises.values()];
+			if (aRunningPromises?.length) {
+				return Promise.allSettled(aRunningPromises);
+			}
+		}
+		return undefined;
+	};
+
+	FilterField.prototype._persistFormatConditions = function () {
+		if (!this.getFormattingPromise()) { // No running formatting promises? We only want to propagate results when formatting is completely done
+			const aConditions = this.getConditions();
+			const aNextConditions = aConditions.map((oCondition) => {
+				const aFormatConditionEntry = _findConditionMapEntry(this._mDescriptions, oCondition);
+				return aFormatConditionEntry ? aFormatConditionEntry[1] : oCondition; // Replace with formatted condition if available
+			});
+			this.setProperty("conditions", aNextConditions, true);
+			this._mDescriptionPromises.clear();
+			this._mDescriptions.clear();
+		}
+	};
+
+	FilterField.prototype.getFormatOptions = function() {
+		const that = this;
+		return {
+			...FieldBase.prototype.getFormatOptions.apply(this, arguments),
+			awaitFormatCondition: function (oCondition, oFormattingPromise) {
+				const oFormatConditionPromise = oFormattingPromise.then((oFormattedCondition) => {
+					if (oFormattedCondition) {
+						that._mDescriptions.set(oCondition, oFormattedCondition);
+					}
+					return oFormattedCondition;
+				}).finally(() => {
+					that._mDescriptionPromises.delete(oCondition);
+					that._persistFormatConditions();
+				});
+				that._mDescriptionPromises.set(oCondition, oFormatConditionPromise);
+				return oFormatConditionPromise;
+			}
+		};
+	};
+
+	return FilterField;
 });

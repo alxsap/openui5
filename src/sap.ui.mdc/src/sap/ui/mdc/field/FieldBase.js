@@ -654,6 +654,8 @@ sap.ui.define([
 
 		this._oCreateContentPromise = undefined;
 
+		this._oValueHelpRequestPromise = undefined;
+
 		this._sFilterValue = "";
 
 	};
@@ -737,6 +739,8 @@ sap.ui.define([
 		this._oObserver.disconnect();
 		this._oObserver = undefined;
 		this._oCreateContentPromise = undefined;
+
+		this._oValueHelpRequestPromise = undefined;
 
 		const oValueHelp = _getValueHelp.call(this);
 		if (oValueHelp) {
@@ -1023,27 +1027,6 @@ sap.ui.define([
 		}
 
 		return oClone;
-
-	};
-
-	/**
-	 * Gets <code>fieldPath</code>.
-	 *
-	 * If the <code>conditions</code> are bound to a <code>ConditionModel</code>, the <code>FieldPath</code> is determined from this binding.
-	 *
-	 * @returns {string} fieldPath of the field
-	 * @private
-	 * @ui5-restricted sap.ui.mdc.filterbar.FilterBarBase
-	 */
-	// @deprecated as of 1.115.0, replaced by {@link #setPropertyKey propertyKey} property
-	FieldBase.prototype.getFieldPath = function() {
-
-		const sBindingPath = this.getBindingPath("conditions");
-		if (sBindingPath && sBindingPath.startsWith("/conditions/")) {
-			return sBindingPath.slice(12);
-		} else {
-			return "";
-		}
 
 	};
 
@@ -2865,27 +2848,44 @@ sap.ui.define([
 
 	}
 
-	function _handleValueHelpRequest(oEvent, bOpenAsTypeahed) { // if triggered by valueHelpRequest event alway open as dialog, if called from Tap or Focus as typeahead
+	/* This allows FilterFields to defer valuehelp opening until all validated conditions are formatted and their descriptions are updated in the conditionmodel */
+	function _waitForFormatting () {
+		const oFormattingPromise = this.getFormattingPromise();
+		const bModifyBusy = oFormattingPromise && !this.getBusy();
+		if (bModifyBusy) {
+			this.setBusy(true);
+		}
+		return oFormattingPromise?.finally(() => {
+			if (bModifyBusy) {
+				this.setBusy(false);
+			}
+		});
+	}
+
+	async function _handleValueHelpRequest(oEvent, bOpenAsTypeahed) { // if triggered by valueHelpRequest event always open as dialog, if called from Tap or Focus as typeahead
 
 		const oValueHelp = _getValueHelp.call(this);
-
-		if (oValueHelp) {
+		if (oValueHelp && !this._oValueHelpRequestPromise) {
 			if (this._fnLiveChangeTimer) { // as live change might pending we need to update the filterValue
 				this._fnLiveChangeTimer.flush();
 			}
-			oValueHelp.setFilterValue(this._sFilterValue); // use types value for filtering, even if reopening ValueHelp
-			const aConditions = this.getConditions();
-			_setConditionsOnValueHelp.call(this, aConditions, oValueHelp);
-			oValueHelp.toggleOpen(!!bOpenAsTypeahed);
-			const oContent = oEvent.srcControl || oEvent.getSource(); // as, if called from Tap or other browser event getSource is not available
-			if (!oValueHelp.isFocusInHelp()) {
-				// need to reset bValueHelpRequested in Input, otherwise on focusout no change event and navigation don't work
-				if (oContent.bValueHelpRequested) {
-					oContent.bValueHelpRequested = false; // TODO: need API
+			this._oValueHelpRequestPromise = _waitForFormatting.call(this);
+			await this._oValueHelpRequestPromise;
+			if (!this.isFieldDestroyed()) {
+				oValueHelp.setFilterValue(this._sFilterValue); // use types value for filtering, even if reopening ValueHelp
+				const aConditions = this.getConditions();
+				_setConditionsOnValueHelp.call(this, aConditions, oValueHelp);
+				oValueHelp.toggleOpen(!!bOpenAsTypeahed);
+				const oContent = oEvent.srcControl || oEvent.getSource(); // as, if called from Tap or other browser event getSource is not available
+				if (!oValueHelp.isFocusInHelp()) {
+					// need to reset bValueHelpRequested in Input, otherwise on focusout no change event and navigation don't work
+					if (oContent.bValueHelpRequested) {
+						oContent.bValueHelpRequested = false; // TODO: need API
+					}
 				}
+				this._oValueHelpRequestPromise = undefined;
 			}
 		}
-
 	}
 
 	function _setShowValueStateMessage(bValue) {
@@ -3732,13 +3732,7 @@ sap.ui.define([
 	 * @protected
 	 * @since 1.115.0
 	 */
-	FieldBase.prototype.isSearchField = function() {
-
-		const regexp = new RegExp("^\\*(.*)\\*|\\$search$");
-		const sFieldPath = this.getFieldPath();
-		return regexp.test(sFieldPath) && this.getMaxConditions() === 1;
-
-	};
+	FieldBase.prototype.isSearchField = function() {};
 
 	/*
 	 * checks is a operator is valid
@@ -3830,6 +3824,17 @@ sap.ui.define([
 
 	};
 
+	/**
+	 * Allows fields to wait for async formatting result processing
+	 *
+	 * @returns {undefined|Promise} returns a promise waiting for ongoing formatting
+	 * @protected
+	 * @since 1.126.0
+	 */
+	FieldBase.prototype.getFormattingPromise = function () {
+		return undefined;
+	};
+
 	function _isFocused() {
 
 		const oFocusedElement = document.activeElement;
@@ -3838,5 +3843,4 @@ sap.ui.define([
 	}
 
 	return FieldBase;
-
 });
