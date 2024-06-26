@@ -179,6 +179,20 @@ sap.ui.define([
 			}
 		});
 
+	var oButtonRTL = new Button("BRTL", {
+		text : "2 months Arabic calendar",
+		press : function() {
+			Localization.setLanguage("ar");
+			oCalendar1 && oCalendar1.destroy();
+			oCalendar1 = fnCalendarFactory();
+			oCalendar1.setLocale("ar");
+			oCalendar1.destroySelectedDates();
+			oCalendar1.setMonths(2);
+			oPage.insertContent(oCalendar1, 0);
+			nextUIUpdate.runSync()/*context not obviously suitable for an async function*/;
+			oCalendar1.focusDate(new Date(2015, 0, 2));
+		}
+	});
 
 	var oApp = new App("myApp").placeAt("body");
 
@@ -194,7 +208,8 @@ sap.ui.define([
 			oButton70,
 			oButton7,
 			oButton8,
-			oButton9
+			oButton9,
+			oButtonRTL
 		]
 	});
 

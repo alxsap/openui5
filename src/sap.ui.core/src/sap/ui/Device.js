@@ -415,6 +415,15 @@ if (typeof window.sap.ui !== "object") {
 	 * @public
 	 */
 	/**
+	 * The name of the browser for reporting use cases.
+	 *
+	 * @see sap.ui.Device.browser.BROWSER
+	 * @name sap.ui.Device.browser.reportingName
+	 * @type string
+	 * @private
+	 * @ui5-restricted sap.ui.core
+	 */
+	/**
 	 * The version of the browser as <code>string</code>.
 	 *
 	 * Might be empty if no version can be determined.
@@ -551,8 +560,17 @@ if (typeof window.sap.ui !== "object") {
 	 * @name sap.ui.Device.browser.BROWSER.ANDROID
 	 * @public
 	 */
+	/**
+	 * Edge stock browser name.
+	 *
+	 * @see sap.ui.Device.browser.name
+	 * @name sap.ui.Device.browser.BROWSER.EDGE
+	 * @private
+	 * @ui5-restricted sap.ui.core
+	 */
 
-	var BROWSER = {
+	const BROWSER = {
+		"EDGE": "ed",
 		"FIREFOX": "ff",
 		"CHROME": "cr",
 		"SAFARI": "sf",
@@ -608,7 +626,8 @@ if (typeof window.sap.ui !== "object") {
 					versionStr: "" + fVersion,
 					version: fVersion,
 					mozilla: true,
-					mobile: oExpMobile.test(sUserAgent)
+					mobile: oExpMobile.test(sUserAgent),
+					reportingName: BROWSER.FIREFOX
 				};
 			} else {
 				// unknown mozilla browser
@@ -627,8 +646,10 @@ if (typeof window.sap.ui !== "object") {
 			}
 			oExpMobile = /Mobile/;
 			var aChromeMatch = sUserAgent.match(/(Chrome|CriOS)\/(\d+\.\d+).\d+/);
+			var aEdgeMatch = sUserAgent.match(/(Edg)\/(\d+\.\d+).\d+/);
 			var aFirefoxMatch = sUserAgent.match(/FxiOS\/(\d+\.\d+)/);
 			var aAndroidMatch = sUserAgent.match(/Android .+ Version\/(\d+\.\d+)/);
+			let sReportingName;
 
 			if (aChromeMatch || aFirefoxMatch || aAndroidMatch) {
 				var sName, sVersion, bMobile;
@@ -636,12 +657,13 @@ if (typeof window.sap.ui !== "object") {
 					sName = BROWSER.CHROME;
 					bMobile = oExpMobile.test(sUserAgent);
 					sVersion = parseFloat(aChromeMatch[2]);
+					sReportingName = aEdgeMatch ? BROWSER.EDGE : BROWSER.CHROME;
 				} else if (aFirefoxMatch) {
-					sName = BROWSER.FIREFOX;
+					sName = sReportingName = BROWSER.FIREFOX;
 					bMobile = true;
 					sVersion = parseFloat(aFirefoxMatch[1]);
 				} else if (aAndroidMatch) {
-					sName = BROWSER.ANDROID;
+					sName = sReportingName = BROWSER.ANDROID;
 					bMobile = oExpMobile.test(sUserAgent);
 					sVersion = parseFloat(aAndroidMatch[1]);
 				}
@@ -652,7 +674,8 @@ if (typeof window.sap.ui !== "object") {
 					versionStr: "" + sVersion,
 					version: sVersion,
 					webkit: true,
-					webkitVersion: webkitVersion
+					webkitVersion: webkitVersion,
+					reportingName: sReportingName
 				};
 			} else { // Safari might have an issue with sUserAgent.match(...); thus changing
 				var oExp = /Version\/(\d+\.\d+).*Safari/;
@@ -663,7 +686,8 @@ if (typeof window.sap.ui !== "object") {
 						fullscreen: bStandalone === undefined ? false : bStandalone,
 						mobile: oExpMobile.test(sUserAgent),
 						webkit: true,
-						webkitVersion: webkitVersion
+						webkitVersion: webkitVersion,
+						reportingName: BROWSER.SAFARI
 					};
 					var aParts = oExp.exec(sUserAgent);
 					if (aParts) {
@@ -687,7 +711,8 @@ if (typeof window.sap.ui !== "object") {
 				name: "",
 				versionStr: "",
 				version: -1,
-				mobile: false
+				mobile: false,
+				reportingName: ""
 			};
 		}
 

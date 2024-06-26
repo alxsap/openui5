@@ -4,9 +4,7 @@
 
 sap.ui.define([
 	"./ObjectPageHeaderRenderer",
-	"./ObjectImageHelper",
-	"sap/uxap/library"
-], function(ObjectPageHeaderRenderer, ObjectImageHelper, library) {
+	"./ObjectImageHelper"], function (ObjectPageHeaderRenderer, ObjectImageHelper) {
 	"use strict";
 
 	/**
@@ -30,12 +28,7 @@ sap.ui.define([
 			bRenderEditBtn = bParentLayout && oParent.getShowEditHeaderButton() && oControl.getContent() && oControl.getContent().length > 0;
 
 		if (bRenderEditBtn) {
-			oRm.openStart("div", oControl)
-				.class("sapUxAPObjectPageHeaderContentFlexBox")
-				/**
-				 * @deprecated As of version 1.40.1
-				 */
-				.class("sapUxAPObjectPageHeaderContentDesign-" + library.ObjectPageHeaderDesign.Light);
+			oRm.openStart("div", oControl).class("sapUxAPObjectPageHeaderContentFlexBox");
 
 			if (oHeader) {
 				oRm.class('sapUxAPObjectPageContentObjectImage-' + oHeader.getObjectImageShape());

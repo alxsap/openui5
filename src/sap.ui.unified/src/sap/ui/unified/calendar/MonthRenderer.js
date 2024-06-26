@@ -483,10 +483,6 @@ MonthRenderer.renderDay = function(oRm, oMonth, oDay, oHelper, bOtherMonth, bWee
 		aTooltipTexts.push(sNonWorkingDayText);
 	}
 
-	if (aTooltipTexts.length) {
-		oRm.attr('title', aTooltipTexts.join(" "));
-	}
-
 	if (bShouldBeMarkedAsSpecialDate) {
 		aDayTypes.forEach(function(oDayType, iIndex) {
 			if (oDayType.type !== CalendarDayType.None) {
@@ -495,13 +491,17 @@ MonthRenderer.renderDay = function(oRm, oMonth, oDay, oHelper, bOtherMonth, bWee
 						oRm.class("sapUiCalItem" + oDayType.type);
 					}
 					sAriaType = oDayType.type;
-					const sTooltip = `${oDayType.tooltip} ${aTooltipTexts.join(" ")}`.trim();
-					if (sTooltip) {
-						oRm.attr('title', sTooltip);
+					if (oDayType.tooltip) {
+						aTooltipTexts.push(oDayType.tooltip);
 					}
 				}
 			}
 		});
+	}
+
+	if (aTooltipTexts.length) {
+		const aTooltips = aTooltipTexts.filter((sText, iPos) => aTooltipTexts.indexOf(sText) === iPos );
+		oRm.attr('title', aTooltips.join(" "));
 	}
 
 	//oMonth.getDate() is a public date object, so it is always considered local timezones.
