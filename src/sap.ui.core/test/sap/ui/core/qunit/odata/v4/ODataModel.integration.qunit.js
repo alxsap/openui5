@@ -99,7 +99,7 @@ sap.ui.define([
 	 */
 	function checkAggregationCache(sTitle, assert, oListBinding) {
 		const aParentByLevel = [];
-		const bCreateInPlace = oListBinding.getAggregation().createInPlace;
+		const bUnifiedCache = oListBinding.oCache.bUnifiedCache;
 
 		function checkCache(oCache) {
 			for (let i = 0, n = oCache.aElements.$created; i < n; i += 1) {
@@ -149,7 +149,7 @@ sap.ui.define([
 				// every "created" element needs to know its context (if not using createInPlace!),
 				// no others must do so
 				strictEqual(oElement["@$ui5.context.isTransient"] !== undefined
-						&& !bCreateInPlace,
+						&& !oListBinding.getAggregation().createInPlace,
 					 _Helper.hasPrivateAnnotation(oElement, "context"),
 					`"context" @ level ${iLevel}`, oElement);
 				if (_Helper.hasPrivateAnnotation(oElement, "context")) {
@@ -203,7 +203,8 @@ sap.ui.define([
 
 				const oCache = _Helper.getPrivateAnnotation(oElement, "cache");
 				if (oCache) {
-					strictEqual(bCreateInPlace, undefined, "must not have a level cache", oElement);
+					strictEqual(bUnifiedCache, false,
+						"must not have a group level cache", oElement);
 					checkCache(oCache);
 					aParentByLevel[iLevel + 1] = oCache;
 				}
@@ -229,7 +230,7 @@ sap.ui.define([
 		}
 
 		let iExpandTo = oListBinding.getAggregation().expandTo || 1;
-		if (iExpandTo >= Number.MAX_SAFE_INTEGER || oListBinding.oCache.bUnifiedCache) {
+		if (iExpandTo >= Number.MAX_SAFE_INTEGER || bUnifiedCache) {
 			iExpandTo = 99; // avoid "Invalid array length" :-)
 		}
 		for (let i = 0; i <= iExpandTo; i += 1) {
@@ -5668,6 +5669,274 @@ sap.ui.define([
 			return that.checkValueState(assert,
 				oTable.getItems()[0].getCells()[0], "Error", "Not found");
 		});
+	});
+
+	//*********************************************************************************************
+	// Scenario: One-way property binding for a collection of complex type. Check that refresh and
+	// side effects works.
+	// JIRA: CPOUI5ODATAV4-2638
+	QUnit.test("CPOUI5ODATAV4-2638: OneWay - Collection(ComplexType)", async function (assert) {
+		const oModel = this.createTeaBusiModel({autoExpandSelect : true});
+		const sView = `
+<FlexBox id="form" binding="{/EMPLOYEES('1')}">
+	<Text id="name" text="{Name}"/>
+	<Text id="messages" text="{
+		formatter : '.myFormatter',
+		mode : 'OneWay',
+		path : '__CT__FAKE__Message/__FAKE__Messages',
+		targetType : 'any'
+	}"/>
+</FlexBox>`;
+		const oController = {
+			myFormatter : (aMessages) => {
+				return aMessages.map((oMessage) => oMessage.message).join(" ");
+			}
+		};
+
+		const expectMessages = (aMessages) => {
+			Messaging.removeAllMessages(); // clean up
+			this.expectMessages(aMessages.map((sMessage) => ({
+				message : sMessage,
+				persistent : true,
+				type : "None"
+			})));
+		};
+
+		this.expectRequest("EMPLOYEES('1')?$select=ID,Name,__CT__FAKE__Message/__FAKE__Messages", {
+				ID : "1",
+				Name : "Frederic Fall",
+				__CT__FAKE__Message : {
+					__FAKE__Messages : [{
+						message : "You're looking younger than ever!"
+					}]
+				}
+			})
+			.expectChange("name", "Frederic Fall")
+			.expectChange("messages", "You're looking younger than ever!");
+		expectMessages(["You're looking younger than ever!"]);
+
+		await this.createView(assert, sView, oModel, oController);
+
+		this.expectRequest("EMPLOYEES('1')?$select=ID,Name,__CT__FAKE__Message/__FAKE__Messages", {
+				ID : "1",
+				Name : "Frederic Fall",
+				__CT__FAKE__Message : {
+					__FAKE__Messages : [{
+						message : "And"
+					}, {
+						message : "so"
+					}, {
+						message : "on"
+					}]
+				}
+			})
+			.expectChange("messages", "And so on");
+		expectMessages(["And", "so", "on"]);
+
+		await Promise.all([
+			this.oView.byId("form").getBindingContext().requestRefresh(),
+			this.waitForChanges(assert, "refresh #1")
+		]);
+
+		this.expectRequest("EMPLOYEES('1')?$select=ID,Name,__CT__FAKE__Message/__FAKE__Messages", {
+				ID : "1",
+				Name : "Frederic Fall",
+				__CT__FAKE__Message : {
+					__FAKE__Messages : [{
+						message : "And"
+					}, {
+						message : "NOT"
+					}, {
+						message : "on"
+					}]
+				}
+			})
+			.expectChange("messages", "And NOT on");
+		expectMessages(["And", "NOT", "on"]);
+
+		await Promise.all([
+			this.oView.byId("form").getBindingContext().requestRefresh(),
+			this.waitForChanges(assert, "refresh #2")
+		]);
+
+		this.expectRequest("EMPLOYEES('1')?$select=__CT__FAKE__Message/__FAKE__Messages", {
+				__CT__FAKE__Message : {
+					__FAKE__Messages : [{
+						message : "And"
+					}, {
+						message : "further"
+					}, {
+						message : "on"
+					}]
+				}
+			})
+			.expectChange("messages", "And further on");
+		expectMessages(["And", "further", "on"]);
+
+		await Promise.all([
+			this.oView.byId("form").getBindingContext()
+				.requestSideEffects(["__CT__FAKE__Message/__FAKE__Messages"]),
+			this.waitForChanges(assert, "side effects")
+		]);
+	});
+	//TODO _Helper.updateExisting
+	// => PATCH/updating a property probably doesn't work - use $$patchWithoutSideEffects instead!
+	//TODO _Helper.updateAll
+	// => _Cache#setProperty
+	// => _Cache#update
+	// => update operation's $Parameter
+
+	//*********************************************************************************************
+	// Scenario: One-way property binding for an object of complex type. Check that refresh and
+	// side effects works, although there may be "change" events w/o real changes. Do this in the
+	// presence of a property binding for only a part of that object.
+	// JIRA: CPOUI5ODATAV4-2638
+	QUnit.test("CPOUI5ODATAV4-2638: OneWay - object w/ ComplexType, #1", async function (assert) {
+		const oModel = this.createTeaBusiModel({autoExpandSelect : true});
+		const sView = `
+<FlexBox id="form" binding="{/EMPLOYEES('1')}">
+	<Text id="name" text="{Name}"/>
+	<Text id="salary" text="{
+		formatter : '.myFormatter',
+		mode : 'OneWay',
+		path : 'SALARY',
+		targetType : 'any'
+	}"/>
+	<Text id="monthly" text="{SALARY/MONTHLY_BASIC_SALARY_AMOUNT}"/>
+</FlexBox>`;
+		const oController = {
+			myFormatter : (oSalary) => {
+				return `${oSalary.MONTHLY_BASIC_SALARY_AMOUNT} ${oSalary.BASIC_SALARY_CURR}`;
+			}
+		};
+
+		this.expectRequest("EMPLOYEES('1')"
+				//TODO $select could be much smarter!
+				+ "?$select=ID,Name,SALARY,SALARY/MONTHLY_BASIC_SALARY_AMOUNT", {
+				ID : "1",
+				Name : "Frederic Fall",
+				SALARY : {
+					MONTHLY_BASIC_SALARY_AMOUNT : "1234",
+					BASIC_SALARY_CURR : "EUR",
+					YEARLY_BONUS_AMOUNT : "567",
+					BONUS_CURR : "DEM"
+				}
+			})
+			.expectChange("salary", "1234 EUR")
+			.expectChange("monthly", "1,234");
+
+		await this.createView(assert, sView, oModel, oController);
+
+		const oContext = this.oView.byId("form").getBindingContext();
+		const oNewSalary = {
+			MONTHLY_BASIC_SALARY_AMOUNT : "1234.89",
+			BASIC_SALARY_CURR : "EUR",
+			YEARLY_BONUS_AMOUNT : "567",
+			BONUS_CURR : "DEM"
+		};
+
+		//TODO $select could be much smarter!
+		this.expectRequest("EMPLOYEES('1')?$select=SALARY,SALARY/MONTHLY_BASIC_SALARY_AMOUNT", {
+				SALARY : oNewSalary
+			})
+			.expectChange("salary", "1234.89 EUR")
+			.expectChange("monthly", "1,234.89");
+
+		await Promise.all([
+			oContext.requestSideEffects(["SALARY"]),
+			this.waitForChanges(assert, "side effects")
+		]);
+
+		assert.deepEqual(oContext.getObject(), {
+			ID : "1",
+			Name : "Frederic Fall",
+			SALARY : oNewSalary
+		});
+
+		this.expectRequest("EMPLOYEES('1')"
+				//TODO $select could be much smarter!
+				+ "?$select=ID,Name,SALARY,SALARY/MONTHLY_BASIC_SALARY_AMOUNT", {
+				ID : "1",
+				Name : "Frederic Fall",
+				SALARY : oNewSalary
+			})
+			.expectChange("salary", "1234.89 EUR"); // this is accepted!
+
+		await Promise.all([
+			oContext.requestRefresh(),
+			this.waitForChanges(assert, "refresh")
+		]);
+	});
+
+	//*********************************************************************************************
+	// Scenario: One-way property binding for an object of complex type. Check that refresh of a
+	// kept-alive element works.
+	// JIRA: CPOUI5ODATAV4-2638
+	QUnit.test("CPOUI5ODATAV4-2638: OneWay - object w/ ComplexType, #2", async function (assert) {
+		const oModel = this.createTeaBusiModel({autoExpandSelect : true});
+		const sView = `
+<FlexBox id="form">
+	<Text id="salary" text="{
+		formatter : '.myFormatter',
+		mode : 'OneWay',
+		path : 'SALARY',
+		targetType : 'any'
+	}"/>
+</FlexBox>`;
+		const oController = {
+			myFormatter : (oSalary) => {
+				return oSalary
+					? `${oSalary.MONTHLY_BASIC_SALARY_AMOUNT} ${oSalary.BASIC_SALARY_CURR}`
+					: "bad luck";
+			}
+		};
+
+		this.expectChange("salary");
+
+		await this.createView(assert, sView, oModel, oController);
+
+		this.expectRequest("EMPLOYEES('1')?$select=ID,SALARY", {
+				ID : "1",
+				SALARY : {
+					MONTHLY_BASIC_SALARY_AMOUNT : "1234",
+					BASIC_SALARY_CURR : "DEM"
+				}
+			})
+			.expectChange("salary", "1234 DEM");
+
+		const oContext = oModel.getKeepAliveContext("/EMPLOYEES('1')");
+		this.oView.byId("form").setBindingContext(oContext);
+
+		await this.waitForChanges(assert, "set binding context");
+
+		this.expectRequest("EMPLOYEES?$select=ID,SALARY&$filter=ID eq '1'", {
+				value : [{
+					ID : "1",
+					SALARY : null
+				}]
+			})
+			.expectChange("salary", "bad luck");
+
+		await Promise.all([
+			oContext.getBinding().requestRefresh(), // don' try this at home, kids!
+			this.waitForChanges(assert, "refresh to null")
+		]);
+
+		this.expectRequest("EMPLOYEES?$select=ID,SALARY&$filter=ID eq '1'", {
+				value : [{
+					ID : "1",
+					SALARY : {
+						MONTHLY_BASIC_SALARY_AMOUNT : "5678",
+						BASIC_SALARY_CURR : "EUR"
+					}
+				}]
+			})
+			.expectChange("salary", "5678 EUR");
+
+		await Promise.all([
+			oContext.getBinding().requestRefresh(), // don' try this at home, kids!
+			this.waitForChanges(assert, "refresh from null")
+		]);
 	});
 
 	//*********************************************************************************************
@@ -38343,19 +38612,27 @@ sap.ui.define([
 	// If a created node is filtered out, check that its parent doesn't become expanded, neither
 	// during the pending creation nor after the creation is completed.
 	// JIRA: CPOUI5ODATAV4-2623
+	//
+	// Create a child below a leaf, but as the child's level is greater than expandTo, the parent
+	// needs to be expanded by enhancing the ExpandLevels. The created child directly becomes
+	// visible in the current viewport. Create another child below a leaf (again enhancing
+	// ExpandLevels), but this child does not become visible. Scroll to it after successful
+	// creation. In both cases the created context is not reused as active context in the list
+	// binding, but still knows the actual index to find the position of the new node.
+	// JIRA: CPOUI5ODATAV4-2586
 	QUnit.test("Recursive Hierarchy: createInPlace", async function (assert) {
 		const oModel = this.createTeaBusiModel({autoExpandSelect : true});
 		const sSelect = "&$select=DescendantCount,DistanceFromRoot,DrillState,ID,Name";
 		const sUrl = "EMPLOYEES"
 			+ "?$apply=ancestors($root/EMPLOYEES,OrgChart,ID,filter(Is_Manager),keep start)"
 			+ "/com.sap.vocabularies.Hierarchy.v1.TopLevels(HierarchyNodes=$root/EMPLOYEES"
-			+ ",HierarchyQualifier='OrgChart',NodeProperty='ID',Levels=2)";
+			+ ",HierarchyQualifier='OrgChart',NodeProperty='ID',Levels=3)";
 		const sView = `
 <t:Table id="table" rows="{path : '/EMPLOYEES',
 		parameters : {
 			$$aggregation : {
 				createInPlace : true,
-				expandTo : 2,
+				expandTo : 3,
 				hierarchyQualifier : 'OrgChart'
 			},
 			$count : true,
@@ -38370,8 +38647,10 @@ sap.ui.define([
 		// 1 Alpha
 		//   3 Gamma
 		//   4 Delta (created)
+		//     5 Epsilon (created)
+		//       6 Zeta (created)
+		//         7 Eta (created)
 		// 2 Beta
-		//   5 Epsilon (created)
 		// (42 FilteredOut (created, but filtered out))
 		this.expectRequest("EMPLOYEES/$count?$filter=Is_Manager", 3)
 			.expectRequest(sUrl + sSelect + "&$count=true&$skip=0&$top=2", {
@@ -38429,18 +38708,15 @@ sap.ui.define([
 		assert.strictEqual(oFilteredOut.isTransient(), true);
 		assert.strictEqual(oFilteredOut.isExpanded(), undefined, "CPOUI5ODATAV4-2623");
 		checkTable("while create FilteredOut is pending", assert, oTable, [
-			"/EMPLOYEES('1')",
-			"/EMPLOYEES('3')"
+			oAlpha,
+			oGamma
 		], [
 			[true, 1, "1", "Alpha"],
 			[undefined, 2, "3", "Gamma"]
 		], 3);
 		assert.strictEqual(oListBinding.getCount(), 3);
 
-		await Promise.all([
-			oFilteredOut.created(),
-			this.waitForChanges(assert, "create FilteredOut")
-		]);
+		await oFilteredOut.created();
 
 		assert.strictEqual(oFilteredOut.getIndex(), undefined, "not part of the hierarchy");
 		assert.strictEqual(oFilteredOut.isTransient(), undefined);
@@ -38449,9 +38725,12 @@ sap.ui.define([
 		assert.throws(function () {
 			oFilteredOut.setKeepAlive(true);
 		}, "already destroyed");
+
+		await this.waitForChanges(assert, "create FilteredOut");
+
 		checkTable("after create FilteredOut", assert, oTable, [
-			"/EMPLOYEES('1')",
-			"/EMPLOYEES('3')"
+			oAlpha,
+			oGamma
 		], [
 			[true, 1, "1", "Alpha"],
 			[undefined, 2, "3", "Gamma"]
@@ -38490,8 +38769,8 @@ sap.ui.define([
 		]);
 
 		checkTable("after cancel creation", assert, oTable, [
-			"/EMPLOYEES('1')",
-			"/EMPLOYEES('3')",
+			oAlpha,
+			oGamma,
 			"/EMPLOYEES('2')"
 		], [
 			[true, 1, "1", "Alpha"],
@@ -38524,8 +38803,8 @@ sap.ui.define([
 		assert.strictEqual(oDelta.getIndex(), undefined);
 		assert.strictEqual(oDelta.isTransient(), true);
 		checkTable("while create Delta is pending", assert, oTable, [
-			"/EMPLOYEES('1')",
-			"/EMPLOYEES('3')",
+			oAlpha,
+			oGamma,
 			"/EMPLOYEES('2')"
 		], [
 			[true, 1, "1", "Alpha"],
@@ -38533,14 +38812,13 @@ sap.ui.define([
 		]);
 		assert.strictEqual(oListBinding.getCount(), 3);
 
-		await Promise.all([
-			oDeltaCreated,
-			this.waitForChanges(assert, "create Delta")
-		]);
+		await oDeltaCreated;
 
 		assert.strictEqual(oDelta.getIndex(), 2);
-		assert.strictEqual(oDelta.isTransient(), false);
 		checkCreatedPersisted(assert, oDelta, oDeltaCreated);
+
+		await this.waitForChanges(assert, "create Delta");
+
 		await this.checkAllContexts("after create Delta", assert, oListBinding,
 			["@$ui5.node.isExpanded", "@$ui5.node.level", "ID", "Name"], [
 				[true, 1, "1", "Alpha"],
@@ -38549,13 +38827,12 @@ sap.ui.define([
 				[undefined, 1, "2", "Beta"]
 			]);
 		assert.strictEqual(oListBinding.getCount(), 3); // TODO: update $count; CPOUI5ODATAV4-2245
-		const oBeta = oListBinding.getAllCurrentContexts()[3];
 
 		this.expectRequest({
 				method : "POST",
 				url : "EMPLOYEES",
 				payload : {
-					"EMPLOYEE_2_MANAGER@odata.bind" : "EMPLOYEES('2')",
+					"EMPLOYEE_2_MANAGER@odata.bind" : "EMPLOYEES('4')",
 					Name : "Epsilon"
 				}
 			}, {
@@ -38563,12 +38840,12 @@ sap.ui.define([
 				Name : "Epsilon"
 			})
 			.expectRequest(sUrl + "&$filter=ID eq '5'&$select=LimitedRank", {
-				value : [{LimitedRank : "4"}]
+				value : [{LimitedRank : "3"}]
 			});
 
 		// code under test
 		const oEpsilon = oListBinding.create({
-			"@$ui5.node.parent" : oBeta,
+			"@$ui5.node.parent" : oDelta,
 			Name : "Epsilon"
 		}, /*bSkipRefresh*/true);
 		const oEpsilonCreated = oEpsilon.created();
@@ -38576,9 +38853,9 @@ sap.ui.define([
 		assert.strictEqual(oEpsilon.getIndex(), undefined);
 		assert.strictEqual(oEpsilon.isTransient(), true);
 		checkTable("while create Epsilon is pending", assert, oTable, [
-			"/EMPLOYEES('1')",
-			"/EMPLOYEES('3')",
-			"/EMPLOYEES('4')",
+			oAlpha,
+			oGamma,
+			oDelta,
 			"/EMPLOYEES('2')"
 		], [
 			[true, 1, "1", "Alpha"],
@@ -38586,23 +38863,202 @@ sap.ui.define([
 		]);
 		assert.strictEqual(oListBinding.getCount(), 3);
 
-		await Promise.all([
-			oEpsilonCreated,
-			this.waitForChanges(assert, "create Epsilon")
-		]);
+		await oEpsilonCreated;
 
-		assert.strictEqual(oEpsilon.getIndex(), 4);
-		assert.strictEqual(oEpsilon.isTransient(), false);
+		assert.strictEqual(oEpsilon.getIndex(), 3);
 		checkCreatedPersisted(assert, oEpsilon, oEpsilonCreated);
+
+		await this.waitForChanges(assert, "create Epsilon");
+
 		await this.checkAllContexts("after create Epsilon", assert, oListBinding,
 			["@$ui5.node.isExpanded", "@$ui5.node.level", "ID", "Name"], [
 				[true, 1, "1", "Alpha"],
 				[undefined, 2, "3", "Gamma"],
-				[undefined, 2, "4", "Delta"],
-				[true, 1, "2", "Beta"],
-				[undefined, 2, "5", "Epsilon"]
+				[true, 2, "4", "Delta"],
+				[undefined, 3, "5", "Epsilon"],
+				[undefined, 1, "2", "Beta"]
 			]);
 		assert.strictEqual(oListBinding.getCount(), 3); // TODO: update $count; CPOUI5ODATAV4-2245
+
+		oTable.setFirstVisibleRow(oEpsilon.getIndex()); // scroll to Epsilon
+		await resolveLater(); // table update takes a moment
+
+		checkTable("after scroll to Epsilon", assert, oTable, [
+			oAlpha,
+			oGamma,
+			oDelta,
+			oEpsilon,
+			"/EMPLOYEES('2')"
+		], [
+			[undefined, 3, "5", "Epsilon"],
+			[undefined, 1, "2", "Beta"]
+		]);
+
+		this.expectRequest({
+				batchNo : 9,
+				method : "POST",
+				url : "EMPLOYEES",
+				payload : {
+					"EMPLOYEE_2_MANAGER@odata.bind" : "EMPLOYEES('5')",
+					Name : "Zeta"
+				}
+			}, {
+				ID : "6",
+				Name : "Zeta"
+			})
+			.expectRequest({
+				batchNo : 9,
+				url : "EMPLOYEES/$count?$filter=Is_Manager"
+			}, 6)
+			.expectRequest({
+				batchNo : 9,
+				url : sUrl.slice(0, -1)
+					+ ",ExpandLevels=" + JSON.stringify([{NodeID : "5", Levels : 1}]) + ")"
+					+ sSelect + "&$count=true&$skip=3&$top=2"
+			}, {
+				"@odata.count" : "6",
+				value : [{
+					DescendantCount : "1",
+					DistanceFromRoot : "2",
+					DrillState : "expanded",
+					ID : "5",
+					Name : "Epsilon"
+				}, {
+					DescendantCount : "0",
+					DistanceFromRoot : "3",
+					DrillState : "leaf",
+					ID : "6",
+					Name : "Zeta"
+				}]
+			})
+			.expectRequest({
+				batchNo : 10,
+				url : sUrl.slice(0, -1)
+					+ ",ExpandLevels=" + JSON.stringify([{NodeID : "5", Levels : 1}]) + ")"
+					+ "&$filter=ID eq '6'&$select=LimitedRank"
+			}, {
+				value : [{LimitedRank : "4"}]
+			});
+
+		// code under test
+		let oZeta = oListBinding.create({
+			"@$ui5.node.parent" : oEpsilon,
+			Name : "Zeta"
+		}, /*bSkipRefresh*/true);
+
+		await oZeta.created();
+
+		assert.strictEqual(oZeta.getIndex(), 4);
+		assert.strictEqual(oZeta.getPath(), "/EMPLOYEES('6')");
+		assert.strictEqual(oZeta.getBinding(), undefined, "oZeta is destroyed");
+		oZeta = null;
+
+		await this.waitForChanges(assert, "create Zeta");
+
+		assert.strictEqual(oListBinding.getCount(), 6);
+		checkTable("after create Zeta", assert, oTable, [
+			oEpsilon,
+			"/EMPLOYEES('6')"
+		], [
+			[true, 3, "5", "Epsilon"],
+			[undefined, 4, "6", "Zeta"]
+		], 6);
+		oZeta = oListBinding.getCurrentContexts()[1];
+
+		this.expectRequest({
+				batchNo : 11,
+				method : "POST",
+				url : "EMPLOYEES",
+				payload : {
+					"EMPLOYEE_2_MANAGER@odata.bind" : "EMPLOYEES('6')",
+					Name : "Eta"
+				}
+			}, {
+				ID : "7",
+				Name : "Eta"
+			})
+			.expectRequest({
+				batchNo : 11,
+				url : "EMPLOYEES/$count?$filter=Is_Manager"
+			}, 7)
+			.expectRequest({
+				batchNo : 11,
+				url : sUrl.slice(0, -1) + ",ExpandLevels="
+					+ JSON.stringify([{NodeID : "5", Levels : 1}, {NodeID : "6", Levels : 1}]) + ")"
+					+ sSelect + "&$count=true&$skip=3&$top=2"
+			}, {
+				"@odata.count" : "7",
+				value : [{
+					DescendantCount : "2",
+					DistanceFromRoot : "2",
+					DrillState : "expanded",
+					ID : "5",
+					Name : "Epsilon"
+				}, {
+					DescendantCount : "1",
+					DistanceFromRoot : "3",
+					DrillState : "expanded",
+					ID : "6",
+					Name : "Zeta"
+				}]
+			})
+			.expectRequest({
+				batchNo : 12,
+				url : sUrl.slice(0, -1) + ",ExpandLevels="
+					+ JSON.stringify([{NodeID : "5", Levels : 1}, {NodeID : "6", Levels : 1}]) + ")"
+					+ "&$filter=ID eq '7'&$select=LimitedRank"
+			}, {
+				value : [{LimitedRank : "5"}]
+			});
+
+		// code under test
+		let oEta = oListBinding.create({
+			"@$ui5.node.parent" : oZeta,
+			Name : "Eta"
+		}, /*bSkipRefresh*/true);
+
+		await oEta.created();
+
+		assert.strictEqual(oEta.getIndex(), 5);
+		assert.strictEqual(oEta.getPath(), "/EMPLOYEES('7')");
+		assert.strictEqual(oEta.getBinding(), undefined, "oEta is destroyed");
+		oEta = null;
+
+		await this.waitForChanges(assert, "create Eta");
+
+		assert.strictEqual(oListBinding.getCount(), 7);
+		checkTable("after create Eta", assert, oTable, [
+			oEpsilon,
+			"/EMPLOYEES('6')"
+		], [
+			[true, 3, "5", "Epsilon"],
+			[true, 4, "6", "Zeta"]
+		], 7);
+
+		this.expectRequest(sUrl.slice(0, -1) + ",ExpandLevels="
+				+ JSON.stringify([{NodeID : "5", Levels : 1}, {NodeID : "6", Levels : 1}]) + ")"
+				+ sSelect + "&$skip=5&$top=1", {
+				value : [{
+					DescendantCount : "0",
+					DistanceFromRoot : "4",
+					DrillState : "leaf",
+					ID : "7",
+					Name : "Eta"
+				}]
+			});
+
+		oTable.setFirstVisibleRow(oZeta.getIndex());
+
+		await this.waitForChanges(assert, "scroll to Zeta, makes Eta visible");
+
+		checkTable("after scroll to Zeta, makes Eta visible", assert, oTable, [
+			oEpsilon,
+			"/EMPLOYEES('6')",
+			"/EMPLOYEES('7')"
+		], [
+			[true, 4, "6", "Zeta"],
+			[undefined, 5, "7", "Eta"]
+		], 7);
 	});
 
 	//*********************************************************************************************
@@ -38699,15 +39155,15 @@ sap.ui.define([
 			Name : "FilteredOut"
 		}, /*bSkipRefresh*/true);
 
-		await Promise.all([
-			oFilteredOut.created(),
-			this.waitForChanges(assert, "create FilteredOut")
-		]);
+		await oFilteredOut.created();
 
 		assert.strictEqual(oFilteredOut.getIndex(), undefined, "not part of the hierarchy");
 		assert.strictEqual(oFilteredOut.isTransient(), undefined);
 		assert.strictEqual(oFilteredOut.getPath(), "/Artists(ArtistID='42',IsActiveEntity=false)");
 		assert.strictEqual(oFilteredOut.getBinding(), undefined, "FilteredOut is destroyed");
+
+		await this.waitForChanges(assert, "create FilteredOut");
+
 		checkTable("after create FilteredOut", assert, oTable, [
 			"/Artists(ArtistID='1',IsActiveEntity=false)",
 			"/Artists(ArtistID='2',IsActiveEntity=false)"
@@ -38756,14 +39212,13 @@ sap.ui.define([
 		]);
 		assert.strictEqual(oListBinding.getCount(), 3);
 
-		await Promise.all([
-			oGammaCreated,
-			this.waitForChanges(assert, "create Gamma")
-		]);
+		await oGammaCreated;
 
 		assert.strictEqual(oGamma.getIndex(), 1);
-		assert.strictEqual(oGamma.isTransient(), false);
 		checkCreatedPersisted(assert, oGamma, oGammaCreated);
+
+		await this.waitForChanges(assert, "create Gamma");
+
 		checkTable("after create Gamma", assert, oTable, [
 			"/Artists(ArtistID='1',IsActiveEntity=false)",
 			"/Artists(ArtistID='3',IsActiveEntity=false)",

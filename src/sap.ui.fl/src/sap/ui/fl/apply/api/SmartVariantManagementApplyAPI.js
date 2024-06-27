@@ -7,14 +7,12 @@ sap.ui.define([
 	"sap/ui/fl/apply/_internal/flexState/compVariants/Utils",
 	"sap/ui/fl/apply/_internal/flexState/FlexState",
 	"sap/ui/fl/apply/_internal/flexState/ManifestUtils",
-	"sap/ui/fl/LayerUtils",
 	"sap/ui/fl/Utils"
 ], function(
 	CompVariantMerger,
 	CompVariantUtils,
 	FlexState,
 	ManifestUtils,
-	LayerUtils,
 	Utils
 ) {
 	"use strict";
@@ -27,7 +25,6 @@ sap.ui.define([
 	 * 	sap.ui.comp.smarttable.SmartTable|
 	 * 	sap.ui.comp.smartchart.SmartChart} oControl - Variant management control
 	 * @returns {object} <code>persistencyKey</code> map and corresponding changes, or an empty object
-	 * @private
 	 */
 	function getVariantsMapForKey(oControl) {
 		const sReference = ManifestUtils.getFlexReferenceForControl(oControl);
@@ -72,7 +69,7 @@ sap.ui.define([
 	 * @property {sap.ui.fl.apply._internal.flexObjects.FlexObject | undefined} standardVariant - StandardVariant change to be applied
 	 * @since 1.83
 	 * @private
-	 * @ui5-restricted
+	 * @ui5-restricted sap.ui.comp
 	 */
 
 	/**
@@ -91,6 +88,9 @@ sap.ui.define([
 		 * @param {boolean} [favorite=false] - Flag if the favorite property should be set
 		 * @param {boolean} [executeOnSelection=false] - Flag if the favorite property should be set
 		 * @param {object} [content={}] - Filter values of the variant
+		 *
+		 * @private
+		 * @ui5-restricted
 		 */
 
 		/**
@@ -98,6 +98,9 @@ sap.ui.define([
 		 * @property {sap.ui.fl._internal.flexObjects.Variant} standardVariant - The instance of the passed or exchanged standard variant
 		 * @property {sap.ui.fl._internal.flexObjects.Variant[]} variants - instances of the passed, loaded and changed variants
 		 * @property {string} defaultVariantId - ID of the default variant
+		 *
+		 * @private
+		 * @ui5-restricted sap.ui.comp
 		 */
 
 		/**
@@ -114,6 +117,9 @@ sap.ui.define([
 		 * instructing the SVM to do so
 		 * @param {sap.ui.fl.apply.api.SmartVariantManagementApplyAPI.LoadVariantsInput[]} mPropertyBag.variants - Variant data from other data providers like an OData service
 		 * @returns {Promise<sap.ui.fl.apply.api.SmartVariantManagementApplyAPI.LoadVariantsResponse>} Object with the standard variant and the variants
+		 *
+		 * @private
+		 * @ui5-restricted sap.ui.comp
 		 */
 		async loadVariants(mPropertyBag) {
 			const mCompMaps = await getCompEntities(mPropertyBag);
@@ -127,32 +133,6 @@ sap.ui.define([
 			);
 			mMergedCompVariants.defaultVariantId = sDefaultVariantId;
 			return mMergedCompVariants;
-		},
-
-		/**
-		 * Indicates if the VENDOR layer is selected.
-		 *
-		 * @returns {boolean} <code>true</code> if VENDOR layer is enabled
-		 * @private
-		 * @ui5-restricted
-		 */
-		isVendorLayer() {
-			return LayerUtils.isVendorLayer();
-		},
-
-		/**
-		 * Indicates whether the variant downport scenario is enabled or not.
-		 * This scenario is only enabled if the current layer is the VENDOR layer
-		 * and the URL parameter hotfix is set to <code>true</code>.
-		 *
-		 * @returns {boolean} <code>true</code> if the variant downport scenario is enabled
-		 * @private
-		 * @ui5-restricted
-		 */
-		isVariantDownport() {
-			var oUriParams = new URLSearchParams(window.location.search);
-			var sIsHotfixMode = oUriParams.get("hotfix");
-			return SmartVariantManagementApplyAPI.isVendorLayer() && (sIsHotfixMode === "true");
 		}
 	};
 

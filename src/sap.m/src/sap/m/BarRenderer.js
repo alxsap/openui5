@@ -42,7 +42,7 @@ BarRenderer.decorateRootElement = function (oRM, oControl) {
 	oRM.class(this.getContext(oControl));
 
 	oRM.accessibilityState(oControl, {
-		"role": oControl._getRootAccessibilityRole(),
+		"role": oControl._getAccessibilityRole(),
 		"level":  oControl._getRootAriaLevel()
 	});
 
