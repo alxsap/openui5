@@ -2240,9 +2240,6 @@ sap.ui.define([
 		} else {
 			i = iIndex;
 		}
-		if (i !== iIndex) {
-			future.warningThrows("ManagedObject.insertAggregation: index '" + iIndex + "' out of range [0," + aChildren.length + "], forced to " + i);
-		}
 		aChildren.splice(i, 0, oObject);
 		oObject.setParent(this, sAggregationName, bSuppressInvalidate);
 
