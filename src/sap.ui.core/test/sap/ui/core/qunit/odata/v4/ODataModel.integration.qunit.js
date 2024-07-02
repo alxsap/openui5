@@ -38653,6 +38653,8 @@ sap.ui.define([
 	// creation. In both cases the created context is not reused as active context in the list
 	// binding, but still knows the actual index to find the position of the new node.
 	// JIRA: CPOUI5ODATAV4-2586
+	//
+	// The created contexts always become "persisted" (SNOW: DINC0194277)
 	QUnit.test("Recursive Hierarchy: createInPlace", async function (assert) {
 		const oModel = this.createTeaBusiModel({autoExpandSelect : true});
 		const sSelect = "&$select=DescendantCount,DistanceFromRoot,DrillState,ID,Name";
@@ -38848,7 +38850,7 @@ sap.ui.define([
 		await oDeltaCreated;
 
 		assert.strictEqual(oDelta.getIndex(), 2);
-		checkCreatedPersisted(assert, oDelta, oDeltaCreated);
+		checkPersisted(assert, oDelta);
 
 		await this.waitForChanges(assert, "create Delta");
 
@@ -38899,7 +38901,7 @@ sap.ui.define([
 		await oEpsilonCreated;
 
 		assert.strictEqual(oEpsilon.getIndex(), 3);
-		checkCreatedPersisted(assert, oEpsilon, oEpsilonCreated);
+		checkPersisted(assert, oEpsilon);
 
 		await this.waitForChanges(assert, "create Epsilon");
 
@@ -39102,6 +39104,8 @@ sap.ui.define([
 	// special cases model to ensure the node property is properly requested.
 	// Expand a node to see that createInPlace activated a unified cache (side-effects expand).
 	// JIRA: CPOUI5ODATAV4-2560
+	//
+	// The created contexts always become "persisted" (SNOW: DINC0194277)
 	QUnit.test("Recursive Hierarchy: createInPlace, root", async function (assert) {
 		const sUrl = "Artists?$apply=ancestors($root/Artists,OrgChart,_/NodeID"
 				+ ",filter(sendsAutographs),keep start)"
@@ -39248,7 +39252,7 @@ sap.ui.define([
 		await oGammaCreated;
 
 		assert.strictEqual(oGamma.getIndex(), 1);
-		checkCreatedPersisted(assert, oGamma, oGammaCreated);
+		checkPersisted(assert, oGamma);
 
 		await this.waitForChanges(assert, "create Gamma");
 
