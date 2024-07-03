@@ -67,5 +67,3 @@ window['sap-ui-config'].resourceroots = {"sap.ui.rta.test": "./../../", "flpSand
 window['sap-ui-config'].flexibilityServices = '[{"connector": "LocalStorageConnector"}]';
 window['sap-ui-config'].onInit = 'module:flpSandboxConfig/appStart';
 document.write('<script src="' + __sPathPrefix + '/resources/sap-ui-core.js"><' + '/script>');
-
-document.write('<script src="' + __sPathPrefix + '/test-resources/sap/ushell/bootstrap/standalone.js"><' + '/script>');

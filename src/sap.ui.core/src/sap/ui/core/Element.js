@@ -9,6 +9,7 @@ sap.ui.define([
 	'../base/ManagedObject',
 	'./ElementMetadata',
 	'../Device',
+	"sap/ui/dom/findTabbable",
 	"sap/ui/performance/trace/Interaction",
 	"sap/base/future",
 	"sap/base/assert",
@@ -16,10 +17,13 @@ sap.ui.define([
 	"sap/ui/events/F6Navigation",
 	"sap/ui/util/_enforceNoReturnValue",
 	"./RenderManager",
+	"./Rendering",
 	"./EnabledPropagator",
 	"./ElementRegistry",
 	"./Theming",
 	"sap/ui/core/util/_LocalizationHelper",
+	/* jQuery Plugin "firstFocusableDomRef"*/
+	"sap/ui/dom/jquery/Focusable",
 	/* jQuery custom selectors ":sapFocusable"*/
 	"sap/ui/dom/jquery/Selectors"
 ],
@@ -29,6 +33,7 @@ sap.ui.define([
 		ManagedObject,
 		ElementMetadata,
 		Device,
+		findTabbable,
 		Interaction,
 		future,
 		assert,
@@ -36,6 +41,7 @@ sap.ui.define([
 		F6Navigation,
 		_enforceNoReturnValue,
 		RenderManager,
+		Rendering,
 		EnabledPropagator,
 		ElementRegistry,
 		Theming,
@@ -461,26 +467,115 @@ sap.ui.define([
 		};
 
 		/*
-		 * Intercept any changes for properties named "enabled".
+		 * Intercept any changes for properties named "enabled" and "visible".
 		 *
-		 * If such a change is detected, inform all descendants that use the `EnabledPropagator`
+		 * If a change for "enabled" property is detected, inform all descendants that use the `EnabledPropagator`
 		 * so that they can recalculate their own, derived enabled state.
 		 * This is required in the context of rendering V4 to make the state of controls/elements
 		 * self-contained again when they're using the `EnabledPropagator` mixin.
+		 *
+		 * Fires "focusfail" event, if the "enabled" or "visible" property is changed to "false" and the element was focused.
 		 */
 		Element.prototype.setProperty = function(sPropertyName, vValue, bSuppressInvalidate) {
-			if (sPropertyName != "enabled" || bSuppressInvalidate) {
+
+			if ((sPropertyName != "enabled" && sPropertyName != "visible") || bSuppressInvalidate) {
 				return ManagedObject.prototype.setProperty.apply(this, arguments);
 			}
 
-			var bOldEnabled = this.mProperties.enabled;
-			ManagedObject.prototype.setProperty.apply(this, arguments);
-			if (bOldEnabled != this.mProperties.enabled) {
-				// the EnabledPropagator knows better which descendants to update
-				EnabledPropagator.updateDescendants(this);
+			if (sPropertyName == "enabled") {
+				var bOldEnabled = this.mProperties.enabled;
+				ManagedObject.prototype.setProperty.apply(this, arguments);
+
+				if (bOldEnabled != this.mProperties.enabled) {
+					// the EnabledPropagator knows better which descendants to update
+					EnabledPropagator.updateDescendants(this);
+				}
+			} else if (sPropertyName === "visible") {
+				ManagedObject.prototype.setProperty.apply(this, arguments);
+				if (vValue === false && this.getDomRef()?.contains(document.activeElement)) {
+					Element.fireFocusFail.call(this, /*bRenderingPending=*/true);
+				}
 			}
 
 			return this;
+		};
+
+		function _focusTarget(oOriginalDomRef, oFocusTarget) {
+			// jQuery custom selectors ":sapFocusable"
+			if (oOriginalDomRef?.contains(document.activeElement) || !jQuery(document.activeElement).is(":sapFocusable")) {
+				oFocusTarget?.focus({
+					preventScroll: true
+				});
+			}
+		}
+
+		/**
+		* Handles the 'focusfail' event by attempting to find and focus on a tabbable element.
+		* The 'focusfail' event is triggered when the current element, which initially holds the focus,
+		* becomes disabled or invisible. The event is received by the parent of the element that failed
+		* to retain the focus.
+		*
+		* @param {Event} oEvent - The event object containing the source element that failed to gain focus.
+		* @protected
+		*/
+		Element.prototype.onfocusfail = function(oEvent) {
+			let oDomRef = oEvent.srcControl.getDomRef();
+			const oOriginalDomRef = oDomRef;
+
+			let oParent = this;
+			let oParentDomRef = oParent.getDomRef();
+
+			let oRes;
+			let oFocusTarget;
+
+			do {
+				if (oParentDomRef?.contains(oDomRef)) {
+					// search tabbable element to the right
+					oRes = findTabbable(oDomRef, {
+						scope: oParentDomRef,
+						forward: true,
+						skipChild: true
+					});
+
+					// if nothing is found
+					if (oRes.startOver) {
+						// search tabbable element to the left
+						oRes = findTabbable(oDomRef, {
+							scope: oParentDomRef,
+							forward: false
+						});
+					}
+
+					oFocusTarget = oRes.element;
+
+					if (oFocusTarget === oParentDomRef) {
+						// Reached the parent DOM which is tabbable
+						break;
+					}
+
+					// Continue with the parent's siblings
+					oDomRef = oParentDomRef;
+					oParent = oParent?.getParent();
+					oParentDomRef = oParent?.getDomRef?.();
+				} else {
+					// The DOM Element which lost the focus isn't rendered within the parent
+					// jQuery Plugin "firstFocusableDomRef"
+					oFocusTarget = oParentDomRef && jQuery(oParentDomRef).firstFocusableDomRef();
+					break;
+				}
+			} while (oRes.startOver && oDomRef);
+
+			// In the meantime, the focus could be set somewhere else.
+			// If that element is focusable, then we don't steal the focus from it
+			if (oEvent._bRenderingPending) {
+				Rendering.addPrerenderingTask(() => {
+					_focusTarget(oOriginalDomRef, oFocusTarget);
+				});
+			} else {
+				Promise.resolve().then(() => {
+					_focusTarget(oOriginalDomRef, oFocusTarget);
+				});
+			}
 		};
 
 		Element.prototype.insertDependent = function(oElement, iIndex) {
@@ -517,6 +612,21 @@ sap.ui.define([
 		};
 
 		/**
+		 * Fires a "focusfail" event.
+		 * The event is propagated to the parent of the current element.
+		 *
+		 * @private
+		 */
+		Element.fireFocusFail = function(bRenderingPending) {
+			const oEvent = jQuery.Event("focusfail");
+			oEvent.srcControl = this;
+			oEvent._bRenderingPending = bRenderingPending || false;
+
+			const oParent = this.getParent();
+			oParent?._handleEvent?.(oEvent);
+		};
+
+		/**
 		 * Cleans up the resources associated with this element and all its children.
 		 *
 		 * After an element has been destroyed, it can no longer be used in the UI!
@@ -540,13 +650,14 @@ sap.ui.define([
 			// update the focus information (potentially) stored by the central UI5 focus handling
 			Element._updateFocusInfo(this);
 
+			var oDomRef = this.getDomRef();
+
 			ManagedObject.prototype.destroy.call(this, bSuppressInvalidate);
 
 			// wrap custom data API to avoid creating new objects
 			this.data = noCustomDataAfterDestroy;
 
 			// exit early if there is no control DOM to remove
-			var oDomRef = this.getDomRef();
 			if (!oDomRef) {
 				return;
 			}
@@ -970,11 +1081,15 @@ sap.ui.define([
 		 */
 		Element.prototype.focus = function (oFocusInfo) {
 			var oFocusDomRef = this.getFocusDomRef(),
-				aScrollHierarchy = [];
+			aScrollHierarchy = [];
 
-			oFocusInfo = oFocusInfo || {};
+			if (!oFocusDomRef) {
+				return;
+			}
 
-			if (oFocusDomRef) {
+			// jQuery custom selectors ":sapFocusable"
+			if (jQuery(oFocusDomRef).is(":sapFocusable")) {
+				oFocusInfo = oFocusInfo || {};
 				// save the scroll position of all ancestor DOM elements
 				// before the focus is set, because preventScroll is not supported by the following browsers
 				if (Device.browser.safari) {
@@ -990,6 +1105,8 @@ sap.ui.define([
 				} else {
 					oFocusDomRef.focus(oFocusInfo);
 				}
+			} else if (!this._bIsBeingDestroyed) {
+				Element.fireFocusFail.call(this);
 			}
 		};
 
@@ -1546,14 +1663,13 @@ sap.ui.define([
 		 * </pre>
 		 *
 		 * @function
-		 * @name sap.ui.core.Element.prototype.enhanceAccessibilityState
+		 * @name sap.ui.core.Element.prototype.enhanceAccessibilityState?
 		 * @param {sap.ui.core.Element} oElement
 		 *   The Control/Element for which ARIA properties are collected
 		 * @param {object} mAriaProps
 		 *   Map of ARIA properties keyed by their name (without prefix "aria-"); the method
 		 *   implementation can enhance this map in any way (add or remove properties, modify values)
 		 * @protected
-		 * @abstract
 		 */
 
 		/**

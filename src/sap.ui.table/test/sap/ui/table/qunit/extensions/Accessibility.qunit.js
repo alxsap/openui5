@@ -191,7 +191,6 @@ sap.ui.define([
 		assert.ok(!oExtension.getTable(), "Reference to table removed");
 	});
 
-	// eslint-disable-next-line complexity
 	function testAriaLabelsForFocusedDataCell(oTable, oCellElement, iRow, iCol, assert, mParams = {}) {
 		const bFirstTime = !!mParams.firstTime;
 		const bRowChange = !!mParams.rowChange;
@@ -752,7 +751,6 @@ sap.ui.define([
 		}
 	});
 
-	// eslint-disable-next-line complexity
 	function testAriaLabelsForColumnHeader($Cell, iCol, assert, mParams = {}) {
 		const bFirstTime = !!mParams.firstTime;
 		const bFocus = !!mParams.focus;
@@ -1004,7 +1002,6 @@ sap.ui.define([
 		afterEach: function() {
 			this.oTable.destroy();
 		},
-		// eslint-disable-next-line complexity
 		testAriaLabels: function(oCellElement, iRow, assert, mParams = {}) {
 			const bFirstTime = !!mParams.firstTime;
 			const bFocus = !!mParams.focus;
@@ -1257,7 +1254,6 @@ sap.ui.define([
 		afterEach: function() {
 			this.oTable.destroy();
 		},
-		// eslint-disable-next-line complexity
 		testAriaLabels: function(oCellElement, iRow, assert, mParams = {}) {
 			const bFirstTime = !!mParams.firstTime;
 			const bFocus = !!mParams.focus;
