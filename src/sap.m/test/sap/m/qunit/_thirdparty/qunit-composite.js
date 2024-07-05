@@ -123,13 +123,8 @@ function initIframe() {
 }
 
 function appendSuitesToHeader( suites ) {
-	var i,
-		suitesLen,
-		suite,
-		suitesEl,
-		testResultEl,
-		newSuiteListItemEl,
-		newSuiteLinkEl;
+	var i, suitesLen, suite, path, name, suitesEl, testResultEl,
+		newSuiteListItemEl, newSuiteLinkEl;
 
 	suitesEl = document.getElementById("qunit-testsuites");
 

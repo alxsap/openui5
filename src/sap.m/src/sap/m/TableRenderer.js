@@ -44,6 +44,7 @@ TableRenderer.renderColumns = function(rm, oTable, sType) {
 		bColumnHeadersActive = false,
 		bHasFooter = (sType == "Foot"),
 		sMode = oTable.getMode(),
+		sMultiSelectMode = oTable.getMultiSelectMode(),
 		iModeOrder = ListBaseRenderer.ModeOrder[sMode],
 		sClassPrefix = "sapMListTbl",
 		sIdPrefix = oTable.getId("tbl"),
@@ -131,7 +132,7 @@ TableRenderer.renderColumns = function(rm, oTable, sType) {
 		}
 		if (sType == "Head") {
 			rm.attr("aria-rowindex", "1");
-			if (oTable._bSelectionMode) {
+			if (sMode === "MultiSelect" && sMultiSelectMode !== MultiSelectMode.ClearAll) {
 				rm.attr("aria-selected", "false");
 				bRenderAriaSelected = true;
 			}
@@ -145,7 +146,7 @@ TableRenderer.renderColumns = function(rm, oTable, sType) {
 
 	if (iModeOrder == -1) {
 		openStartCell("ModeCol", "SelCol", "TABLE_SELECTION_COLUMNHEADER").openEnd();
-		if (bRenderAriaSelected && sMode == "MultiSelect") {
+		if (sMode == "MultiSelect") {
 			rm.renderControl(oTable.getMultiSelectMode() == MultiSelectMode.ClearAll ? oTable._getClearAllButton() : oTable._getSelectAllCheckbox());
 		}
 		rm.close(sCellTag);
