@@ -284,7 +284,7 @@ sap.ui.define([
 					 * @private
 					 * @ui5-restricted sap.m.DynamicDateRange
 					 */
-					value: { type: "object" },
+					value: { type: "object", group: "Data"},
 
 					/**
 					 * Defines the width of the control.

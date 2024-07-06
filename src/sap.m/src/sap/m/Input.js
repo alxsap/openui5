@@ -1913,6 +1913,7 @@ function(
 	 *
 	 * @param {int} iNumItems
 	 * @private
+	 * @ui5-restricted sap.ui.mdc
 	 */
 	Input.prototype._applySuggestionAcc = function(iNumItems) {
 		var sAriaText = "",

@@ -3627,6 +3627,8 @@ sap.ui.define([
 			}
 		}
 
+		oBindingInfo[BindingInfo.OriginalParent] ??= this;
+
 		var oForwarder = oMetadata.getAggregationForwarder(sName);
 		if (oForwarder && oForwarder.forwardBinding) {
 			oForwarder.getTarget(this).bindAggregation(oForwarder.targetAggregationName, oBindingInfo);

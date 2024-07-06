@@ -1243,7 +1243,13 @@ sap.ui.define([
 	QUnit.test("Bind aggregation", function(assert) {
 		this.obj.bindAggregation("subObjects", "/list", this.template);
 		assert.equal(this.obj.isBound("subObjects"), true, "isBound must return true for bound aggregations");
-		assert.equal(this.obj.getAggregation("subObjects", []).length, 3, "Aggregation length should match model list length");
+
+		const aInstances = this.obj.getAggregation("subObjects", []);
+		assert.equal(aInstances.length, 3, "Aggregation length should match model list length");
+
+		aInstances.forEach((oInstance) => {
+			assert.strictEqual(oInstance[BindingInfo.OriginalParent], this.obj, "The cloned instance is marked with the object where the aggregation is defined");
+		});
 	});
 
 	QUnit.test("Bind aggregation with Owner", function(assert) {
@@ -1261,6 +1267,7 @@ sap.ui.define([
 
 		assert.equal(Component.getOwnerIdFor(oClone), "myOwnerComponent", "Owner Component ID is correctly propagated");
 		assert.equal(oClone.getId(), "myTemplate-myCloneId", "Clone has correct ID");
+		assert.strictEqual(oClone[BindingInfo.OriginalParent], oObjWithOwner, "The cloned instance is marked with the object where the aggregation is defined");
 
 		oClone.destroy();
 
@@ -1276,6 +1283,7 @@ sap.ui.define([
 
 		assert.equal(Component.getOwnerIdFor(oClone), "myOwnerComponent", "Owner Component ID is correctly propagated");
 		assert.equal(oClone.getId(), "myTemplate-myCloneId", "Clone has correct ID");
+		assert.notOk(oClone.hasOwnProperty(BindingInfo.OriginalParent), "instance created from custom factory isn't marked");
 
 		oClone.destroy();
 
@@ -1288,6 +1296,7 @@ sap.ui.define([
 		});
 		oBindingInfo = oObjWithOwner.getBindingInfo("subObjects");
 		oClone = oBindingInfo.factory("myTemplate-myCloneId");
+		assert.notOk(oClone.hasOwnProperty[BindingInfo.OriginalParent], "instance created from custom factory isn't marked");
 
 		assert.equal(Component.getOwnerIdFor(oClone), "myOwnerComponent", "Owner Component ID is correctly propagated");
 		assert.equal(oClone.getId(), "myTemplate-myCloneId", "Clone has correct ID");
@@ -1306,6 +1315,7 @@ sap.ui.define([
 
 		oBindingInfo = oObjWithDifferentOwner.getBindingInfo("subObjects");
 		oClone = oBindingInfo.factory("myTemplate2-myCloneId");
+		assert.notOk(oClone.hasOwnProperty(BindingInfo.OriginalParent), "instance created from custom factory isn't marked");
 
 		assert.equal(Component.getOwnerIdFor(oClone), "myOwnerComponent2", "Owner Component ID is correctly propagated via unwrapping");
 		assert.equal(oClone.getId(), "myTemplate2-myCloneId", "Clone has correct ID");
@@ -1324,6 +1334,7 @@ sap.ui.define([
 
 		oBindingInfo = oObjWithOwner.getBindingInfo("subObjects");
 		oClone = oBindingInfo.factory("myAppTemplate-myCloneId");
+		assert.notOk(oClone.hasOwnProperty(BindingInfo.OriginalParent), "instance created from custom factory isn't marked");
 
 		assert.equal(Component.getOwnerIdFor(oClone), "myAppOwnerComponent", "Original 'myAppOwnerComponent' is propagated to the clone");
 		assert.equal(oClone.getId(), "myAppTemplate-myCloneId", "Clone has correct ID");
@@ -1391,7 +1402,12 @@ sap.ui.define([
 		}.bind(this));
 		assert.equal(this.obj.isBound("subObjects"), true, "isBound must return true for bound aggregations");
 		assert.equal(this.obj.getAggregation("subObjects", []).length, 3, "Aggregation length should match model list length");
+
 		aOldObjects = this.obj.getAggregation("subObjects");
+		assert.ok(aOldObjects.every((oInstance) => {
+			return oInstance && !oInstance.hasOwnProperty(BindingInfo.OriginalParent);
+		}), "none of instances cloned from factory is marked");
+
 		oModel.setProperty("/changingList", [{
 				value: 4
 			},
@@ -1409,7 +1425,12 @@ sap.ui.define([
 			}
 		]);
 		assert.equal(this.obj.getAggregation("subObjects", []).length, 5, "Aggregation length should match model list length");
+
 		aNewObjects = this.obj.getAggregation("subObjects");
+		assert.ok(aNewObjects.every((oInstance) => {
+			return oInstance && !oInstance.hasOwnProperty(BindingInfo.OriginalParent);
+		}), "none of instances cloned from factory is marked");
+
 		assert.ok(aOldObjects[0] !== aNewObjects[0], "First SubObject is not reused after update");
 		assert.ok(aOldObjects[1] !== aNewObjects[1], "Second SubObject is not reused after update");
 		assert.ok(aOldObjects[2] !== aNewObjects[2], "Third SubObject is not reused after update");
@@ -1431,7 +1452,12 @@ sap.ui.define([
 		this.obj.bindAggregation("subObjects", "/changingList", this.template);
 		assert.equal(this.obj.isBound("subObjects"), true, "isBound must return true for bound aggregations");
 		assert.equal(this.obj.getAggregation("subObjects", []).length, 3, "Aggregation length should match model list length");
+
 		aOldObjects = this.obj.getAggregation("subObjects");
+		aOldObjects.forEach((oInstance) => {
+			assert.strictEqual(oInstance[BindingInfo.OriginalParent], this.obj, "The cloned instance is marked with the object where the aggregation is defined");
+		});
+
 		oModel.setProperty("/changingList", [{
 				value: 1
 			},
@@ -1449,7 +1475,12 @@ sap.ui.define([
 			}
 		]);
 		assert.equal(this.obj.getAggregation("subObjects", []).length, 5, "Aggregation length should match model list length");
+
 		aNewObjects = this.obj.getAggregation("subObjects");
+		aNewObjects.forEach((oInstance) => {
+			assert.strictEqual(oInstance[BindingInfo.OriginalParent], this.obj, "The cloned instance is marked with the object where the aggregation is defined");
+		});
+
 		assert.ok(aOldObjects[0] === aNewObjects[0], "First SubObject is reused after update");
 		assert.ok(aOldObjects[1] === aNewObjects[1], "Second SubObject is reused after update");
 		assert.ok(aOldObjects[2] === aNewObjects[4], "Third SubObject is reused after update");
@@ -1474,7 +1505,13 @@ sap.ui.define([
 		}.bind(this));
 		assert.equal(this.obj.isBound("subObjects"), true, "isBound must return true for bound aggregations");
 		assert.equal(this.obj.getAggregation("subObjects", []).length, 3, "Aggregation length should match model list length");
+
 		aOldObjects = this.obj.getAggregation("subObjects");
+		assert.ok(aOldObjects.every((oInstance) => {
+			return oInstance && !oInstance.hasOwnProperty(BindingInfo.OriginalParent);
+		}), "none of instances cloned from factory is marked");
+
+
 		oModel.setProperty("/changingList", [{
 				value: 1
 			},
@@ -1492,7 +1529,12 @@ sap.ui.define([
 			}
 		]);
 		assert.equal(this.obj.getAggregation("subObjects", []).length, 5, "Aggregation length should match model list length");
+
 		aNewObjects = this.obj.getAggregation("subObjects");
+		assert.ok(aNewObjects.every((oInstance) => {
+			return oInstance && !oInstance.hasOwnProperty(BindingInfo.OriginalParent);
+		}), "none of instances cloned from factory is marked");
+
 		assert.ok(aOldObjects[0] === aNewObjects[0], "First SubObject is reused after update");
 		assert.ok(aOldObjects[1] === aNewObjects[1], "Second SubObject is reused after update");
 		assert.ok(aOldObjects[2] === aNewObjects[4], "Third SubObject is reused after update");

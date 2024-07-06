@@ -37,7 +37,7 @@ sap.ui.define([
 	sap.ui.loader.config({
 		paths: {
 			"sap/ui/originalmodel": sap.ui.require.toUrl("sap/ui/model/"),
-			"sap/ui/test/originalv2models": sap.ui.require.toUrl("sap/ui/test/v2models/")
+			"testdata/originalv2models": sap.ui.require.toUrl("testdata/v2models/")
 		}
 	});
 	sap.ui.define("sap/ui/model/json/JSONModel", ["sap/ui/originalmodel/json/JSONModel"], function(OrigJSONModel) {
@@ -55,7 +55,7 @@ sap.ui.define([
 	sap.ui.define("sap/ui/model/xml/XMLModel", ["sap/ui/originalmodel/xml/XMLModel"], function(OrigXMLModel) {
 		return sinon.spy(OrigXMLModel);
 	});
-	sap.ui.define("sap/ui/test/v2models/parent/CustomModel", ["sap/ui/test/originalv2models/parent/CustomModel"], function(OrigCustomModel) {
+	sap.ui.define("testdata/v2models/parent/CustomModel", ["testdata/originalv2models/parent/CustomModel"], function(OrigCustomModel) {
 		return sinon.spy(OrigCustomModel);
 	});
 
@@ -67,7 +67,7 @@ sap.ui.define([
 				"sap/ui/model/odata/v4/ODataModel",
 				"sap/ui/model/resource/ResourceModel",
 				"sap/ui/model/xml/XMLModel",
-				"sap/ui/test/v2models/parent/CustomModel"
+				"testdata/v2models/parent/CustomModel"
 			], function(
 				JSONModel,
 				ODataModelV2,
@@ -222,7 +222,7 @@ sap.ui.define([
 		this.stubGetUriParameters();
 
 		return Component.create({
-			name: "sap.ui.test.v2models.parentValid",
+			name: "testdata.v2models.parentValid",
 			manifest: false
 		}).then(function (oComponent) {
 
@@ -317,7 +317,7 @@ sap.ui.define([
 
 			// model: "resourceBundle-name"
 			sinon.assert.calledWithExactly(this.modelSpy.resource, {
-				bundleName: "sap.ui.test.v2models.parent.i18n"
+				bundleName: "testdata.v2models.parent.i18n"
 			});
 
 			// model: "resourceBundle-legacy-uri"
@@ -326,7 +326,7 @@ sap.ui.define([
 			});
 
 
-			// sap.ui.test.v2models.parent.CustomModel
+			// testdata.v2models.parent.CustomModel
 			sinon.assert.callCount(this.modelSpy.custom, 7);
 
 			// model: "custom-uri-string"
@@ -404,7 +404,7 @@ sap.ui.define([
 
 			"sap.app": {
 				"_version": "1.0.0",
-				"id": "sap.ui.test.v2models.parent",
+				"id": "testdata.v2models.parent",
 				"type": "application",
 				"applicationVersion": {
 					"version": "1.0.0"
@@ -449,7 +449,7 @@ sap.ui.define([
 		};
 
 		return Component.create({
-			name: "sap.ui.test.v2models.parent",
+			name: "testdata.v2models.parent",
 			manifest: oManifestJson
 		}).catch((error) => {
 			assert.ok(error.message.includes(`Component Manifest: ODataAnnotation "undefined" for dataSource "odata-invalid-annotations" could not be found in manifest`),
@@ -467,7 +467,7 @@ sap.ui.define([
 
 			"sap.app": {
 				"_version": "1.0.0",
-				"id": "sap.ui.test.v2models.parent",
+				"id": "testdata.v2models.parent",
 				"type": "application",
 				"applicationVersion": {
 					"version": "1.0.0"
@@ -507,7 +507,7 @@ sap.ui.define([
 		};
 
 		return Component.create({
-			name: "sap.ui.test.v2models.parent",
+			name: "testdata.v2models.parent",
 			manifest: oManifestJson
 		}).catch((error) => {
 			assert.ok(error.message.includes(`Component Manifest: dataSource "invalid" for model "dataSource-invalid" not found or invalid`),
@@ -525,7 +525,7 @@ sap.ui.define([
 
 			"sap.app": {
 				"_version": "1.0.0",
-				"id": "sap.ui.test.v2models.parent",
+				"id": "testdata.v2models.parent",
 				"type": "application",
 				"applicationVersion": {
 					"version": "1.0.0"
@@ -564,7 +564,7 @@ sap.ui.define([
 		};
 
 		return Component.create({
-			name: "sap.ui.test.v2models.parent",
+			name: "testdata.v2models.parent",
 			manifest: oManifestJson
 		}).catch((error) => {
 			assert.ok(error.message.includes(`Component Manifest: dataSource "does-not-exist" for model "dataSource-not-found" not found or invalid`),
@@ -582,7 +582,7 @@ sap.ui.define([
 
 			"sap.app": {
 				"_version": "1.0.0",
-				"id": "sap.ui.test.v2models.parent",
+				"id": "testdata.v2models.parent",
 				"type": "application",
 				"applicationVersion": {
 					"version": "1.0.0"
@@ -613,17 +613,17 @@ sap.ui.define([
 				"models": {
 					"": "default",
 					"model-not-found": {
-						"type": "sap.ui.test.v2models.parent.ModelNotDefined"
+						"type": "testdata.v2models.parent.ModelNotDefined"
 					}
 				}
 			}
 		};
 
 		return Component.create({
-			name: "sap.ui.test.v2models.parent",
+			name: "testdata.v2models.parent",
 			manifest: oManifestJson
 		}).catch((error) => {
-			assert.ok(error.message.includes(`Component Manifest: Class "sap.ui.test.v2models.parent.ModelNotDefined" for model "model-not-found" could not be found`),
+			assert.ok(error.message.includes(`Component Manifest: Class "testdata.v2models.parent.ModelNotDefined" for model "model-not-found" could not be found`),
 				"Error thrown because model is not found.");
 
 			future.active = undefined;
@@ -638,7 +638,7 @@ sap.ui.define([
 
 			"sap.app": {
 				"_version": "1.0.0",
-				"id": "sap.ui.test.v2models.parent",
+				"id": "testdata.v2models.parent",
 				"type": "application",
 				"applicationVersion": {
 					"version": "1.0.0"
@@ -676,7 +676,7 @@ sap.ui.define([
 		};
 
 		return Component.create({
-			name: "sap.ui.test.v2models.parent",
+			name: "testdata.v2models.parent",
 			manifest: oManifestJson
 		}).catch((error) => {
 			assert.ok(error.message.includes(`Cannot load module 'sap/ui/not/defined/Model'.`),
@@ -695,7 +695,7 @@ sap.ui.define([
 
 			"sap.app": {
 				"_version": "1.0.0",
-				"id": "sap.ui.test.v2models.parent1",
+				"id": "testdata.v2models.parent1",
 				"type": "application",
 				"applicationVersion": {
 					"version": "1.0.0"
@@ -745,7 +745,7 @@ sap.ui.define([
 		};
 
 		return Component.create({
-			name: "sap.ui.test.v2models.parent",
+			name: "testdata.v2models.parent",
 			manifest: oManifestJson
 		}).catch((error) => {
 			assert.ok(error.message.includes(`Component Manifest: Provided OData version "3.0" in dataSource "unknown-odataVersion" for model "v2-ODataModel-unknown-odataVersion" is unknown.`),
@@ -759,7 +759,7 @@ sap.ui.define([
 		this.stubGetUriParameters({ sapSystem: "BLA_123" });
 
 		return Component.create({
-			name: "sap.ui.test.v2models.parentValid",
+			name: "testdata.v2models.parentValid",
 			manifest: false
 		}).then(function(oComponent) {
 			this.oComponent = oComponent;
@@ -801,7 +801,7 @@ sap.ui.define([
 			//ResourceModel should also not have an origin attached
 			// model: "resourceBundle-name"
 			sinon.assert.calledWithExactly(this.modelSpy.resource, {
-				bundleName: "sap.ui.test.v2models.parent.i18n"
+				bundleName: "testdata.v2models.parent.i18n"
 			});
 
 			// destroy the component
@@ -820,7 +820,7 @@ sap.ui.define([
 		this.stubGetUriParameters();
 
 		return Component.create({
-			name: "sap.ui.test.v2models.parentValid",
+			name: "testdata.v2models.parentValid",
 			manifest: false,
 			componentData: {
 				startupParameters: {
@@ -867,7 +867,7 @@ sap.ui.define([
 			//ResourceModel should also not have an origin attached
 			// model: "resourceBundle-name"
 			sinon.assert.calledWithExactly(this.modelSpy.resource, {
-				bundleName: "sap.ui.test.v2models.parent.i18n"
+				bundleName: "testdata.v2models.parent.i18n"
 			});
 
 			// destroy the component
@@ -885,7 +885,7 @@ sap.ui.define([
 	QUnit.test("metadata v2 with cacheTokens", function(assert) {
 
 		return Component.create({
-			name: "sap.ui.test.v2models.parentValid",
+			name: "testdata.v2models.parentValid",
 			manifest: false,
 			asyncHints: {
 				cacheTokens: {
@@ -937,7 +937,7 @@ sap.ui.define([
 			//ResourceModel should also not have an origin attached
 			// model: "resourceBundle-name"
 			sinon.assert.calledWithExactly(this.modelSpy.resource, {
-				bundleName: "sap.ui.test.v2models.parent.i18n"
+				bundleName: "testdata.v2models.parent.i18n"
 			});
 
 			// destroy the component
@@ -956,7 +956,7 @@ sap.ui.define([
 		this.stubGetUriParameters();
 
 		return Component.create({
-			name: "sap.ui.test.v2models.parentValid",
+			name: "testdata.v2models.parentValid",
 			manifest: false,
 			asyncHints: {
 				cacheTokens: {
@@ -1001,7 +1001,7 @@ sap.ui.define([
 			//ResourceModel should also not have an origin attached
 			// model: "resourceBundle-name"
 			sinon.assert.calledWithExactly(this.modelSpy.resource, {
-				bundleName: "sap.ui.test.v2models.parent.i18n"
+				bundleName: "testdata.v2models.parent.i18n"
 			});
 
 			// destroy the component
@@ -1021,7 +1021,7 @@ sap.ui.define([
 			"sapClient": "200"
 		});
 		return Component.create({
-			name: "sap.ui.test.v4models.cacheTokens",
+			name: "testdata.v4models.cacheTokens",
 			manifest: false,
 			asyncHints: {
 				cacheTokens: {
@@ -1067,7 +1067,7 @@ sap.ui.define([
 		this.stubGetUriParameters({ sapSystem: "URL_123" });
 
 		this.oComponent = await Component.create({
-			name: "sap.ui.test.v4models.sapSystem"
+			name: "testdata.v4models.sapSystem"
 		});
 
 		this.assertModelInstances({
@@ -1113,7 +1113,7 @@ sap.ui.define([
 		this.stubGetUriParameters();
 
 		this.oComponent = await Component.create({
-			name: "sap.ui.test.v4models.sapSystem",
+			name: "testdata.v4models.sapSystem",
 			componentData: {
 				startupParameters: {
 					"sap-system": "STARTUP123"
@@ -1164,7 +1164,7 @@ sap.ui.define([
 		this.stubGetUriParameters();
 
 		return Component.create({
-			name: "sap.ui.test.v2models.extension",
+			name: "testdata.v2models.extension",
 			manifest: false
 		}).then(function(oComponent) {
 			this.oComponent = oComponent;
@@ -1245,7 +1245,7 @@ sap.ui.define([
 
 			// model: "resourceBundle-name"
 			sinon.assert.calledWithExactly(this.modelSpy.resource, {
-				bundleName: "sap.ui.test.v2models.parent.i18n"
+				bundleName: "testdata.v2models.parent.i18n"
 			});
 
 			// model: "resourceBundle-legacy-uri"
@@ -1253,7 +1253,7 @@ sap.ui.define([
 				bundleUrl: "test-resources/sap/ui/core/qunit/component/testdata/v2models/parentValid/i18n.properties"
 			});
 
-			// sap.ui.test.v2models.parent.CustomModel
+			// testdata.v2models.parent.CustomModel
 			sinon.assert.callCount(this.modelSpy.custom, 7);
 
 			// model: "custom-uri-string"
@@ -1323,7 +1323,7 @@ sap.ui.define([
 	QUnit.test("metadata v2 without models", function(assert) {
 
 		return Component.create({
-			name: "sap.ui.test.v2empty"
+			name: "testdata.v2empty"
 		}).then(function(oComponent) {
 			this.oComponent = oComponent;
 
@@ -1335,7 +1335,7 @@ sap.ui.define([
 			sinon.assert.callCount(this.modelSpy.xml, 0);
 			// sap.ui.model.resource.ResourceModel
 			sinon.assert.callCount(this.modelSpy.resource, 0);
-			// sap.ui.test.v2models.CustomModel
+			// testdata.v2models.CustomModel
 			sinon.assert.callCount(this.modelSpy.custom, 0);
 
 			assert.ok(!this.oComponent.getModel(), "Component should not have a model");
@@ -1350,13 +1350,13 @@ sap.ui.define([
 	QUnit.test("dynamic enhance of models and datasources", function(assert) {
 		this.stubGetUriParameters();
 
-		sap.ui.define("sap/ui/test/v2local/Component", ["sap/ui/core/UIComponent"], function(UIComponent) {
+		sap.ui.define("testdata/v2local/Component", ["sap/ui/core/UIComponent"], function(UIComponent) {
 
-			var LocalComponent = UIComponent.extend("sap.ui.test.v2local.Component", {
+			var LocalComponent = UIComponent.extend("testdata.v2local.Component", {
 				metadata : {
 					manifest : {
 						"sap.app": {
-							"id": "sap.ui.test.v2local"
+							"id": "testdata.v2local"
 						}
 					}
 				}
@@ -1404,7 +1404,7 @@ sap.ui.define([
 		});
 
 		return Component.create({
-			name: "sap.ui.test.v2local",
+			name: "testdata.v2local",
 			manifest: false
 		}).then(function(oComponent) {
 			this.oComponent = oComponent;
@@ -1435,7 +1435,7 @@ sap.ui.define([
 	QUnit.test("consume V2 service with V4 model", function(assert) {
 
 		return Component.create({
-			name: "sap.ui.test.v4models",
+			name: "testdata.v4models",
 			manifest: false
 		}).then(function(oComponent) {
 			this.oComponent = oComponent;
@@ -1463,7 +1463,7 @@ sap.ui.define([
 
 	QUnit.test("pass unsupported service version to V4 model", function(assert) {
 		return Component.create({
-			name: "sap.ui.test.v4models.unsupportedVersion",
+			name: "testdata.v4models.unsupportedVersion",
 			manifest: false
 		}).then(function(oComponent) {
 			assert.ok(false, "creating a component that uses an unupported OData version must not succeed");
@@ -1488,7 +1488,7 @@ sap.ui.define([
 		// The modelsMisc Component is intended to hold tests for additional parameters that just need
 		// to be passed onwards to the models.
 		return Component.create({
-			name: "sap.ui.test.modelsMisc"
+			name: "testdata.modelsMisc"
 		}).then(function(oComponent) {
 
 			// check if models exist
@@ -1614,7 +1614,7 @@ sap.ui.define([
 
 			// model: "resourceBundle-name"
 			sinon.assert.calledWithExactly(this.modelSpy.resource, {
-				bundleName: "sap.ui.test.v2models.parent.i18n"
+				bundleName: "testdata.v2models.parent.i18n"
 			});
 
 			// model: "resourceBundle-legacy-uri"
@@ -1623,7 +1623,7 @@ sap.ui.define([
 			});
 
 
-			// sap.ui.test.v2models.parent.CustomModel
+			// testdata.v2models.parent.CustomModel
 			sinon.assert.callCount(this.modelSpy.custom, 7);
 
 			// model: "custom-uri-string"
@@ -1692,7 +1692,7 @@ sap.ui.define([
 	QUnit.test("Init component via name", function(assert) {
 
 		return Component.create({
-			name: "sap.ui.test.v2models.empty",
+			name: "testdata.v2models.empty",
 			manifest: false
 		}).then(function(oComponent) {
 			this.oComponent = oComponent;
@@ -1704,7 +1704,7 @@ sap.ui.define([
 	QUnit.test("Init component via name and manifestFirst", function(assert) {
 
 		return Component.create({
-			name: "sap.ui.test.v2models.empty",
+			name: "testdata.v2models.empty",
 			manifest: true
 		}).then(function(oComponent) {
 			this.oComponent = oComponent;
@@ -3979,7 +3979,6 @@ sap.ui.define([
 			sap.ui.loader.config({
 				paths: {
 					"path/to/odata/service": "https://remote.system:9000/odata/service",
-					"sap/ui/test/v2models/ui5urls": "test-resources/sap/ui/core/qunit/component/testdata/v2models/ui5Urls",
 					"another/name/space": "test-resources/sap/ui/core/qunit/component/testdata/v2models/ui5Urls/another/name/space",
 					"cool.name.space": "test-resources/sap/ui/core/qunit/component/testdata/v2models/ui5Urls/cool/name/space"
 				}
@@ -3996,11 +3995,11 @@ sap.ui.define([
 			// To keep reusing the same component for async and sync path tests,
 			// we need to unload the Component and remove the leftovers from the ComponentMetadata.
 			// This way all tests start fresh and actually load the Component again.
-			var TestComponent = sap.ui.require("sap/ui/test/v2models/ui5urls/Component");
+			var TestComponent = sap.ui.require("testdata/v2models/ui5Urls/Component");
 			if ( TestComponent ) {
 				delete TestComponent.getMetadata()._oManifest;
 			}
-			privateLoaderAPI.unloadResources('sap/ui/test/v2models/ui5urls/Component.js', true, true, true);
+			privateLoaderAPI.unloadResources('testdata/v2models/ui5Urls/Component.js', true, true, true);
 
 			// remove the previous path-configs/resource-roots
 			sap.ui.loader.config({
@@ -4055,7 +4054,7 @@ sap.ui.define([
 		assert.equal(sap.ui.require.toUrl("this/is/a/resourceRoot"), "resources/this/is/a/resourceRoot", "Resource-roots not defined yet.");
 
 		return Component.create({
-			name: "sap.ui.test.v2models.ui5urls"
+			name: "testdata.v2models.ui5Urls"
 		}).then(function(oComponent) {
 			this.oComponent = oComponent;
 			fnAssert.call(this, assert);
@@ -4072,7 +4071,7 @@ sap.ui.define([
 		// url resolution triggered during manifest init
 		// Manifest model init is triggered afterwards during Component constructor, at this time all URLs have been resolved
 		return Component.create({
-			name: "sap.ui.test.v2models.ui5urls",
+			name: "testdata.v2models.ui5Urls",
 			manifest: false
 		}).then(function(oComponent) {
 			this.oComponent = oComponent;
