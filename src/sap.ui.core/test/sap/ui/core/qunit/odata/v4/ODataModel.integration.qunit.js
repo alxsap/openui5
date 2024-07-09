@@ -5675,11 +5675,13 @@ sap.ui.define([
 	// Scenario: One-way property binding for a collection of complex type. Check that refresh and
 	// side effects works.
 	// JIRA: CPOUI5ODATAV4-2638
+	//
+	// Support client-side updates (JIRA: CPOUI5ODATAV4-2661)
 	QUnit.test("CPOUI5ODATAV4-2638: OneWay - Collection(ComplexType)", async function (assert) {
 		const oModel = this.createTeaBusiModel({autoExpandSelect : true});
 		const sView = `
 <FlexBox id="form" binding="{/EMPLOYEES('1')}">
-	<Text id="name" text="{Name}"/>
+	<Input id="name" value="{Name}"/>
 	<Text id="messages" text="{
 		formatter : '.myFormatter',
 		mode : 'OneWay',
@@ -5778,19 +5780,39 @@ sap.ui.define([
 				.requestSideEffects(["__CT__FAKE__Message/__FAKE__Messages"]),
 			this.waitForChanges(assert, "side effects")
 		]);
+
+		this.expectChange("name", "Frederic Spring")
+			.expectRequest({
+				method : "PATCH",
+				payload : {
+					Name : "Frederic Spring"
+				},
+				url : "EMPLOYEES('1')"
+			}, {
+				ID : "1",
+				Name : "Frederic Spring",
+				__CT__FAKE__Message : {
+					__FAKE__Messages : [{
+						message : "What a nice name!"
+					}]
+				}
+			})
+			.expectChange("messages", "What a nice name!");
+		expectMessages(["What a nice name!"]);
+
+		// code under test (JIRA: CPOUI5ODATAV4-2661)
+		this.oView.byId("name").getBinding("value").setValue("Frederic Spring");
+
+		await this.waitForChanges(assert, "update name");
 	});
-	//TODO _Helper.updateExisting
-	// => PATCH/updating a property probably doesn't work - use $$patchWithoutSideEffects instead!
-	//TODO _Helper.updateAll
-	// => _Cache#setProperty
-	// => _Cache#update
-	// => update operation's $Parameter
 
 	//*********************************************************************************************
 	// Scenario: One-way property binding for an object of complex type. Check that refresh and
 	// side effects works, although there may be "change" events w/o real changes. Do this in the
 	// presence of a property binding for only a part of that object.
 	// JIRA: CPOUI5ODATAV4-2638
+	//
+	// Support client-side partial updates (JIRA: CPOUI5ODATAV4-2661)
 	QUnit.test("CPOUI5ODATAV4-2638: OneWay - object w/ ComplexType, #1", async function (assert) {
 		const oModel = this.createTeaBusiModel({autoExpandSelect : true});
 		const sView = `
@@ -5802,7 +5824,7 @@ sap.ui.define([
 		path : 'SALARY',
 		targetType : 'any'
 	}"/>
-	<Text id="monthly" text="{SALARY/MONTHLY_BASIC_SALARY_AMOUNT}"/>
+	<Input id="monthly" value="{SALARY/MONTHLY_BASIC_SALARY_AMOUNT}"/>
 </FlexBox>`;
 		const oController = {
 			myFormatter : (oSalary) => {
@@ -5814,10 +5836,10 @@ sap.ui.define([
 				ID : "1",
 				Name : "Frederic Fall",
 				SALARY : {
-					MONTHLY_BASIC_SALARY_AMOUNT : "1234",
 					BASIC_SALARY_CURR : "EUR",
-					YEARLY_BONUS_AMOUNT : "567",
-					BONUS_CURR : "DEM"
+					BONUS_CURR : "DEM",
+					MONTHLY_BASIC_SALARY_AMOUNT : "1234",
+					YEARLY_BONUS_AMOUNT : "567"
 				}
 			})
 			.expectChange("salary", "1234 EUR")
@@ -5827,10 +5849,10 @@ sap.ui.define([
 
 		const oContext = this.oView.byId("form").getBindingContext();
 		const oNewSalary = {
-			MONTHLY_BASIC_SALARY_AMOUNT : "1234.89",
 			BASIC_SALARY_CURR : "EUR",
-			YEARLY_BONUS_AMOUNT : "567",
-			BONUS_CURR : "DEM"
+			BONUS_CURR : "DEM",
+			MONTHLY_BASIC_SALARY_AMOUNT : "1234.89",
+			YEARLY_BONUS_AMOUNT : "567"
 		};
 
 		this.expectRequest("EMPLOYEES('1')?$select=SALARY", {
@@ -5861,6 +5883,33 @@ sap.ui.define([
 			oContext.requestRefresh(),
 			this.waitForChanges(assert, "refresh")
 		]);
+
+		this.expectChange("monthly", "2,345.67")
+			.expectChange("salary", "2345.67 EUR")
+			.expectRequest({
+				method : "PATCH",
+				payload : {
+					SALARY : {
+						BASIC_SALARY_CURR : "EUR",
+						MONTHLY_BASIC_SALARY_AMOUNT : "2345.67"
+					}
+				},
+				url : "EMPLOYEES('1')"
+			}, {
+				SALARY : {
+					BASIC_SALARY_CURR : "DEM", // side effect
+					BONUS_CURR : "DEM",
+					MONTHLY_BASIC_SALARY_AMOUNT : "2345", // side effect
+					YEARLY_BONUS_AMOUNT : "567"
+				}
+			})
+			.expectChange("monthly", "2,345")
+			.expectChange("salary", "2345 DEM");
+
+		// code under test (JIRA: CPOUI5ODATAV4-2661)
+		this.oView.byId("monthly").getBinding("value").setValue("2345.67");
+
+		await this.waitForChanges(assert, "update MONTHLY_BASIC_SALARY_AMOUNT");
 	});
 
 	//*********************************************************************************************
@@ -5893,8 +5942,8 @@ sap.ui.define([
 		this.expectRequest("EMPLOYEES('1')?$select=ID,SALARY", {
 				ID : "1",
 				SALARY : {
-					MONTHLY_BASIC_SALARY_AMOUNT : "1234",
-					BASIC_SALARY_CURR : "DEM"
+					BASIC_SALARY_CURR : "DEM",
+					MONTHLY_BASIC_SALARY_AMOUNT : "1234"
 				}
 			})
 			.expectChange("salary", "1234 DEM");
@@ -5921,8 +5970,8 @@ sap.ui.define([
 				value : [{
 					ID : "1",
 					SALARY : {
-						MONTHLY_BASIC_SALARY_AMOUNT : "5678",
-						BASIC_SALARY_CURR : "EUR"
+						BASIC_SALARY_CURR : "EUR",
+						MONTHLY_BASIC_SALARY_AMOUNT : "5678"
 					}
 				}]
 			})
@@ -28069,16 +28118,16 @@ sap.ui.define([
 			checkCreatedPersisted(assert, oNewRoot);
 
 			that.expectRequest("EMPLOYEES?$select=AGE,ID"
-					+ "&$filter=ID eq 'B' or ID eq '0' or ID eq '9'&$top=3", {
+					+ "&$filter=ID eq '0' or ID eq '9' or ID eq 'B'&$top=3", {
 					value : [{
-						AGE : 170,
-						ID : "B" // Beth
-					}, {
 						AGE : 160,
 						ID : "0" // Alpha
 					}, {
 						AGE : 169,
 						ID : "9" // Aleph
+					}, {
+						AGE : 170,
+						ID : "B" // Beth
 					}]
 				});
 
@@ -30615,6 +30664,9 @@ sap.ui.define([
 	// A selected (effectively kept alive) node which is not part of the hierarchy after the parent
 	// is collapsed still holds its data. It is also possible to request side effects for it.
 	// JIRA: CPOUI5ODATAV4-2539
+	//
+	// Such a node is also updated by requesting side effects for all rows
+	// JIRA: CPOUI5ODATAV4-2646
 	[false, true].forEach(function (bResetViaModel) {
 		const sTitle = `Recursive Hierarchy: create new children, move 'em, model=${bResetViaModel}`;
 		QUnit.test(sTitle, function (assert) {
@@ -31141,13 +31193,20 @@ sap.ui.define([
 				oBeta = null;
 
 				that.expectRequest(sFriend.slice(1)
-						+ "?$filter=ArtistID eq '0' and IsActiveEntity eq false"
-						+ "&$select=ArtistID,IsActiveEntity,Name,_/NodeID", {
+						+ "?$filter=ArtistID eq '0' and IsActiveEntity eq false or "
+							+ "ArtistID eq '2' and IsActiveEntity eq false"
+						+ "&$select=ArtistID,IsActiveEntity,Name,_/NodeID&$top=2", {
 						value : [{
 							"@odata.etag" : "etag0.2",
 							ArtistID : "0",
 							IsActiveEntity : false,
 							Name : "Alpha #1", // "side effect"
+							_ : null // not available w/ RAP for a non-hierarchical request
+						}, {
+							"@odata.etag" : "etag2.3",
+							ArtistID : "2",
+							IsActiveEntity : false,
+							Name : "Gamma #1", // "side effect"
 							_ : null // not available w/ RAP for a non-hierarchical request
 						}]
 					})
@@ -31163,21 +31222,22 @@ sap.ui.define([
 				// NodeID is not lost after requesting side effects with non-hierarchical requests
 				assert.deepEqual(oRoot.getObject("_"), {NodeID : "0,false"});
 
+				assert.deepEqual(oGamma.getObject(), {
+					"@$ui5.context.isSelected" : true,
+					"@$ui5.node.level" : 2,
+					"@odata.etag" : "etag2.3",
+					ArtistID : "2",
+					IsActiveEntity : false,
+					Name : "Gamma #1",
+					_ : {
+						NodeID : "2,false"
+					}
+				}, "CPOUI5ODATAV4-2646: updated by requestSideEffects while outside the collection");
+
 				that.expectRequest(sBaseUrl + "&$select=ArtistID,IsActiveEntity,Name"
 						+ ",_/DescendantCount,_/DistanceFromRoot,_/DrillState,_/NodeID"
-						+ "&$skip=1&$top=2", {
+						+ "&$skip=2&$top=1", {
 						value : [{
-							"@odata.etag" : "etag2.3",
-							ArtistID : "2",
-							IsActiveEntity : false,
-							Name : "Gamma #1", // "side effect"
-							_ : {
-								DescendantCount : "0",
-								DistanceFromRoot : "1",
-								DrillState : "leaf",
-								NodeID : "2,false"
-							}
-						}, {
 							"@odata.etag" : "etag1.3",
 							ArtistID : "1",
 							IsActiveEntity : false,
@@ -31401,18 +31461,12 @@ sap.ui.define([
 				checkCreatedPersisted(assert, oNewRoot);
 
 				that.expectRequest(sFriend.slice(1)
-						+ "?$filter=ArtistID eq '9' and IsActiveEntity eq false"
-						+ " or ArtistID eq '0' and IsActiveEntity eq false"
+						+ "?$filter=ArtistID eq '0' and IsActiveEntity eq false"
 						+ " or ArtistID eq '2' and IsActiveEntity eq false"
+						+ " or ArtistID eq '9' and IsActiveEntity eq false"
 						+ "&$select=ArtistID,IsActiveEntity,Name,_/NodeID"
 						+ "&$top=3", {
 						value : [{
-							"@odata.etag" : "etag9.1",
-							ArtistID : "9",
-							IsActiveEntity : false,
-							Name : "Aleph #2",
-							_ : null // not available w/ RAP for a non-hierarchical request
-						}, {
 							"@odata.etag" : "etag0.3",
 							ArtistID : "0",
 							IsActiveEntity : false,
@@ -31423,6 +31477,12 @@ sap.ui.define([
 							ArtistID : "2",
 							IsActiveEntity : false,
 							Name : "Gamma #2",
+							_ : null // not available w/ RAP for a non-hierarchical request
+						}, {
+							"@odata.etag" : "etag9.1",
+							ArtistID : "9",
+							IsActiveEntity : false,
+							Name : "Aleph #2",
 							_ : null // not available w/ RAP for a non-hierarchical request
 						}]
 					})
@@ -43043,6 +43103,79 @@ sap.ui.define([
 	});
 
 	//*********************************************************************************************
+	// Scenario: Sticky app (non-draft) with FCL for LR & OP uses edit action and bReplaceWithRVC.
+	// Show that LR & OP are in sync when editing.
+	// SNOW: DINC0173477
+	QUnit.test("DINC0173477", async function (assert) {
+		const oModel = this.createSalesOrdersModel({autoExpandSelect : true});
+		const sView = `
+<Table id="listReport" items="{/SalesOrderList}">
+	<Text id="id" text="{SalesOrderID}"/>
+	<Text id="listNote" text="{Note}"/>
+</Table>
+<FlexBox id="objectPage">
+	<Input id="objectNote" value="{Note}"/>
+</FlexBox>`;
+
+		this.expectRequest("SalesOrderList?$select=Note,SalesOrderID&$skip=0&$top=100", {
+				value : [{
+					"@odata.etag" : "etag1",
+					Note : "1st note",
+					SalesOrderID : "1"
+				}]
+			})
+			.expectChange("id", ["1"])
+			.expectChange("listNote", ["1st note"])
+			.expectChange("objectNote");
+
+		await this.createView(assert, sView, oModel);
+
+		const oListBinding = this.oView.byId("listReport").getBinding("items");
+		const oContext = oListBinding.getCurrentContexts()[0];
+		oContext.setKeepAlive(true);
+		this.oView.byId("objectPage").setBindingContext(oContext);
+
+		this.expectChange("objectNote", "1st note");
+
+		await this.waitForChanges(assert, "setBindingContext");
+
+		const sAction = "com.sap.gateway.default.zui5_epm_sample.v0002.SalesOrder_Confirm";
+		const oEditAction
+			= oModel.bindContext(sAction + "(...)", oContext, {$$inheritExpandSelect : true});
+
+		this.expectRequest({
+				headers : {
+					"If-Match" : "*"
+				},
+				method : "POST",
+				payload : {},
+				url : "SalesOrderList('1')/" + sAction + "?$select=Note,SalesOrderID"
+			}, {
+				"@odata.etag" : "etag1.1",
+				Note : "1st note (draft)",
+				SalesOrderID : "1"
+			})
+			.expectChange("listNote", ["1st note (draft)"])
+			.expectChange("objectNote", "1st note (draft)");
+
+		const [oRVC] = await Promise.all([
+			// code under test
+			oEditAction.invoke("$auto", /*bIgnoreETag*/true, null, /*bReplaceWithRVC*/true),
+			this.waitForChanges(assert, "bReplaceWithRVC")
+		]);
+
+		assert.strictEqual(oRVC, oContext);
+
+		// Note: PATCH does not matter here, thus we avoid it
+		this.expectChange("listNote", ["1st note (improved)"])
+			.expectChange("objectNote", "1st note (improved)");
+
+		oContext.setProperty("Note", "1st note (improved)", null);
+
+		await this.waitForChanges(assert, "edit w/o PATCH");
+	});
+
+	//*********************************************************************************************
 	// Scenario: Object page bound to active entity: Call the "Edit" bound action on an active
 	// entity which responds with the inactive entity. The invoke for the "Edit" operation binding
 	// resolves with the context for the inactive entity. Data for the inactive entity is displayed
@@ -48210,17 +48343,17 @@ sap.ui.define([
 		}).then(function () {
 			that.expectRequest("Artists('42')/_Publication"
 					+ "?$select=Price,PublicationID"
-					+ "&$filter=PublicationID eq 'New 1' or "
-					+ "PublicationID eq '42-1' or PublicationID eq '42-2'&$top=3", {
+					+ "&$filter=PublicationID eq '42-1' or "
+					+ "PublicationID eq '42-2' or PublicationID eq 'New 1'&$top=3", {
 						value : [{
-							Price : "3.35",
-							PublicationID : "New 1"
-						}, {
 							Price : "1.13",
 							PublicationID : "42-1"
 						}, {
 							Price : "2.23",
 							PublicationID : "42-2"
+						}, {
+							Price : "3.35",
+							PublicationID : "New 1"
 						}]
 				})
 				.expectChange("price", [, "1.13", "2.23"]);
@@ -51159,6 +51292,89 @@ sap.ui.define([
 			delete mMetaData.$Annotations;
 			assert.notOk(JSON.stringify(mMetaData).includes("@"), "no inline annotations");
 		});
+	});
+
+	//*********************************************************************************************
+	// Scenario: Annotation changes are applied to root service's metadata, annotation files, and
+	// cross-service references.
+	// JIRA: CPOUI5ODATAV4-2637
+	QUnit.test("CPOUI5ODATAV4-2637: setAnnotationChangePromise", async function (assert) {
+		const oModel = this.createModel(sTeaBusi, {
+			annotationURI : sTeaBusi + "annotations_tea_busi.xml"
+		}, {
+			[sTeaBusi + "$metadata"] : {source : "odata/v4/data/metadata.xml"},
+			"/sap/opu/odata4/IWBEP/TEA/default/iwbep/tea_busi_product/0001/$metadata"
+				: {source : "odata/v4/data/metadata_tea_busi_product.xml"},
+			"/sap/opu/odata4/IWBEP/TEA/default/iwbep/tea_busi_supplier/0001/$metadata"
+				: {source : "odata/v4/data/metadata_tea_busi_supplier.xml"},
+			[sTeaBusi + "annotations_tea_busi.xml"]
+				: {source : "odata/v4/data/annotations_tea_busi.xml"}
+		});
+
+		await this.createView(assert, "", oModel);
+
+		const aAnnotationChanges = []; // Note: path must start from EntityContainer of metadata.xml
+		// override annotations_tea_busi.xml
+		aAnnotationChanges.push({ // Note: winding detour doesn't make a difference here ;-)
+			path : "/MANAGERS/Manager_to_Team/TEAM_2_EMPLOYEES/EMPLOYEE_2_EQUIPMENTS/ID"
+				+ "@com.sap.vocabularies.Common.v1.Label",
+			value : "ID of Equipment" // original: "Equipment ID"
+		});
+		aAnnotationChanges.push({
+			path : "/Equipments/ID@com.sap.vocabularies.Common.v1.Text"
+				+ "@com.sap.vocabularies.UI.v1.TextArrangement",
+			value : { // original: TextLast
+				$EnumMember : "com.sap.vocabularies.UI.v1.TextArrangementType/TextFirst"
+			}
+		});
+		// override metadata.xml
+		aAnnotationChanges.push({
+			path : "/MANAGERS/ID@com.sap.vocabularies.Common.v1.Label",
+			value : "ID of Manager" // original: "ID"
+		});
+		// override metadata_product.xml
+		aAnnotationChanges.push({
+			path : "/Equipments/EQUIPMENT_2_PRODUCT/ID"
+				+ "@com.sap.vocabularies.Common.v1.Label",
+			value : "ID of Product" // original: "Product ID"
+		});
+		// override metadata_supplier.xml
+		aAnnotationChanges.push({
+			path : "/Equipments/EQUIPMENT_2_PRODUCT/PRODUCT_2_SUPPLIER/SUPPLIER_ID"
+				+ "@com.sap.vocabularies.Common.v1.Label",
+			value : "ID of Supplier" // original: "Supplier ID"
+		});
+
+		// code under test
+		oModel.setAnnotationChangePromise(Promise.resolve(aAnnotationChanges));
+
+		const oMetaModel = oModel.getMetaModel();
+
+		await oMetaModel.requestObject("/"); // fetch EntityContainer
+
+		assert.deepEqual(oMetaModel.getObject("/Equipments/ID@com.sap.vocabularies.Common.v1.Text"),
+			{$Path : "Name"}, "unchanged");
+
+		function sync(i) {
+			assert.strictEqual(
+				oMetaModel.getObject(aAnnotationChanges[i].path), aAnnotationChanges[i].value);
+		}
+
+		sync(0);
+		sync(1);
+		sync(2);
+
+		async function async(i) {
+			assert.strictEqual(
+				oMetaModel.getObject(aAnnotationChanges[i].path), undefined, "not yet");
+
+			assert.strictEqual(
+				await oMetaModel.requestObject(aAnnotationChanges[i].path),
+				aAnnotationChanges[i].value);
+		}
+
+		await async(3);
+		await async(4);
 	});
 
 	//*********************************************************************************************
@@ -59941,17 +60157,17 @@ sap.ui.define([
 					sinon.assert.calledOnceWithExactly(fnOnBeforeDestroy);
 				}
 
-				that.expectRequest("SalesOrderList?$filter=SalesOrderID eq '2' or SalesOrderID eq '4'"
-						+ " or SalesOrderID eq '1'&$select=GrossAmount,SalesOrderID&$top=3", {
+				that.expectRequest("SalesOrderList?$filter=SalesOrderID eq '1' or SalesOrderID eq '2'"
+						+ " or SalesOrderID eq '4'&$select=GrossAmount,SalesOrderID&$top=3", {
 						value : [{
+							GrossAmount : "50.3",
+							SalesOrderID : "1"
+						}, {
 							GrossAmount : "149.3",
 							SalesOrderID : "2"
 						}, {
 							GrossAmount : "789.3",
 							SalesOrderID : "4"
-						}, {
-							GrossAmount : "50.3",
-							SalesOrderID : "1"
 						}]
 					})
 					.expectChange("grossAmount", ["149.30", "789.30"])

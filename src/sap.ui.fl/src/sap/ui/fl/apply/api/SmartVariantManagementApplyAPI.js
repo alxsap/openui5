@@ -7,12 +7,14 @@ sap.ui.define([
 	"sap/ui/fl/apply/_internal/flexState/compVariants/Utils",
 	"sap/ui/fl/apply/_internal/flexState/FlexState",
 	"sap/ui/fl/apply/_internal/flexState/ManifestUtils",
+	"sap/ui/fl/LayerUtils",
 	"sap/ui/fl/Utils"
 ], function(
 	CompVariantMerger,
 	CompVariantUtils,
 	FlexState,
 	ManifestUtils,
+	LayerUtils,
 	Utils
 ) {
 	"use strict";
