@@ -15,7 +15,7 @@ sap.ui.define([
 	'sap/ui/util/XMLHelper',
 	'./AnyView.qunit',
 	'sap/ui/thirdparty/jquery',
-	"sap/ui/qunit/utils/nextUIUpdate"
+	"sap/ui/test/utils/nextUIUpdate"
 ], function(future, Log, Localization, ResourceBundle, Element, coreLibrary, Controller, View, XMLView, RenderManager, JSONModel, ResourceModel, XMLHelper, testsuite, jQuery, nextUIUpdate) {
 	"use strict";
 

@@ -7,7 +7,7 @@ sap.ui.define([
 	"sap/m/Input",
 	"sap/ui/core/Lib",
 	"sap/ui/qunit/utils/createAndAppendDiv",
-	"sap/ui/qunit/utils/nextUIUpdate"
+	"sap/ui/test/utils/nextUIUpdate"
 ], function(BaseObject, Control, Element, Button, Input, Library, createAndAppendDiv, nextUIUpdate) {
 	"use strict";
 

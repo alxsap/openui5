@@ -2,7 +2,7 @@
 sap.ui.define([
 	'sap/base/i18n/Localization',
 	'sap/ui/Device',
-	"sap/ui/qunit/utils/nextUIUpdate"
+	"sap/ui/test/utils/nextUIUpdate"
 ], function(Localization, Device, nextUIUpdate) {
 	"use strict";
 

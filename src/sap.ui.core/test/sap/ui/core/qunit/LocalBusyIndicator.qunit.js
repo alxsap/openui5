@@ -11,7 +11,7 @@ sap.ui.define([
 	"sap/ui/events/KeyCodes",
 	"sap/ui/thirdparty/jquery",
 	"sap/ui/qunit/QUnitUtils",
-	"sap/ui/qunit/utils/nextUIUpdate",
+	"sap/ui/test/utils/nextUIUpdate",
 	/* jQuery custom selectors ":sapTabbable"*/
 	"sap/ui/dom/jquery/Selectors"
 ], function(BusyDialog, Button, List, Slider, StandardListItem, VBox, Element, XMLView, KeyCodes, jQuery, qutils, nextUIUpdate) {

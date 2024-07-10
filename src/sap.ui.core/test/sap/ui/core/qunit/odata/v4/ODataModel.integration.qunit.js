@@ -5691,6 +5691,11 @@ sap.ui.define([
 </FlexBox>`;
 		const oController = {
 			myFormatter : (aMessages) => {
+				for (const sKey in aMessages) {
+					if (sKey[0] === "$") {
+						assert.ok(false, "access to internals: " + sKey);
+					}
+				}
 				return aMessages.map((oMessage) => oMessage.message).join(" ");
 			}
 		};
@@ -5842,6 +5847,7 @@ sap.ui.define([
 					YEARLY_BONUS_AMOUNT : "567"
 				}
 			})
+			.expectChange("name", "Frederic Fall")
 			.expectChange("salary", "1234 EUR")
 			.expectChange("monthly", "1,234");
 
@@ -5980,6 +5986,70 @@ sap.ui.define([
 		await Promise.all([
 			oContext.getBinding().requestRefresh(), // don' try this at home, kids!
 			this.waitForChanges(assert, "refresh from null")
+		]);
+	});
+
+	//*********************************************************************************************
+	// Scenario: One-way property binding for an object of entity(!) type. Check that no access to
+	// internals is possible (see {@link _Helper.publicClone}).
+	// JIRA: CPOUI5ODATAV4-2661
+	QUnit.test("CPOUI5ODATAV4-2661: OneWay - publicClone", async function (assert) {
+		const oModel = this.createTeaBusiModel({autoExpandSelect : true});
+		const sView = `
+<FlexBox id="form" binding="{/EMPLOYEES('1')}">
+	<Text id="name" text="{Name}"/>
+	<Text id="teamId" text="{EMPLOYEE_2_MANAGER/TEAM_ID}"/>
+	<Text id="manager" text="{
+		formatter : '.myFormatter',
+		mode : 'OneWay',
+		path : 'EMPLOYEE_2_MANAGER',
+		targetType : 'any'
+	}"/>
+</FlexBox>`;
+		const oController = {
+			myFormatter : (oManager) => JSON.stringify(oManager)
+		};
+
+		this.expectRequest("EMPLOYEES('1')?$select=ID,Name"
+				+ "&$expand=EMPLOYEE_2_MANAGER($select=ID,TEAM_ID)", {
+				EMPLOYEE_2_MANAGER : {
+					ID : "2",
+					TEAM_ID : "TEAM_01"
+				},
+				ID : "1",
+				Name : "Frederic Fall"
+			})
+			.expectChange("name", "Frederic Fall")
+			.expectChange("teamId", "TEAM_01")
+			.expectChange("manager", '{"ID":"2","TEAM_ID":"TEAM_01"}'); // no access to internals
+
+		await this.createView(assert, sView, oModel, oController);
+
+		const oContext = this.oView.byId("form").getBindingContext();
+
+		this.expectChange("teamId", "TEAM_02");
+			// this is accepted!
+			// .expectChange("manager", '{"ID":"2","TEAM_ID":"TEAM_02"}');
+
+		// code under test
+		oContext.setProperty("EMPLOYEE_2_MANAGER/TEAM_ID", "TEAM_02", null);
+
+		await this.waitForChanges(assert, "edit");
+
+		this.expectRequest("EMPLOYEES('1')?$select=EMPLOYEE_2_MANAGER"
+				+ "&$expand=EMPLOYEE_2_MANAGER($select=ID,TEAM_ID)", {
+				EMPLOYEE_2_MANAGER : {
+					ID : "2",
+					TEAM_ID : "TEAM_02*"
+				}
+			})
+			.expectChange("teamId", "TEAM_02*")
+			.expectChange("manager", '{"ID":"2","TEAM_ID":"TEAM_02*"}'); // no access to internals
+
+		await Promise.all([
+			// code under test
+			oContext.requestSideEffects(["EMPLOYEE_2_MANAGER"]),
+			this.waitForChanges(assert, "side effects")
 		]);
 	});
 
@@ -42406,6 +42476,295 @@ sap.ui.define([
 		oTable.setFirstVisibleRow(3);
 
 		await this.waitForChanges(assert, "(7) quickly scroll to 4 and 3");
+	});
+
+	//*********************************************************************************************
+	// Scenario: Show the top pyramid of a recursive hierarchy, expanded to level 2. Expand 2 more
+	// levels below Delta. Collapse Epsilon and collapse Delta. Expand Delta again to show 2 more
+	// levels and see that Epsilon is still collapsed. Expand all descendants below Beta. Collapse
+	// Beta again. Request a side effects refresh and see that the request does not contain
+	// unnecessary ExpandLevels.
+	// JIRA: CPOUI5ODATAV4-2026
+	QUnit.test("Recursive Hierarchy: expand by given number of levels", async function (assert) {
+		const sUrl = "EMPLOYEES?$apply=com.sap.vocabularies.Hierarchy.v1.TopLevels("
+				+ "HierarchyNodes=$root/EMPLOYEES,HierarchyQualifier='OrgChart'"
+				+ ",NodeProperty='ID',Levels=2";
+		const sSelect = ")&$select=DescendantCount,DistanceFromRoot,DrillState,ID,Name";
+		const oModel = this.createTeaBusiModel({autoExpandSelect : true});
+		const sView = `
+<t:Table id="table" rows="{path : '/EMPLOYEES',
+		parameters : {
+			$$aggregation : {
+				expandTo : 2,
+				hierarchyQualifier : 'OrgChart'
+			}
+		}}" threshold="0" visibleRowCount="5">
+	<Text text="{= %{@$ui5.node.isExpanded} }"/>
+	<Text text="{= %{@$ui5.node.level} }"/>
+	<Text text="{ID}"/>
+	<Text text="{Name}"/>
+</t:Table>`;
+
+		// 0 Alpha
+		//  1 Beta
+		//    1.2 Gamma
+		//  2 Delta
+		//    2.1 Epsilon
+		//      2.1.1 Zeta
+
+		this.expectRequest(sUrl + sSelect + "&$count=true&$skip=0&$top=5", {
+				"@odata.count" : "3",
+				value : [{
+					DescendantCount : "2",
+					DistanceFromRoot : "0",
+					DrillState : "expanded",
+					ID : "0",
+					Name : "Alpha"
+				}, {
+					DescendantCount : "0",
+					DistanceFromRoot : "1",
+					DrillState : "collapsed",
+					ID : "1",
+					Name : "Beta"
+				}, {
+					DescendantCount : "0",
+					DistanceFromRoot : "1",
+					DrillState : "collapsed",
+					ID : "2",
+					Name : "Delta"
+				}]
+			});
+
+		await this.createView(assert, sView, oModel);
+
+		const oTable = this.oView.byId("table");
+		checkTable("initial page", assert, oTable, [
+			"/EMPLOYEES('0')",
+			"/EMPLOYEES('1')",
+			"/EMPLOYEES('2')"
+		], [
+			[true, 1, "0", "Alpha"],
+			[false, 2, "1", "Beta"],
+			[false, 2, "2", "Delta"]
+		]);
+		const oBeta = oTable.getRows()[1].getBindingContext();
+		const oDelta = oTable.getRows()[2].getBindingContext();
+
+		this.expectRequest(sUrl + ",ExpandLevels=" + JSON.stringify([{NodeID : "2", Levels : 2}])
+					+ sSelect + "&$count=true&$skip=0&$top=5", {
+				"@odata.count" : "5",
+				value : [{
+					DescendantCount : "4",
+					DistanceFromRoot : "0",
+					DrillState : "expanded",
+					ID : "0",
+					Name : "Alpha*"
+				}, {
+					DescendantCount : "0",
+					DistanceFromRoot : "1",
+					DrillState : "collapsed",
+					ID : "1",
+					Name : "Beta*"
+				}, {
+					DescendantCount : "2",
+					DistanceFromRoot : "1",
+					DrillState : "expanded",
+					ID : "2",
+					Name : "Delta*"
+				}, {
+					DescendantCount : "1",
+					DistanceFromRoot : "2",
+					DrillState : "expanded",
+					ID : "2.1",
+					Name : "Epsilon*"
+				}, {
+					DescendantCount : "0",
+					DistanceFromRoot : "3",
+					DrillState : "leaf",
+					ID : "2.1.1",
+					Name : "Zeta*"
+				}]
+			});
+
+		// code under test
+		oDelta.expand(2);
+
+		await this.waitForChanges(assert, "expand Delta");
+
+		checkTable("after expand Delta", assert, oTable, [
+			"/EMPLOYEES('0')",
+			"/EMPLOYEES('1')",
+			"/EMPLOYEES('2')",
+			"/EMPLOYEES('2.1')",
+			"/EMPLOYEES('2.1.1')"
+		], [
+			[true, 1, "0", "Alpha*"],
+			[false, 2, "1", "Beta*"],
+			[true, 2, "2", "Delta*"],
+			[true, 3, "2.1", "Epsilon*"],
+			[undefined, 4, "2.1.1", "Zeta*"]
+		]);
+		const oEpsilon = oTable.getRows()[3].getBindingContext();
+
+		oEpsilon.collapse();
+		oDelta.collapse();
+
+		// table update takes a moment
+		await this.waitForChanges(assert, "collapse Epsilon and Delta");
+
+		checkTable("after collapsed Epsilon and Delta", assert, oTable, [
+			"/EMPLOYEES('0')",
+			"/EMPLOYEES('1')",
+			"/EMPLOYEES('2')"
+		], [
+			[true, 1, "0", "Alpha*"],
+			[false, 2, "1", "Beta*"],
+			[false, 2, "2", "Delta*"]
+		]);
+
+		// code under test
+		oDelta.expand(2);
+
+		// table update takes a moment
+		await this.waitForChanges(assert, "expand Delta again");
+
+		checkTable("after expand Delta again", assert, oTable, [
+			"/EMPLOYEES('0')",
+			"/EMPLOYEES('1')",
+			"/EMPLOYEES('2')",
+			"/EMPLOYEES('2.1')"
+		], [
+			[true, 1, "0", "Alpha*"],
+			[false, 2, "1", "Beta*"],
+			[true, 2, "2", "Delta*"],
+			[false, 3, "2.1", "Epsilon*"]
+		]);
+
+		this.expectRequest(sUrl + ",ExpandLevels=" + JSON.stringify([
+				{NodeID : "2.1", Levels : 0},
+				{NodeID : "2", Levels : 2},
+				{NodeID : "1", Levels : null}
+			]) + sSelect + "&$count=true&$skip=0&$top=5", {
+				"@odata.count" : "5",
+				value : [{
+					DescendantCount : "4",
+					DistanceFromRoot : "0",
+					DrillState : "expanded",
+					ID : "0",
+					Name : "Alpha**"
+				}, {
+					DescendantCount : "1",
+					DistanceFromRoot : "1",
+					DrillState : "expanded",
+					ID : "1",
+					Name : "Beta**"
+				}, {
+					DescendantCount : "0",
+					DistanceFromRoot : "2",
+					DrillState : "leaf",
+					ID : "1.1",
+					Name : "Gamma**"
+				}, {
+					DescendantCount : "1",
+					DistanceFromRoot : "1",
+					DrillState : "expanded",
+					ID : "2",
+					Name : "Delta**"
+				}, {
+					DescendantCount : "0",
+					DistanceFromRoot : "2",
+					DrillState : "collapsed",
+					ID : "2.1",
+					Name : "Epsilon**"
+				}]
+			});
+
+		// code under test
+		oBeta.expand(Number.MAX_SAFE_INTEGER);
+
+		await this.waitForChanges(assert, "expand Beta");
+
+		checkTable("after expand Beta", assert, oTable, [
+			"/EMPLOYEES('0')",
+			"/EMPLOYEES('1')",
+			"/EMPLOYEES('1.1')",
+			"/EMPLOYEES('2')",
+			"/EMPLOYEES('2.1')"
+		], [
+			[true, 1, "0", "Alpha**"],
+			[true, 2, "1", "Beta**"],
+			[undefined, 3, "1.1", "Gamma**"],
+			[true, 2, "2", "Delta**"],
+			[false, 3, "2.1", "Epsilon**"]
+		]);
+
+		// code under test
+		oBeta.collapse();
+
+		// table update takes a moment
+		await this.waitForChanges(assert, "collapse Beta");
+
+		checkTable("after collapse Beta", assert, oTable, [
+			"/EMPLOYEES('0')",
+			"/EMPLOYEES('1')",
+			"/EMPLOYEES('2')",
+			"/EMPLOYEES('2.1')"
+		], [
+			[true, 1, "0", "Alpha**"],
+			[false, 2, "1", "Beta**"],
+			[true, 2, "2", "Delta**"],
+			[false, 3, "2.1", "Epsilon**"]
+		]);
+
+		this.expectRequest(sUrl + ",ExpandLevels=" + JSON.stringify([
+				{NodeID : "2.1", Levels : 0},
+				{NodeID : "2", Levels : 2}
+			]) + sSelect + "&$count=true&$skip=0&$top=5", {
+				"@odata.count" : "4",
+				value : [{
+					DescendantCount : "3",
+					DistanceFromRoot : "0",
+					DrillState : "expanded",
+					ID : "0",
+					Name : "Alpha***"
+				}, {
+					DescendantCount : "0",
+					DistanceFromRoot : "1",
+					DrillState : "collapsed",
+					ID : "1",
+					Name : "Beta***"
+				}, {
+					DescendantCount : "1",
+					DistanceFromRoot : "1",
+					DrillState : "expanded",
+					ID : "2",
+					Name : "Delta***"
+				}, {
+					DescendantCount : "0",
+					DistanceFromRoot : "2",
+					DrillState : "collapsed",
+					ID : "2.1",
+					Name : "Epsilon***"
+				}]
+			});
+
+		await Promise.all([
+			// code under test
+			oTable.getBinding("rows").getHeaderContext().requestSideEffects([""]),
+			this.waitForChanges(assert, "request side effects")
+		]);
+
+		checkTable("after request side effects", assert, oTable, [
+			"/EMPLOYEES('0')",
+			"/EMPLOYEES('1')",
+			"/EMPLOYEES('2')",
+			"/EMPLOYEES('2.1')"
+		], [
+			[true, 1, "0", "Alpha***"],
+			[false, 2, "1", "Beta***"],
+			[true, 2, "2", "Delta***"],
+			[false, 3, "2.1", "Epsilon***"]
+		]);
 	});
 
 	//*********************************************************************************************
