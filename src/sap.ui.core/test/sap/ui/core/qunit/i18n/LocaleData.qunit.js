@@ -3,6 +3,7 @@ sap.ui.define([
 	"./helper/_timezones",
 	"sap/base/Log",
 	"sap/base/i18n/Formatting",
+	"sap/base/i18n/LanguageTag",
 	"sap/base/i18n/Localization",
 	"sap/base/i18n/date/TimezoneUtils",
 	"sap/base/util/LoaderExtensions",
@@ -11,7 +12,7 @@ sap.ui.define([
 	"sap/ui/core/Locale",
 	"sap/ui/core/LocaleData",
 	"sap/ui/core/date/CalendarWeekNumbering"
-], function(timezones, Log, Formatting, Localization, TimezoneUtils, LoaderExtensions, CalendarType, Lib, Locale, LocaleData, CalendarWeekNumbering) {
+], function(timezones, Log, Formatting, LanguageTag, Localization, TimezoneUtils, LoaderExtensions, CalendarType, Lib, Locale, LocaleData, CalendarWeekNumbering) {
 	"use strict";
 	const aSupportedLanguages = ["ar", "ar_EG", "ar_SA", "bg", "ca", "cnr", "cs", "cy", "da", "de", "de_AT", "de_CH",
 		"el", "el_CY", "en", "en_AU", "en_GB", "en_HK", "en_IE", "en_IN", "en_NZ", "en_PG", "en_SG", "en_ZA", "es",
@@ -1320,7 +1321,7 @@ sap.ui.define([
 			.returns(Promise.resolve({"scripts": {"foo": "bar"}, "weekData-firstDay": 0}));
 
 		// code under test
-		const pLocaleData = LocaleData.requestInstance(new Locale("ar_SA"));
+		const pLocaleData = LocaleData.requestInstance(new LanguageTag("ar_SA"));
 
 		assert.ok(pLocaleData instanceof Promise);
 
@@ -1331,8 +1332,8 @@ sap.ui.define([
 			assert.deepEqual(oLocaleData.getScripts(), {"baz": "foo", "foo": "bar"}, "'foo' is added from locale 'ar'");
 			assert.ok(!oLocaleData.hasOwnProperty("loaded"));
 
-			// code under test - no request when synchronously creating a LocaleData instance for the same locale ID
-			const oSyncLocaleData = LocaleData.getInstance(new Locale("ar_SA"));
+			// code under test - no request when synchronously creating a LocaleData instance for the same language tag
+			const oSyncLocaleData = LocaleData.getInstance(new LanguageTag("ar_SA"));
 
 			assert.deepEqual(oLocaleData, oSyncLocaleData);
 		});
@@ -1348,7 +1349,7 @@ sap.ui.define([
 		oFormattingMock.expects("getCustomLocaleData").withExactArgs().returns("~mCustomLocaleData");
 
 		// code under test
-		const pLocaleData = LocaleData.requestInstance(new Locale("de-x-sapufmt"));
+		const pLocaleData = LocaleData.requestInstance(new LanguageTag("de-x-sapufmt"));
 
 		assert.ok(pLocaleData instanceof Promise);
 
@@ -1360,8 +1361,8 @@ sap.ui.define([
 
 			oFormattingMock.expects("getCustomLocaleData").withExactArgs().returns("~mCustomLocaleData");
 
-			// code under test - sync loading the same locale
-			const oSyncLocaleData = LocaleData.getInstance(new Locale("de-x-sapufmt"));
+			// code under test - sync loading the same language tag
+			const oSyncLocaleData = LocaleData.getInstance(new LanguageTag("de-x-sapufmt"));
 
 			assert.deepEqual(oLocaleData, oSyncLocaleData);
 		});
@@ -1379,7 +1380,7 @@ sap.ui.define([
 			.returns(Promise.resolve({"scripts": {"baz": "foo"}}));
 
 		// code under test
-		const pLocaleData = LocaleData.requestInstance(new Locale("de"));
+		const pLocaleData = LocaleData.requestInstance(new LanguageTag("de"));
 
 		assert.ok(pLocaleData instanceof Promise);
 
