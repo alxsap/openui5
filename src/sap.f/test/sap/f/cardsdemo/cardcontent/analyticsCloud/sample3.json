@@ -1,6 +1,6 @@
 {
 	"sap.app": {
-		"id": "sap.cardsdemo.ui.integration.samples.cards.sac",
+		"id": "sap.cardsdemo.ui.integration.samples.cards.sac.sample3",
 		"type": "card",
 		"title": "SAC Integration Card",
 		"subTitle": "Add a SAC Story to pages",
@@ -27,14 +27,6 @@
 	"sap.card": {
 		"type": "AnalyticsCloud",
 		"configuration": {
-			"parameters": {
-				"testStoryId": {
-					"value": "ABD0990112D81FBF4C936C30444FA3B7"
-				},
-				"testWidgetId": {
-					"value": "Chart_3"
-				}
-			},
 			"destinations": {
 				"SAC": {
 					"name": "SAC",
@@ -50,8 +42,8 @@
 			"minHeight": "25rem",
 			"sacTenantDestination": "{{destinations.SAC}}",
 			"widget": {
-				"storyId": "{parameters>/testStoryId/value}",
-				"widgetId": "{parameters>/testWidgetId/value}"
+				"storyId": "ABD0990112D81FBF4C936C30444FA3B7",
+				"widgetId": "Chart_3"
 			}
 		}
 	}

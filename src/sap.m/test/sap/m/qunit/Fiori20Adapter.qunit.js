@@ -450,6 +450,53 @@ sap.ui.define([
 		Fiori20Adapter.detachViewChange(oSpy);
 	});
 
+	QUnit.test("Header is adapted dynamically when the back button is explicitly set", async function(assert) {
+
+		var oAdaptOptions = {bCollapseHeader: true, bHideBackButton: true},
+			oModel = new JSONModel({showButton: false}),
+			oBackButton = new Button("myCustomBackButtonId", {type: "Back", visible: "{/showButton}"}),
+			oDetectedBackButton,
+			fnViewListener = function(oEvent) {
+				oDetectedBackButton = oEvent.getParameter("oBackButton");
+			},
+			oSpy = this.spy(fnViewListener);
+
+		this.oPage.setCustomHeader(new Bar({
+			contentLeft: [oBackButton]
+		}));
+		this.oPage.setModel(oModel);
+		Fiori20Adapter.attachViewChange(oSpy);
+
+		Fiori20Adapter.traverse(this.oPage, oAdaptOptions);
+		await nextUIUpdate();
+
+		// Assert
+		assert.strictEqual(this.oPage.hasStyleClass("sapF2CollapsedHeader"), true , "header is collapsed");
+		assert.strictEqual(oSpy.called, false, "spy is not called");
+
+		oSpy.resetHistory();
+		oModel.setProperty("/showButton", true);
+		await nextUIUpdate();
+
+		assert.strictEqual(this.oPage.hasStyleClass("sapF2CollapsedHeader"), true , "header is still collapsed");
+		assert.ok(oBackButton.hasStyleClass("sapF2AdaptedNavigation"), "back button is adapted");
+		assert.strictEqual(oSpy.calledOnce, true, "spy is called");
+		assert.strictEqual(oDetectedBackButton.getId(), oBackButton.getId(), "back button is detected");
+
+		oSpy.resetHistory();
+		oDetectedBackButton = null;
+		oModel.setProperty("/showButton", false);
+		await nextUIUpdate();
+
+		assert.strictEqual(this.oPage.hasStyleClass("sapF2CollapsedHeader"), true , "header is still collapsed");
+		assert.ok(!oBackButton.hasStyleClass("sapF2AdaptedNavigation"), "back button is not adapted");
+		assert.strictEqual(oSpy.calledOnce, true, "spy is called");
+		assert.strictEqual(oDetectedBackButton, undefined, "back button is detected");
+
+		// cleanup
+		Fiori20Adapter.detachViewChange(oSpy);
+	});
+
 	QUnit.module("Fiori2 post adaptation of page header", {
 		beforeEach: async function() {
 			this.oApp = new App();

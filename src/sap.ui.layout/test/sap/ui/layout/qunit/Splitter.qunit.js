@@ -7,7 +7,6 @@ sap.ui.define([
 	"sap/m/Panel",
 	"sap/m/ScrollContainer",
 	"sap/ui/core/library",
-	"sap/ui/core/mvc/XMLView",
 	"sap/ui/core/RenderManager",
 	"sap/ui/core/ResizeHandler",
 	"sap/ui/dom/units/Rem",
@@ -20,7 +19,6 @@ sap.ui.define([
 	Panel,
 	ScrollContainer,
 	coreLibrary,
-	XMLView,
 	RenderManager,
 	ResizeHandler,
 	Rem,
@@ -37,7 +35,6 @@ sap.ui.define([
 			createExampleContent.called = 0;
 		}
 		++createExampleContent.called;
-
 
 		var oLd = new SplitterLayoutData({
 			resizable: true,
@@ -1083,5 +1080,32 @@ sap.ui.define([
 
 		// clean up
 		oHorizontalSplitter.destroy();
+	});
+
+	QUnit.module("Focus", {
+		beforeEach: createTestSplitter,
+		afterEach: function() {
+			this.oSplitter.destroy();
+		}
+	});
+
+	QUnit.test("Focus DOM ref", function (assert) {
+		// arrange
+		const expectedFocusDomRef = this.oSplitter.getDomRef("splitbar-0");
+
+		// assert
+		assert.strictEqual(this.oSplitter.getFocusDomRef(), expectedFocusDomRef, "Focus DOM ref should be correct");
+	});
+
+	QUnit.test("Focus DOM ref when the splitter has no bars", async function (assert) {
+		// arrange
+		this.oSplitter.destroyContentAreas();
+
+		await nextUIUpdate();
+
+		const expectedFocusDomRef = this.oSplitter.getDomRef();
+
+		// assert
+		assert.strictEqual(this.oSplitter.getFocusDomRef(), expectedFocusDomRef, "Focus DOM ref should be correct");
 	});
 });

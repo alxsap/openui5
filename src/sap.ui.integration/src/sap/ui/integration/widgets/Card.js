@@ -314,6 +314,18 @@ sap.ui.define([
 					type: "sap.ui.integration.CardPreviewMode",
 					group: "Behavior",
 					defaultValue: CardPreviewMode.Off
+				},
+
+				/**
+				 * If the card should change depending on its size.
+				 * This property is temporary. Should be used to enable the feature for cards where it is needed.
+				 * @experimental Since 1.127
+				 * @since 1.127
+				 */
+				useProgressiveDisclosure: {
+					type: "boolean",
+					group: "Behavior",
+					defaultValue: false
 				}
 			},
 			aggregations: {
@@ -512,6 +524,7 @@ sap.ui.define([
 		}.bind(this);
 
 		this._fireStateChangedBound = this._fireStateChanged.bind(this);
+		this._sizeFormatterBound = this._oDisplayVariants.sizeFormatter.bind(this._oDisplayVariants);
 
 		/**
 		 * Facade of the {@link sap.ui.integration.widgets.Card} control.
@@ -1697,6 +1710,22 @@ sap.ui.define([
 	};
 
 	/**
+	 * Returns the matching value from the query.
+	 *
+	 * size('standard') => true
+	 *
+	 * size({small:2, standard:5, large: 10}) => 5
+	 *
+	 * @private
+	 * @ui5-restricted UPA
+	 * @param {string|object} vQuery The query.
+	 * @returns {*} The result.
+	 */
+	Card.prototype.sizeQuery = function (vQuery) {
+		return this._oDisplayVariants.sizeFormatter(vQuery);
+	};
+
+	/**
 	 * Initializes internal classes needed for the card, based on the ready manifest.
 	 *
 	 * @private
@@ -2607,6 +2636,8 @@ sap.ui.define([
 				formatters: oExtension.getFormatters()
 			};
 		}
+
+		mNamespaces.size = this._sizeFormatterBound;
 
 		return mNamespaces;
 	};
