@@ -453,7 +453,12 @@ function(
 						/**
 						 * The event parameter is set to true, when the button at the end of the suggestion table is clicked, otherwise false. It can be used to determine whether the "value help" trigger or the "show all items" trigger has been pressed.
 						 */
-						fromSuggestions : {type : "boolean"}
+						fromSuggestions : {type : "boolean"},
+
+						/**
+						 * The event parameter is set to true, when the event is fired after keyboard interaction, otherwise false.
+						 */
+						fromKeyboard: {type: "boolean"}
 					}
 				},
 
@@ -1144,7 +1149,7 @@ function(
 
 					that.bValueHelpRequested = true;
 
-					that._fireValueHelpRequest(false);
+					that._fireValueHelpRequest(false, false);
 				}
 			});
 		} else if (this._oValueHelpIcon.getSrc() !== sIconSrc) {
@@ -1199,7 +1204,7 @@ function(
 	 *
 	 * @private
 	 */
-	Input.prototype._fireValueHelpRequest = function(bFromSuggestions) {
+	Input.prototype._fireValueHelpRequest = function(bFromSuggestions, bFromKeyboard) {
 
 		// The goal is to provide a value in the value help event, which can be used to filter the opened Value Help Dialog.
 		var sTypedInValue = "";
@@ -1212,6 +1217,7 @@ function(
 
 		this.fireValueHelpRequest({
 			fromSuggestions: bFromSuggestions,
+			fromKeyboard: bFromKeyboard,
 			_userInputValue: sTypedInValue // NOTE: Private parameter for the SmartControls which need only the value entered by the user.
 		});
 	};
@@ -2349,7 +2355,7 @@ function(
 		}
 
 		this.bValueHelpRequested = true;
-		this._fireValueHelpRequest(false);
+		this._fireValueHelpRequest(false, true);
 		oEvent.preventDefault();
 		oEvent.stopPropagation();
 	};
@@ -2693,7 +2699,7 @@ function(
 				this._setTypedInValue(sTempTypedInValue);
 			}
 
-			this._fireValueHelpRequest(true);
+			this._fireValueHelpRequest(true, false);
 			this._closeSuggestionPopup();
 		}
 	};
