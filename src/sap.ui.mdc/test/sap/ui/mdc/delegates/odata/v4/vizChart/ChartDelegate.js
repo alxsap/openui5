@@ -10,12 +10,14 @@ sap.ui.define([
 	"delegates/odata/v4/FilterBarDelegate",
 	"sap/ui/mdc/odata/v4/vizChart/ChartDelegate",
 	"delegates/odata/v4/ODataMetaModelUtil",
-	"sap/ui/mdc/enums/ChartItemRoleType"
-], function (
+	"sap/ui/mdc/enums/ChartItemRoleType",
+	"sap/viz/ui5/format/ChartFormatter"
+], function(
 	FilterBarDelegate,
 	VizChartDelegate,
 	ODataMetaModelUtil,
-	ChartItemRoleType
+	ChartItemRoleType,
+	ChartFormatter
 ) {
 	"use strict";
 
@@ -169,6 +171,43 @@ sap.ui.define([
 		if (oChart.getModel) {
 			return Promise.resolve(this._createMDCChartItem(sPropertyName, oChart, sRole));
 		}
+	};
+
+	ChartDelegate._setChart = function(oChart, oInnerChart) {
+		VizChartDelegate._setChart(oChart, oInnerChart);
+
+		oInnerChart.setVizProperties({
+			plotArea: {
+				scrollbar: { forceToShowInMobile: true },
+				dataLabel: {
+					formatString: ChartFormatter.DefaultPattern.SHORTFLOAT_MFD2,
+					visible: true,
+					hideWhenOverlap: true
+				}
+			},
+			tooltip: {
+				formatString: ChartFormatter.DefaultPattern.SHORTFLOAT_MFD2,
+				unitFormatType: "FinancialUnits"
+			},
+			valueAxis: {
+				label: {
+					formatString: ChartFormatter.DefaultPattern.SHORTFLOAT_MFD2,
+					unitFormatType: "FinancialUnits"
+				},
+				title: {
+					visible: true
+				}
+			}
+		});
+	};
+
+	ChartDelegate.setChartTooltipVisibility = function(oChart, bFlag) {
+		VizChartDelegate.setChartTooltipVisibility(oChart, bFlag);
+
+		const oState = this._getState(oChart);
+		oState?.vizTooltip.setFormatString(ChartFormatter.DefaultPattern.SHORTFLOAT_MFD2);
+		// oState.vizTooltip.setUnitFormatType("FinancialUnits");
+
 	};
 
 	return ChartDelegate;

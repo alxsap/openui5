@@ -64,6 +64,12 @@ sap.ui.define([
 		  value: "09:15:16 PM",
 		  localeId: "en_US",
 		  displayFormat: "B HH:mm"
+	  },
+	  {
+		  id: "TP26",
+		  value: "09:15:16 PM",
+		  localeId: "en_US",
+		  displayFormat: "B hh:mm"
 	  }
   ];
 

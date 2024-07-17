@@ -1305,15 +1305,23 @@ sap.ui.define([
 		 * @param {jQuery.Event} oEvent The event object.
 		 */
 		SinglePlanningCalendarGrid.prototype.onkeyup = function(oEvent) {
-			var bMultiDateSelection = SinglePlanningCalendarSelectionMode.MultiSelect === this.getDateSelectionMode();
-			if ((oEvent.which === KeyCodes.ARROW_LEFT || oEvent.which === KeyCodes.ARROW_RIGHT) && oEvent.shiftKey && bMultiDateSelection) {
+			const bMultiDateSelection = SinglePlanningCalendarSelectionMode.MultiSelect === this.getDateSelectionMode();
+			const bArrowNavigation = oEvent.which === KeyCodes.ARROW_LEFT || oEvent.which === KeyCodes.ARROW_RIGHT;
+			const bSpaceOrEnter = oEvent.which === KeyCodes.SPACE || oEvent.which === KeyCodes.ENTER;
+
+			if (!bArrowNavigation && !bSpaceOrEnter){
+				return;
+			}
+
+			if (bArrowNavigation && oEvent.shiftKey && bMultiDateSelection) {
 				this._bMultiDateSelectWithArrow = true;
 			} else if (oEvent.which === KeyCodes.SPACE && !oEvent.shiftKey && bMultiDateSelection) {
 				this._bMultiDateSelect = true;
-			} else if ((oEvent.which === KeyCodes.SPACE || oEvent.which === KeyCodes.ENTER) && !oEvent.shiftKey) {
+			} else if (bSpaceOrEnter && !oEvent.shiftKey) {
 				this.removeAllSelectedDates();
 				this._bMultiDateSelect = true;
 			}
+
 			this._fireSelectionEvent(oEvent);
 			// Prevent scrolling
 			oEvent.preventDefault();
@@ -1325,9 +1333,11 @@ sap.ui.define([
 		 * @param {jQuery.Event} oEvent The event object.
 		 */
 		SinglePlanningCalendarGrid.prototype.onkeydown = function (oEvent) {
-			var bMultiDateSelection = SinglePlanningCalendarSelectionMode.MultiSelect === this.getDateSelectionMode();
-			if (oEvent.which === KeyCodes.SPACE || oEvent.which === KeyCodes.ENTER ||
-				oEvent.which === KeyCodes.ARROW_LEFT || oEvent.which === KeyCodes.ARROW_RIGHT) {
+			const bMultiDateSelection = SinglePlanningCalendarSelectionMode.MultiSelect === this.getDateSelectionMode();
+			const bSpaceOrEnter = oEvent.which === KeyCodes.SPACE || oEvent.which === KeyCodes.ENTER;
+			const bArrowNavigation = oEvent.which === KeyCodes.ARROW_LEFT || oEvent.which === KeyCodes.ARROW_RIGHT;
+
+			if (bSpaceOrEnter || bArrowNavigation) {
 				if (oEvent.which === KeyCodes.SPACE && oEvent.shiftKey && bMultiDateSelection) {
 					this._bCurrentWeekSelection = true;
 				}
@@ -1371,6 +1381,7 @@ sap.ui.define([
 		 * @param {jQuery.Event} oEvent The event object.
 		 */
 		SinglePlanningCalendarGrid.prototype._fireSelectionEvent = function (oEvent) {
+			const bArrowNavigation = oEvent.which === KeyCodes.ARROW_LEFT || oEvent.which === KeyCodes.ARROW_RIGHT;
 			var oControl = this._findSrcControl(oEvent),
 				oGridCell = oEvent.target;
 
@@ -1386,7 +1397,7 @@ sap.ui.define([
 					appointment: undefined,
 					appointments: this._toggleAppointmentSelection(undefined, true)
 				});
-			} else if (oControl && oControl.isA("sap.ui.unified.CalendarAppointment")) {
+			} else if (oControl && oControl.isA("sap.ui.unified.CalendarAppointment") && !bArrowNavigation) {
 
 				// add suffix in appointment
 				if (oGridCell.parentElement && oGridCell.parentElement.getAttribute("id")) {
@@ -1480,7 +1491,7 @@ sap.ui.define([
 
 			for (var i = 0; i < aSelectedDates.length; i++){
 				var oSelectStartDate = aSelectedDates[i].getStartDate();
-				if (CalendarDate.fromLocalJSDate(oSelectStartDate).isSame(CalendarDate.fromLocalJSDate(oStartDate))) {
+				if (CalendarDate.fromLocalJSDate(oSelectStartDate).isSame(oStartDate)) {
 					this.removeAggregation("selectedDates", i);
 					break;
 				}
