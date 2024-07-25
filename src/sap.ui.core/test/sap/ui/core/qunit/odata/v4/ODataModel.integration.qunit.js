@@ -6240,12 +6240,16 @@ sap.ui.define([
 	//
 	// A header message is returned in the response. The targets of the message are pointing to the
 	// binding parameter. The UI5 message contains the adjusted targets. (SNOW: DINC0122620)
+	//
+	// The header message contains the property "longtextUrl", which points one level up. See that
+	// the UI5 message contains the resolved "descriptionUrl". (SNOW: DINC0197984)
 	QUnit.test("Context.refresh() in a list relative to a return value context", function (assert) {
 		var oMessage = {
 				additionalTargets : [
 					"$Parameter/SalesOrder/SO_2_SOITEM(ProductID='HT-1000')/ProductID"
 				],
 				code : "foo-42",
+				longtextUrl : "../LongText('0815')",
 				message : "text",
 				numericSeverity : 1,
 				target : "$Parameter/SalesOrder/SO_2_SOITEM(ProductID='HT-1000')/Name"
@@ -6292,6 +6296,7 @@ sap.ui.define([
 				})
 				.expectMessages([{
 					code : "foo-42",
+					descriptionUrl : sSalesOrderService + "LongText('0815')",
 					message : "text",
 					persistent : true,
 					targets : [
@@ -48888,14 +48893,15 @@ sap.ui.define([
 			}),
 			oTable,
 			sView = '\
-<t:Table id="table" rows="{/Artists(\'42\')/_Publication}" threshold="0" visibleRowCount="2">\
+<t:Table id="table" rows="{/Artists(ArtistID=\'42\',IsActiveEntity=true)/_Publication}"\
+		threshold="0" visibleRowCount="2">\
 	<Text id="id" text="{PublicationID}"/>\
 	<Text id="price" text="{Price}"/>\
 </t:Table>',
 			that = this;
 
-		this.expectRequest("Artists('42')/_Publication?$select=Price,PublicationID"
-				+ "&$skip=0&$top=2", {
+		this.expectRequest("Artists(ArtistID='42',IsActiveEntity=true)/_Publication"
+				+ "?$select=Price,PublicationID&$skip=0&$top=2", {
 				value : [{
 					Price : "1.11",
 					PublicationID : "42-1"
@@ -48919,7 +48925,7 @@ sap.ui.define([
 		}).then(function () {
 			that.expectRequest({
 					method : "POST",
-					url : "Artists('42')/_Publication",
+					url : "Artists(ArtistID='42',IsActiveEntity=true)/_Publication",
 					payload : {PublicationID : "New 1"}
 				}, {
 					Price : "3.33",
@@ -48933,7 +48939,7 @@ sap.ui.define([
 				that.waitForChanges(assert)
 			]);
 		}).then(function () {
-			that.expectRequest("Artists('42')/_Publication"
+			that.expectRequest("Artists(ArtistID='42',IsActiveEntity=true)/_Publication"
 					+ "?$select=Price,PublicationID"
 					+ "&$filter=PublicationID eq '42-1'", {
 					value : [{
@@ -48950,7 +48956,7 @@ sap.ui.define([
 				that.waitForChanges(assert)
 			]);
 		}).then(function () {
-			that.expectRequest("Artists('42')/_Publication('New 1')"
+			that.expectRequest("Artists(ArtistID='42',IsActiveEntity=true)/_Publication('New 1')"
 					+ "?$select=Messages,Price,PublicationID", {
 					Messages : [],
 					Price : "3.34",
@@ -48973,7 +48979,7 @@ sap.ui.define([
 
 			return that.waitForChanges(assert);
 		}).then(function () {
-			that.expectRequest("Artists('42')/_Publication"
+			that.expectRequest("Artists(ArtistID='42',IsActiveEntity=true)/_Publication"
 					+ "?$select=Price,PublicationID"
 					+ "&$filter=PublicationID eq '42-1' or "
 					+ "PublicationID eq '42-2' or PublicationID eq 'New 1'&$top=3", {
@@ -50903,15 +50909,16 @@ sap.ui.define([
 	// Scenario: property binding with "##"-path pointing to a meta model property.
 	// CPOUI5UISERVICESV3-1676
 	testViewStart("Property binding with metapath", '\
-<FlexBox binding="{/Artists(\'42\')}">\
+<FlexBox binding="{/Artists(ArtistID=\'42\',IsActiveEntity=true)}">\
 	<Text id="label0" text="{Name##@com.sap.vocabularies.Common.v1.Label}"/>\
 	<Text id="name" text="{Name}"/>\
 </FlexBox>\
 <Text id="insertable"\
 	text="{/Artists##@Org.OData.Capabilities.V1.InsertRestrictions/Insertable}"/>\
 <Text id="label1" text="{/Artists##/@com.sap.vocabularies.Common.v1.Label}"/>',
-		{"Artists('42')?$select=ArtistID,IsActiveEntity,Name" : {
-			//ArtistID : ..., IsActiveEntity : ...
+		{"Artists(ArtistID='42',IsActiveEntity=true)?$select=ArtistID,IsActiveEntity,Name" : {
+			ArtistID : "42",
+			IsActiveEntity : true,
 			Name : "Foo"
 		}},
 		{label0 : "Artist Name", name : "Foo", insertable : true, label1 : "Artist"},
@@ -50940,12 +50947,13 @@ sap.ui.define([
 	// has an object value.
 	// CPOUI5UISERVICESV3-1676
 	testViewStart("Relative data property binding with object value", '\
-<FlexBox binding="{/Artists(\'42\')}">\
+<FlexBox binding="{/Artists(ArtistID=\'42\',IsActiveEntity=true)}">\
 	<Text id="publicationCount" text="{:= %{_Publication}.length }"/>\
 </FlexBox>',
-		{"Artists('42')?$select=ArtistID,IsActiveEntity&$expand=_Publication($select=PublicationID)" : {
-			//ArtistID : ..., IsActiveEntity : ...
-			_Publication : [{/*PublicationID : ...*/}, {}, {}]
+		{"Artists(ArtistID='42',IsActiveEntity=true)?$select=ArtistID,IsActiveEntity&$expand=_Publication($select=PublicationID)" : {
+			ArtistID : "42",
+			IsActiveEntity : true,
+			_Publication : [{PublicationID : "n/a"}, {}, {}]
 		}},
 		{publicationCount : 3},
 		function () {
@@ -51404,8 +51412,8 @@ sap.ui.define([
 				"/special/CurrencyCode/$metadata"
 					: {source : "odata/v4/data/metadata_CurrencyCode.xml"}
 			}),
-			oOperationBinding
-				= oModel.bindContext("/Artists('42')/_Publication/special.cases.Create(...)"),
+			oOperationBinding = oModel.bindContext("/Artists(ArtistID='42',IsActiveEntity=true)"
+				+ "/_Publication/special.cases.Create(...)"),
 			oPropertyBinding
 				= oModel.bindProperty("CurrencyCode", oOperationBinding.getParameterContext());
 
@@ -51435,8 +51443,8 @@ sap.ui.define([
 				"/special/Price/$metadata"
 					: {source : "odata/v4/data/metadata_Price.xml"}
 			}),
-			oOperationBinding
-				= oModel.bindContext("/Artists('42')/_Publication/special.cases.Create(...)"),
+			oOperationBinding = oModel.bindContext("/Artists(ArtistID='42',IsActiveEntity=true)"
+				+ "/_Publication/special.cases.Create(...)"),
 			oPropertyBinding
 				= oModel.bindProperty("Price", oOperationBinding.getParameterContext());
 
@@ -68326,9 +68334,10 @@ sap.ui.define([
 			assert.strictEqual(oLastUsedChannel0.getValue(), "mail");
 			assert.strictEqual(oSendsAutoGraphs.getValue(), false);
 		}).then(function () {
-			oDummyContext = oModel.bindContext("/Artists('41')").getBoundContext();
+			oDummyContext = oModel.bindContext("/Artists(ArtistID='41',IsActiveEntity=true)")
+				.getBoundContext();
 
-			that.expectRequest("Artists('41')", {/*response doesn't matter*/});
+			that.expectRequest("Artists(ArtistID='41',IsActiveEntity=true)", {/*doesn't matter*/});
 
 			return Promise.all([
 				oDummyContext.requestObject(""),
