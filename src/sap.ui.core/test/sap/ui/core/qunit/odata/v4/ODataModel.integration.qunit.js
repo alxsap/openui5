@@ -1847,11 +1847,6 @@ sap.ui.define([
 					}
 				}
 
-				function readableUrl(sUrl0) {
-					return sUrl0.replaceAll(/%([0-9a-fA-F]{2})/g,
-						(_s, n) => String.fromCharCode(Number.parseInt(n, 16)));
-				}
-
 				if (iBatchNo === undefined) {
 					that.iBatchNo += 1;
 				}
@@ -1885,9 +1880,9 @@ sap.ui.define([
 						oActualRequest.$ContentID = sContentID;
 					}
 					assert.deepEqual(oActualRequest, oExpectedRequest,
-						sMethod + " " + readableUrl(sUrl) + " (batchNo: " + iBatchNo + ")");
+						`${sMethod} ${TestUtils.makeUrlReadable(sUrl)} (batchNo: ${iBatchNo})`);
 				} else {
-					assert.ok(false, sMethod + " " + readableUrl(sUrl) + " (unexpected)");
+					assert.ok(false, `${sMethod} ${TestUtils.makeUrlReadable(sUrl)} (unexpected)`);
 					oResponse = {value : []}; // dummy response to avoid further errors
 					mResponseHeaders = {};
 				}
@@ -2311,9 +2306,9 @@ sap.ui.define([
 		 *
 		 * @param {string|object} vRequest
 		 *   The request with the properties "method", "url" and "headers". A string is interpreted
-		 *   as URL with method "GET" and no headers. Spaces inside the URL are percent-encoded
-		 *   automatically. Additionally the following properties may be given for requests within a
-		 *   $batch:
+		 *   as URL with method "GET" and no headers. Spaces, double quotes, square brackets, and
+		 *   curly brackets inside the URL are percent-encoded automatically. Additionally, the
+		 *   following properties may be given for requests within a $batch:
 		 *   <ul>
 		 *      <li> groupId: the group ID by which the $batch was sent
 		 *      <li> batchNo: the number of the ($direct or $batch) request within the test
@@ -2357,8 +2352,7 @@ sap.ui.define([
 					// With GET it must be visible that there is no content, with the other
 					// methods it must be possible to insert the ETag from the header
 					|| (vRequest.method === "GET" ? null : {});
-			vRequest.url = vRequest.url.replaceAll(/[ "\[\]{}]/g,
-				(s) => `%${s.charCodeAt(0).toString(16).padStart(2, 0).toUpperCase()}`);
+			vRequest.url = TestUtils.encodeReadableUrl(vRequest.url);
 			if (vResponse && !(vResponse instanceof Error || vResponse instanceof Promise
 					|| typeof vResponse === "function")) { // vResponse may be inspected
 				if (rCountTrue.test(vRequest.url)) { // $count=true
@@ -17057,6 +17051,62 @@ sap.ui.define([
 				assert.deepEqual(aResult.map(getObject), aValues.slice(1030, 1040));
 			});
 		});
+	});
+
+	//*********************************************************************************************
+	// Scenario: Create a list binding w/o UI. Parameter $count is set. The first call of
+	// #requestContexts is used to get the count of the entity set. Call #requestContexts in
+	// parallel to request a large number of contexts (more than 1024) both with the same explicit
+	// group ID. See that both requests are sent in one batch.
+	//
+	// SNOW: DINC0216566
+	QUnit.test("DINC0216566", async function (assert) {
+		const aValues = [];
+
+		for (let i = 0; i < 5000; i += 1) {
+			aValues[i] = {Team_Id : "TEAM_" + i};
+		}
+
+		await this.createView(assert);
+
+		const oListBinding = this.oModel.bindList("/TEAMS", undefined, undefined, undefined, {
+			$count : true
+		});
+
+		this.expectRequest("TEAMS?$count=true&$skip=0&$top=1", {
+			"@odata.count" : aValues.length.toString(),
+			value : aValues.slice(0, 1)
+		});
+
+		await Promise.all([
+			oListBinding.requestContexts(0, 1),
+			this.waitForChanges(assert, "1st GET")
+		]);
+
+		this.expectRequest({
+				batchNo : 2,
+				url : "TEAMS?$count=true&$skip=1&$top=2000",
+				method : "GET"
+			}, {
+				"@odata.count" : aValues.length.toString(),
+				value : aValues.slice(1, 2001)
+			})
+			.expectRequest({
+				batchNo : 2,
+				url : "TEAMS?$count=true&$skip=2001&$top=2999",
+				method : "GET"
+			}, {
+				"@odata.count" : aValues.length.toString(),
+				value : aValues.slice(2001, 5000)
+			});
+
+		await Promise.all([
+			// does not matter if group ID is $auto.* or something else, but cannot be omitted
+			// code under test
+			oListBinding.requestContexts(1, 2000, "$auto.foo"),
+			oListBinding.requestContexts(2001, Infinity, "$auto.foo"),
+			this.waitForChanges(assert, "2nd and 3rd GET")
+		]);
 	});
 
 	//*********************************************************************************************
