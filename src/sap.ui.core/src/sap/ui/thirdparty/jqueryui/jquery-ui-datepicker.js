@@ -11,6 +11,7 @@
  * Depends:
  *	jquery.ui.core.js
  */
+sap.ui.define(["sap/ui/thirdparty/jquery", 'sap/ui/thirdparty/jqueryui/jquery-ui-core'], (jQuery) => {
 (function( $, undefined ) {
 
 $.extend($.ui, { datepicker: { version: "1.10.4" } });
@@ -2205,3 +2206,5 @@ $.datepicker.uuid = new Date().getTime();
 $.datepicker.version = "1.10.4";
 
 })(jQuery);
+return jQuery;
+});

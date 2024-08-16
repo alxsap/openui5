@@ -14,6 +14,7 @@
  *	jquery.ui.mouse.js
  *	jquery.ui.draggable.js
  */
+sap.ui.define(["sap/ui/thirdparty/jquery", 'sap/ui/thirdparty/jqueryui/jquery-ui-mouse', 'sap/ui/thirdparty/jqueryui/jquery-ui-draggable'], (jQuery) => {
 (function( $, undefined ) {
 
 function isOverAxis( x, reference, size ) {
@@ -399,3 +400,5 @@ $.ui.ddmanager = {
 };
 
 })(jQuery);
+return jQuery;
+});

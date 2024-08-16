@@ -681,6 +681,13 @@ sap.ui.define([
 		return oInterfaces.has(sType);
 	};
 
+	DataType.createType('sap.ui.core.ID', {
+			isValid : function(vValue) {
+				return /^([A-Za-z_][-A-Za-z0-9_.:]*)$/.test(vValue);
+			}
+		},
+		DataType.getType('string')
+	);
 
 	/**
 	 * A string type representing an ID or a name.

@@ -11,6 +11,7 @@
  * Depends:
  *	jquery.ui.effect.js
  */
+sap.ui.define(["sap/ui/thirdparty/jquery"], (jQuery) => {
 (function( $, undefined ) {
 
 $.effects.effect.clip = function( o, done ) {
@@ -65,3 +66,5 @@ $.effects.effect.clip = function( o, done ) {
 };
 
 })(jQuery);
+return jQuery;
+});

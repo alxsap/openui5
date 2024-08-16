@@ -8,6 +8,7 @@
  *
  * http://api.jqueryui.com/jQuery.widget/
  */
+sap.ui.define(["sap/ui/thirdparty/jquery"], (jQuery) => {
 (function( $, undefined ) {
 
 var uuid = 0,
@@ -546,3 +547,5 @@ $.each( { show: "fadeIn", hide: "fadeOut" }, function( method, defaultEffect ) {
 });
 
 })( jQuery );
+return jQuery;
+});

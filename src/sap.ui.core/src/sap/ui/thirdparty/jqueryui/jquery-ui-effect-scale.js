@@ -11,6 +11,7 @@
  * Depends:
  *	jquery.ui.effect.js
  */
+sap.ui.define(["sap/ui/thirdparty/jquery"], (jQuery) => {
 (function( $, undefined ) {
 
 $.effects.effect.puff = function( o, done ) {
@@ -316,3 +317,5 @@ $.effects.effect.size = function( o, done ) {
 };
 
 })(jQuery);
+return jQuery;
+});

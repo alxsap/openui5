@@ -7,8 +7,9 @@
 * http://jquery.org/license
 *
 */
+sap.ui.define(["sap/ui/thirdparty/jquery", 'sap/ui/Device'], (jQuery) => {
 
-(function ( root, doc, factory ) {
+(function ( root, jQuery, doc, factory ) {
 	if ( typeof define === "function" && define.amd ) {
 		// AMD. Register as an anonymous module.
 		define( [ "jquery" ], function ( $ ) {
@@ -17,9 +18,9 @@
 		});
 	} else {
 		// Browser globals
-		factory( root.jQuery, root, doc );
+		factory( jQuery, root, doc );
 	}
-}( this, document, function ( jQuery, window, document, undefined ) {
+}( this, jQuery, document, function ( jQuery, window, document, undefined ) {
 // Script: jQuery hashchange event
 //
 // *Version: 1.3, Last updated: 7/21/2010*
@@ -2184,3 +2185,5 @@ if ( eventCaptureSupported ) {
 
 
 }));
+return jQuery;
+});

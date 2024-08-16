@@ -13,6 +13,7 @@
  *	jquery.ui.mouse.js
  *	jquery.ui.widget.js
  */
+sap.ui.define(["sap/ui/thirdparty/jquery", 'sap/ui/thirdparty/jqueryui/jquery-ui-mouse'], (jQuery) => {
 (function( $, undefined ) {
 
 function isOverAxis( x, reference, size ) {
@@ -1302,3 +1303,5 @@ $.widget("ui.sortable", $.ui.mouse, {
 });
 
 })(jQuery);
+return jQuery;
+});

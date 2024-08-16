@@ -8,6 +8,7 @@
  *
  * http://api.jqueryui.com/position/
  */
+sap.ui.define(["sap/ui/thirdparty/jquery"], (jQuery) => {
 (function( $, undefined ) {
 
 $.ui = $.ui || {};
@@ -536,3 +537,5 @@ $.ui.position = {
 })();
 
 }( jQuery ) );
+return jQuery;
+});
