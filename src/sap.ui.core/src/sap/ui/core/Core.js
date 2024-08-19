@@ -42,7 +42,7 @@ sap.ui.define([
 		 *
 		 * @param {function():void} [fnReady] If the Core is ready the function will be called immediately, otherwise when the ready Promise resolves.
 		 * @returns {Promise<undefined>} The ready promise
-		 * @private
+		 * @public
 		 */
 		ready: (fnReady) => {
 			//Log.error("Use onInit or ComponentSupport instead of awaiting Core.ready");
