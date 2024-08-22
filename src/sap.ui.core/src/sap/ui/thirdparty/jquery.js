@@ -11,10 +11,10 @@
  *
  * Date: 2021-03-02T17:08Z
  */
-// ##### START: MODIFIED BY SAP
+// ##### BEGIN: MODIFIED BY SAP
 sap.ui.define(["sap/ui/thirdparty/jquery-compat"], (jQueryCompat) => {
 	const jQuery = ( function( global, factory ) {
-// ##### END: MODIFIED BY SAP
+	// ##### END: MODIFIED BY SAP
 		"use strict";
 
 		if ( typeof module === "object" && typeof module.exports === "object" ) {
@@ -35,7 +35,7 @@ sap.ui.define(["sap/ui/thirdparty/jquery-compat"], (jQueryCompat) => {
 					return factory( w );
 				};
 		} else {
-			// ##### START: MODIFIED BY SAP
+			// ##### BEGIN: MODIFIED BY SAP
 			return factory( global );
 			// ##### END: MODIFIED BY SAP
 		}

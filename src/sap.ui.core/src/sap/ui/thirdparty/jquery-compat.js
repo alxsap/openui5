@@ -825,5 +825,7 @@ sap.ui.define([], () => {
 	});
 	// ##### END: MODIFIED BY SAP
 	} );
+	// ##### BEGIN: MODIFIED BY SAP
 	return jQueryCompat;
 });
+// ##### END: MODIFIED BY SAP
