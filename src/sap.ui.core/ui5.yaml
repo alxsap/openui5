@@ -239,21 +239,23 @@ builder:
           - mode: preload
             name: sap-ui-core-preload
             filters:
-            - sap/ui/core/Core.js
             - sap/ui/base/config/
-            - sap/ui/core/boot/Polyfills.js
+            - sap/ui/core/Core.js
             - sap/ui/core/boot/AppCacheBuster.js
-            - sap/ui/core/boot/DOM.js
-            - sap/ui/core/boot/FrameOptions.js
-            - sap/ui/core/boot/Supportability.js
-            - sap/ui/core/boot/Splash.js
-            - sap/ui/core/boot/Traces.js
-            - sap/ui/core/boot/loadBootManifest.js
-            - sap/ui/core/boot/Calendar.js
-            - sap/ui/core/boot/Modules.js
-            - sap/ui/core/boot/Init.js
             - sap/ui/core/boot/boot.json
+            - sap/ui/core/boot/Calendar.js
             - sap/ui/core/boot/config.js
+            - sap/ui/core/boot/DOM.js
+            - sap/ui/core/boot/FieldHelpEndpoint.js
+            - sap/ui/core/boot/FrameOptions.js
+            - sap/ui/core/boot/Init.js
+            - sap/ui/core/boot/loadBootManifest.js
+            - sap/ui/core/boot/Log.js
+            - sap/ui/core/boot/Modules.js
+            - sap/ui/core/boot/Polyfills.js
+            - sap/ui/core/boot/Splash.js
+            - sap/ui/core/boot/Supportability.js
+            - sap/ui/core/boot/Traces.js
             resolve: true
           - mode: require
             filters:
@@ -296,21 +298,23 @@ builder:
           - mode: preload
             name: sap-ui-core-preload
             filters:
-              - sap/ui/core/Core.js
               - sap/ui/base/config/
-              - sap/ui/core/boot/Polyfills.js
+              - sap/ui/core/Core.js
               - sap/ui/core/boot/AppCacheBuster.js
-              - sap/ui/core/boot/DOM.js
-              - sap/ui/core/boot/FrameOptions.js
-              - sap/ui/core/boot/Supportability.js
-              - sap/ui/core/boot/Splash.js
-              - sap/ui/core/boot/Traces.js
-              - sap/ui/core/boot/loadBootManifest.js
-              - sap/ui/core/boot/Calendar.js
-              - sap/ui/core/boot/Modules.js
-              - sap/ui/core/boot/Init.js
               - sap/ui/core/boot/boot.json
+              - sap/ui/core/boot/Calendar.js
               - sap/ui/core/boot/config.js
+              - sap/ui/core/boot/DOM.js
+              - sap/ui/core/boot/FieldHelpEndpoint.js
+              - sap/ui/core/boot/FrameOptions.js
+              - sap/ui/core/boot/Init.js
+              - sap/ui/core/boot/loadBootManifest.js
+              - sap/ui/core/boot/Log.js
+              - sap/ui/core/boot/Modules.js
+              - sap/ui/core/boot/Polyfills.js
+              - sap/ui/core/boot/Splash.js
+              - sap/ui/core/boot/Supportability.js
+              - sap/ui/core/boot/Traces.js
             resolve: true
           - mode: require
             filters:
@@ -412,22 +416,23 @@ builder:
               - sap/ui/test/starter/qunitBoot.json
               - sap/ui/thirdparty/qunit*
               - sap/ui/thirdparty/sinon*
-              - sap/ui/core/Core.js
               - sap/ui/base/config/
-              - sap/ui/core/boot/Polyfills.js
+              - sap/ui/core/Core.js
               - sap/ui/core/boot/AppCacheBuster.js
-              - sap/ui/core/boot/DOM.js
-              - sap/ui/core/boot/Eventing.js
-              - sap/ui/core/boot/FrameOptions.js
-              - sap/ui/core/boot/Supportability.js
-              - sap/ui/core/boot/Splash.js
-              - sap/ui/core/boot/Traces.js
-              - sap/ui/core/boot/loadBootManifest.js
-              - sap/ui/core/boot/Calendar.js
-              - sap/ui/core/boot/Modules.js
-              - sap/ui/core/boot/Init.js
               - sap/ui/core/boot/boot.json
+              - sap/ui/core/boot/Calendar.js
               - sap/ui/core/boot/config.js
+              - sap/ui/core/boot/DOM.js
+              - sap/ui/core/boot/FieldHelpEndpoint.js
+              - sap/ui/core/boot/FrameOptions.js
+              - sap/ui/core/boot/Init.js
+              - sap/ui/core/boot/loadBootManifest.js
+              - sap/ui/core/boot/Log.js
+              - sap/ui/core/boot/Modules.js
+              - sap/ui/core/boot/Polyfills.js
+              - sap/ui/core/boot/Splash.js
+              - sap/ui/core/boot/Supportability.js
+              - sap/ui/core/boot/Traces.js
             resolve: true
           - mode: require
             filters:
