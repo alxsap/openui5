@@ -1244,7 +1244,7 @@ sap.ui.define([
 			};
 
 			// Don't reset ThemeManager in case CSS for current library is already preloadeds
-			oLibThemingInfo.started= _getThemeManager(/* bClear = */ !oLibThemingInfo.preloadedCss).then(function(ThemeManager) {
+			oLibThemingInfo.started = _getThemeManager(/* bClear = */ !oLibThemingInfo.preloadedCss).then(function(ThemeManager) {
 				return ThemeManager._includeLibraryThemeAndEnsureThemeRoot(oLibThemingInfo);
 			});
 

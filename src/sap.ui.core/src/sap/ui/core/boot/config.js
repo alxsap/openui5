@@ -28,7 +28,6 @@ sap.ui.define([
 	 */
 
 	/*global */
-	"use strict";
 
 	/** configuration */
 	var ui5loader = globalThis.sap && globalThis.sap.ui && globalThis.sap.ui.loader;
@@ -52,10 +51,6 @@ sap.ui.define([
 			return true;
 		}
 		return false;
-	}
-
-	function ensureSlash(path) {
-		return path && path[path.length - 1] !== '/' ? path + '/' : path;
 	}
 
 	// Prefer script tags which have the sap-ui-bootstrap ID
