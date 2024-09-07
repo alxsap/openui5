@@ -190,7 +190,7 @@ sap.ui.define([
 
 	function needsPersistencyCall(oFlexObject) {
 		return oFlexObject &&
-			[States.LifecycleState.NEW, States.LifecycleState.DIRTY, States.LifecycleState.DELETED].includes(oFlexObject.getState());
+			[States.LifecycleState.NEW, States.LifecycleState.UPDATED, States.LifecycleState.DELETED].includes(oFlexObject.getState());
 	}
 
 	function getAllCompVariantObjects(mCompVariantsMapByPersistencyKey) {
@@ -264,13 +264,13 @@ sap.ui.define([
 			});
 			revertVariantUpdate(
 				oVariant,
-				Object.assign({
+				{
 					name: oRevertDataContent.previousName,
 					content: oRevertDataContent.previousContent,
 					favorite: oRevertDataContent.previousFavorite,
 					executeOnSelection: oRevertDataContent.previousExecuteOnSelection,
 					contexts: oRevertDataContent.previousContexts
-				})
+				}
 			);
 			oVariant.setState(oRevertDataContent.previousState);
 		}
@@ -366,7 +366,7 @@ sap.ui.define([
 			oChange.addRevertInfo(new RevertData({
 				type: CompVariantState.operationType.NewChange
 			}));
-			FlexState.addDirtyFlexObject(mPropertyBag.reference, oChange);
+			FlexState.addDirtyFlexObjects(mPropertyBag.reference, [oChange]);
 		} else {
 			oChange.addRevertInfo(new RevertData({
 				type: CompVariantState.operationType.ContentUpdate,
@@ -430,20 +430,20 @@ sap.ui.define([
 			return undefined;
 		}
 
-		var oChangeSpecificData = mPropertyBag.changeSpecificData;
+		const oChangeSpecificData = mPropertyBag.changeSpecificData;
 
 		oChangeSpecificData.layer = determineLayer(oChangeSpecificData);
 		oChangeSpecificData.changeType = oChangeSpecificData.type;
 		oChangeSpecificData.texts = getTexts(oChangeSpecificData);
 		setAuthor(oChangeSpecificData);
-		var oFileContent = Object.assign({}, oChangeSpecificData, _omit(mPropertyBag, "changeSpecificData"));
-		var oFlexObject = FlexObjectFactory.createCompVariant(oFileContent);
+		const oFileContent = { ...oChangeSpecificData, ...(_omit(mPropertyBag, "changeSpecificData")) };
+		const oFlexObject = FlexObjectFactory.createCompVariant(oFileContent);
 
-		var mCompVariantsMap = FlexState.getCompVariantsMap(mPropertyBag.reference);
-		var oMapOfPersistencyKey = mCompVariantsMap._getOrCreate(mPropertyBag.persistencyKey);
+		const mCompVariantsMap = FlexState.getCompVariantsMap(mPropertyBag.reference);
+		const oMapOfPersistencyKey = mCompVariantsMap._getOrCreate(mPropertyBag.persistencyKey);
 		oMapOfPersistencyKey.variants.push(oFlexObject);
 		oMapOfPersistencyKey.byId[oFlexObject.getId()] = oFlexObject;
-		FlexState.addDirtyFlexObject(mPropertyBag.reference, oFlexObject);
+		FlexState.addDirtyFlexObjects(mPropertyBag.reference, [oFlexObject]);
 		if (oChangeSpecificData.layer !== Layer.USER && oChangeSpecificData.layer !== Layer.PUBLIC) {
 			mPropertyBag.id = mPropertyBag.control.getCurrentVariantId();
 			revertAllVariantUpdate(getVariantById(mPropertyBag));
@@ -469,7 +469,7 @@ sap.ui.define([
 	 * @param {object} [mPropertyBag.contexts] - Map of contexts that restrict the visibility of the variant
 	 * @param {string[]} [mPropertyBag.contexts.role] - List of roles which are allowed to see the variant
 	 * @param {sap.ui.fl.Layer} mPropertyBag.layer - Layer in which the variant removal takes place;
-	 * @param {string} mPropertyBag.adaptationId - ID of the context-based adaptation
+	 * @param {string} [mPropertyBag.adaptationId] - ID of the context-based adaptation
 	 * @param {boolean} [mPropertyBag.forceCreate] - Parameter that forces a new change to be created
 	 * this either updates the variant from the layer or writes a change to that layer.
 	 * @returns {sap.ui.fl.apply._internal.flexObjects.CompVariant} The updated variant
@@ -538,12 +538,12 @@ sap.ui.define([
 		}
 
 		function updateChange(mPropertyBag, oVariant, oChange) {
-			var aRevertData = oChange.getRevertData() || [];
-			var oChangeContent = Object.assign({}, oChange.getContent());
-			var oRevertData = {
-				previousContent: Object.assign({}, oChangeContent),
+			const aRevertData = oChange.getRevertData() || [];
+			const oChangeContent = { ...oChange.getContent() };
+			const oRevertData = {
+				previousContent: { ...oChangeContent },
 				previousState: oChange.getState(),
-				change: _pick(Object.assign({}, mPropertyBag), ["favorite", "visible", "executeOnSelection", "contexts", "content", "name"])
+				change: _pick(mPropertyBag, ["favorite", "visible", "executeOnSelection", "contexts", "content", "name"])
 			};
 			aRevertData.push(oRevertData);
 			oChange.setRevertData(aRevertData);
@@ -582,7 +582,7 @@ sap.ui.define([
 				var sPersistencyKey = oChange.getSelector().persistencyKey;
 				mCompVariantsMap[sPersistencyKey].changes.push(oChange);
 				mCompVariantsMap[sPersistencyKey].byId[oChange.getId()] = oChange;
-				FlexState.addDirtyFlexObject(mPropertyBag.reference, oChange);
+				FlexState.addDirtyFlexObjects(mPropertyBag.reference, [oChange]);
 			}
 
 			var oContent = {};
@@ -608,10 +608,10 @@ sap.ui.define([
 				}
 			});
 
-			if (mPropertyBag.adaptationId !== undefined) {
-				oChange.setAdaptationId(mPropertyBag.adaptationId);
-			} else if (mPropertyBag.changeSpecificData && mPropertyBag.changeSpecificData.adaptationId !== undefined) {
-				oChange.setAdaptationId(mPropertyBag.changeSpecificData.adaptationId);
+			const sAdaptationId = mPropertyBag.adaptationId || mPropertyBag?.changeSpecificData?.adaptationId;
+
+			if (sAdaptationId) {
+				oChange.setAdaptationId(sAdaptationId);
 			}
 
 			if (mPropertyBag.name) {
@@ -763,7 +763,7 @@ sap.ui.define([
 			mCompVariantsMap[sPersistencyKey].changes = mCompVariantsMap[sPersistencyKey].changes.filter(function(oChangeInMap) {
 				return oChangeInMap !== oChange;
 			});
-			FlexState.removeDirtyFlexObject(mPropertyBag.reference, oChange);
+			FlexState.removeDirtyFlexObjects(mPropertyBag.reference, [oChange]);
 		}
 
 		var oVariant = getVariantById(mPropertyBag);
@@ -777,15 +777,15 @@ sap.ui.define([
 			case CompVariantState.operationType.ContentUpdate:
 				revertVariantUpdate(
 					oVariant,
-					Object.assign({
+					{
 						name: oRevertDataContent.previousName,
 						content: oRevertDataContent.previousContent,
 						favorite: oRevertDataContent.previousFavorite,
 						executeOnSelection: oRevertDataContent.previousExecuteOnSelection,
-						contexts: oRevertDataContent.previousContexts
-					},
-					_pick(mPropertyBag, ["reference", "persistencyKey", "id"])
-					));
+						contexts: oRevertDataContent.previousContexts,
+						..._pick(mPropertyBag, ["reference", "persistencyKey", "id"])
+					}
+				);
 				break;
 			case CompVariantState.operationType.NewChange:
 				oChange = oVariantRevertData.getChange();
@@ -793,31 +793,31 @@ sap.ui.define([
 				removeChange(oChange);
 				revertVariantChange(
 					oVariant,
-					Object.assign(
-						{
-							name: oRevertDataContent.previousName,
-							content: oRevertDataContent.previousContent,
-							favorite: oRevertDataContent.previousFavorite,
-							executeOnSelection: oRevertDataContent.previousExecuteOnSelection,
-							contexts: oRevertDataContent.previousContexts
-						},
-						_pick(mPropertyBag, ["reference", "persistencyKey", "id"])
-					));
+					{
+						name: oRevertDataContent.previousName,
+						content: oRevertDataContent.previousContent,
+						favorite: oRevertDataContent.previousFavorite,
+						executeOnSelection: oRevertDataContent.previousExecuteOnSelection,
+						contexts: oRevertDataContent.previousContexts,
+						..._pick(mPropertyBag, ["reference", "persistencyKey", "id"])
+					}
+				);
 				break;
 			case CompVariantState.operationType.UpdateVariantViaChangeUpdate:
 				oChange = oVariantRevertData.getChange();
 				revertVariantChange(
 					oVariant,
-					Object.assign(
-						{
+					{
+						...{
 							name: oRevertDataContent.previousName,
 							content: oRevertDataContent.previousContent,
 							favorite: oRevertDataContent.previousFavorite,
 							executeOnSelection: oRevertDataContent.previousExecuteOnSelection,
 							contexts: oRevertDataContent.previousContexts
 						},
-						_pick(mPropertyBag, ["reference", "persistencyKey", "id"])
-					));
+						..._pick(mPropertyBag, ["reference", "persistencyKey", "id"])
+					}
+				);
 				var oChangeRevertData = oChange.getRevertData().pop();
 				oChange.setContent(oChangeRevertData.previousContent);
 				oChange.setState(oChangeRevertData.previousState);
@@ -902,7 +902,7 @@ sap.ui.define([
 				case States.LifecycleState.NEW:
 					ifVariantClearRevertData(oFlexObject);
 					return writeObjectAndAddToState(oFlexObject, oStoredResponse, sParentVersion);
-				case States.LifecycleState.DIRTY:
+				case States.LifecycleState.UPDATED:
 					ifVariantClearRevertData(oFlexObject);
 					return updateObjectAndStorage(oFlexObject, oStoredResponse, sParentVersion, mPropertyBag.reference);
 				case States.LifecycleState.DELETED:

@@ -115,7 +115,8 @@ sap.ui.define([
 		mParameters = _Helper.clone(mParameters) || {};
 		this.checkBindingParameters(mParameters, ["$$aggregation", "$$canonicalPath",
 			"$$clearSelectionOnFilter", "$$getKeepAliveContext", "$$groupId", "$$operationMode",
-			"$$ownRequest", "$$patchWithoutSideEffects", "$$sharedRequest", "$$updateGroupId"]);
+			"$$ownRequest", "$$patchWithoutSideEffects", "$$separate", "$$sharedRequest",
+			"$$updateGroupId"]);
 		const aFilters = _Helper.toArray(vFilters);
 		if (mParameters.$$aggregation && aFilters[0] === Filter.NONE) {
 			throw new Error("Cannot combine Filter.NONE with $$aggregation");
@@ -1478,7 +1479,8 @@ sap.ui.define([
 		}
 		oCache ??= _AggregationCache.create(this.oModel.oRequestor, sResourcePath,
 			sDeepResourcePath, mQueryOptions, this.mParameters.$$aggregation,
-			this.oModel.bAutoExpandSelect, this.bSharedRequest, this.isGrouped());
+			this.oModel.bAutoExpandSelect, this.bSharedRequest, this.isGrouped(),
+			this.mParameters.$$separate);
 		if (mKeptElementsByPredicate) {
 			aKeepAlivePredicates.forEach(function (sPredicate) {
 				oCache.addKeptElement(mKeptElementsByPredicate[sPredicate]);
@@ -2081,7 +2083,24 @@ sap.ui.define([
 				return null;
 			}
 			const oParent = oNode.getParent(); // Note: always sync for out-of-place nodes
-			iSibling = this.oCache.get1stInPlaceChildIndex(oParent ? oParent.iIndex : -1);
+			if (oParent?.created()) { // out-of-place nodes have no in-place children
+				return null;
+			}
+
+			let bPlaceholder;
+			let iExpectedLevel;
+			[iSibling, bPlaceholder, iExpectedLevel]
+				= this.oCache.get1stInPlaceChildIndex(oParent ? oParent.iIndex : -1);
+			if (bPlaceholder) { // => iSibling >= 0
+				return bAllowRequest
+					? this.requestContexts(iSibling, 1).then((aResult) => aResult[0])
+						.then((oContext) => {
+							return oContext.getProperty("@$ui5.node.level") === iExpectedLevel
+								? oContext
+								: null;
+						})
+					: undefined;
+			}
 		} else {
 			iSibling = this.oCache.getSiblingIndex(oNode.iIndex, iOffset);
 		}
@@ -3217,12 +3236,12 @@ sap.ui.define([
 	// @override sap.ui.model.Binding#initialize
 	ODataListBinding.prototype.initialize = function () {
 		if (this.isResolved()) {
+			this.checkDataState();
 			if (this.isRootBindingSuspended()) {
 				this.sResumeChangeReason = this.sChangeReason === "AddVirtualContext"
 					? ChangeReason.Change
 					: ChangeReason.Refresh;
 			} else if (this.sChangeReason === "AddVirtualContext") {
-				this.checkDataState();
 				this._fireChange({
 					detailedReason : "AddVirtualContext",
 					reason : ChangeReason.Change
@@ -3833,7 +3852,8 @@ sap.ui.define([
 	 *   {@link sap.ui.model.odata.v4.Context#isKeepAlive kept alive} and still exists on the
 	 *   server.
 	 * @param {boolean} [bKeepCacheOnError]
-	 *   If <code>true</code>, the binding data remains unchanged if the refresh fails
+	 *   If <code>true</code>, the binding data remains unchanged if the refresh fails and
+	 *   (since 1.129.0) no dataRequested/dataReceived events are fired in the first place
 	 * @param {boolean} [bWithMessages]
 	 *   Whether the "@com.sap.vocabularies.Common.v1.Messages" path is treated specially
 	 * @returns {sap.ui.base.SyncPromise}
@@ -3872,8 +3892,10 @@ sap.ui.define([
 			}
 
 			function fireDataRequested() {
-				bDataRequested = true;
-				that.fireDataRequested();
+				if (!bKeepCacheOnError) {
+					bDataRequested = true;
+					that.fireDataRequested();
+				}
 			}
 
 			/*
@@ -4376,7 +4398,6 @@ sap.ui.define([
 		this.sResumeAction = undefined;
 		this.sResumeChangeReason = undefined;
 
-		this.checkDataState();
 		if (bRefresh) {
 			if (this.mParameters.$$clearSelectionOnFilter
 				&& sResumeChangeReason === ChangeReason.Filter) {

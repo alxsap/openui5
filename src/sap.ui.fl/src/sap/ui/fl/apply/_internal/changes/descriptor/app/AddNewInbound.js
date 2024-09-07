@@ -10,19 +10,13 @@ sap.ui.define([
 ) {
 	"use strict";
 
-	function getAndCheckInboundId(oChangeContent) {
-		var aInbounds = Object.keys(oChangeContent.inbound);
-		if (aInbounds.length > 1) {
-			throw new Error("It is not allowed to add more than one inbound");
-		}
-		if (aInbounds.length < 1) {
-			throw new Error("Inbound does not exist");
-		}
-		if (aInbounds[0] === "") {
-			throw new Error("The ID of your inbound is empty");
-		}
-		return aInbounds[aInbounds.length - 1];
-	}
+	const MANDATORY_PROPERTIES = ["semanticObject", "action"];
+	const SUPPORTED_PROPERTIES = ["semanticObject", "action", "hideLauncher", "icon", "title", "shortTitle", "subTitle", "info", "indicatorDataSource", "deviceTypes", "displayMode", "signature"];
+
+	const PROPERTIES_PATTERNS = {
+		semanticObject: "^[\\w\\*]{0,30}$",
+		action: "^[\\w\\*]{0,60}$"
+	};
 
 	/**
 	* Descriptor change merger for change type <code>appdescr_app_addNewInbound</code>.
@@ -36,7 +30,7 @@ sap.ui.define([
 	* @private
 	* @ui5-restricted sap.ui.fl.apply._internal
 	*/
-	var AddNewInbound = /** @lends sap.ui.fl.apply._internal.changes.descriptor.app.AddNewInbound */ {
+	const AddNewInbound = /** @lends sap.ui.fl.apply._internal.changes.descriptor.app.AddNewInbound */ {
 
 		/**
 		* Method to apply the  <code>appdescr_app_addNewInbound</code> change to the manifest.
@@ -54,9 +48,9 @@ sap.ui.define([
 			oManifest["sap.app"].crossNavigation ||= {};
 			oManifest["sap.app"].crossNavigation.inbounds ||= {};
 
-			var oChangeContent = oChange.getContent();
-			var sInboundId = getAndCheckInboundId(oChangeContent);
-			var oInboundInManifest = oManifest["sap.app"].crossNavigation.inbounds[sInboundId];
+			const oChangeContent = oChange.getContent();
+			const sInboundId = DescriptorChangeCheck.getAndCheckInOrOutbound(oChangeContent, "inbound", MANDATORY_PROPERTIES, SUPPORTED_PROPERTIES, PROPERTIES_PATTERNS);
+			const oInboundInManifest = oManifest["sap.app"].crossNavigation.inbounds[sInboundId];
 			if (!oInboundInManifest) {
 				DescriptorChangeCheck.checkIdNamespaceCompliance(sInboundId, oChange);
 				oManifest["sap.app"].crossNavigation.inbounds[sInboundId] = oChangeContent.inbound[sInboundId];

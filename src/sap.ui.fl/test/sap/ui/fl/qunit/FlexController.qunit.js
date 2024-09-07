@@ -1,34 +1,36 @@
 /* global QUnit */
 
 sap.ui.define([
-	"sap/ui/fl/FlexController",
-	"sap/ui/fl/Layer",
+	"sap/ui/core/Component",
 	"sap/ui/core/Control",
-	"sap/ui/fl/ChangePersistenceFactory",
 	"sap/ui/fl/apply/_internal/changes/Reverter",
 	"sap/ui/fl/apply/_internal/flexObjects/FlexObjectFactory",
 	"sap/ui/fl/apply/_internal/flexObjects/States",
 	"sap/ui/fl/apply/_internal/flexState/FlexObjectState",
 	"sap/ui/fl/apply/_internal/flexState/FlexState",
 	"sap/ui/fl/initial/api/Version",
+	"sap/ui/fl/write/_internal/flexState/FlexObjectManager",
 	"sap/ui/fl/write/_internal/Versions",
+	"sap/ui/fl/ChangePersistenceFactory",
+	"sap/ui/fl/FlexController",
+	"sap/ui/fl/Layer",
 	"sap/ui/model/json/JSONModel",
-	"sap/ui/core/Component",
 	"sap/ui/thirdparty/sinon-4"
 ], function(
-	FlexController,
-	Layer,
+	Component,
 	Control,
-	ChangePersistenceFactory,
 	Reverter,
 	FlexObjectFactory,
 	States,
 	FlexObjectState,
 	FlexState,
 	Version,
+	FlexObjectManager,
 	Versions,
+	ChangePersistenceFactory,
+	FlexController,
+	Layer,
 	JSONModel,
-	Component,
 	sinon
 ) {
 	"use strict";
@@ -112,12 +114,22 @@ sap.ui.define([
 				}
 			};
 			sandbox.stub(this.oFlexController._oChangePersistence, "saveDirtyChanges").resolves();
-			var oRemoveStub = sandbox.stub(this.oFlexController._oChangePersistence, "removeDirtyChanges").resolves([]);
+			const aCurrentChanges = [
+				{ id: "someChange" },
+				{ id: "someOtherChange" }
+			];
+			const oRemoveStub = sandbox.stub(FlexObjectManager, "removeDirtyFlexObjects").returns(aCurrentChanges);
+			const oRevertStub = sandbox.stub(Reverter, "revertMultipleChanges").resolves();
 			return this.oFlexController.saveAll(oComp, true, false, Layer.CUSTOMER, true)
 			.then(function() {
-				var aLayersToReset = oRemoveStub.firstCall.args[0];
+				const aLayersToReset = oRemoveStub.firstCall.args[0].layers;
 				assert.ok(aLayersToReset.includes(Layer.USER), "then dirty changes on higher layers are removed");
 				assert.ok(aLayersToReset.includes(Layer.VENDOR), "then dirty changes on lower layers are removed");
+				assert.deepEqual(
+					oRevertStub.firstCall.args[0],
+					[...aCurrentChanges].reverse(),
+					"then the changes are reverted in reverse order"
+				);
 			});
 		});
 
@@ -283,64 +295,6 @@ sap.ui.define([
 			const oResponse = await this.oFlexController.saveSequenceOfDirtyChanges();
 			assert.deepEqual(oResponse, oExpectedResponse, "the response is correctly returned");
 			assert.strictEqual(oCheckUpdateStub.callCount, 0, "the checkUpdate was not called");
-		});
-
-		QUnit.test("resetChanges for control shall call ChangePersistence.resetChanges(), reset control variant URL parameters, and revert changes", function(assert) {
-			var oVariantModel = {
-				id: "variantModel"
-			};
-			var oComp = {
-				name: "testComp",
-				getModel() {
-					return oVariantModel;
-				}
-			};
-			var sLayer = "testLayer";
-			var sGenerator = "test.Generator";
-			var sSelectorString = "abc123";
-			var sChangeTypeString = "labelChange";
-			var aDeletedChanges = [
-				FlexObjectFactory.createFromFileContent({fileName: "change1"}),
-				FlexObjectFactory.createFromFileContent({fileName: "change2"})
-			];
-			sandbox.stub(this.oFlexController._oChangePersistence, "resetChanges").callsFake(function(...aArgs) {
-				assert.strictEqual(aArgs[0], sLayer, "then correct layer passed");
-				assert.strictEqual(aArgs[1], sGenerator, "then correct generator passed");
-				assert.strictEqual(aArgs[2], sSelectorString, "then correct selector string passed");
-				assert.strictEqual(aArgs[3], sChangeTypeString, "then correct change type string passed");
-				return Promise.resolve(aDeletedChanges);
-			});
-			var oRevertMultipleChangesStub = sandbox.stub(Reverter, "revertMultipleChanges").resolves();
-			return this.oFlexController.resetChanges(sLayer, sGenerator, oComp, sSelectorString, sChangeTypeString)
-			.then(function() {
-				assert.ok(oRevertMultipleChangesStub.calledOnce, "the revertMultipleChanges is called once");
-				assert.deepEqual(oRevertMultipleChangesStub.args[0][0], aDeletedChanges, "with the correct changes");
-				assert.deepEqual(oRevertMultipleChangesStub.args[0][0][0].getId(), "change2", "with the correct reverse order");
-			});
-		});
-
-		QUnit.test("resetChanges for whole component shall call ChangePersistance.resetChanges(), reset control variant URL parameters but do not revert changes", function(assert) {
-			var oVariantModel = {
-				id: "variantModel"
-			};
-			var oComp = {
-				name: "testComp",
-				getModel() {
-					return oVariantModel;
-				}
-			};
-			var sLayer = "testLayer";
-			var sGenerator = "test.Generator";
-			sandbox.stub(this.oFlexController._oChangePersistence, "resetChanges").callsFake(function(...aArgs) {
-				assert.strictEqual(aArgs[0], sLayer, "then correct layer passed");
-				assert.strictEqual(aArgs[1], sGenerator, "then correct generator passed");
-				return Promise.resolve([]);
-			});
-			var oRevertMultipleChangesStub = sandbox.stub(Reverter, "revertMultipleChanges").resolves();
-			return this.oFlexController.resetChanges(sLayer, sGenerator, oComp)
-			.then(function() {
-				assert.equal(oRevertMultipleChangesStub.callCount, 0, "the revertMultipleChanges is not called");
-			});
 		});
 	});
 

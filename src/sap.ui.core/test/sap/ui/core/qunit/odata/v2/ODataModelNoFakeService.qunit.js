@@ -151,6 +151,7 @@ sap.ui.define([
 			assert.strictEqual(oModel.fnRetryAfter, null);
 			assert.strictEqual(oModel.oRetryAfterError, null);
 			assert.strictEqual(oModel.pRetryAfter, null);
+			assert.strictEqual(oModel.pAnnotationChanges, null);
 		});
 	});
 
@@ -6186,6 +6187,7 @@ sap.ui.define([
 				},
 				oMetaModel : undefined,
 				bMetaModelLoaded : "~bMetaModelLoaded",
+				_requestAnnotationChanges() {},
 				annotationsLoaded : function () {},
 				checkUpdate : function () {}
 			};
@@ -6194,6 +6196,7 @@ sap.ui.define([
 		this.mock(oModel).expects("annotationsLoaded").withExactArgs().returns(Promise.resolve());
 		// called in ODataMetaModel constructor; result is used to create a JSONModel
 		this.mock(oModel.oMetadata).expects("getServiceMetadata").withExactArgs().returns(oData);
+		this.mock(oModel).expects("_requestAnnotationChanges").withExactArgs().returns(SyncPromise.resolve());
 
 		// code under test
 		oMetaModel = ODataModel.prototype.getMetaModel.call(oModel);
@@ -9671,5 +9674,50 @@ sap.ui.define([
 				assert.deepEqual(oModel.aPendingRequestHandles, ["~oRequestHandle1"]);
 			});
 		});
+	});
+
+	//*********************************************************************************************
+	QUnit.test("setAnnotationChangePromise", function (assert) {
+		const oModel = {};
+
+		// code under test
+		ODataModel.prototype.setAnnotationChangePromise.call(oModel, "~pAnnotationChanges");
+
+		assert.strictEqual(oModel.pAnnotationChanges, "~pAnnotationChanges");
+	});
+
+	//*********************************************************************************************
+	QUnit.test("setAnnotationChangePromise: 'Too late' error", function (assert) {
+		const oModel = {pAnnotationChanges: "~existingAnnotationChangePromise"};
+
+		assert.throws(function () {
+			// code under test
+			ODataModel.prototype.setAnnotationChangePromise.call(oModel, "~pAnnotationChanges");
+		}, new Error("Promise is set too late; an annotation change promise has already been set or the meta model is")
+			+ " already used");
+
+		assert.strictEqual(oModel.pAnnotationChanges, "~existingAnnotationChangePromise");
+	});
+
+	//*********************************************************************************************
+	QUnit.test("_requestAnnotationChanges, promise exist", function (assert) {
+		const oModel = {pAnnotationChanges: "~existingAnnotationChangePromise"};
+
+		// code under test
+		assert.strictEqual(ODataModel.prototype._requestAnnotationChanges.call(oModel),
+			"~existingAnnotationChangePromise");
+	});
+
+	//*********************************************************************************************
+	QUnit.test("_requestAnnotationChanges, promise does not exist", function (assert) {
+		const oModel = {};
+
+		// code under test
+		const oPromise = ODataModel.prototype._requestAnnotationChanges.call(oModel);
+
+		assert.ok(oPromise instanceof SyncPromise);
+		assert.ok(oPromise.isFulfilled());
+		assert.strictEqual(oModel.pAnnotationChanges, oPromise);
+		assert.strictEqual(oPromise.getResult(), undefined);
 	});
 });

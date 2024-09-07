@@ -3,37 +3,40 @@
  */
 
 sap.ui.define([
+	"sap/ui/core/util/reflection/JsControlTreeModifier",
 	"sap/ui/fl/apply/_internal/changes/Reverter",
 	"sap/ui/fl/apply/_internal/flexObjects/States",
 	"sap/ui/fl/apply/_internal/flexState/FlexObjectState",
 	"sap/ui/fl/apply/_internal/flexState/FlexState",
+	"sap/ui/fl/write/_internal/flexState/FlexObjectManager",
 	"sap/ui/fl/write/_internal/Versions",
 	"sap/ui/fl/ChangePersistenceFactory",
-	"sap/ui/fl/Layer",
-	"sap/ui/core/util/reflection/JsControlTreeModifier"
+	"sap/ui/fl/Layer"
 ], function(
+	JsControlTreeModifier,
 	Reverter,
 	States,
 	FlexObjectState,
 	FlexState,
+	FlexObjectManager,
 	Versions,
 	ChangePersistenceFactory,
-	Layer,
-	JsControlTreeModifier
+	Layer
 ) {
 	"use strict";
 
-	async function revertChangesAndUpdateVariantModel(oComponent, aChanges) {
+	async function revertChangesAndUpdateVariantModel(oAppComponent, sReference, aChanges) {
 		if (aChanges.length !== 0) {
-			// Always revert changes in reverse order
-			aChanges.reverse();
-			await Reverter.revertMultipleChanges(aChanges, {
-				appComponent: oComponent,
-				modifier: JsControlTreeModifier,
-				reference: this._sComponentName
-			});
+			await Reverter.revertMultipleChanges(
+				// Always revert changes in reverse order
+				[...aChanges].reverse(),
+				{
+					appComponent: oAppComponent,
+					modifier: JsControlTreeModifier,
+					reference: sReference
+				}
+			);
 		}
-		return aChanges;
 	}
 
 	/**
@@ -56,14 +59,21 @@ sap.ui.define([
 		}
 	};
 
-	FlexController.prototype._removeOtherLayerChanges = function(oAppComponent, sLayer, bRemoveOtherLayerChanges) {
+	FlexController.prototype._removeOtherLayerChanges = async function(oAppComponent, sLayer, bRemoveOtherLayerChanges) {
 		if (bRemoveOtherLayerChanges && sLayer) {
 			var aLayersToReset = Object.values(Layer).filter(function(sLayerToCheck) {
 				return sLayerToCheck !== sLayer;
 			});
-			return this.removeDirtyChanges(aLayersToReset, oAppComponent);
+			const sReference = this._sComponentName;
+			const aRemovedChanges = FlexObjectManager.removeDirtyFlexObjects({
+				reference: sReference,
+				layers: aLayersToReset,
+				component: oAppComponent
+			});
+			await revertChangesAndUpdateVariantModel(oAppComponent, sReference, aRemovedChanges);
+			return aRemovedChanges;
 		}
-		return Promise.resolve();
+		return undefined;
 	};
 
 	/**
@@ -129,40 +139,6 @@ sap.ui.define([
 			}
 			return oResult;
 		}.bind(this));
-	};
-
-	/**
-	 * Reset changes on the server
-	 * If the reset is performed for an entire component, a browser reload is required.
-	 * If the reset is performed for a control, this function also triggers a reversion of deleted UI changes.
-	 *
-	 * @param {string} sLayer - Layer for which changes shall be deleted
-	 * @param {string} [sGenerator] - Generator of changes (optional)
-	 * @param {sap.ui.core.Component} [oComponent] - Component instance (optional)
-	 * @param {string[]} [aSelectorIds] - Selector IDs in local format (optional)
-	 * @param {string[]} [aChangeTypes] - Types of changes (optional)
-	 *
-	 * @returns {Promise} Promise that resolves after the deletion took place
-	 */
-	FlexController.prototype.resetChanges = function(sLayer, sGenerator, oComponent, aSelectorIds, aChangeTypes) {
-		return this._oChangePersistence.resetChanges(sLayer, sGenerator, aSelectorIds, aChangeTypes)
-		.then(revertChangesAndUpdateVariantModel.bind(this, oComponent));
-	};
-
-	/**
-	 * Removes unsaved changes and reverts these. If no control is provided, all dirty changes are removed.
-	 *
-	 * @param {string|string[]} vLayer - Layer or multiple layers for which changes shall be deleted
-	 * @param {sap.ui.core.Component} oComponent - Component instance
-	 * @param {sap.ui.core.Control} [oControl] - Control for which the changes should be removed
-	 * @param {string} [sGenerator] - Generator of changes (optional)
-	 * @param {string[]} [aChangeTypes] - Types of changes (optional)
-	 *
-	 * @returns {Promise} Promise that resolves after the deletion took place
-	 */
-	FlexController.prototype.removeDirtyChanges = function(vLayer, oComponent, oControl, sGenerator, aChangeTypes) {
-		return this._oChangePersistence.removeDirtyChanges(vLayer, oComponent, oControl, sGenerator, aChangeTypes)
-		.then(revertChangesAndUpdateVariantModel.bind(this, oComponent));
 	};
 
 	/**

@@ -245,17 +245,19 @@ sap.ui.define([
 		});
 
 		QUnit.test("getAllApplicableUIChanges", function(assert) {
-			FlexState.addDirtyFlexObject(sReference, FlexObjectFactory.createUIChange({
-				fileName: "setDefaultChange",
-				fileType: "ctrl_variant_management_change",
-				selector: { id: "foo"},
-				changeType: "setDefault"
-			}));
-			FlexState.addDirtyFlexObject(sReference, FlexObjectFactory.createUIChange({
-				fileName: "setFavoriteChange",
-				fileType: "ctrl_variant_change",
-				changeType: "setFavorite"
-			}));
+			FlexState.addDirtyFlexObjects(sReference, [
+				FlexObjectFactory.createUIChange({
+					fileName: "setDefaultChange",
+					fileType: "ctrl_variant_management_change",
+					selector: { id: "foo"},
+					changeType: "setDefault"
+				}),
+				FlexObjectFactory.createUIChange({
+					fileName: "setFavoriteChange",
+					fileType: "ctrl_variant_change",
+					changeType: "setFavorite"
+				})
+			]);
 			const aAllApplicableUIChanges = FlexObjectState.getAllApplicableUIChanges(sReference);
 			assert.strictEqual(aAllApplicableUIChanges.length, 5, "all UIChanges are returned");
 		});
@@ -281,7 +283,7 @@ sap.ui.define([
 			assert.strictEqual(FlexObjectState.getDirtyFlexObjects(sReference).length, 0, "initially there are no dirty changes");
 			aFlexObjects[0].setState(States.LifecycleState.DELETED);
 			aFlexObjects[2].setState(States.LifecycleState.NEW);
-			aFlexObjects[4].setState(States.LifecycleState.DIRTY);
+			aFlexObjects[4].setState(States.LifecycleState.UPDATED);
 			oDataSelector.checkUpdate();
 			assert.strictEqual(FlexObjectState.getDirtyFlexObjects(sReference).length, 3, "then there are three dirty changes");
 		});

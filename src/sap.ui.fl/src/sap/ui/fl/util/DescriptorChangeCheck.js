@@ -9,10 +9,72 @@ sap.ui.define([
 ) {
 	"use strict";
 
-	function checkChange(oEntityPropertyChange, aSupportedProperties, aSupportedOperations, oSupportedPropertyPattern) {
+	const SUPPORTED_KEYS_FOR_CHANGE = {
+		inbound: "appdescr_app_addNewInbound",
+		outbound: "appdescr_app_addNewOutbound"
+	};
+
+	function checkObjectProperties(oChangeInOrOutbound, sInOrOutboundName, aMandatoryProperties, aSupportedProperties, oSupportedPropertyPattern) {
+		const oSetOfProperties = new Set(Object.keys(oChangeInOrOutbound[sInOrOutboundName]));
+		aMandatoryProperties.forEach(function(sMandatoryProperty) {
+			if (!oSetOfProperties.has(sMandatoryProperty)) {
+				throw new Error(`Mandatory property '${sMandatoryProperty}' is missing. Mandatory properties are ${aMandatoryProperties.join("|")}.`);
+			}
+		});
+
+		const notSupportedProperties = [];
+		oSetOfProperties.forEach(function(sProperty) {
+			if (!aSupportedProperties.includes(sProperty)) {
+				notSupportedProperties.push(sProperty);
+			}
+		});
+		if (notSupportedProperties.length > 0) {
+			throw new Error(`Properties ${notSupportedProperties.join("|")} are not supported. Supported properties are ${aSupportedProperties.join("|")}.`);
+		}
+
+		oSetOfProperties.forEach(function(sProperty) {
+			if (oSupportedPropertyPattern[sProperty]) {
+				const regex = new RegExp(oSupportedPropertyPattern[sProperty]);
+				if (!regex.test(oChangeInOrOutbound[sInOrOutboundName][sProperty])) {
+					throw new Error(`The property has disallowed values. Supported values for '${sProperty}' should adhere to regular expression ${regex}.`);
+				}
+			}
+		});
+	}
+
+	function getAndCheckInOrOutbound(oChangeContent, sKey, aMandatoryProperties, aSupportedProperties, oSupportedPropertyPattern) {
+		const aObjectKeyNames = Object.keys(oChangeContent);
+		if (aObjectKeyNames.length > 1) {
+			throw new Error("It is not allowed to add more than one object under change object 'content'.");
+		}
+		if (aObjectKeyNames.length < 1) {
+			throw new Error(`The change object 'content' cannot be empty. Please provide the necessary property, as outlined in the change schema for '${SUPPORTED_KEYS_FOR_CHANGE[sKey]}'.`);
+		}
+		const sKeyNameOfChangeContent = aObjectKeyNames[0];
+		if (aObjectKeyNames.length === 1) {
+			if (!SUPPORTED_KEYS_FOR_CHANGE[sKeyNameOfChangeContent]) {
+				throw new Error(`The provided property '${sKeyNameOfChangeContent}' is not supported. Supported property for change '${SUPPORTED_KEYS_FOR_CHANGE[sKey]}' is '${sKey}'.`);
+			}
+		}
+		const aInOrOutbounds = Object.keys(oChangeContent[sKeyNameOfChangeContent]);
+		if (aInOrOutbounds.length > 1) {
+			throw new Error(`It is not allowed to add more than one ${sKeyNameOfChangeContent}: ${aInOrOutbounds.join(", ")}.`);
+		}
+		if (aInOrOutbounds.length < 1) {
+			throw new Error(`There is no ${sKeyNameOfChangeContent} provided. Please provide an ${sKeyNameOfChangeContent}.`);
+		}
+		const sInOrOutbound = aInOrOutbounds[0];
+		if (sInOrOutbound === "") {
+			throw new Error(`The ID of your ${sKeyNameOfChangeContent} is empty.`);
+		}
+		checkObjectProperties(oChangeContent[sKey], sInOrOutbound, aMandatoryProperties, aSupportedProperties, oSupportedPropertyPattern);
+		return aInOrOutbounds[aInOrOutbounds.length - 1];
+	}
+
+	function checkChange(oEntityPropertyChange, aSupportedProperties, aSupportedOperations, oSupportedPropertyPattern, aNotAllowedToBeDeleteProperties) {
 		const aEntityPropertyChanges = Array.isArray(oEntityPropertyChange) ? oEntityPropertyChange : [oEntityPropertyChange];
 		aEntityPropertyChanges.forEach(function(oChange) {
-			formatEntityCheck(oChange, aSupportedProperties, aSupportedOperations);
+			formatEntityCheck(oChange, aSupportedProperties, aSupportedOperations, aNotAllowedToBeDeleteProperties);
 			checkPropertyValuePattern(oChange, oSupportedPropertyPattern);
 		});
 	}
@@ -54,23 +116,33 @@ sap.ui.define([
 		});
 	}
 
-	function formatEntityCheck(oChangeEntity, aSupportedProperties, aSupportedOperations) {
+	function formatEntityCheck(oChangeEntity, aSupportedProperties, aSupportedOperations, aNotAllowedToBeDeleteProperties) {
 		if (!oChangeEntity.propertyPath) {
 			throw new Error("Invalid change format: The mandatory 'propertyPath' is not defined. Please define the mandatory property 'propertyPath'");
 		}
 		if (!oChangeEntity.operation) {
 			throw new Error("Invalid change format: The mandatory 'operation' is not defined. Please define the mandatory property 'operation'");
 		}
-		if (oChangeEntity.operation.toUpperCase() !== "DELETE") {
+		const sOpertationUpperCase = oChangeEntity.operation.toUpperCase();
+		if (sOpertationUpperCase === "DELETE") {
+			if (aNotAllowedToBeDeleteProperties.includes(oChangeEntity.propertyPath)) {
+				throw new Error(`The property '${oChangeEntity.propertyPath}' was attempted to be deleted. The mandatory properties ${aNotAllowedToBeDeleteProperties.join("|")} cannot be deleted.`);
+			}
+			if (oChangeEntity.hasOwnProperty("propertyValue")) {
+				throw new Error(`The property 'propertyValue' must not be provided in a 'DELETE' operation. Please remove 'propertyValue'.`);
+			}
+		}
+		if (sOpertationUpperCase !== "DELETE") {
 			if (!oChangeEntity.hasOwnProperty("propertyValue")) {
 				throw new Error("Invalid change format: The mandatory 'propertyValue' is not defined. Please define the mandatory property 'propertyValue'");
 			}
+
+			if (!aSupportedProperties.includes(oChangeEntity.propertyPath) && !isGenericPropertyPathSupported(aSupportedProperties, oChangeEntity.propertyPath)) {
+				throw new Error(`Changing ${oChangeEntity.propertyPath} is not supported. The supported 'propertyPath' is: ${aSupportedProperties.join("|")}`);
+			}
 		}
-		if (!aSupportedProperties.includes(oChangeEntity.propertyPath) && !isGenericPropertyPathSupported(aSupportedProperties, oChangeEntity.propertyPath)) {
-			throw new Error(`Changing ${oChangeEntity.propertyPath} is not supported. The supported 'propertyPath' is: ${aSupportedProperties.join("|")}`);
-		}
-		if (!aSupportedOperations.includes(oChangeEntity.operation)) {
-			throw new Error(`Operation ${oChangeEntity.operation} is not supported. The supported 'operation' is ${aSupportedOperations.join("|")}`);
+		if (!aSupportedOperations.includes(sOpertationUpperCase)) {
+			throw new Error(`Operation ${sOpertationUpperCase} is not supported. The supported 'operation' is ${aSupportedOperations.join("|")}`);
 		}
 	}
 
@@ -82,10 +154,11 @@ sap.ui.define([
 	 * @param {Array} aSupportedProperties - Array of supported properties by change merger
 	 * @param {Array} aSupportedOperations - Array of supported operations by change merger
 	 * @param {Object} oSupportedPropertyPattern - Object with supported pattern as regex
+	 * @param {Array} aNotAllowedToBeDeleteProperties - Array of properties which must not be deleted by change merger
 	 * @private
 	 * @ui5-restricted sap.ui.fl, sap.suite.ui.generic.template
 	 */
-	function checkEntityPropertyChange(oChange, aSupportedProperties, aSupportedOperations, oSupportedPropertyPattern) {
+	function checkEntityPropertyChange(oChange, aSupportedProperties, aSupportedOperations, oSupportedPropertyPattern, aNotAllowedToBeDeleteProperties) {
 		var sId = Object.keys(oChange).filter(function(sKey) {
 			return sKey.endsWith("Id");
 		}).shift();
@@ -96,7 +169,7 @@ sap.ui.define([
 			throw new Error(`Changes for "${oChange[sId]}" are not provided.`);
 		}
 
-		checkChange(oChange.entityPropertyChange, aSupportedProperties, aSupportedOperations, oSupportedPropertyPattern);
+		checkChange(oChange.entityPropertyChange, aSupportedProperties, aSupportedOperations, oSupportedPropertyPattern, aNotAllowedToBeDeleteProperties);
 	}
 
 	var layer_prefixes = {};
@@ -168,6 +241,7 @@ sap.ui.define([
 		checkIdNamespaceCompliance,
 		getNamespacePrefixForLayer,
 		getClearedGenericPath,
-		isGenericPropertyPathSupported
+		isGenericPropertyPathSupported,
+		getAndCheckInOrOutbound
 	};
 });

@@ -1,7 +1,6 @@
 /* global module */
 
 module.exports = [
- "ActionSelect.spec.js",
  "ActionSheet.spec.js",
  "App.spec.js",
  "AppWithBackground.spec.js",
@@ -115,5 +114,6 @@ module.exports = [
  "ToggleButtonStandaloneVisual.spec.js",
  "Token.spec.js",
  "Tokenizer.spec.js",
+ "ViewSettingsDialog.spec.js",
  "Wizard.spec.js"
 ];

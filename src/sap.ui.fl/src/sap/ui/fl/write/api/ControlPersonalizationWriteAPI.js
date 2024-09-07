@@ -6,15 +6,17 @@ sap.ui.define([
 	"sap/base/Log",
 	"sap/ui/core/util/reflection/JsControlTreeModifier",
 	"sap/ui/core/Element",
+	"sap/ui/fl/apply/_internal/changes/Reverter",
+	"sap/ui/fl/apply/_internal/controlVariants/Utils",
 	"sap/ui/fl/apply/_internal/flexState/FlexObjectState",
 	"sap/ui/fl/apply/_internal/flexState/FlexState",
-	"sap/ui/fl/apply/_internal/controlVariants/Utils",
 	"sap/ui/fl/apply/api/ControlVariantApplyAPI",
 	"sap/ui/fl/apply/api/FlexRuntimeInfoAPI",
 	"sap/ui/fl/initial/_internal/changeHandlers/ChangeHandlerStorage",
 	"sap/ui/fl/registry/Settings",
+	"sap/ui/fl/write/_internal/flexState/changes/UIChangeManager",
+	"sap/ui/fl/write/_internal/flexState/FlexObjectManager",
 	"sap/ui/fl/write/api/ChangesWriteAPI",
-	"sap/ui/fl/ChangePersistenceFactory",
 	"sap/ui/fl/FlexControllerFactory",
 	"sap/ui/fl/Layer",
 	"sap/ui/fl/Utils"
@@ -22,15 +24,17 @@ sap.ui.define([
 	Log,
 	JsControlTreeModifier,
 	Element,
+	Reverter,
+	VariantUtils,
 	FlexObjectState,
 	FlexState,
-	VariantUtils,
 	ControlVariantApplyAPI,
 	FlexRuntimeInfoAPI,
 	ChangeHandlerStorage,
 	Settings,
+	UIChangeManager,
+	FlexObjectManager,
 	ChangesWriteAPI,
-	ChangePersistenceFactory,
 	FlexControllerFactory,
 	Layer,
 	Utils
@@ -110,20 +114,19 @@ sap.ui.define([
 			if (!mPropertyBag.changes.length) {
 				return Promise.resolve([]);
 			}
-			var oReferenceControl = (
+			const oReferenceControl = (
 				mPropertyBag.changes[0].selectorElement
 				|| mPropertyBag.changes[0].selectorControl
 			);
-			var oAppComponent = Utils.getAppComponentForControl(oReferenceControl);
-			var sFlexReference = FlexRuntimeInfoAPI.getFlexReference({element: oReferenceControl});
-			var oChangePersistence = ChangePersistenceFactory.getChangePersistenceForControl(oAppComponent);
-			var oVariantModel = oAppComponent.getModel(ControlVariantApplyAPI.getVariantModelName());
-			var sLayer = Layer.USER;
-			var aSuccessfulChanges = [];
+			const oAppComponent = Utils.getAppComponentForControl(oReferenceControl);
+			const sFlexReference = FlexRuntimeInfoAPI.getFlexReference({element: oReferenceControl});
+			const oVariantModel = oAppComponent.getModel(ControlVariantApplyAPI.getVariantModelName());
+			const sLayer = Layer.USER;
+			const aSuccessfulChanges = [];
 
 			function createChanges() {
-				var aChanges = [];
-				var aChangesToBeAdded = [];
+				const aChanges = [];
+				const aChangesToBeAdded = [];
 				return mPropertyBag.changes.reduce(function(pPromise, oPersonalizationChange) {
 					return pPromise
 					.then(function() {
@@ -135,13 +138,13 @@ sap.ui.define([
 						if (!oPersonalizationChange.transient && !mPropertyBag.ignoreVariantManagement) {
 							// check for preset variantReference
 							if (!oPersonalizationChange.changeSpecificData.variantReference) {
-								var sVariantManagementReference = getRelevantVariantManagementReference(
+								const sVariantManagementReference = getRelevantVariantManagementReference(
 									oAppComponent,
 									oPersonalizationChange.selectorControl,
 									mPropertyBag.useStaticArea
 								);
 								if (sVariantManagementReference) {
-									var sCurrentVariantReference = oVariantModel.oData[sVariantManagementReference].currentVariant;
+									const sCurrentVariantReference = oVariantModel.oData[sVariantManagementReference].currentVariant;
 									oPersonalizationChange.changeSpecificData.variantReference = sCurrentVariantReference;
 								}
 							}
@@ -150,10 +153,11 @@ sap.ui.define([
 							delete oPersonalizationChange.changeSpecificData.variantReference;
 						}
 
-						oPersonalizationChange.changeSpecificData = Object.assign(
-							oPersonalizationChange.changeSpecificData,
-							{developerMode: false, layer: sLayer}
-						);
+						oPersonalizationChange.changeSpecificData = {
+							...oPersonalizationChange.changeSpecificData,
+							developerMode: false,
+							layer: sLayer
+						};
 						return ChangesWriteAPI.create({
 							changeSpecificData: oPersonalizationChange.changeSpecificData,
 							selector: oPersonalizationChange.selectorControl
@@ -174,7 +178,7 @@ sap.ui.define([
 					});
 				}, Promise.resolve())
 				.then(function() {
-					oChangePersistence.addChanges(aChangesToBeAdded, oAppComponent);
+					UIChangeManager.addDirtyChanges(sFlexReference, aChangesToBeAdded, oAppComponent);
 					return aChanges;
 				})
 				.catch(function(oError) {
@@ -200,7 +204,10 @@ sap.ui.define([
 						}
 					})
 					.catch(function(oError) {
-						oChangePersistence.deleteChange(oChange.changeInstance);
+						FlexObjectManager.deleteFlexObjects({
+							reference: sFlexReference,
+							flexObjects: [oChange.changeInstance]
+						});
 						Log.error("A Change was not applied successfully. Reason: ", oError.message);
 					});
 				}, Promise.resolve());
@@ -246,11 +253,12 @@ sap.ui.define([
 				var sLocalId = oAppComponent.getLocalId(sControlId);
 				return sLocalId || sControlId;
 			});
-			var oFlexController = FlexControllerFactory.createForControl(oAppComponent);
-			if (FlexState.isInitialized({control: oAppComponent})) {
-				return oFlexController.resetChanges(Layer.USER, undefined, oAppComponent, aSelectorIds, mPropertyBag.changeTypes);
-			}
-			return Promise.resolve();
+			return FlexObjectManager.resetFlexObjects({
+				layer: Layer.USER,
+				appComponent: oAppComponent,
+				selectorIds: aSelectorIds,
+				changeTypes: mPropertyBag.changeTypes
+			});
 		},
 
 		/**
@@ -267,7 +275,7 @@ sap.ui.define([
 		 * @private
 		 * @ui5-restricted
 		 */
-		restore(mPropertyBag) {
+		async restore(mPropertyBag) {
 			if (!mPropertyBag || !mPropertyBag.selector) {
 				return Promise.reject("No selector was provided");
 			}
@@ -278,12 +286,30 @@ sap.ui.define([
 				return Promise.reject("App Component could not be determined");
 			}
 
-			var oFlexController = FlexControllerFactory.createForControl(oAppComponent);
+			const sReference = FlexRuntimeInfoAPI.getFlexReference({element: mPropertyBag.selector});
 			if (FlexState.isInitialized({control: oAppComponent})) {
 				// limit the deletion to the passed selector control only
-				return oFlexController.removeDirtyChanges(Layer.USER, oAppComponent, mPropertyBag.selector, mPropertyBag.generator, mPropertyBag.changeTypes);
+				const aRemovedChanges = FlexObjectManager.removeDirtyFlexObjects({
+					reference: sReference,
+					layers: Layer.USER,
+					component: oAppComponent,
+					control: mPropertyBag.selector,
+					generator: mPropertyBag.generator,
+					changeTypes: mPropertyBag.changeTypes
+				});
+				if (aRemovedChanges.length !== 0) {
+					await Reverter.revertMultipleChanges(
+						// Always revert changes in reverse order
+						[...aRemovedChanges].reverse(),
+						{
+							appComponent: oAppComponent,
+							modifier: JsControlTreeModifier,
+							reference: sReference
+						}
+					);
+				}
 			}
-			return Promise.resolve();
+			return undefined;
 		},
 
 		/**

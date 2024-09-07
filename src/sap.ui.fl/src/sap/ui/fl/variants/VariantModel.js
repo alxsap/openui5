@@ -3,8 +3,8 @@
  */
 
 sap.ui.define([
-	"sap/base/util/restricted/_omit",
 	"sap/base/util/restricted/_isEqual",
+	"sap/base/util/restricted/_omit",
 	"sap/base/util/each",
 	"sap/base/util/isEmptyObject",
 	"sap/base/util/merge",
@@ -17,23 +17,25 @@ sap.ui.define([
 	"sap/ui/fl/apply/_internal/changes/Applier",
 	"sap/ui/fl/apply/_internal/changes/Reverter",
 	"sap/ui/fl/apply/_internal/controlVariants/URLHandler",
+	"sap/ui/fl/apply/_internal/controlVariants/Utils",
 	"sap/ui/fl/apply/_internal/flexObjects/FlexObjectFactory",
 	"sap/ui/fl/apply/_internal/flexState/changes/DependencyHandler",
 	"sap/ui/fl/apply/_internal/flexState/controlVariants/Switcher",
 	"sap/ui/fl/apply/_internal/flexState/controlVariants/VariantManagementState",
 	"sap/ui/fl/apply/_internal/flexState/FlexObjectState",
 	"sap/ui/fl/apply/_internal/flexState/ManifestUtils",
-	"sap/ui/fl/apply/_internal/controlVariants/Utils",
+	"sap/ui/fl/registry/Settings",
+	"sap/ui/fl/write/_internal/flexState/changes/UIChangeManager",
+	"sap/ui/fl/write/_internal/flexState/FlexObjectManager",
 	"sap/ui/fl/write/api/ContextBasedAdaptationsAPI",
 	"sap/ui/fl/Layer",
 	"sap/ui/fl/LayerUtils",
 	"sap/ui/fl/Utils",
-	"sap/ui/fl/registry/Settings",
-	"sap/ui/model/BindingMode",
-	"sap/ui/model/json/JSONModel"
+	"sap/ui/model/json/JSONModel",
+	"sap/ui/model/BindingMode"
 ], function(
-	_omit,
 	_isEqual,
+	_omit,
 	each,
 	isEmptyObject,
 	merge,
@@ -46,20 +48,22 @@ sap.ui.define([
 	Applier,
 	Reverter,
 	URLHandler,
+	VariantUtil,
 	FlexObjectFactory,
 	DependencyHandler,
 	Switcher,
 	VariantManagementState,
 	FlexObjectState,
 	ManifestUtils,
-	VariantUtil,
+	Settings,
+	UIChangeManager,
+	FlexObjectManager,
 	ContextBasedAdaptationsAPI,
 	Layer,
 	LayerUtils,
 	Utils,
-	Settings,
-	BindingMode,
-	JSONModel
+	JSONModel,
+	BindingMode
 ) {
 	"use strict";
 
@@ -154,7 +158,10 @@ sap.ui.define([
 			return undefined;
 		})
 		.then(function() {
-			mPropertyBag.model.oChangePersistence.deleteChanges(aVariantDirtyChanges);
+			FlexObjectManager.deleteFlexObjects({
+				reference: mPropertyBag.model.sFlexReference,
+				flexObjects: aVariantDirtyChanges
+			});
 		});
 	}
 
@@ -360,22 +367,18 @@ sap.ui.define([
 	});
 
 	VariantModel.prototype.updateData = function() {
-		var oNewVariantsMap = this.oDataSelector.get({ reference: this.sFlexReference });
-		var oCurrentData = Object.assign({}, this.getData());
+		const oNewVariantsMap = this.oDataSelector.get({ reference: this.sFlexReference });
+		const oCurrentData = { ...this.getData() };
 		Object.entries(oNewVariantsMap).forEach(function(aVariants) {
-			var sVariantManagementKey = aVariants[0];
-			var oVariantMapEntry = Object.assign({}, aVariants[1]);
+			const sVariantManagementKey = aVariants[0];
+			const oVariantMapEntry = { ...aVariants[1] };
 			oCurrentData[sVariantManagementKey] ||= {};
 			oCurrentData[sVariantManagementKey].variants = oVariantMapEntry.variants.map(function(oVariant) {
-				var oCurrentVariantData = (oCurrentData[sVariantManagementKey].variants || [])
+				const oCurrentVariantData = (oCurrentData[sVariantManagementKey].variants || [])
 				.find(function(oVariantToCheck) {
 					return oVariantToCheck.key === oVariant.key;
 				});
-				return Object.assign(
-					{},
-					oCurrentVariantData || {},
-					oVariant
-				);
+				return { ...(oCurrentVariantData || {}), ...oVariant };
 			});
 			oCurrentData[sVariantManagementKey].currentVariant = oVariantMapEntry.currentVariant;
 			oCurrentData[sVariantManagementKey].defaultVariant = oVariantMapEntry.defaultVariant;
@@ -614,10 +617,12 @@ sap.ui.define([
 	 * @returns {Promise} Promise resolving when all changes are applied
 	 */
 	VariantModel.prototype.addAndApplyChangesOnVariant = function(aChanges) {
-		this.oChangePersistence.addChanges(aChanges, this.oAppComponent);
-		return aChanges.reduce(function(oPreviousPromise, oChange) {
+		const aAddedChanges = UIChangeManager.addDirtyChanges(this.sFlexReference, aChanges, this.oAppComponent);
+		return aAddedChanges.reduce(function(oPreviousPromise, oChange) {
 			return oPreviousPromise.then(function() {
-				var oControl = Element.getElementById(JsControlTreeModifier.getControlIdBySelector(oChange.getSelector(), this.oAppComponent));
+				const oControl = Element.getElementById(
+					JsControlTreeModifier.getControlIdBySelector(oChange.getSelector(), this.oAppComponent)
+				);
 				return Applier.applyChangeOnControl(oChange, oControl, {
 					modifier: JsControlTreeModifier,
 					appComponent: this.oAppComponent,
@@ -626,7 +631,10 @@ sap.ui.define([
 				.then((oReturn) => {
 					if (!oReturn.success) {
 						var oException = oReturn.error || new Error("The change could not be applied.");
-						this.oChangePersistence.deleteChange(oChange, true);
+						FlexObjectManager.deleteFlexObjects({
+							reference: this.sFlexReference,
+							flexObjects: [oChange]
+						});
 						throw oException;
 					}
 				});
@@ -768,7 +776,8 @@ sap.ui.define([
 		}
 
 		// sets copied variant and associated changes as dirty
-		aChanges = this.oChangePersistence.addDirtyChanges(
+		aChanges = FlexObjectManager.addDirtyFlexObjects(
+			this.sFlexReference,
 			aChanges
 			.concat([oDuplicateVariantData.instance]
 			.concat(oDuplicateVariantData.controlChanges)
@@ -798,7 +807,10 @@ sap.ui.define([
 			newVariantReference: mPropertyBag.sourceVariantReference,
 			appComponent: mPropertyBag.component
 		}).then(function() {
-			this.oChangePersistence.deleteChanges(aChangesToBeDeleted);
+			FlexObjectManager.deleteFlexObjects({
+				reference: this.sFlexReference,
+				flexObjects: aChangesToBeDeleted
+			});
 		}.bind(this));
 	};
 
@@ -970,7 +982,7 @@ sap.ui.define([
 	 */
 	VariantModel.prototype.addVariantChange = function(sVariantManagementReference, mPropertyBag) {
 		var oChange = this.createVariantChange(sVariantManagementReference, mPropertyBag);
-		this.oChangePersistence.addDirtyChange(oChange);
+		FlexObjectManager.addDirtyFlexObjects(this.sFlexReference, [oChange]);
 
 		return oChange;
 	};
@@ -985,7 +997,7 @@ sap.ui.define([
 		var aChanges = aChangePropertyMaps.map(function(mProperties) {
 			return this.createVariantChange(sVariantManagementReference, mProperties);
 		}.bind(this));
-		this.oChangePersistence.addDirtyChanges(aChanges);
+		FlexObjectManager.addDirtyFlexObjects(this.sFlexReference, aChanges);
 
 		return aChanges;
 	};
@@ -998,7 +1010,10 @@ sap.ui.define([
 	 */
 	VariantModel.prototype.deleteVariantChange = function(sVariantManagementReference, mPropertyBag, oChange) {
 		this.setVariantProperties(sVariantManagementReference, mPropertyBag);
-		this.oChangePersistence.deleteChange(oChange);
+		FlexObjectManager.deleteFlexObjects({
+			reference: this.sFlexReference,
+			flexObjects: [oChange]
+		});
 	};
 
 	/**
@@ -1553,8 +1568,10 @@ sap.ui.define([
 			return mCurrentVariant.controlChanges;
 		})
 		.flat();
+		const oLiveDependencyMap = FlexObjectState.getLiveDependencyMap(this.sFlexReference);
 		aVariantDependentControlChanges.forEach((oChange) => {
-			this.oChangePersistence.removeChange(oChange);
+			DependencyHandler.removeChangeFromMap(oLiveDependencyMap, oChange.getId());
+			DependencyHandler.removeChangeFromDependencies(oLiveDependencyMap, oChange.getId());
 		});
 
 		this.oDataSelector.removeUpdateListener(this.fnUpdateListener);

@@ -6,17 +6,16 @@ sap.ui.define([
 	"sap/base/util/restricted/_omit",
 	"sap/base/Log",
 	"sap/ui/core/util/reflection/JsControlTreeModifier",
-	"sap/ui/fl/apply/_internal/changes/FlexCustomData",
 	"sap/ui/fl/apply/_internal/appVariant/DescriptorChangeTypes",
+	"sap/ui/fl/apply/_internal/changes/FlexCustomData",
 	"sap/ui/fl/apply/_internal/flexState/ManifestUtils",
+	"sap/ui/fl/initial/_internal/FlexInfoSession",
 	"sap/ui/fl/registry/Settings",
 	"sap/ui/fl/write/_internal/condenser/Condenser",
+	"sap/ui/fl/write/_internal/flexState/changes/UIChangeManager",
 	"sap/ui/fl/write/_internal/flexState/FlexObjectManager",
 	"sap/ui/fl/write/_internal/Storage",
 	"sap/ui/fl/write/api/FeaturesAPI",
-	"sap/ui/fl/initial/_internal/FlexInfoSession",
-	"sap/ui/fl/ChangePersistenceFactory",
-	"sap/ui/fl/FlexControllerFactory",
 	"sap/ui/fl/Layer",
 	"sap/ui/fl/LayerUtils",
 	"sap/ui/fl/Utils"
@@ -24,17 +23,16 @@ sap.ui.define([
 	_omit,
 	Log,
 	JsControlTreeModifier,
-	FlexCustomData,
 	DescriptorChangeTypes,
+	FlexCustomData,
 	ManifestUtils,
+	FlexInfoSession,
 	Settings,
 	Condenser,
+	UIChangeManager,
 	FlexObjectManager,
 	Storage,
 	FeaturesAPI,
-	FlexInfoSession,
-	ChangePersistenceFactory,
-	FlexControllerFactory,
 	Layer,
 	LayerUtils,
 	Utils
@@ -148,20 +146,20 @@ sap.ui.define([
 		var oFlexInfoSession = FlexInfoSession.getByReference(sReference);
 		oFlexInfoSession.saveChangeKeepSession = true;
 		FlexInfoSession.setByReference(oFlexInfoSession, sReference);
-		return FlexObjectManager.saveFlexObjects(mPropertyBag).then(function(oFlexObject) {
-			if (oFlexObject && oFlexObject.length !== 0) {
+		return FlexObjectManager.saveFlexObjects(mPropertyBag).then(function(aFlexObjects) {
+			if (aFlexObjects?.length > 0) {
 				return PersistenceWriteAPI.getResetAndPublishInfo(mPropertyBag).then(function(oResult) {
 					// other attributes like adaptationId, isEndUserAdaptation, init needs to be taken from flex info session if available
 					oFlexInfoSession = FlexInfoSession.getByReference(sReference);
 					delete oFlexInfoSession.saveChangeKeepSession;
-					FlexInfoSession.setByReference(Object.assign(oFlexInfoSession, oResult), sReference);
-					return oFlexObject;
+					FlexInfoSession.setByReference({ ...oFlexInfoSession, ...oResult }, sReference);
+					return aFlexObjects;
 				});
 			}
 			oFlexInfoSession = FlexInfoSession.getByReference(sReference);
 			delete oFlexInfoSession.saveChangeKeepSession;
 			FlexInfoSession.setByReference(oFlexInfoSession, sReference);
-			return oFlexObject;
+			return aFlexObjects;
 		});
 	};
 
@@ -246,37 +244,10 @@ sap.ui.define([
 	 */
 	PersistenceWriteAPI.reset = function(mPropertyBag) {
 		var oAppComponent = Utils.getAppComponentForSelector(mPropertyBag.selector);
-		var oFlexController = FlexControllerFactory.createForSelector(oAppComponent);
-		return oFlexController.resetChanges(
-			mPropertyBag.layer,
-			mPropertyBag.generator,
-			oAppComponent,
-			mPropertyBag.selectorIds,
-			mPropertyBag.changeTypes
-		);
-	};
-
-	/**
-	 * Transports all the UI changes and the app variant descriptor (if exists) to the target system.
-	 *
-	 * @param {object} mPropertyBag - Object with parameters as properties
-	 * @param {sap.ui.fl.Selector} mPropertyBag.selector - To retrieve the associated flex persistence
-	 * @param {string} [mPropertyBag.styleClass] - Style class name that will be added to the transport dialog
-	 * @param {string} mPropertyBag.layer - Working layer
-	 * @param {array} [mPropertyBag.appVariantDescriptors] - Array of app variant descriptors that need to be transported
-	 *
-	 * @returns {Promise<string>} Promise that can resolve to the following strings:
-	 * - "Cancel" if publish process was canceled
-	 * - <sMessage> when all the artifacts are successfully transported fl will return the message to show
-	 * - "Error" in case of a problem
-	 *
-	 * @private
-	 * @ui5-restricted sap.ui.fl, sap.ui.rta
-	 */
-	PersistenceWriteAPI.publish = function(mPropertyBag) {
-		mPropertyBag.styleClass ||= "";
-		return ChangePersistenceFactory.getChangePersistenceForControl(Utils.getAppComponentForSelector(mPropertyBag.selector))
-		.transportAllUIChanges({}, mPropertyBag.styleClass, mPropertyBag.layer, mPropertyBag.appVariantDescriptors);
+		return FlexObjectManager.resetFlexObjects({
+			..._omit(mPropertyBag, "selector"),
+			appComponent: oAppComponent
+		});
 	};
 
 	/**
@@ -295,13 +266,12 @@ sap.ui.define([
 	PersistenceWriteAPI.add = function(mPropertyBag) {
 		var oAppComponent = Utils.getAppComponentForSelector(mPropertyBag.selector);
 		var sFlexReference = ManifestUtils.getFlexReferenceForSelector(mPropertyBag.selector);
-		var oChangePersistence = ChangePersistenceFactory.getChangePersistenceForComponent(sFlexReference);
 
 		function addSingleFlexObject(oFlexObject) {
 			if (isDescriptorChange(oFlexObject)) {
 				return oFlexObject.store();
 			}
-			return oChangePersistence.addChange(oFlexObject, oAppComponent);
+			return UIChangeManager.addDirtyChanges(sFlexReference, [oFlexObject], oAppComponent)?.[0];
 		}
 
 		if (mPropertyBag.change && mPropertyBag.flexObjects) {
@@ -321,7 +291,7 @@ sap.ui.define([
 			return mPropertyBag.flexObjects.map(addSingleFlexObject);
 		}
 
-		return oChangePersistence.addChanges(mPropertyBag.flexObjects, oAppComponent);
+		return UIChangeManager.addDirtyChanges(sFlexReference, mPropertyBag.flexObjects, oAppComponent);
 	};
 
 	/**
@@ -355,8 +325,6 @@ sap.ui.define([
 					));
 			}
 
-			var oChangePersistence = ChangePersistenceFactory.getChangePersistenceForControl(oAppComponent);
-
 			function destroyAppliedCustomData(oFlexObject) {
 				var oElement = JsControlTreeModifier.bySelector(oFlexObject.getSelector(), oAppComponent);
 				if (oElement) {
@@ -364,11 +332,16 @@ sap.ui.define([
 				}
 			}
 
+			const sFlexReference = ManifestUtils.getFlexReferenceForSelector(mPropertyBag.selector);
 			if (mPropertyBag.change) {
 				if (!isDescriptorChange(mPropertyBag.change)) {
 					destroyAppliedCustomData(mPropertyBag.change);
 				}
-				return oChangePersistence.deleteChange(mPropertyBag.change);
+				FlexObjectManager.deleteFlexObjects({
+					reference: sFlexReference,
+					flexObjects: [mPropertyBag.change]
+				});
+				return undefined;
 			}
 
 			mPropertyBag.flexObjects.forEach(function(oFlexObject) {
@@ -377,7 +350,11 @@ sap.ui.define([
 				}
 			});
 
-			return oChangePersistence.deleteChanges(mPropertyBag.flexObjects);
+			FlexObjectManager.deleteFlexObjects({
+				reference: sFlexReference,
+				flexObjects: mPropertyBag.flexObjects
+			});
+			return undefined;
 		});
 	};
 

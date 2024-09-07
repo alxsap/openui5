@@ -10,23 +10,26 @@ sap.ui.define([
 	"sap/ui/core/Element",
 	"sap/ui/core/StaticArea",
 	"sap/ui/core/UIComponent",
+	"sap/ui/fl/apply/_internal/changes/Reverter",
 	"sap/ui/fl/apply/_internal/controlVariants/Utils",
 	"sap/ui/fl/apply/_internal/flexObjects/FlexObjectFactory",
+	"sap/ui/fl/apply/_internal/flexState/FlexObjectState",
+	"sap/ui/fl/apply/_internal/flexState/FlexState",
 	"sap/ui/fl/apply/api/ControlVariantApplyAPI",
 	"sap/ui/fl/apply/api/FlexRuntimeInfoAPI",
-	"sap/ui/fl/initial/_internal/changeHandlers/ChangeHandlerStorage",
 	"sap/ui/fl/initial/_internal/changeHandlers/ChangeHandlerRegistration",
+	"sap/ui/fl/initial/_internal/changeHandlers/ChangeHandlerStorage",
 	"sap/ui/fl/registry/Settings",
 	"sap/ui/fl/variants/VariantManagement",
 	"sap/ui/fl/variants/VariantModel",
+	"sap/ui/fl/write/_internal/flexState/changes/UIChangeManager",
+	"sap/ui/fl/write/_internal/flexState/FlexObjectManager",
 	"sap/ui/fl/write/api/ChangesWriteAPI",
 	"sap/ui/fl/write/api/ControlPersonalizationWriteAPI",
 	"sap/ui/fl/ChangePersistenceFactory",
 	"sap/ui/fl/FlexControllerFactory",
 	"sap/ui/fl/Layer",
 	"sap/ui/fl/Utils",
-	"sap/ui/fl/apply/_internal/flexState/FlexObjectState",
-	"sap/ui/fl/apply/_internal/flexState/FlexState",
 	"sap/ui/qunit/utils/nextUIUpdate",
 	"sap/ui/thirdparty/sinon-4"
 ], function(
@@ -39,23 +42,26 @@ sap.ui.define([
 	Element,
 	StaticArea,
 	UIComponent,
+	Reverter,
 	VariantUtils,
 	FlexObjectFactory,
+	FlexObjectState,
+	FlexState,
 	ControlVariantApplyAPI,
 	FlexRuntimeInfoAPI,
-	ChangeHandlerStorage,
 	ChangeHandlerRegistration,
+	ChangeHandlerStorage,
 	Settings,
 	VariantManagement,
 	VariantModel,
+	UIChangeManager,
+	FlexObjectManager,
 	ChangesWriteAPI,
 	ControlPersonalizationWriteAPI,
 	ChangePersistenceFactory,
 	FlexControllerFactory,
 	Layer,
 	Utils,
-	FlexObjectState,
-	FlexState,
 	nextUIUpdate,
 	sinon
 ) {
@@ -186,7 +192,7 @@ sap.ui.define([
 
 				this.oChangePersistence = ChangePersistenceFactory.getChangePersistenceForControl(this.oComp);
 				this.fnLogErrorStub = sandbox.stub(Log, "error");
-				this.fnAddChangesSpy = sandbox.spy(this.oChangePersistence, "addChanges");
+				this.fnAddChangesSpy = sandbox.spy(UIChangeManager, "addDirtyChanges");
 				this.fnApplyChangeSpy = sandbox.spy(ChangesWriteAPI, "apply");
 
 				// registration is triggered by instantiation of XML View above
@@ -225,7 +231,11 @@ sap.ui.define([
 			})
 			.then(function(aSuccessfulChanges) {
 				assert.equal(this.fnLogErrorStub.callCount, 0, "no errors occurred");
-				assert.equal(this.fnAddChangesSpy.lastCall.args[0].length, 2, "ChangePersistence.addChanges was called with both changes");
+				assert.strictEqual(
+					this.fnAddChangesSpy.lastCall.args[1].length,
+					2,
+					"UIChangeManager.addDirtyChanges was called with both changes"
+				);
 				assert.equal(this.fnApplyChangeSpy.callCount, 2, "ChangesWriteAPI.apply has been called twice");
 				assert.deepEqual(aSuccessfulChanges[0].getSelector(), {
 					id: "mockview--ObjectPageLayout",
@@ -243,7 +253,7 @@ sap.ui.define([
 			var fnApplyChangeStub = sandbox.stub(ChangesWriteAPI, "apply")
 			.callsFake(function() {
 				assert.strictEqual(
-					this.fnAddChangesSpy.lastCall.args[0].length,
+					this.fnAddChangesSpy.lastCall.args[1].length,
 					2,
 					"both changes have been created and added before one is applied"
 				);
@@ -285,7 +295,7 @@ sap.ui.define([
 		});
 
 		QUnit.test("when calling 'add' with two changes, one with an unstable control id and the other with a with a stable control id", function(assert) {
-			var oUnstableIdChangeData = Object.assign({}, this.mMoveChangeData2);
+			const oUnstableIdChangeData = { ...this.mMoveChangeData2 };
 			// mocking unstable id
 			oUnstableIdChangeData.changeSpecificData.movedElements[0].id =
 				`__${oUnstableIdChangeData.changeSpecificData.movedElements[0].id}`;
@@ -320,7 +330,7 @@ sap.ui.define([
 
 		QUnit.test("when calling 'add' with two valid variant changes, but one of them couldn't be applied", function(assert) {
 			var sErrorText = "My test error";
-			var fnDeleteChangeStub = sandbox.stub(this.oChangePersistence, "deleteChange");
+			var fnDeleteFlexObjectsStub = sandbox.stub(FlexObjectManager, "deleteFlexObjects");
 			this.fnApplyChangeSpy.restore();
 			var oApplyStub = sandbox.stub(ChangesWriteAPI, "apply").callsFake(function(mPropertyBag) {
 				if (mPropertyBag.change.getChangeType() === "rename") {
@@ -338,7 +348,7 @@ sap.ui.define([
 			.then(function() {
 				assert.equal(oApplyStub.callCount, 2, "ChangesWriteAPI.apply has been called twice");
 				assert.equal(this.fnLogErrorStub.args[0][1], sErrorText, "the right error was propagated");
-				assert.ok(fnDeleteChangeStub.calledOnce, "then the failing change was deleted");
+				assert.ok(fnDeleteFlexObjectsStub.calledOnce, "then the failing change was deleted");
 			}.bind(this));
 		});
 
@@ -350,19 +360,19 @@ sap.ui.define([
 			.then(function(aSuccessfulChanges) {
 				assert.equal(this.fnLogErrorStub.callCount, 0, "no error occurred");
 				assert.equal(this.fnApplyChangeSpy.callCount, 4, "ChangesWriteAPI.apply has been called four times");
-				assert.equal(
-					this.fnAddChangesSpy.lastCall.args[0].length,
+				assert.strictEqual(
+					this.fnAddChangesSpy.lastCall.args[1].length,
 					4,
-					"ChangePersistence.addChanges has been called once with the four changes"
+					"UIChangeManager.addDirtyChanges has been called once with the four changes"
 				);
 				assert.strictEqual(aSuccessfulChanges.length, 4, "then all passed change contents were applied successfully");
-				assert.equal(this.fnAddChangesSpy.lastCall.args[0][0].getVariantReference(), "mockVariantReference",
+				assert.equal(this.fnAddChangesSpy.lastCall.args[1][0].getVariantReference(), "mockVariantReference",
 					"first change belongs to the preset variant reference");
-				assert.equal(this.fnAddChangesSpy.lastCall.args[0][1].getVariantReference(), "mockview--VariantManagement1",
+				assert.equal(this.fnAddChangesSpy.lastCall.args[1][1].getVariantReference(), "mockview--VariantManagement1",
 					"second change belongs to VariantManagement1");
-				assert.equal(this.fnAddChangesSpy.lastCall.args[0][2].getVariantReference(), "mockview--VariantManagement1",
+				assert.equal(this.fnAddChangesSpy.lastCall.args[1][2].getVariantReference(), "mockview--VariantManagement1",
 					"third change belongs to VariantManagement1");
-				assert.equal(this.fnAddChangesSpy.lastCall.args[0][3].getVariantReference(), "mockview--VariantManagement2",
+				assert.equal(this.fnAddChangesSpy.lastCall.args[1][3].getVariantReference(), "mockview--VariantManagement2",
 					"fourth change belongs to VariantManagement2");
 			}.bind(this));
 		});
@@ -385,19 +395,35 @@ sap.ui.define([
 			.then(function() {
 				assert.equal(this.fnLogErrorStub.callCount, 0, "no error occurred");
 				assert.equal(this.fnApplyChangeSpy.callCount, 1, "ChangesWriteAPI.apply has been called once");
-				assert.equal(this.fnAddChangesSpy.callCount, 1, "ChangePersistence.addChanges has been called once");
-				assert.deepEqual(this.fnAddChangesSpy.lastCall.args[0][0].getSelector().id, "mockview--Button",
-					"ChangePersistence.addChanges was called with the correct renamed element");
-				assert.deepEqual(this.fnAddChangesSpy.lastCall.args[0][0].getChangeType(), oChangeData.changeSpecificData.changeType,
-					"ChangePersistence.addChanges was called with the correct change type");
-				assert.deepEqual(
-					this.fnAddChangesSpy.lastCall.args[0][0].getTexts().newText.value, oChangeData.changeSpecificData.value,
-					"ChangePersistence.addChanges was called with the correct value"
+				assert.strictEqual(
+					this.fnAddChangesSpy.callCount,
+					1,
+					"UIChangeManager.addDirtyChanges has been called once"
 				);
-				assert.notOk(this.fnAddChangesSpy.lastCall.args[0][0].getVariantReference(),
-					"ChangePersistence.addChanges was called for a change without variant management");
-				assert.deepEqual(this.fnAddChangesSpy.lastCall.args[1], this.oComp,
-					"ChangePersistence.addChanges was called with the correct component");
+				assert.deepEqual(
+					this.fnAddChangesSpy.lastCall.args[1][0].getSelector().id,
+					"mockview--Button",
+					"UIChangeManager.addDirtyChanges was called with the correct renamed element"
+				);
+				assert.deepEqual(
+					this.fnAddChangesSpy.lastCall.args[1][0].getChangeType(),
+					oChangeData.changeSpecificData.changeType,
+					"UIChangeManager.addDirtyChanges was called with the correct change type"
+				);
+				assert.deepEqual(
+					this.fnAddChangesSpy.lastCall.args[1][0].getTexts().newText.value,
+					oChangeData.changeSpecificData.value,
+					"UIChangeManager.addDirtyChanges was called with the correct value"
+				);
+				assert.notOk(
+					this.fnAddChangesSpy.lastCall.args[1][0].getVariantReference(),
+					"UIChangeManager.addDirtyChanges was called for a change without variant management"
+				);
+				assert.strictEqual(
+					this.fnAddChangesSpy.lastCall.args[2],
+					this.oComp,
+					"UIChangeManager.addDirtyChanges was called with the correct component"
+				);
 			}.bind(this));
 		});
 
@@ -449,7 +475,11 @@ sap.ui.define([
 			})
 			.then(function(aSuccessfulChanges) {
 				assert.equal(this.fnLogErrorStub.callCount, 0, "no errors occurred");
-				assert.equal(this.fnAddChangesSpy.callCount, 0, "ChangePersistence.addChanges has not been called");
+				assert.strictEqual(
+					this.fnAddChangesSpy.callCount,
+					0,
+					"UIChangeManager.addDirtyChanges has not been called"
+				);
 				assert.deepEqual(aSuccessfulChanges, [], "the function resolves with an empty array");
 			}.bind(this));
 		});
@@ -473,9 +503,9 @@ sap.ui.define([
 			.then(function() {
 				assert.equal(this.fnLogErrorStub.callCount, 0, "no error occurred");
 				assert.strictEqual(
-					this.fnAddChangesSpy.lastCall.args[0].length,
+					this.fnAddChangesSpy.lastCall.args[1].length,
 					0,
-					"ChangePersistence.addChanges is called with an empty array"
+					"UIChangeManager.addDirtyChanges is called with an empty array"
 				);
 			}.bind(this));
 		});
@@ -770,18 +800,6 @@ sap.ui.define([
 		});
 	});
 
-	function createResetStub(oAppComponent) {
-		var fnResetStub = sandbox.stub();
-		sandbox.stub(FlexControllerFactory, "createForControl")
-		.callThrough()
-		.withArgs(oAppComponent)
-		.returns({
-			resetChanges: fnResetStub.resolves()
-		});
-
-		return fnResetStub;
-	}
-
 	QUnit.module("reset", {
 		beforeEach() {
 			this.aControls = [];
@@ -792,6 +810,7 @@ sap.ui.define([
 			};
 			sandbox.stub(Log, "error");
 			sandbox.stub(FlexState, "isInitialized").returns(true);
+			this.oResetStub = sandbox.stub(FlexObjectManager, "resetFlexObjects").resolves();
 		},
 		afterEach() {
 			this.aControls.forEach(function(vControl) {
@@ -806,80 +825,65 @@ sap.ui.define([
 			sandbox.restore();
 		}
 	}, function() {
-		QUnit.test("When reset() is called with an array of control IDs and change types", function(assert) {
+		QUnit.test("When reset() is called with an array of control IDs and change types", async function(assert) {
 			var aChangeTypes = ["changeType1", "changeType2"];
 			this.oAppComponent = new UIComponent("AppComponent2");
 			this.aControls.push({id: "controlId", appComponent: this.oAppComponent});
-			var fnResetStub = createResetStub(this.oAppComponent);
 
-			return ControlPersonalizationWriteAPI.reset({selectors: this.aControls, changeTypes: aChangeTypes})
-			.then(function() {
-				assert.ok(fnResetStub.calledWith(Layer.USER, undefined, this.oAppComponent, this.getControlIds(), aChangeTypes),
-					"then FlexController.reset is called with the passed selectors and change types");
-			}.bind(this));
+			await ControlPersonalizationWriteAPI.reset({selectors: this.aControls, changeTypes: aChangeTypes});
+			assert.ok(this.oResetStub.calledWith({
+				layer: Layer.USER,
+				appComponent: this.oAppComponent,
+				selectorIds: this.getControlIds(),
+				changeTypes: aChangeTypes
+			}), "then reset is called with the passed selectors and change types");
 		});
 
-		QUnit.test("When reset() is called with an array of control IDs which are partially local and partially not", function(assert) {
+		QUnit.test("When reset() is called with an array of control IDs which are partially local and partially not", async function(assert) {
 			this.oAppComponent = new UIComponent("AppComponent2");
 			var aChangeTypes = ["changeType1", "changeType2"];
 			this.aControls.push({id: this.oAppComponent.createId("view--controlId2"), appComponent: this.oAppComponent});
 			 // element currently not present in the runtime
 			this.aControls.push({id: "feElementsView::controlId", appComponent: this.oAppComponent});
-			var fnResetStub = createResetStub(this.oAppComponent);
 
-			return ControlPersonalizationWriteAPI.reset({selectors: this.aControls, changeTypes: aChangeTypes})
-			.then(function() {
-				assert.ok(
-					fnResetStub.calledWith(
-						Layer.USER,
-						undefined,
-						this.oAppComponent,
-						["view--controlId2", "feElementsView::controlId"],
-						aChangeTypes
-					),
-					"then FlexController.reset is called with the passed control IDs and change types"
-				);
-			}.bind(this));
+			await ControlPersonalizationWriteAPI.reset({selectors: this.aControls, changeTypes: aChangeTypes});
+			assert.ok(this.oResetStub.calledWith({
+				layer: Layer.USER,
+				appComponent: this.oAppComponent,
+				selectorIds: ["view--controlId2", "feElementsView::controlId"],
+				changeTypes: aChangeTypes
+			}), "then FlexObjectManager.resetFlexObjects is called with the passed control IDs and change types");
 		});
 
-		QUnit.test("When reset() is called with a control IDs map and for no control ID a control is instantiated but an app component was provided", function(assert) {
+		QUnit.test("When reset() is called with a control IDs map and for no control ID a control is instantiated but an app component was provided", async function(assert) {
 			this.oAppComponent = new UIComponent("AppComponent2");
 			// view ID normally generated by the view between the component and the control
 			var oControl = new Control(this.oAppComponent.createId("view--controlId4"));
 			this.aControls.push({id: oControl.getId()});
 			var aSelector = [{id: "controlId3", appComponent: this.oAppComponent}, oControl];
-			var fnResetStub = createResetStub(this.oAppComponent);
 
-			return ControlPersonalizationWriteAPI.reset({selectors: aSelector})
-			.then(function() {
-				assert.ok(fnResetStub.calledWith(Layer.USER, undefined, this.oAppComponent, ["controlId3", "view--controlId4"], undefined),
-					"then FlexController.reset is called with the passed control IDs and change types");
-			}.bind(this));
+			await ControlPersonalizationWriteAPI.reset({selectors: aSelector});
+			assert.ok(this.oResetStub.calledWith({
+				layer: Layer.USER,
+				appComponent: this.oAppComponent,
+				selectorIds: ["controlId3", "view--controlId4"],
+				changeTypes: undefined
+			}), "then FlexObjectManager.resetFlexObjects is called with the passed control IDs and change types");
 		});
 
 		QUnit.test("When reset() is called with a mixture of control IDs and controls and for no control ID a control", function(assert) {
 			this.oAppComponent = new UIComponent("AppComponent2");
 			var aSelectors = [{id: "controlId3", appComponent: this.oAppComponent}, {id: "controlId4", appComponent: this.oAppComponent}];
-			var fnResetStub = createResetStub(this.oAppComponent);
 
 			return ControlPersonalizationWriteAPI.reset({selectors: aSelectors})
 			.then(function() {
-				assert.ok(fnResetStub.calledWith(Layer.USER, undefined, this.oAppComponent, ["controlId3", "controlId4"], undefined),
-					"then FlexController.reset is called with the passed control IDs and change types");
+				assert.ok(this.oResetStub.calledWith({
+					layer: Layer.USER,
+					appComponent: this.oAppComponent,
+					selectorIds: ["controlId3", "controlId4"],
+					changeTypes: undefined
+				}), "then FlexObjectManager.resetFlexObjects is called with the passed control IDs and change types");
 			}.bind(this));
-		});
-
-		QUnit.test("When reset() is called but FlexState is not initialized", function(assert) {
-			this.oAppComponent = new UIComponent("AppComponent2");
-			var aSelectors = [{id: "controlId3", appComponent: this.oAppComponent}, {id: "controlId4", appComponent: this.oAppComponent}];
-			var fnResetStub = createResetStub(this.oAppComponent);
-			FlexState.isInitialized.restore();
-			sandbox.stub(FlexState, "isInitialized").returns(false);
-
-			return ControlPersonalizationWriteAPI.reset({selectors: aSelectors})
-			.then(function() {
-				assert.notOk(fnResetStub.calledOnce, "then FlexController.reset is not called");
-			});
 		});
 
 		QUnit.test("When reset() is called with an undefined selector array", function(assert) {
@@ -945,8 +949,7 @@ sap.ui.define([
 
 		QUnit.test("When FlexState is not initialized", function(assert) {
 			sandbox.stub(Utils, "getAppComponentForControl").returns(this.oAppComponent);
-			var oFlexController = FlexControllerFactory.createForControl(this.oAppComponent);
-			var oRemoveDirtyChangesSpy = sandbox.spy(oFlexController, "removeDirtyChanges");
+			const oRemoveDirtyFlexObjectsSpy = sandbox.spy(FlexObjectManager, "removeDirtyFlexObjects");
 			FlexState.isInitialized.restore();
 			sandbox.stub(FlexState, "isInitialized").returns(false);
 
@@ -956,14 +959,18 @@ sap.ui.define([
 				generator: sGenerator
 			})
 			.then(function() {
-				assert.notOk(oRemoveDirtyChangesSpy.calledOnce, "then FlexController.removeDirtyChanges is not called");
+				assert.ok(oRemoveDirtyFlexObjectsSpy.notCalled, "then removeDirtyFlexObjects is not called");
 			});
 		});
 
 		QUnit.test("when a restore with a generator was called", function(assert) {
 			sandbox.stub(Utils, "getAppComponentForControl").returns(this.oAppComponent);
-			var oFlexController = FlexControllerFactory.createForControl(this.oAppComponent);
-			var oRemoveDirtyChangesSpy = sandbox.spy(oFlexController, "removeDirtyChanges");
+			const aCurrentChanges = [
+				createUIChange(undefined, undefined, "id1"),
+				createUIChange(undefined, undefined, "id2")
+			];
+			const oRemoveDirtyFlexObjectsSpy = sandbox.stub(FlexObjectManager, "removeDirtyFlexObjects").returns(aCurrentChanges);
+			const oRevertSpy = sandbox.spy(Reverter, "revertMultipleChanges");
 
 			var sGenerator = "Change.createInitialFileContent";
 			return ControlPersonalizationWriteAPI.restore({
@@ -971,20 +978,32 @@ sap.ui.define([
 				generator: sGenerator
 			})
 			.then(function() {
-				assert.equal(oRemoveDirtyChangesSpy.callCount, 1, "removeDirtyChanges was called once");
-				var aArguments = oRemoveDirtyChangesSpy.getCall(0).args;
-				assert.equal(aArguments[0], Layer.USER, "the USER layer was passed");
-				assert.equal(aArguments[1], this.oAppComponent, "the app component was passed");
-				assert.equal(aArguments[2], this.oControl, "the the control was passed");
-				assert.equal(aArguments[3], sGenerator, "the generator was passed");
-				assert.equal(aArguments[4], undefined, "the changeTypes were not passed");
+				assert.equal(oRemoveDirtyFlexObjectsSpy.callCount, 1, "removeDirtyFlexObjects was called once");
+				const oArgument = oRemoveDirtyFlexObjectsSpy.getCall(0).args[0];
+				assert.deepEqual(
+					oArgument,
+					{
+						reference: "sap.ui.core",
+						layers: Layer.USER,
+						component: this.oAppComponent,
+						control: this.oControl,
+						generator: sGenerator,
+						changeTypes: undefined
+					},
+					"then the correct arguments were passed"
+				);
+				assert.strictEqual(oRevertSpy.callCount, 1, "then the revertMultipleChanges function was called once");
+				assert.deepEqual(
+					oRevertSpy.getCall(0).args[0],
+					[...aCurrentChanges].reverse(),
+					"then the revertMultipleChanges function was called with the removed changes in reverse"
+				);
 			}.bind(this));
 		});
 
 		QUnit.test("when a restore with a changeType list was called", function(assert) {
 			sandbox.stub(Utils, "getAppComponentForControl").returns(this.oAppComponent);
-			var oFlexController = FlexControllerFactory.createForControl(this.oAppComponent);
-			var oRemoveDirtyChangesSpy = sandbox.spy(oFlexController, "removeDirtyChanges");
+			const oRemoveDirtyFlexObjectsSpy = sandbox.spy(FlexObjectManager, "removeDirtyFlexObjects");
 
 			var aChangeTypes = ["Change.createInitialFileContent"];
 			return ControlPersonalizationWriteAPI.restore({
@@ -992,20 +1011,26 @@ sap.ui.define([
 				changeTypes: aChangeTypes
 			})
 			.then(function() {
-				assert.equal(oRemoveDirtyChangesSpy.callCount, 1, "removeDirtyChanges was called once");
-				var aArguments = oRemoveDirtyChangesSpy.getCall(0).args;
-				assert.equal(aArguments[0], Layer.USER, "the USER layer was passed");
-				assert.equal(aArguments[1], this.oAppComponent, "the app component was passed");
-				assert.equal(aArguments[2], this.oControl, "the the control was passed");
-				assert.equal(aArguments[3], undefined, "the generator was passed");
-				assert.equal(aArguments[4], aChangeTypes, "the changeTypes were passed");
+				assert.equal(oRemoveDirtyFlexObjectsSpy.callCount, 1, "removeDirtyFlexObjects was called once");
+				const oArgument = oRemoveDirtyFlexObjectsSpy.getCall(0).args[0];
+				assert.deepEqual(
+					oArgument,
+					{
+						reference: "sap.ui.core",
+						layers: Layer.USER,
+						component: this.oAppComponent,
+						control: this.oControl,
+						generator: undefined,
+						changeTypes: aChangeTypes
+					},
+					"then the correct arguments were passed"
+				);
 			}.bind(this));
 		});
 
-		QUnit.test("when a restore with a changeType list was called", function(assert) {
+		QUnit.test("when a restore without a changeType list or generator was called", function(assert) {
 			sandbox.stub(Utils, "getAppComponentForControl").returns(this.oAppComponent);
-			var oFlexController = FlexControllerFactory.createForControl(this.oAppComponent);
-			var oRemoveDirtyChangesSpy = sandbox.spy(oFlexController, "removeDirtyChanges");
+			const oRemoveDirtyFlexObjectsSpy = sandbox.spy(FlexObjectManager, "removeDirtyFlexObjects");
 
 			var sSelectorIds = ["myControl"];
 			return ControlPersonalizationWriteAPI.restore({
@@ -1013,13 +1038,20 @@ sap.ui.define([
 				selectorIds: sSelectorIds
 			})
 			.then(function() {
-				assert.equal(oRemoveDirtyChangesSpy.callCount, 1, "removeDirtyChanges was called once");
-				var aArguments = oRemoveDirtyChangesSpy.getCall(0).args;
-				assert.equal(aArguments[0], Layer.USER, "the USER layer was passed");
-				assert.equal(aArguments[1], this.oAppComponent, "the app component was passed");
-				assert.equal(aArguments[2], this.oControl, "the the control was passed");
-				assert.equal(aArguments[3], undefined, "the generator was passed");
-				assert.equal(aArguments[4], undefined, "the changeTypes were not passed");
+				assert.equal(oRemoveDirtyFlexObjectsSpy.callCount, 1, "removeDirtyFlexObjects was called once");
+				const oArgument = oRemoveDirtyFlexObjectsSpy.getCall(0).args[0];
+				assert.deepEqual(
+					oArgument,
+					{
+						reference: "sap.ui.core",
+						layers: Layer.USER,
+						component: this.oAppComponent,
+						control: this.oControl,
+						generator: undefined,
+						changeTypes: undefined
+					},
+					"then the correct arguments were passed"
+				);
 			}.bind(this));
 		});
 	});

@@ -4,6 +4,11 @@
 
 sap.ui.define([
 	"sap/base/util/restricted/_omit",
+	"sap/ui/core/util/reflection/JsControlTreeModifier",
+	"sap/ui/fl/apply/_internal/changes/Reverter",
+	"sap/ui/fl/apply/_internal/flexObjects/FlexObjectFactory",
+	"sap/ui/fl/apply/_internal/flexObjects/States",
+	"sap/ui/fl/apply/_internal/flexState/changes/DependencyHandler",
 	"sap/ui/fl/apply/_internal/flexState/changes/UIChangesState",
 	"sap/ui/fl/apply/_internal/flexState/compVariants/CompVariantMerger",
 	"sap/ui/fl/apply/_internal/flexState/controlVariants/VariantManagementState",
@@ -11,12 +16,18 @@ sap.ui.define([
 	"sap/ui/fl/apply/_internal/flexState/FlexState",
 	"sap/ui/fl/apply/_internal/flexState/ManifestUtils",
 	"sap/ui/fl/write/_internal/flexState/compVariants/CompVariantState",
+	"sap/ui/fl/write/_internal/Storage",
 	"sap/ui/fl/write/_internal/Versions",
-	"sap/ui/fl/FlexControllerFactory",
 	"sap/ui/fl/LayerUtils",
+	"sap/ui/fl/requireAsync",
 	"sap/ui/fl/Utils"
 ], function(
 	_omit,
+	JsControlTreeModifier,
+	Reverter,
+	FlexObjectFactory,
+	States,
+	DependencyHandler,
 	UIChangesState,
 	CompVariantMerger,
 	VariantManagementState,
@@ -24,14 +35,17 @@ sap.ui.define([
 	FlexState,
 	ManifestUtils,
 	CompVariantState,
+	Storage,
 	Versions,
-	FlexControllerFactory,
 	LayerUtils,
+	requireAsync,
 	Utils
 ) {
 	"use strict";
 
 	/**
+	 * Central class for operations on the flex states and flex objects.
+	 *
 	 * @namespace
 	 * @alias sap.ui.fl.write._internal.flexState.FlexObjectManager
 	 * @since 1.83
@@ -39,7 +53,7 @@ sap.ui.define([
 	 * @private
 	 * @ui5-restricted sap.ui.fl
 	 */
-	var FlexObjectManager = {};
+	const FlexObjectManager = {};
 
 	function getCompVariantEntities(mPropertyBag) {
 		const aEntities = [];
@@ -78,7 +92,15 @@ sap.ui.define([
 		return CompVariantState.persistAll(sReference);
 	}
 
-	function saveChangePersistenceEntities(mPropertyBag, oAppComponent) {
+	function removeFlexObjectFromDependencyHandler(sReference, oFlexObject) {
+		if (oFlexObject.isValidForDependencyMap()) {
+			DependencyHandler.removeChangeFromMap(FlexObjectState.getLiveDependencyMap(sReference), oFlexObject.getId());
+			DependencyHandler.removeChangeFromDependencies(FlexObjectState.getLiveDependencyMap(sReference), oFlexObject.getId());
+		}
+	}
+
+	async function saveChangePersistenceEntities(mPropertyBag, oAppComponent) {
+		const FlexControllerFactory = await requireAsync("sap/ui/fl/FlexControllerFactory");
 		var oFlexController = FlexControllerFactory.createForSelector(mPropertyBag.selector);
 
 		return oFlexController.saveAll(
@@ -90,6 +112,16 @@ sap.ui.define([
 			mPropertyBag.condenseAnyLayer
 		);
 	}
+
+	function getOrCreateFlexObject(vFlexObject) {
+		return (
+			typeof vFlexObject.isA === "function"
+			&& vFlexObject.isA("sap.ui.fl.apply._internal.flexObjects.FlexObject")
+		)
+			? vFlexObject
+			: FlexObjectFactory.createFromFileContent(vFlexObject);
+	}
+
 	/**
 	 * Takes an array of FlexObjects and filters out any hidden variant and changes on those hidden variants
 	 *
@@ -165,6 +197,57 @@ sap.ui.define([
 	};
 
 	/**
+	 * Adds new dirty flex objects.
+	 *
+	 * @param {string} sReference - Flex reference of the application
+	 * @param {object[]} aFlexObjects - JSON object representation of flex objects or flex object instances
+	 * @returns {sap.ui.fl.apply._internal.flexObjects.FlexObject[]} The prepared flex objects
+	 * @public
+	 */
+	FlexObjectManager.addDirtyFlexObjects = function(sReference, aFlexObjects) {
+		return FlexState.addDirtyFlexObjects(sReference, aFlexObjects.map(getOrCreateFlexObject));
+	};
+
+	/**
+	 * Removes unsaved flex objects.
+	 *
+	 * @param {object} mPropertyBag - Properties to determine the flex objects to be removed
+	 * @param {string} mPropertyBag.reference - Flex reference of the application
+	 * @param {string|string[]} [mPropertyBag.layers] - Layer or multiple layers for which flex objects shall be deleted. If omitted, flex objects on all layers are considered.
+	 * @param {sap.ui.core.Component} [mPropertyBag.component] - Component instance, required if oControl is specified
+	 * @param {string} [mPropertyBag.control] - Control for which the flex objects should be deleted. If omitted, all flex objects for the reference are considered.
+	 * @param {string} [mPropertyBag.generator] - Generator of flex objects
+	 * @param {string[]} [mPropertyBag.changeTypes] - Types of flex objects
+	 * @returns {sap.ui.fl.apply._internal.flexObjects.FlexObject[]} The flex objects that were removed
+	 */
+	FlexObjectManager.removeDirtyFlexObjects = function(mPropertyBag) {
+		const aLayers = [].concat(mPropertyBag.layers || []);
+		const aDirtyFlexObjects = FlexObjectState.getDirtyFlexObjects(mPropertyBag.reference);
+
+		const aFlexObjectsToBeRemoved = aDirtyFlexObjects.filter((oFlexObject) => {
+			let bChangeValid = true;
+
+			if (aLayers.length && !aLayers.includes(oFlexObject.getLayer())) {
+				return false;
+			}
+			if (mPropertyBag.generator && oFlexObject.getSupportInformation().generator !== mPropertyBag.generator) {
+				return false;
+			}
+			if (mPropertyBag.control) {
+				const sSelectorId = JsControlTreeModifier.getControlIdBySelector(oFlexObject.getSelector(), mPropertyBag.component);
+				bChangeValid = mPropertyBag.control.getId() === sSelectorId;
+			}
+			if (mPropertyBag.changeTypes) {
+				bChangeValid &&= mPropertyBag.changeTypes.includes(oFlexObject.getChangeType());
+			}
+
+			return bChangeValid;
+		});
+
+		return FlexState.removeDirtyFlexObjects(mPropertyBag.reference, aFlexObjectsToBeRemoved);
+	};
+
+	/**
 	 * Save Flex objects and reload Flex State
 	 * @param {object} mPropertyBag - Object with parameters as properties
 	 * @param {sap.ui.fl.Selector} mPropertyBag.selector - Selector to retrieve the associated flex persistence
@@ -198,6 +281,99 @@ sap.ui.define([
 		mPropertyBag.componentId = oAppComponent.getId();
 		mPropertyBag.invalidateCache = true;
 		return FlexObjectManager.getFlexObjects(_omit(mPropertyBag, "skipUpdateCache"));
+	};
+
+	/**
+	 * Removes the provided flex objects from the FlexState and dependency handler and sets them to be deleted.
+	 * If a flex object is dirty it will only be removed from the FlexState.
+	 * Otherwise the next call to save dirty flex objects will remove them from the persistence.
+	 *
+	 * @param {object} mPropertyBag - Object with parameters as properties
+	 * @param {string} mPropertyBag.reference - Flex reference of the application
+	 * @param {sap.ui.fl.apply._internal.flexObjects.FlexObject[]} mPropertyBag.flexObjects - Flex objects to be deleted
+	 */
+	FlexObjectManager.deleteFlexObjects = function(mPropertyBag) {
+		const aDirtyFlexObjects = FlexObjectState.getDirtyFlexObjects(mPropertyBag.reference);
+
+		const aToBeDeletedFlexObjects = [];
+		const aToBeRemovedDirtyFlexObjects = [];
+		mPropertyBag.flexObjects.forEach(function(oFlexObject) {
+			if (aDirtyFlexObjects.indexOf(oFlexObject) > -1 && oFlexObject.getState() === States.LifecycleState.NEW) {
+				aToBeRemovedDirtyFlexObjects.push(oFlexObject);
+			} else {
+				oFlexObject.markForDeletion();
+				aToBeDeletedFlexObjects.push(oFlexObject);
+			}
+			removeFlexObjectFromDependencyHandler(mPropertyBag.reference, oFlexObject);
+		});
+		FlexState.removeDirtyFlexObjects(mPropertyBag.reference, aToBeRemovedDirtyFlexObjects);
+		FlexObjectManager.addDirtyFlexObjects(mPropertyBag.reference, aToBeDeletedFlexObjects);
+	};
+
+	/**
+	 * Reset flex objects on the server.
+	 * If the reset is performed for an entire component, a browser reload is required.
+	 * If the reset is performed for a control or change type, this function also triggers a reversion of deleted UI changes.
+	 * The to be deleted flexObjects can be filtered by selectorIds, changeTypes or generator.
+	 *
+	 * @param {object} mPropertyBag - Object with parameters as properties
+	 * @param {string} mPropertyBag.layer - Layer for which changes shall be deleted
+	 * @param {sap.ui.core.UIComponent} mPropertyBag.appComponent - Component instance
+	 * @param {string} [mPropertyBag.generator] - Generator of changes
+	 * @param {string[]} [mPropertyBag.selectorIds] - Selector IDs in local format
+	 * @param {string[]} [mPropertyBag.changeTypes] - Types of changes
+	 *
+	 * @returns {Promise<undefined>} Resolves after the deletion took place
+	 */
+	FlexObjectManager.resetFlexObjects = async function(mPropertyBag) {
+		const sReference = ManifestUtils.getFlexReferenceForControl(mPropertyBag.appComponent);
+		const aFlexObjects = await FlexObjectManager.getFlexObjects({
+			selector: mPropertyBag.appComponent,
+			currentLayer: mPropertyBag.layer,
+			includeCtrlVariants: true
+		});
+		const mParams = {
+			reference: sReference,
+			layer: mPropertyBag.layer,
+			changes: aFlexObjects
+		};
+		if (mPropertyBag.generator) {
+			mParams.generator = mPropertyBag.generator;
+		}
+		if (mPropertyBag.selectorIds) {
+			mParams.selectorIds = mPropertyBag.selectorIds;
+		}
+		if (mPropertyBag.changeTypes) {
+			mParams.changeTypes = mPropertyBag.changeTypes;
+		}
+		const oResponse = await Storage.reset(mParams);
+
+		if (mPropertyBag.selectorIds || mPropertyBag.changeTypes || mPropertyBag.generator) {
+			const aFileNames = [];
+			if (oResponse?.response?.length > 0) {
+				oResponse.response.forEach(function(oChangeContent) {
+					aFileNames.push(oChangeContent.fileName);
+				});
+			}
+			const aChangesToRevert = aFlexObjects.filter(function(oChange) {
+				return aFileNames.indexOf(oChange.getId()) !== -1;
+			});
+			FlexState.updateStorageResponse(sReference, aChangesToRevert.map((oFlexObject) => {
+				return { flexObject: oFlexObject.convertToFileContent(), type: "delete" };
+			}));
+
+			if (aChangesToRevert.length) {
+				await Reverter.revertMultipleChanges(
+					// Always revert changes in reverse order
+					[...aChangesToRevert].reverse(),
+					{
+						appComponent: mPropertyBag.appComponent,
+						modifier: JsControlTreeModifier,
+						reference: sReference
+					}
+				);
+			}
+		}
 	};
 
 	return FlexObjectManager;

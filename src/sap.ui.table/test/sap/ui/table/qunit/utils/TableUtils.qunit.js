@@ -8,10 +8,11 @@ sap.ui.define([
 	"sap/ui/table/CreationRow",
 	"sap/ui/table/rowmodes/Fixed",
 	"sap/ui/table/library",
+	"sap/ui/table/RowSettings",
 	"sap/ui/core/Control",
 	"sap/ui/core/Theming",
+	"sap/ui/core/InvisibleMessage",
 	"sap/ui/core/message/MessageType",
-	"sap/ui/table/RowSettings",
 	"sap/ui/base/Object",
 	"sap/base/i18n/ResourceBundle",
 	"sap/base/i18n/Localization",
@@ -26,10 +27,11 @@ sap.ui.define([
 	CreationRow,
 	FixedRowMode,
 	TableLibrary,
+	RowSettings,
 	Control,
 	Theming,
+	InvisibleMessage,
 	MessageType,
-	RowSettings,
 	BaseObject,
 	ResourceBundle,
 	Localization,
@@ -743,40 +745,50 @@ sap.ui.define([
 
 	QUnit.test("showNotificationPopoverAtIndex", function(assert) {
 		const oAfterOpenSpy = sinon.spy();
-		let oOpenSpy; let oCloseSpy;
+		const fnInvisibleMessageAnnounce = sinon.spy(InvisibleMessage.prototype, "announce");
+		let oOpenSpy; let oCloseSpy; let sMessage;
 
 		assert.notOk(oTable._oNotificationPopover, "the notification popover is not initialized");
 
 		return TableUtils.showNotificationPopoverAtIndex(oTable, 0, 3).then(function() {
 			assert.ok(oTable._oNotificationPopover, "the notification popover is initialized");
-			assert.equal(oTable._oNotificationPopover.getContent()[0].getText(), TableUtils.getResourceText("TBL_SELECT_LIMIT", [3]),
+			sMessage = oTable._oNotificationPopover.getContent()[0].getText();
+			assert.equal(sMessage, TableUtils.getResourceText("TBL_SELECT_LIMIT", [3]),
 				"the notification message is correct");
 
 			oOpenSpy = sinon.spy(oTable._oNotificationPopover, "openBy");
 			oCloseSpy = sinon.spy(oTable._oNotificationPopover, "close");
 			oTable._oNotificationPopover.attachAfterOpen(oAfterOpenSpy);
+			assert.ok(fnInvisibleMessageAnnounce.calledOnceWith(sMessage), "The message text is announced");
 			oTable.fireFirstVisibleRowChanged({firstVisibleRow: 1});
 			assert.ok(oCloseSpy.calledOnce, "the popover closes on scroll");
+			fnInvisibleMessageAnnounce.resetHistory();
 
 			return TableUtils.showNotificationPopoverAtIndex(oTable, 1, 5);
 		}).then(function() {
-			assert.equal(oTable._oNotificationPopover.getContent()[0].getText(), TableUtils.getResourceText("TBL_SELECT_LIMIT", [5]),
+			sMessage = oTable._oNotificationPopover.getContent()[0].getText();
+			assert.equal(sMessage, TableUtils.getResourceText("TBL_SELECT_LIMIT", [5]),
 				"the notification message is correct");
 			oOpenSpy.calledOnceWithExactly(oTable.getRows()[1].getDomRefs().rowSelector, "the popover is opened by the correct element");
 			assert.ok(oAfterOpenSpy.calledOnce, "the afterOpen event is fired");
+			assert.ok(fnInvisibleMessageAnnounce.calledOnceWith(sMessage), "The message text is announced");
 
 			oTable._oNotificationPopover.close();
 			oAfterOpenSpy.resetHistory();
 			oOpenSpy.resetHistory();
+			fnInvisibleMessageAnnounce.resetHistory();
 
 			return TableUtils.showNotificationPopoverAtIndex(oTable, 2, 3);
 		}).then(function() {
-			assert.equal(oTable._oNotificationPopover.getContent()[0].getText(), TableUtils.getResourceText("TBL_SELECT_LIMIT", [3]),
+			sMessage = oTable._oNotificationPopover.getContent()[0].getText();
+			assert.equal(sMessage, TableUtils.getResourceText("TBL_SELECT_LIMIT", [3]),
 				"the notification message is correct");
 			oOpenSpy.calledOnceWithExactly(oTable.getRows()[2].getDomRefs().rowSelector);
 			assert.ok(oAfterOpenSpy.calledOnce, "the popover is opened by the correct element");
+			assert.ok(fnInvisibleMessageAnnounce.calledOnceWith(sMessage), "The message text is announced");
 
 			oTable._oNotificationPopover.close();
+			fnInvisibleMessageAnnounce.restore();
 		});
 	});
 
@@ -1430,6 +1442,43 @@ sap.ui.define([
 		};
 
 		Theming.attachApplied(fnThemeChanged);
+	});
+
+	QUnit.test("getEventPosition", function(assert) {
+		let oEvent;
+		let oPos;
+		const x = 15;
+		const y = 20;
+		const oCoord = {pageX: x, pageY: y};
+
+		oEvent = jQuery.extend({originalEvent: {}}, oCoord);
+
+		oPos = TableUtils.getEventPosition(oEvent, oTable);
+		assert.equal(oPos.x, x, "MouseEvent - X");
+		assert.equal(oPos.y, y, "MouseEvent - Y");
+
+		oEvent = {
+			targetTouches: [oCoord],
+			originalEvent: {
+				touches: []
+			}
+		};
+
+		oPos = TableUtils.getEventPosition(oEvent, oTable);
+		assert.equal(oPos.x, x, "TouchEvent - X");
+		assert.equal(oPos.y, y, "TouchEvent - Y");
+
+		oEvent = {
+			touches: [oCoord],
+			originalEvent: {
+				touches: [],
+				targetTouches: [oCoord]
+			}
+		};
+
+		oPos = TableUtils.getEventPosition(oEvent, oTable);
+		assert.equal(oPos.x, x, "TouchEvent (wrapped) - X");
+		assert.equal(oPos.y, y, "TouchEvent (wrapped) - Y");
 	});
 
 	QUnit.module("Resize Handler", {

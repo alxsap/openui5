@@ -73,7 +73,7 @@ sap.ui.define([
 			!oResponsibleElementOverlay.getDesignTimeMetadata().markedAsNotAdaptable() &&
 			this._isEditable(
 				oResponsibleElementOverlay,
-				Object.assign({sourceElementOverlay: oSourceElementOverlay}, mPropertyBag)
+				{ sourceElementOverlay: oSourceElementOverlay, ...mPropertyBag }
 			);
 
 		// handle promise return value by _isEditable function
@@ -485,7 +485,6 @@ sap.ui.define([
 	 * @param {object} mPropertyBag Additional properties for the menu item
 	 * @param {string} mPropertyBag.pluginId The ID of the plugin
 	 * @param {string} mPropertyBag.icon an icon for the Button inside the context menu
-	 * @param {string} mPropertyBag.group A group for buttons which should be grouped together in the MiniMenu
 	 * @param {number} [mPropertyBag.rank] The rank (order) of the plugin action in the context menu
 	 * @return {object[]} Returns an array with the object containing the required data for a context menu item
 	 */

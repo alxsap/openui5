@@ -255,10 +255,9 @@ builder:
             - sap/ui/core/boot/boot.json
             - sap/ui/core/boot/config.js
             resolve: true
-          - mode: raw
+          - mode: require
             filters:
-              - sap/ui/core/boot/_runBoot.js
-            declareRawModules: false
+              - sap/ui/core/Core.js
       bundleOptions:
         optimize: true
         decorateBootstrapModule: true
@@ -272,10 +271,9 @@ builder:
             declareRawModules: false
             resolve: true
             sort: true
-          - mode: raw
+          - mode: require
             filters:
-              - sap/ui/core/boot/_runBoot.js
-            declareRawModules: false
+              - sap/ui/core/Core.js
       bundleOptions:
         optimize: false
     - bundleDefinition:
@@ -314,10 +312,9 @@ builder:
               - sap/ui/core/boot/boot.json
               - sap/ui/core/boot/config.js
             resolve: true
-          - mode: raw
+          - mode: require
             filters:
-              - sap/ui/core/boot/_runBoot.js
-            declareRawModules: false
+              - sap/ui/core/Core.js
       bundleOptions:
         optimize: true
         decorateBootstrapModule: true
@@ -339,10 +336,9 @@ builder:
             declareRawModules: false
             resolve: true
             sort: true
-          - mode: raw
+          - mode: require
             filters:
-              - sap/ui/core/boot/_runBoot.js
-            declareRawModules: false
+              - sap/ui/core/Core.js
       bundleOptions:
         optimize: false
     - bundleDefinition:
@@ -354,10 +350,9 @@ builder:
             declareRawModules: false
             resolve: true
             sort: true
-          - mode: raw
+          - mode: require
             filters:
-              - sap/ui/core/boot/_runBoot.js
-            declareRawModules: false
+              - sap/ui/core/Core.js
       bundleOptions:
         optimize: true
     - bundleDefinition:
@@ -434,10 +429,9 @@ builder:
               - sap/ui/core/boot/boot.json
               - sap/ui/core/boot/config.js
             resolve: true
-          - mode: raw
+          - mode: require
             filters:
               - sap/ui/test/starter/_runQUnit.js
-            declareRawModules: false
       bundleOptions:
         optimize: true
         decorateBootstrapModule: true
@@ -457,10 +451,9 @@ builder:
             declareRawModules: false
             resolve: true
             sort: true
-          - mode: raw
+          - mode: require
             filters:
               - sap/ui/test/starter/_runQUnit.js
-            declareRawModules: false
       bundleOptions:
         optimize: false
     - bundleDefinition:

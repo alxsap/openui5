@@ -5,7 +5,6 @@
 sap.ui.define([
 	"./_ODataMetaModelUtils",
 	"sap/base/Log",
-	"sap/base/util/extend",
 	"sap/base/util/isEmptyObject",
 	"sap/ui/base/BindingParser",
 	"sap/ui/base/ManagedObject",
@@ -19,11 +18,10 @@ sap.ui.define([
 	"sap/ui/model/json/JSONListBinding",
 	"sap/ui/model/json/JSONModel",
 	"sap/ui/model/json/JSONPropertyBinding",
-	"sap/ui/model/json/JSONTreeBinding",
-	"sap/ui/performance/Measurement"
-], function (Utils, Log, extend, isEmptyObject, BindingParser, ManagedObject, SyncPromise, _Helper, BindingMode,
+	"sap/ui/model/json/JSONTreeBinding"
+], function (Utils, Log, isEmptyObject, BindingParser, ManagedObject, SyncPromise, _Helper, BindingMode,
 		ClientContextBinding, Context, FilterProcessor, MetaModel, JSONListBinding, JSONModel, JSONPropertyBinding,
-		JSONTreeBinding, Measurement) {
+		JSONTreeBinding) {
 	"use strict";
 
 	/**
@@ -703,8 +701,6 @@ sap.ui.define([
 		// list customizing as needed by the OData type
 		mCodeListUrl2Promise = new Map(),
 		sODataMetaModel = "sap.ui.model.odata.ODataMetaModel",
-		aPerformanceCategories = [sODataMetaModel],
-		sPerformanceLoad = sODataMetaModel + "/load",
 		// path to a type's property e.g. ("/dataServices/schema/<i>/entityType/<j>/property/<k>")
 		rPropertyPath =
 			/^((\/dataServices\/schema\/\d+)\/(?:complexType|entityType)\/\d+)\/property\/\d+$/;
@@ -895,13 +891,15 @@ sap.ui.define([
 					if (that.bDestroyed) {
 						throw new Error("Meta model already destroyed");
 					}
-					Measurement.average(sPerformanceLoad, "", aPerformanceCategories);
 					oData = JSON.parse(JSON.stringify(oMetadata.getServiceMetadata()));
 					that.oModel = new JSONModel(oData);
 					that.oModel.setDefaultBindingMode(that.sDefaultBindingMode);
-					Utils.merge(oAnnotations ? oAnnotations.getData() : {}, oData, that,
-						oDataModel.bIgnoreAnnotationsFromMetadata);
-					Measurement.end(sPerformanceLoad);
+					return oDataModel._requestAnnotationChanges().then((aAnnotationChanges) => {
+						Utils.merge(oAnnotations ? oAnnotations.getData() : {}, oData, that,
+							oDataModel.bIgnoreAnnotationsFromMetadata);
+						that.aAnnotationChanges = _Helper.deepClone(aAnnotationChanges, 20);
+						that._applyAnnotationChanges();
+					});
 				}
 
 				MetaModel.apply(this); // no arguments to pass!
@@ -928,6 +926,30 @@ sap.ui.define([
 		});
 
 	/**
+	 * Apply the annotation changes for this model.
+	 *
+	 * @private
+	 * @see sap.ui.model.odata.v2.ODataModel#setAnnotationChangePromise
+	 */
+	ODataMetaModel.prototype._applyAnnotationChanges = function () {
+		if (!this.aAnnotationChanges) {
+			return;
+		}
+		const aNotAppliedChanges = [];
+		this.aAnnotationChanges.forEach((oAnnotationChange) => {
+			const sResolvedPath = this._getObject(oAnnotationChange.path, undefined, /*bAsPath*/true);
+			// value help metadata maybe loaded and merged later; if the path cannot be resolved yet ignore the
+			// annotation change and process it later
+			if (sResolvedPath) {
+				this.oModel.setProperty(sResolvedPath, oAnnotationChange.value);
+			} else {
+				aNotAppliedChanges.push(oAnnotationChange);
+			}
+		});
+		this.aAnnotationChanges = aNotAppliedChanges.length ? aNotAppliedChanges : undefined;
+	};
+
+	/**
 	 * Returns the value of the object or property inside this model's data which can be reached,
 	 * starting at the given context, by following the given path.
 	 *
@@ -935,12 +957,14 @@ sap.ui.define([
 	 *   a relative or absolute path
 	 * @param {object|sap.ui.model.Context} [oContext]
 	 *   the context to be used as a starting point in case of a relative path
+	 * @param {boolean} [bAsPath]
+	 *   Whether to return the JSON model path instead of the value for the given path and context
 	 * @returns {any}
 	 *   the value of the object or property or <code>null</code> in case a relative path without
 	 *   a context is given
 	 * @private
 	 */
-	ODataMetaModel.prototype._getObject = function (sPath, oContext) {
+	ODataMetaModel.prototype._getObject = function (sPath, oContext, bAsPath) {
 		var oBaseNode = oContext,
 			oBinding,
 			sCacheKey,
@@ -1000,6 +1024,9 @@ sap.ui.define([
 				}
 			}
 			if (!oNode) {
+				if (bAsPath) {
+					return null;
+				}
 				if (Log.isLoggable(Log.Level.WARNING, sODataMetaModel)) {
 					Log.warning("Invalid part: " + vPart,
 						"path: " + sPath + ", context: "
@@ -1045,7 +1072,7 @@ sap.ui.define([
 			oNode = oNode[vPart];
 			sProcessedPath = sProcessedPath + vPart + "/";
 		}
-		return oNode;
+		return bAsPath ? sProcessedPath : oNode;
 	};
 
 	/**
@@ -1159,6 +1186,7 @@ sap.ui.define([
 							mQName2PendingRequest[sQualifiedPropertyName].reject(oError);
 						}
 					}
+					that._applyAnnotationChanges(); // new metadata is merged, apply annotation changes again
 				},
 				function (oError) {
 					var sQualifiedPropertyName;
@@ -1753,11 +1781,15 @@ sap.ui.define([
 					+ "." + that.oModel.getObject(aMatches[1]).name;
 				that.mQName2PendingRequest[sQualifiedTypeName + "/" + oProperty.name] = {
 					resolve : function (oResponse) {
+						const oPropertyAnnotations = oResponse.annotations.propertyAnnotations?.[sQualifiedTypeName]
+							?.[oProperty.name] || {};
 						// enhance property by annotations from response to get value lists
-						extend(oProperty,
-							(oResponse.annotations.propertyAnnotations[sQualifiedTypeName] || {})
-								[oProperty.name]
-						);
+						Object.keys(oPropertyAnnotations).forEach((sAnnotation) => {
+							if (!oProperty.hasOwnProperty(sAnnotation)) {
+								// apply only new annotations to avoid overwriting annotation changes
+								oProperty[sAnnotation] = oPropertyAnnotations[sAnnotation];
+							}
+						});
 						mValueLists = Utils.getValueLists(oProperty);
 						if (isEmptyObject(mValueLists)) {
 							fnReject(new Error("No value lists returned for " + sPropertyPath));

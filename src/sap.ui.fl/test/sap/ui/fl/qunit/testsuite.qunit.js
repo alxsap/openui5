@@ -285,6 +285,13 @@ sap.ui.define([
 				}
 			},
 
+			"apply/_internal/changes/descriptor/app/AddNewOutbound": {
+				group: "Apply Internal - Descriptor Change Merger",
+				coverage: {
+					only: ["sap/ui/fl/apply/_internal/changes/descriptor/app/AddNewOutbound", "sap/ui/fl/util/DescriptorChangeCheck"]
+				}
+			},
+
 			"apply/_internal/changes/descriptor/app/AddTechnicalAttributes": {
 				group: "Apply Internal - Descriptor Change Merger",
 				coverage: {
@@ -800,6 +807,13 @@ sap.ui.define([
 				group: "Write Internal",
 				coverage: {
 					only: ["sap/ui/fl/write/_internal/Versions"]
+				}
+			},
+
+			"write/_internal/flexState/changes/UIChangeManager": {
+				group: "Write Internal",
+				coverage: {
+					only: ["sap/ui/fl/write/_internal/flexState/changes/UIChangeManager"]
 				}
 			},
 
