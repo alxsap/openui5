@@ -16,13 +16,6 @@ sap.ui.define([
 ) => {
 	"use strict";
 
-	// increase log level to ensure the warning will be locked
-	const iLogLevel = Log.getLevel();
-	Log.setLevel(Log.Level.WARNING);
-	Log.warning("sap-ui-boot.js: This is a private module, its API must not be used in production and is subject to change!");
-	// reset log level to old value
-	Log.setLevel(iLogLevel);
-
 	// ready state
 	const pReady = new Deferred();
 	let bReady = false;
