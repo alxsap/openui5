@@ -74,7 +74,7 @@ sap.ui.define([
 			}
 			return pReady;
 		}).then(() => {
-			if(sWaitForTheme) {
+			if (sWaitForTheme) {
 				return new Promise((resolve, reject) => {
 					sap.ui.require(["sap/ui/core/Rendering", "sap/ui/core/Theming"], (Rendering, Theming) => {
 						Rendering.suspend();
@@ -97,7 +97,7 @@ sap.ui.define([
 				});
 			}
 		}).catch((exc) => {
-			throw(exc);
+			throw (exc);
 		});
 	}
 

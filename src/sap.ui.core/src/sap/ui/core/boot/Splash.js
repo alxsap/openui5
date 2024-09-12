@@ -51,7 +51,7 @@ sap.ui.define([
 							document.body.removeChild(splashDiv);
 						});
 					});
-				})
+				});
 			});
 		}
 	}
